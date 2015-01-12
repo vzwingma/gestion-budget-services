@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="android.finances.terrier.com.budget.ihm.vue.BudgetActivity$PlaceholderFragment">
+
+    <TableLayout
+        android:id="@+id/tableTotaux"
+        android:layout_width="fill_parent"
+        android:layout_height="100dip"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true">
+
+        <TableRow>
+
+            <TextView
+                android:gravity="left"
+                android:padding="3dip"
+                android:text="@string/resume_total_categorie" />
+
+            <TextView
+                android:id="@+id/resume_total_now"
+                android:gravity="left"
+                android:padding="3dip"
+                android:text="@string/resume_total_now" />
+
+            <TextView
+                android:id="@+id/resume_total_fin_mois"
+                android:gravity="left"
+                android:padding="3dip"
+                android:text="@string/resume_total_fin_mois" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="left"
+                android:padding="3dip"
+                android:text="@string/resume_total_argent_avance" />
+
+            <TextView
+                android:id="@+id/resume_total_now_argent_avance"
+                android:gravity="right"
+                android:padding="3dip"
+                android:text="3490 €" />
+
+            <TextView
+                android:id="@+id/resume_total_fin_argent_avance"
+                android:gravity="right"
+                android:padding="3dip"
+                android:text="47,67 €" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:gravity="left"
+                android:padding="3dip"
+                android:text="@string/resume_total_argent_reel" />
+
+            <TextView
+                android:id="@+id/resume_total_now_argent_reel"
+                android:gravity="right"
+                android:padding="3dip"
+                android:text="4178.21 €" />
+
+            <TextView
+                android:id="@+id/resume_total_fin_argent_reel"
+                android:gravity="right"
+                android:padding="3dip"
+                android:text="1170.67 €" />
+        </TableRow>
+
+        <View
+            android:layout_height="2dip"
+            android:background="#FF909090" />
+
+    </TableLayout>
+
+    <ExpandableListView
+        android:id="@+id/expandableListView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tableTotaux" />
+</RelativeLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Gestion de budget</string>
+    <string name="action_quitter">Quitter</string>
+    <string name="main.connect">Localhost</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_budget">Budget</string>
+    <string name="resume_total_now">--</string>
+    <string name="resume_total_fin_mois">--</string>
+    <string name="resume_total_categorie">Catégorie.</string>
+    <string name="resume_total_argent_avance">Argent avancé</string>
+    <string name="resume_total_argent_reel">Solde réel</string>
+    <string name="main.connect.openshift">OpenShift</string>
+</resources>

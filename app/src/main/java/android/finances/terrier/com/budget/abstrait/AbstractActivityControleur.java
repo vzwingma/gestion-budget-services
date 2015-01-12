@@ -1,0 +1,121 @@
+package android.finances.terrier.com.budget.abstrait;
+
+import android.content.Intent;
+import android.finances.terrier.com.budget.services.BusinessService;
+import android.finances.terrier.com.budget.services.FacadeServices;
+import android.finances.terrier.com.budget.utils.Logger;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+
+/**
+ * Classe abstraite d'un controleur d'une activité
+ *
+ * @param <BudgetActivity> activité associée au controleur
+ * @author vzwingma
+ */
+public abstract class AbstractActivityControleur<BudgetActivity extends AbstractActivity<?>> {
+
+    // Logger
+    private final Logger LOG = new Logger(AbstractActivityControleur.class);
+
+    /**
+     * Activity liée au controleur
+     */
+    private BudgetActivity activity;
+
+
+    /**
+     * Démarrage du controleur parent puis le controleur spécifique
+     */
+    protected void startParentControleur() {
+        LOG.trace("Démarrage du controleur " + this.getClass().getName());
+        startControleur();
+    }
+
+    /**
+     * Démarrage du controleur
+     */
+    protected abstract void startControleur();
+
+    /**
+     * Arrét du controleur
+     */
+    protected void stopParentControleur() {
+        LOG.trace("Arrét du controleur " + this.getClass().getName());
+        stopControleur();
+    }
+
+    /**
+     * Arrét du controleur
+     */
+    protected abstract void stopControleur();
+
+
+    /**
+     * Arrét de l'application
+     * Appelé sur Destroy du Main
+     */
+    protected void stopGlobalApplication() {
+        LOG.info("Arrét de l'application");
+        FacadeServices.stopAndroidServices();
+        getActivity().finish();
+    }
+
+    /**
+     * @return businessService
+     */
+    public BusinessService getService() {
+        return FacadeServices.getInstance().getBusinessService();
+    }
+
+    /**
+     * Ajout d'une notification
+     */
+    public void showPopupNotification(final String message, final int delai) {
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(getActivity(), message, delai).show();
+            }
+        });
+    }
+
+    /* (non-Javadoc)
+     * @see android.app.Activity#onMenuItemSelected(int, android.view.MenuItem)
+	 */
+    protected boolean onMenuItemSelected(int featureId, MenuItem item) {
+        LOG.warn("On MenuSelected : A Surcharger");
+        return true;
+    }
+
+    /**
+     * Démarrage d'une activite
+     *
+     * @param activityClass classe de l'activité
+     */
+    @SuppressWarnings("rawtypes")
+    public void startActivity(Class<? extends AbstractActivity> activityClass) {
+        LOG.debug("	Start activity " + activityClass.getName() + " depuis " + getActivity().getClass().getName());
+        Intent activiyIntent = new Intent(getActivity(), activityClass);
+        getActivity().startActivity(activiyIntent);
+    }
+
+
+    /**
+     * @return facade des services
+
+    public FacadeServices getFacadeServices(){
+    return FacadeServices.getInstance();
+    }*/
+
+    /**
+     * @return l'activité
+     */
+    public BudgetActivity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(BudgetActivity activity) {
+        this.activity = activity;
+    }
+}
