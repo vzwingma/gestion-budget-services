@@ -63,7 +63,7 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
             AbstractRESTService.IP_SERVEUR = AbstractRESTService.IP_SERVEUR_OPENSHIFT;
         }
 
-        new AuthenticationHTTPAsyncTask(this).execute("vzwingma", "tushkan82");
+        new AuthenticationHTTPAsyncTask(this).execute("", "");
     }
 
 
