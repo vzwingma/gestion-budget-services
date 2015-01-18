@@ -7,17 +7,18 @@
     tools:ignore="MergeRootFrame">
 
     <Button
-        android:id="@+id/buttonLocalhost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
-        android:text="@string/main.connect" />
-
-    <Button
         android:id="@+id/buttonOpenshift"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
+        android:layout_gravity="center"
         android:text="@string/main.connect.openshift" />
+
+    <ProgressBar
+        android:id="@+id/progressBarConnexion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:indeterminate="true"
+        android:visibility="invisible" />
 
 </FrameLayout>

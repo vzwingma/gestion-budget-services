@@ -3,6 +3,7 @@ package android.finances.terrier.com.budget.ihm.vue.budget;
 import android.app.Activity;
 import android.finances.terrier.com.budget.R;
 import android.finances.terrier.com.budget.models.BudgetMensuel;
+import android.finances.terrier.com.budget.utils.Logger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Map;
 
 /**
@@ -18,11 +21,20 @@ import java.util.Map;
  */
 public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
 
+    private static final NumberFormat formatter = new DecimalFormat("#0.00");
+    // Logger
+    private final Logger LOG = new Logger(ResumeTotauxExpandableAdapter.class);
     private Activity activity;
     private LayoutInflater inflater;
-
     private BudgetMensuel budgetMensuel;
 
+    /**
+     * Constructeur
+     *
+     * @param budget
+     * @param activity
+     * @param inflater
+     */
     public ResumeTotauxExpandableAdapter(BudgetMensuel budget, Activity activity, LayoutInflater inflater) {
         this.budgetMensuel = budget;
         this.activity = activity;
@@ -59,6 +71,7 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
      */
     @Override
     public Object getGroup(int groupPosition) {
+        LOG.info("Affichage catégorie : " + groupPosition);
         return getElementFromPosition(this.budgetMensuel.getTotalParCategories(), groupPosition);
     }
 
@@ -72,6 +85,7 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
         int i = 0;
         for (String key : mapData.keySet()) {
             if (i == position) {
+                LOG.info("Affichage des valeurs de la clé : " + key);
                 return mapData.get(key);
             }
             i++;
@@ -157,7 +171,7 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.resumecategorierow, null);
         }
         Double[] donnees = (Double[]) getGroup(groupPosition);
-        ((CheckedTextView) convertView).setText(donnees[0] + "/" + donnees[1]);
+        ((CheckedTextView) convertView).setText(formatter.format(donnees[0]) + "€ ::" + formatter.format(donnees[1])+" €");
         ((CheckedTextView) convertView).setChecked(isExpanded);
         return convertView;
     }
@@ -188,8 +202,9 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.resumecategoriesgroup, null);
         }
         textView = (TextView) convertView.findViewById(R.id.textView1);
+        LOG.info("Affichage sscatégorie : " + childPosition + " de " + groupPosition);
         Double[] donnees = getElementFromPosition(this.budgetMensuel.getTotalParSSCategories(), childPosition);
-        textView.setText(donnees[0] + "::" + donnees[1]);
+        textView.setText(formatter.format(donnees[0]) + "€ //" + formatter.format(donnees[1])+" €");
         return convertView;
 
     }
