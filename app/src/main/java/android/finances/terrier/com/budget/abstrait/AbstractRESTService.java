@@ -1,7 +1,9 @@
 package android.finances.terrier.com.budget.abstrait;
 
 import android.finances.terrier.com.budget.services.rest.RESTDataModule;
+import android.finances.terrier.com.budget.utils.AuthenticationConstants;
 import android.finances.terrier.com.budget.utils.Logger;
+import android.util.Base64;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -38,8 +40,8 @@ public abstract class AbstractRESTService extends AbstractService {
     @Override
     public void onCreate() {
         httpclient = new DefaultHttpClient();
-        objectMapper = new ObjectMapper();
 
+        objectMapper = new ObjectMapper();
         objectMapper.registerModule(new RESTDataModule());
 
     }
@@ -72,7 +74,12 @@ public abstract class AbstractRESTService extends AbstractService {
         LOG.info("Appel GET de " + getRootURL() + url);
         try {
             // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(getRootURL() + url));
+            HttpGet get = new HttpGet(getRootURL() + url);
+            // Ajout de basic authentication
+            String authentication = AuthenticationConstants.REST_BASIC_AUTH_LOGIN + ":" + AuthenticationConstants.REST_BASIC_AUTH_PWD;
+            String base64 = Base64.encodeToString(authentication.getBytes(), Base64.NO_WRAP);
+            get.addHeader("Authorization", "Basic " + base64);
+            HttpResponse httpResponse = httpclient.execute(get);
             LOG.info("  [" + httpResponse.getStatusLine() + "]");
             // receive response as inputStream
             InputStream inputStream = httpResponse.getEntity().getContent();

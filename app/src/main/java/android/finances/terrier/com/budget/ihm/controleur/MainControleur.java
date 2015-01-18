@@ -5,6 +5,7 @@ import android.finances.terrier.com.budget.abstrait.AbstractActivityControleur;
 import android.finances.terrier.com.budget.abstrait.AbstractRESTService;
 import android.finances.terrier.com.budget.ihm.vue.MainActivity;
 import android.finances.terrier.com.budget.services.FacadeServices;
+import android.finances.terrier.com.budget.utils.AuthenticationConstants;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,13 +58,11 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.buttonLocalhost) {
-            AbstractRESTService.IP_SERVEUR = AbstractRESTService.IP_SERVEUR_LOCALHOST;
-        } else if (v.getId() == R.id.buttonOpenshift) {
+        if (v.getId() == R.id.buttonOpenshift) {
             AbstractRESTService.IP_SERVEUR = AbstractRESTService.IP_SERVEUR_OPENSHIFT;
         }
-
-        new AuthenticationHTTPAsyncTask(this).execute("", "");
+        getActivity().findViewById(R.id.progressBarConnexion).setVisibility(View.VISIBLE);
+        new AuthenticationHTTPAsyncTask(this).execute(AuthenticationConstants.USER_LOGIN, AuthenticationConstants.USER_MDP);
     }
 
 

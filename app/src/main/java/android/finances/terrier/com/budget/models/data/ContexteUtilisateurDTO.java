@@ -40,6 +40,8 @@ public class ContexteUtilisateurDTO {
     @JsonIgnore
     private CompteBancaire compteCourant;
 
+    private List<CategorieDepenseDTO> categoriesDTO;
+
     /**
      * @return the utilisateur
      */
@@ -121,6 +123,21 @@ public class ContexteUtilisateurDTO {
 
     public CompteBancaire getCompteCourant() {
         return compteCourant;
+    }
+
+
+    /**
+     * @return the categories
+     */
+    public List<CategorieDepenseDTO> getCategories() {
+        return categoriesDTO;
+    }
+
+    /**
+     * @param categories the categories to set
+     */
+    public void setCategories(List<CategorieDepenseDTO> categories) {
+        this.categoriesDTO = categories;
     }
 }
 
