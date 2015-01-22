@@ -1,5 +1,6 @@
 package android.finances.terrier.com.budget.models;
 
+import android.finances.terrier.com.budget.models.data.CategorieDepenseDTO;
 import android.finances.terrier.com.budget.utils.Logger;
 
 import java.io.Serializable;
@@ -56,8 +57,8 @@ public class BudgetMensuel implements Serializable {
      */
     private List<LigneDepense> listeDepenses = new ArrayList<>();
 
-    private Map<String, Double[]> totalParCategories = new HashMap<>();
-    private Map<String, Double[]> totalParSSCategories = new HashMap<>();
+    private Map<CategorieDepenseDTO, Double[]> totalParCategories = new HashMap<>();
+    private Map<CategorieDepenseDTO, Double[]> totalParSSCategories = new HashMap<>();
 
     /**
      * Totaux
@@ -87,22 +88,22 @@ public class BudgetMensuel implements Serializable {
     /**
      * @return the totalParCategories
      */
-    public Map<String, Double[]> getTotalParCategories() {
+    public Map<CategorieDepenseDTO, Double[]> getTotalParCategories() {
         return totalParCategories;
     }
 
-    public void setTotalParCategories(Map<String, Double[]> totalParCategories) {
+    public void setTotalParCategories(Map<CategorieDepenseDTO, Double[]> totalParCategories) {
         this.totalParCategories = totalParCategories;
     }
 
     /**
      * @return the totalParSSCategories
      */
-    public Map<String, Double[]> getTotalParSSCategories() {
+    public Map<CategorieDepenseDTO, Double[]> getTotalParSSCategories() {
         return totalParSSCategories;
     }
 
-    public void setTotalParSSCategories(Map<String, Double[]> totalParSSCategories) {
+    public void setTotalParSSCategories(Map<CategorieDepenseDTO, Double[]> totalParSSCategories) {
         this.totalParSSCategories = totalParSSCategories;
     }
 

@@ -1,6 +1,7 @@
 package android.finances.terrier.com.budget.models.data;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -35,6 +36,37 @@ public class CategorieDepenseDTO {
      */
     private boolean categorie = true;
 
+    /**
+     * @param mapData
+     * @param position
+     * @return
+     */
+    public static CategorieDepenseDTO getElementFromPosition(Map<CategorieDepenseDTO, Double[]> mapData, int position) {
+        int i = 0;
+        for (CategorieDepenseDTO key : mapData.keySet()) {
+            if (i == position) {
+                return key;
+            }
+            i++;
+        }
+        return null;
+    }
+
+    /**
+     * @param listData données
+     * @param position position de la données
+     * @return catégorie en position position
+     */
+    public static CategorieDepenseDTO getElementFromPosition(Set<CategorieDepenseDTO> listData, int position) {
+        int i = 0;
+        for (CategorieDepenseDTO key : listData) {
+            if (i == position) {
+                return key;
+            }
+            i++;
+        }
+        return null;
+    }
 
     /**
      * @return the libelle
@@ -49,7 +81,6 @@ public class CategorieDepenseDTO {
     public void setLibelle(String libelle) {
         this.libelle = libelle;
     }
-
 
     /**
      * @return the listeSSCategories

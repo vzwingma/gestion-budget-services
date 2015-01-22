@@ -5,11 +5,14 @@ package android.finances.terrier.com.budget.models.data.transformers;
 
 import android.finances.terrier.com.budget.models.BudgetMensuel;
 import android.finances.terrier.com.budget.models.data.BudgetMensuelDTO;
+import android.finances.terrier.com.budget.models.data.CategorieDepenseDTO;
+import android.finances.terrier.com.budget.utils.Logger;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,15 +22,18 @@ import java.util.Map;
  */
 public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
 
+    // Logger
+    private static final Logger LOGGER = new Logger(DataTransformerBudget.class);
     /**
      * Transformeur de dépenses
      */
     private DataTransformerLigneDepense dataTransformerLigneDepense = new DataTransformerLigneDepense();
-
+    private List<CategorieDepenseDTO> listeCategories;
     /**
      * Constructeur pour Spring
      */
-    public DataTransformerBudget() {
+    public void setCategories(List<CategorieDepenseDTO> listeCategories) {
+        this.listeCategories = listeCategories;
     }
 
     /* (non-Javadoc)
@@ -59,25 +65,26 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
                 bo.setFinCompteReel(Double.valueOf(decryptor.decrypt(dto.getFinCompteReel())));
 
                 // Complétion des totaux
-                Map<String, Double[]> totalCategorieBO = new HashMap<>();
+                Map<CategorieDepenseDTO, Double[]> totalCategorieBO = new HashMap<>();
                 for (String catKey : dto.getTotalParCategories().keySet()) {
                     String[] totaux = dto.getTotalParCategories().get(catKey);
                     Double[] totauxBO = new Double[totaux.length];
                     for (int i = 0; i < totaux.length; i++) {
                         totauxBO[i] = totaux[i] != null ? Double.valueOf(decryptor.decrypt(totaux[i])) : 0D;
                     }
-                    totalCategorieBO.put(decryptor.decrypt(catKey), totauxBO);
+                    totalCategorieBO.put(getCategorie(decryptor.decrypt(catKey)), totauxBO);
                 }
                 bo.setTotalParCategories(totalCategorieBO);
                 // Complétion des totaux ss catégorie
-                Map<String, Double[]> totalSsCategorieBO = new HashMap<>();
+                Map<CategorieDepenseDTO, Double[]> totalSsCategorieBO = new HashMap<>();
                 for (String ssCatKey : dto.getTotalParSSCategories().keySet()) {
                     String[] totaux = dto.getTotalParSSCategories().get(ssCatKey);
                     Double[] totauxBO = new Double[totaux.length];
                     for (int i = 0; i < totaux.length; i++) {
                         totauxBO[i] = totaux[i] != null ? Double.valueOf(decryptor.decrypt(totaux[i])) : 0D;
                     }
-                    totalSsCategorieBO.put(decryptor.encrypt(ssCatKey), totauxBO);
+                    LOGGER.info("SSCatégorie : " + ssCatKey + "->" + decryptor.decrypt(ssCatKey) + "->" + getCategorie(decryptor.decrypt(ssCatKey)));
+                    totalSsCategorieBO.put(getCategorie(decryptor.decrypt(ssCatKey)), totauxBO);
                 }
                 bo.setTotalParSSCategories(totalSsCategorieBO);
 
@@ -112,6 +119,26 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
          dto.setId(bo.getId());
          return dto;
          **/
+        return null;
+    }
+
+    /**
+     * chargement de la catégorie
+     *
+     * @param idCategorie
+     * @return catégorie
+     */
+    private CategorieDepenseDTO getCategorie(String idCategorie) {
+        for (CategorieDepenseDTO categorie : this.listeCategories) {
+            if (categorie.getId().equals(idCategorie)) {
+                return categorie;
+            }
+            for (CategorieDepenseDTO ssCategorie : categorie.getListeSSCategories()) {
+                if (ssCategorie.getId().equals(idCategorie)) {
+                    return ssCategorie;
+                }
+            }
+        }
         return null;
     }
 }

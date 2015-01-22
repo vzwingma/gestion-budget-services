@@ -101,8 +101,8 @@ public class BudgetMoisFragment extends Fragment {
         this.budget = budgetMensuel;
         // Libellé
         Calendar dateBudget = getMaxDate(budgetMensuel.getListeDepenses());
-        ((TextView) rootView.findViewById(R.id.resume_total_now)).setText("Au " + auDateFormat.format(dateBudget.getTime()));
-        ((TextView) rootView.findViewById(R.id.resume_total_fin_mois)).setText("Fin " + finDateFormat.format(dateBudget.getTime()));
+        ((TextView) rootView.findViewById(R.id.resume_total_now)).setText(auDateFormat.format(dateBudget.getTime()));
+        ((TextView) rootView.findViewById(R.id.resume_total_fin_mois)).setText(" Fin " + finDateFormat.format(dateBudget.getTime()));
         // Valeur
         miseAJourTextViewValeurEuro(R.id.resume_total_fin_argent_avance, budgetMensuel.getFinArgentAvance());
         miseAJourTextViewValeurEuro(R.id.resume_total_fin_argent_reel, budgetMensuel.getFinCompteReel());
@@ -110,9 +110,7 @@ public class BudgetMoisFragment extends Fragment {
         miseAJourTextViewValeurEuro(R.id.resume_total_now_argent_reel, budgetMensuel.getNowCompteReel());
 
 
-        // this is not really  necessary as ExpandableListActivity contains an ExpandableList
-        //setContentView(R.layout.main);
-
+        // Ajout de la liste des catégories
         ExpandableListView expandableList = (ExpandableListView) rootView.findViewById(R.id.expandableListView);
 
         expandableList.setDividerHeight(2);

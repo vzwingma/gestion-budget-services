@@ -3,7 +3,7 @@
 
     <string name="app_name">Gestion de budget</string>
     <string name="action_quitter">Quitter</string>
-    <string name="main.connect">Localhost</string>
+    <string name="main.connect">Connexion</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_budget">Budget</string>
     <string name="resume_total_now">--</string>

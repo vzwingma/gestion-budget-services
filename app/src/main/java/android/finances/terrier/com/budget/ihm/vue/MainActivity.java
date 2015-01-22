@@ -24,7 +24,7 @@ public class MainActivity extends AbstractActivity<MainControleur> {
     @Override
     public void initIHM() {
         // Création du bouton de connexion
-        ((Button) findViewById(R.id.buttonOpenshift)).setOnClickListener(getControleur());
+        ((Button) findViewById(R.id.buttonConnect)).setOnClickListener(getControleur());
     }
 
 

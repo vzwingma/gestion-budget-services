@@ -18,18 +18,21 @@
         <TableRow>
 
             <TextView
+                android:width="120dp"
                 android:gravity="left"
                 android:padding="3dip"
-                android:text="@string/resume_total_categorie" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/resume_total_now"
+                android:width="100dp"
                 android:gravity="left"
                 android:padding="3dip"
                 android:text="@string/resume_total_now" />
 
             <TextView
                 android:id="@+id/resume_total_fin_mois"
+                android:width="100dp"
                 android:gravity="left"
                 android:padding="3dip"
                 android:text="@string/resume_total_fin_mois" />
@@ -38,46 +41,52 @@
         <TableRow>
 
             <TextView
+                android:width="120dp"
                 android:gravity="left"
                 android:padding="3dip"
                 android:text="@string/resume_total_argent_avance" />
 
             <TextView
                 android:id="@+id/resume_total_now_argent_avance"
+                android:width="100dp"
                 android:gravity="right"
                 android:padding="3dip"
-                android:text="3490 €" />
+                android:text="-- €" />
 
             <TextView
                 android:id="@+id/resume_total_fin_argent_avance"
+                android:width="100dp"
                 android:gravity="right"
                 android:padding="3dip"
-                android:text="47,67 €" />
+                android:text="-- €" />
         </TableRow>
 
         <TableRow>
 
             <TextView
+                android:width="120dp"
                 android:gravity="left"
                 android:padding="3dip"
                 android:text="@string/resume_total_argent_reel" />
 
             <TextView
                 android:id="@+id/resume_total_now_argent_reel"
+                android:width="100dp"
                 android:gravity="right"
                 android:padding="3dip"
-                android:text="4178.21 €" />
+                android:text="-- €" />
 
             <TextView
                 android:id="@+id/resume_total_fin_argent_reel"
+                android:width="100dp"
                 android:gravity="right"
                 android:padding="3dip"
-                android:text="1170.67 €" />
+                android:text="-- €" />
         </TableRow>
-
+        <!--Ligne de séparation -->
         <View
             android:layout_height="2dip"
-            android:background="#FF909090" />
+            android:background="#909090" />
 
     </TableLayout>
 

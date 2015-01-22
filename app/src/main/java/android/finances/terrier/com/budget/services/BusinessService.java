@@ -59,6 +59,7 @@ public class BusinessService extends AbstractService {
 
         String hashMotPasse = hashPassWord(motDePasse);
         this.contexte = FacadeServices.getInstance().getInterfaceRESTService().getContexte(login, hashMotPasse);
+        this.dataTransformerBudget.setCategories(this.contexte.getCategories());
         LOG.info("Tentative de connexion de " + login);
 
         boolean authOk = contexte != null;
@@ -88,6 +89,7 @@ public class BusinessService extends AbstractService {
         BudgetMensuelDTO dto = FacadeServices.getInstance().getInterfaceRESTService().getBudget(mois, annee, compte);
         return dataTransformerBudget.transformDTOtoBO(dto, this.contexte.getEncryptor());
     }
+
 
     /**
      * Création du service

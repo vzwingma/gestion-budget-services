@@ -3,6 +3,7 @@ package android.finances.terrier.com.budget.ihm.vue.budget;
 import android.app.Activity;
 import android.finances.terrier.com.budget.R;
 import android.finances.terrier.com.budget.models.BudgetMensuel;
+import android.finances.terrier.com.budget.models.data.CategorieDepenseDTO;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Map;
 
 /**
  * Adapteur de la liste de résumé des totaux
@@ -60,7 +60,7 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
      */
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this.budgetMensuel.getTotalParSSCategories().size();
+        return CategorieDepenseDTO.getElementFromPosition(this.budgetMensuel.getTotalParCategories(), groupPosition).getListeSSCategories().size();
     }
 
     /**
@@ -71,27 +71,10 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
      */
     @Override
     public Object getGroup(int groupPosition) {
-        LOG.info("Affichage catégorie : " + groupPosition);
-        return getElementFromPosition(this.budgetMensuel.getTotalParCategories(), groupPosition);
+        return CategorieDepenseDTO.getElementFromPosition(this.budgetMensuel.getTotalParCategories(), groupPosition);
     }
 
 
-    /**
-     * @param mapData
-     * @param position
-     * @return
-     */
-    private Double[] getElementFromPosition(Map<String, Double[]> mapData, int position) {
-        int i = 0;
-        for (String key : mapData.keySet()) {
-            if (i == position) {
-                LOG.info("Affichage des valeurs de la clé : " + key);
-                return mapData.get(key);
-            }
-            i++;
-        }
-        return null;
-    }
 
     /**
      * Gets the data associated with the given child within the given group.
@@ -170,8 +153,20 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.resumecategorierow, null);
         }
-        Double[] donnees = (Double[]) getGroup(groupPosition);
-        ((CheckedTextView) convertView).setText(formatter.format(donnees[0]) + "€ ::" + formatter.format(donnees[1])+" €");
+        CategorieDepenseDTO categorie = (CategorieDepenseDTO) getGroup(groupPosition);
+        Double[] donnees = this.budgetMensuel.getTotalParCategories().get(categorie);
+
+        String libCat = "??";
+        String valNow = "0";
+        String valFin = "0";
+        if (categorie != null) {
+            libCat = categorie.getLibelle();
+        }
+        if (donnees != null) {
+            valNow = donnees[0] != null ? formatter.format(donnees[0]) : "0";
+            valFin = donnees[1] != null ? formatter.format(donnees[1]) : "0";
+        }
+        ((CheckedTextView) convertView).setText(categorie + ">" + valNow + "€ ::" + valFin + " €");
         ((CheckedTextView) convertView).setChecked(isExpanded);
         return convertView;
     }
@@ -202,9 +197,25 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.resumecategoriesgroup, null);
         }
         textView = (TextView) convertView.findViewById(R.id.textView1);
-        LOG.info("Affichage sscatégorie : " + childPosition + " de " + groupPosition);
-        Double[] donnees = getElementFromPosition(this.budgetMensuel.getTotalParSSCategories(), childPosition);
-        textView.setText(formatter.format(donnees[0]) + "€ //" + formatter.format(donnees[1])+" €");
+
+        // Recherche des données correspondantes
+        CategorieDepenseDTO categorie = CategorieDepenseDTO.getElementFromPosition(this.budgetMensuel.getTotalParCategories(), groupPosition);
+        CategorieDepenseDTO ssCategorie = CategorieDepenseDTO.getElementFromPosition(categorie.getListeSSCategories(), childPosition);
+        LOG.trace("Affichage sscatégorie : " + childPosition + " de " + groupPosition + "(" + categorie.getLibelle() + ") =" + ssCategorie);
+        Double[] donnees = this.budgetMensuel.getTotalParSSCategories().get(ssCategorie);
+
+        String libCat = "??";
+        String valNow = "0";
+        String valFin = "0";
+        if (ssCategorie != null) {
+            libCat = ssCategorie.getLibelle();
+        }
+        if (donnees != null) {
+            valNow = donnees[0] != null ? formatter.format(donnees[0]) : "0";
+            valFin = donnees[1] != null ? formatter.format(donnees[1]) : "0";
+        }
+        textView.setText(ssCategorie + ">" + valNow + "€ //" + valFin + " €");
+
         return convertView;
 
     }

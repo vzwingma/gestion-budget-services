@@ -58,7 +58,7 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.buttonOpenshift) {
+        if (v.getId() == R.id.buttonConnect) {
             AbstractRESTService.IP_SERVEUR = AbstractRESTService.IP_SERVEUR_OPENSHIFT;
         }
         getActivity().findViewById(R.id.progressBarConnexion).setVisibility(View.VISIBLE);
