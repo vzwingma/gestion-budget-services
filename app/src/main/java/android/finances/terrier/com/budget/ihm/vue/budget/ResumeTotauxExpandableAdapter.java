@@ -1,6 +1,5 @@
 package android.finances.terrier.com.budget.ihm.vue.budget;
 
-import android.app.Activity;
 import android.finances.terrier.com.budget.R;
 import android.finances.terrier.com.budget.models.BudgetMensuel;
 import android.finances.terrier.com.budget.models.data.CategorieDepenseDTO;
@@ -13,8 +12,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 /**
  * Adapteur de la liste de résumé des totaux
@@ -22,23 +19,19 @@ import java.text.NumberFormat;
  */
 public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
 
-    private static final NumberFormat formatter = new DecimalFormat("#0.00");
     // Logger
     private final Logger LOG = new Logger(ResumeTotauxExpandableAdapter.class);
-    private Activity activity;
     private LayoutInflater inflater;
     private BudgetMensuel budgetMensuel;
 
     /**
      * Constructeur
      *
-     * @param budget
-     * @param activity
-     * @param inflater
+     * @param budget   budget associé
+     * @param inflater inflater
      */
-    public ResumeTotauxExpandableAdapter(BudgetMensuel budget, Activity activity, LayoutInflater inflater) {
+    public ResumeTotauxExpandableAdapter(BudgetMensuel budget, LayoutInflater inflater) {
         this.budgetMensuel = budget;
-        this.activity = activity;
         this.inflater = inflater;
     }
 
@@ -144,7 +137,6 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
      *                      the correct data, this method can create a new view. It is not
      *                      guaranteed that the convertView will have been previously
      *                      created by
-     *                      {@link #getGroupView(int, boolean, android.view.View, android.view.ViewGroup)}.
      * @param parent        the parent that this view will eventually be attached to
      * @return the View corresponding to the group at the specified position
      */
@@ -154,7 +146,7 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.resumecategorierow, null);
         }
         CategorieDepenseDTO categorie = (CategorieDepenseDTO) getGroup(groupPosition);
-        Double[] donnees = this.budgetMensuel.getTotalParCategories().get(categorie);
+        // Double[] donnees = this.budgetMensuel.getTotalParCategories().get(categorie);
 
         ((CheckedTextView) convertView).setText(categorie != null ? categorie.getLibelle() : "??");
         ((CheckedTextView) convertView).setChecked(isExpanded);
@@ -175,7 +167,6 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
      *                      the correct data, this method can create a new view. It is not
      *                      guaranteed that the convertView will have been previously
      *                      created by
-     *                      {@link #getChildView(int, int, boolean, android.view.View, android.view.ViewGroup)}.
      * @param parent        the parent that this view will eventually be attached to
      * @return the View corresponding to the child at the specified position
      */
@@ -191,10 +182,9 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
         LOG.trace("Affichage sscatégorie : " + childPosition + " de " + groupPosition + "(" + categorie.getLibelle() + ") =" + ssCategorie);
         Double[] donnees = this.budgetMensuel.getTotalParSSCategories().get(ssCategorie);
 
-
         ((TextView) convertView.findViewById(R.id.resume_ss_cat_libelle)).setText(ssCategorie != null ? ssCategorie.getLibelle() : "??");
-        IHMViewUtils.miseAJourTextViewValeurEuro(convertView, R.id.resume_ss_cat_now, donnees != null ? donnees[0] : 0);
-        IHMViewUtils.miseAJourTextViewValeurEuro(convertView, R.id.resume_ss_cat_fin, donnees != null ? donnees[1] : 0);
+        IHMViewUtils.miseAJourTextViewValeurEuro(convertView.getRootView().findViewById(R.id.resume_ss_cat_now), donnees != null ? donnees[0] : 0);
+        IHMViewUtils.miseAJourTextViewValeurEuro(convertView.getRootView().findViewById(R.id.resume_ss_cat_fin), donnees != null ? donnees[1] : 0);
         convertView.setBackgroundColor(childPosition % 2 == 0 ? IHMViewUtils.ROW_COLOR : IHMViewUtils.ROW_COLOR_ODD);
         return convertView;
 

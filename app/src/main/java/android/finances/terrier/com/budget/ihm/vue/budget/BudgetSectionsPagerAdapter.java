@@ -36,7 +36,7 @@ public class BudgetSectionsPagerAdapter extends FragmentPagerAdapter {
         c.setTime(minDate);
         c.add(Calendar.MONTH, position);
 
-        return BudgetMoisFragment.newInstance(this.activity.getControleur(), c.get(Calendar.MONTH), c.get(Calendar.YEAR), this.activity.getControleur().getService().getContexte().getCompteCourant().getId());
+        return BudgetMoisFragment.newInstance(c.get(Calendar.MONTH), c.get(Calendar.YEAR), this.activity.getControleur().getService().getContexte().getCompteCourant().getId());
     }
 
     @Override

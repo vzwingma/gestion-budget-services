@@ -26,12 +26,11 @@ public class IHMViewUtils {
     /**
      * Mise à jour d'un textview avec une valeur en €
      *
-     * @param id     id de l'élément
      * @param valeur valeur à afficher
      */
-    public static void miseAJourTextViewValeurEuro(View rootView, int id, double valeur) {
+    public static void miseAJourTextViewValeurEuro(View rootView, double valeur) {
         int color = valeur >= 0 ? IHMViewUtils.COLOR_VALEUR_POSITIF : IHMViewUtils.COLOR_VALEUR_NEGATIF;
-        ((TextView) rootView.findViewById(id)).setText(formatter.format(valeur) + " €");
-        ((TextView) rootView.findViewById(id)).setTextColor(color);
+        ((TextView) rootView).setText(formatter.format(valeur) + " €");
+        ((TextView) rootView).setTextColor(color);
     }
 }
