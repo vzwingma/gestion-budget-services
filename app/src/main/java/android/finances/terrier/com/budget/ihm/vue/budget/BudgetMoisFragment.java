@@ -4,7 +4,6 @@ import android.content.Context;
 import android.finances.terrier.com.budget.R;
 import android.finances.terrier.com.budget.ihm.controleur.BudgetHTTPAsyncTask;
 import android.finances.terrier.com.budget.models.BudgetMensuel;
-import android.finances.terrier.com.budget.models.LigneDepense;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,7 +17,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Fragment d'une page de budget
@@ -100,9 +98,14 @@ public class BudgetMoisFragment extends Fragment {
     public void miseAJourVue(BudgetMensuel budgetMensuel) {
         this.budget = budgetMensuel;
         // Libellé
-        Calendar dateBudget = getMaxDate(budgetMensuel.getListeDepenses());
-        ((TextView) rootView.findViewById(R.id.resume_total_now)).setText(auDateFormat.format(dateBudget.getTime()));
-        ((TextView) rootView.findViewById(R.id.resume_total_fin_mois)).setText(" Fin " + finDateFormat.format(dateBudget.getTime()));
+        Calendar dateBudget = budgetMensuel.getDateMiseAJour();
+        ((TextView) rootView.findViewById(R.id.resume_total_now)).setText("Au " + auDateFormat.format(dateBudget.getTime()));
+        ((TextView) rootView.findViewById(R.id.resume_total_now2)).setText("Au " + auDateFormat.format(dateBudget.getTime()));
+        Calendar finBudget = Calendar.getInstance();
+        finBudget.set(Calendar.MONTH, budgetMensuel.getMois());
+        finBudget.set(Calendar.YEAR, budgetMensuel.getAnnee());
+        ((TextView) rootView.findViewById(R.id.resume_total_fin_mois)).setText(" Fin " + finDateFormat.format(finBudget.getTime()));
+        ((TextView) rootView.findViewById(R.id.resume_total_fin_mois2)).setText(" Fin " + finDateFormat.format(finBudget.getTime()));
         // Valeur
         miseAJourTextViewValeurEuro(R.id.resume_total_fin_argent_avance, budgetMensuel.getFinArgentAvance());
         miseAJourTextViewValeurEuro(R.id.resume_total_fin_argent_reel, budgetMensuel.getFinCompteReel());
@@ -132,23 +135,6 @@ public class BudgetMoisFragment extends Fragment {
         ((TextView) rootView.findViewById(id)).setText(formatter.format(valeur) + " €");
     }
 
-
-    /**
-     * @param listeDepenses
-     * @return date max d'une liste de dépenses
-     */
-    private Calendar getMaxDate(List<LigneDepense> listeDepenses) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, 1999);
-        if (listeDepenses != null) {
-            for (LigneDepense ligneDepense : listeDepenses) {
-                if (ligneDepense.getDateOperation() != null && c.getTime().before(ligneDepense.getDateOperation())) {
-                    c.setTime(ligneDepense.getDateOperation());
-                }
-            }
-        }
-        return c;
-    }
 
     public Integer getMois() {
         return mois;

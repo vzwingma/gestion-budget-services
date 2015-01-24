@@ -12,4 +12,8 @@
     <string name="resume_total_argent_avance">Argent avancé</string>
     <string name="resume_total_argent_reel">Solde réel</string>
     <string name="main.connect.openshift">OpenShift</string>
+    <string name="budget_categorie">Catégories</string>
+    <!--Color -->
+    <string name="color_fond_tableau">#004f8a</string>
+    <string name="color_text_tableau">#ffffff</string>
 </resources>

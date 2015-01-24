@@ -11,31 +11,36 @@
     <TableLayout
         android:id="@+id/tableTotaux"
         android:layout_width="fill_parent"
-        android:layout_height="100dip"
+        android:layout_height="110dip"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true">
 
         <TableRow>
-
             <TextView
                 android:width="120dp"
+                android:background="#004f8a"
                 android:gravity="left"
                 android:padding="3dip"
-                android:text="" />
+                android:text="@string/budget_categorie"
+                android:textColor="#ffffff" />
 
             <TextView
                 android:id="@+id/resume_total_now"
-                android:width="100dp"
+                android:width="115dp"
+                android:background="#004f8a"
                 android:gravity="left"
                 android:padding="3dip"
-                android:text="@string/resume_total_now" />
+                android:text="@string/resume_total_now"
+                android:textColor="#ffffff" />
 
             <TextView
                 android:id="@+id/resume_total_fin_mois"
-                android:width="100dp"
+                android:width="115dp"
+                android:background="#004f8a"
                 android:gravity="left"
                 android:padding="3dip"
-                android:text="@string/resume_total_fin_mois" />
+                android:text="@string/resume_total_fin_mois"
+                android:textColor="#ffffff" />
         </TableRow>
 
         <TableRow>
@@ -48,14 +53,14 @@
 
             <TextView
                 android:id="@+id/resume_total_now_argent_avance"
-                android:width="100dp"
+                android:width="115dp"
                 android:gravity="right"
                 android:padding="3dip"
                 android:text="-- €" />
 
             <TextView
                 android:id="@+id/resume_total_fin_argent_avance"
-                android:width="100dp"
+                android:width="115dp"
                 android:gravity="right"
                 android:padding="3dip"
                 android:text="-- €" />
@@ -71,22 +76,50 @@
 
             <TextView
                 android:id="@+id/resume_total_now_argent_reel"
-                android:width="100dp"
+                android:width="115dp"
                 android:gravity="right"
                 android:padding="3dip"
                 android:text="-- €" />
 
             <TextView
                 android:id="@+id/resume_total_fin_argent_reel"
-                android:width="100dp"
+                android:width="115dp"
                 android:gravity="right"
                 android:padding="3dip"
                 android:text="-- €" />
         </TableRow>
         <!--Ligne de séparation -->
-        <View
-            android:layout_height="2dip"
-            android:background="#909090" />
+
+        <TableRow android:layout_marginTop="5dip">
+
+            <TextView
+                android:id="@+id/resume_categorie_2"
+                android:layout_height="wrap_content"
+                android:width="120dp"
+                android:background="#004f8a"
+                android:gravity="left"
+                android:padding="3dip"
+                android:text="@string/budget_categorie"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:id="@+id/resume_total_now2"
+                android:width="115dp"
+                android:background="#004f8a"
+                android:gravity="left"
+                android:padding="3dip"
+                android:text="@string/resume_total_now"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:id="@+id/resume_total_fin_mois2"
+                android:width="115dp"
+                android:background="#004f8a"
+                android:gravity="left"
+                android:padding="3dip"
+                android:text="@string/resume_total_fin_mois"
+                android:textColor="#ffffff" />
+        </TableRow>
 
     </TableLayout>
 
@@ -94,6 +127,6 @@
         android:id="@+id/expandableListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/tableTotaux" />
 </RelativeLayout>
