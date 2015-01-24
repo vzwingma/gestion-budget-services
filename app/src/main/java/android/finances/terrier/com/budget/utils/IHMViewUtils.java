@@ -30,7 +30,9 @@ public class IHMViewUtils {
      */
     public static void miseAJourTextViewValeurEuro(View rootView, double valeur) {
         int color = valeur >= 0 ? IHMViewUtils.COLOR_VALEUR_POSITIF : IHMViewUtils.COLOR_VALEUR_NEGATIF;
-        ((TextView) rootView).setText(formatter.format(valeur) + " €");
-        ((TextView) rootView).setTextColor(color);
+        if (rootView != null) {
+            ((TextView) rootView).setText(formatter.format(valeur) + " €");
+            ((TextView) rootView).setTextColor(color);
+        }
     }
 }

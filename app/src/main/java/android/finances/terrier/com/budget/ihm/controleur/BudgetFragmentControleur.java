@@ -3,9 +3,12 @@ package android.finances.terrier.com.budget.ihm.controleur;
 import android.content.Context;
 import android.finances.terrier.com.budget.R;
 import android.finances.terrier.com.budget.abstrait.AbstractFragmentControleur;
+import android.finances.terrier.com.budget.ihm.listener.ListeCompteSelectedListener;
 import android.finances.terrier.com.budget.ihm.vue.budget.BudgetMoisFragment;
 import android.finances.terrier.com.budget.ihm.vue.budget.ResumeTotauxExpandableAdapter;
 import android.finances.terrier.com.budget.models.BudgetMensuel;
+import android.finances.terrier.com.budget.models.CompteBancaire;
+import android.finances.terrier.com.budget.services.FacadeServices;
 import android.finances.terrier.com.budget.utils.IHMViewUtils;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.LayoutInflater;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Controleur d'un budget
@@ -29,6 +33,7 @@ public class BudgetFragmentControleur extends AbstractFragmentControleur<BudgetM
     private final Logger LOG = new Logger(BudgetFragmentControleur.class);
     private final SimpleDateFormat auDateFormat = new SimpleDateFormat("dd MMM yyyy");
     private final SimpleDateFormat finDateFormat = new SimpleDateFormat("MMM yyyy");
+    private final SimpleDateFormat fullDateFormat = new SimpleDateFormat("MMMM yyyy");
 
     private BudgetMensuel budget;
 
@@ -36,12 +41,16 @@ public class BudgetFragmentControleur extends AbstractFragmentControleur<BudgetM
     private int mois;
     private int annee;
     private String idCompte;
+    private Date dateBudget;
 
 
-    public BudgetFragmentControleur(int mois, int annee, String idCompte) {
+    public BudgetFragmentControleur(int mois, int annee) {
         this.mois = mois;
         this.annee = annee;
-        this.idCompte = idCompte;
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.MONTH, getMois());
+        c.set(Calendar.YEAR, getAnnee());
+        this.dateBudget = c.getTime();
     }
 
     /**
@@ -57,7 +66,12 @@ public class BudgetFragmentControleur extends AbstractFragmentControleur<BudgetM
      * Mise à jour à partir des données déjà reçues
      */
     public void miseAJourVue() {
-        miseAJourResume(this.budget);
+        // Déclenchement de l'appel REST si le budget n'est pas encore chargé ou s'il est actif
+        if (this.budget == null || this.budget.isActif()) {
+            new BudgetHTTPAsyncTask().execute(this);
+        } else {
+            miseAJourResume(this.budget);
+        }
     }
 
     /**
@@ -68,7 +82,7 @@ public class BudgetFragmentControleur extends AbstractFragmentControleur<BudgetM
     public void miseAJourResume(BudgetMensuel budgetMensuel) {
         this.budget = budgetMensuel;
         // Libellé
-        Calendar dateBudget = budgetMensuel.getDateMiseAJour();
+        Calendar dateBudget = budgetMensuel.getDateMiseAJour() != null ? budgetMensuel.getDateMiseAJour() : Calendar.getInstance();
         ((TextView) getElementFromView(R.id.resume_total_now)).setText("Au " + auDateFormat.format(dateBudget.getTime()));
         ((TextView) getElementFromView(R.id.resume_total_now2)).setText("Au " + auDateFormat.format(dateBudget.getTime()));
         Calendar finBudget = Calendar.getInstance();
@@ -99,7 +113,6 @@ public class BudgetFragmentControleur extends AbstractFragmentControleur<BudgetM
      */
     @Override
     public void stopControleur() {
-
     }
 
     /**
@@ -119,20 +132,38 @@ public class BudgetFragmentControleur extends AbstractFragmentControleur<BudgetM
      * Inject RootView du fragment
      */
     public void initViewCompte() {
-        // Déclenchement de l'appel REST si le budget n'est pas encore chargé ou s'il est actif
-        if (this.budget == null || this.budget.isActif()) {
-            new BudgetHTTPAsyncTask().execute(this);
-        } else {
-            miseAJourVue();
-        }
-        Spinner spinner = (Spinner) getElementFromView(R.id.selectCompte);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getFragment().getActivity(),
-                R.array.comptes_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
+
+        // Mise à jour mois
+        ((TextView) getElementFromView(R.id.budget_moisText)).setText("de " + fullDateFormat.format(this.dateBudget.getTime()));
+
+        // Mise à jour spinner Compte
+        final Spinner spinner = (Spinner) getElementFromView(R.id.budget_selectCompte);
+        final ArrayAdapter<CompteBancaire> adapter = new ArrayAdapter<CompteBancaire>(
+                this.getFragment().getActivity(),
+                R.layout.spinnercomptetemplate,
+                FacadeServices.getInstance().getBusinessService().getContexte().getComptes());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new ListeCompteSelectedListener(this));
+        // Specify the layout to use when the list of choices appears
+        this.getFragment().getRootView().post(new Runnable() {
+            @Override
+            public void run() {
+                CompteBancaire compteEnCours = null;
+                for (CompteBancaire compte : getBusinessService().getContexte().getComptes()) {
+                    if (compte.getId().equals(getIdCompte())) {
+                        compteEnCours = compte;
+                        break;
+                    }
+                }
+                if (compteEnCours != null) {
+                    spinner.setSelection(adapter.getPosition(compteEnCours));
+                }
+            }
+        });
+
+
     }
 
     public Integer getMois() {
@@ -145,5 +176,10 @@ public class BudgetFragmentControleur extends AbstractFragmentControleur<BudgetM
 
     public String getIdCompte() {
         return idCompte;
+    }
+
+    public void setIdCompte(String idCompte) {
+        this.budget = null;
+        this.idCompte = idCompte;
     }
 }

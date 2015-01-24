@@ -33,20 +33,19 @@ public class BudgetMoisFragment extends Fragment {
      *
      * @param mois     mois de la page
      * @param annee    année de la page
-     * @param idCompte compte
      * @return fragment à afficher
      */
-    public static BudgetMoisFragment newInstance(int mois, int annee, String idCompte) {
+    public static BudgetMoisFragment newInstance(int mois, int annee) {
         BudgetMoisFragment fragment = new BudgetMoisFragment();
-        fragment.initControleur(mois, annee, idCompte);
+        fragment.initControleur(mois, annee);
         return fragment;
     }
 
     /**
      * Constructeur public
      */
-    public void initControleur(int mois, int annee, String idCompte) {
-        this.controleur = new BudgetFragmentControleur(mois, annee, idCompte);
+    public void initControleur(int mois, int annee) {
+        this.controleur = new BudgetFragmentControleur(mois, annee);
         this.controleur.setFragment(this);
     }
 

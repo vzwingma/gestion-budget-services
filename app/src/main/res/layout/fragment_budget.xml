@@ -11,26 +11,43 @@
     <LinearLayout
         android:id="@+id/bordereau"
         android:layout_width="match_parent"
-        android:layout_height="50dip"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:showDividers="beginning|middle|end">
+        android:background="@android:color/background_dark">
 
-        <EditText
+        <TextView
             android:id="@+id/budgetText"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Budget " />
+            android:layout_height="31dp"
+            android:background="@android:color/background_dark"
+            android:text="Budget "
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp" />
 
         <Spinner
-            android:id="@+id/selectCompte"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-
-        <EditText
-            android:id="@+id/editText"
+            android:id="@+id/budget_selectCompte"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="de Decembre 2015 " />
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bordereau2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/bordereau"
+        android:background="@android:color/background_dark">
+
+        <TextView
+            android:id="@+id/budget_moisText"
+            android:layout_width="wrap_content"
+            android:layout_height="31dp"
+            android:text="de Decembre 2015"
+            android:textAlignment="textEnd"
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <TableLayout
@@ -38,12 +55,12 @@
         android:layout_width="fill_parent"
         android:layout_height="110dip"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/bordereau">
+        android:layout_below="@+id/bordereau2">
 
         <TableRow>
 
             <TextView
-                android:width="120dp"
+                android:width="125dp"
                 android:background="#004f8a"
                 android:gravity="left"
                 android:padding="3dip"
@@ -52,7 +69,7 @@
 
             <TextView
                 android:id="@+id/resume_total_now"
-                android:width="115dp"
+                android:width="118dp"
                 android:background="#004f8a"
                 android:gravity="left"
                 android:padding="3dip"
@@ -61,7 +78,7 @@
 
             <TextView
                 android:id="@+id/resume_total_fin_mois"
-                android:width="115dp"
+                android:width="118dp"
                 android:background="#004f8a"
                 android:gravity="left"
                 android:padding="3dip"
@@ -72,7 +89,7 @@
         <TableRow>
 
             <TextView
-                android:width="120dp"
+                android:width="125dp"
                 android:gravity="left"
                 android:padding="3dip"
                 android:text="@string/resume_total_argent_avance"
@@ -80,14 +97,14 @@
 
             <TextView
                 android:id="@+id/resume_total_now_argent_avance"
-                android:width="115dp"
+                android:width="118dp"
                 android:gravity="right"
                 android:padding="3dip"
                 android:text="-- €" />
 
             <TextView
                 android:id="@+id/resume_total_fin_argent_avance"
-                android:width="115dp"
+                android:width="118dp"
                 android:gravity="right"
                 android:padding="3dip"
                 android:text="-- €" />
@@ -96,7 +113,7 @@
         <TableRow>
 
             <TextView
-                android:width="120dp"
+                android:width="125dp"
                 android:gravity="left"
                 android:padding="3dip"
                 android:text="@string/resume_total_argent_reel"
@@ -104,26 +121,24 @@
 
             <TextView
                 android:id="@+id/resume_total_now_argent_reel"
-                android:width="115dp"
+                android:width="118dp"
                 android:gravity="right"
                 android:padding="3dip"
                 android:text="-- €" />
 
             <TextView
                 android:id="@+id/resume_total_fin_argent_reel"
-                android:width="115dp"
+                android:width="118dp"
                 android:gravity="right"
                 android:padding="3dip"
                 android:text="-- €" />
         </TableRow>
-        <!--Ligne de séparation -->
 
         <TableRow android:layout_marginTop="10dip">
-
             <TextView
                 android:id="@+id/resume_categorie_2"
                 android:layout_height="wrap_content"
-                android:width="120dp"
+                android:width="125dp"
                 android:background="#004f8a"
                 android:gravity="left"
                 android:padding="3dip"
@@ -132,7 +147,7 @@
 
             <TextView
                 android:id="@+id/resume_total_now2"
-                android:width="115dp"
+                android:width="118dp"
                 android:background="#004f8a"
                 android:gravity="left"
                 android:padding="3dip"
@@ -141,7 +156,7 @@
 
             <TextView
                 android:id="@+id/resume_total_fin_mois2"
-                android:width="115dp"
+                android:width="118dp"
                 android:background="#004f8a"
                 android:gravity="left"
                 android:padding="3dip"
@@ -153,7 +168,7 @@
 
     <ExpandableListView
         android:id="@+id/expandableListView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/tableTotaux" />

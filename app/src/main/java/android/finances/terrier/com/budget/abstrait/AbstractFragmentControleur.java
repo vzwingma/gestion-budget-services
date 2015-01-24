@@ -1,6 +1,8 @@
 package android.finances.terrier.com.budget.abstrait;
 
 import android.finances.terrier.com.budget.ihm.vue.budget.BudgetMoisFragment;
+import android.finances.terrier.com.budget.services.BusinessService;
+import android.finances.terrier.com.budget.services.FacadeServices;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +51,12 @@ public abstract class AbstractFragmentControleur<BudgetFragment extends BudgetMo
      */
     protected abstract void stopControleur();
 
+    /**
+     * @return service métier
+     */
+    public BusinessService getBusinessService() {
+        return FacadeServices.getInstance().getBusinessService();
+    }
 
     /* (non-Javadoc)
      * @see android.app.Activity#onMenuItemSelected(int, android.view.MenuItem)

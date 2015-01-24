@@ -99,10 +99,16 @@ public class CompteBancaire {
      */
     @Override
     public String toString() {
+        return this.libelle;
+    }
+
+    /* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
+    public String toFullString() {
         return "CompteBancaire [id=" + id + ", libelle=" + libelle
                 + ", listeProprietaires=" + listeProprietaires + ", itemIcon="
                 + itemIcon + "]";
     }
-
 
 }
