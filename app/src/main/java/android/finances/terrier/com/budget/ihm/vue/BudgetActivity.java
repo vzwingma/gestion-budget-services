@@ -1,7 +1,7 @@
 package android.finances.terrier.com.budget.ihm.vue;
 
 import android.finances.terrier.com.budget.R;
-import android.finances.terrier.com.budget.abstrait.AbstractActivity;
+import android.finances.terrier.com.budget.abstrait.AbstractFragmentActivity;
 import android.finances.terrier.com.budget.ihm.controleur.BudgetControleur;
 import android.finances.terrier.com.budget.ihm.vue.budget.BudgetSectionsPagerAdapter;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,7 +16,7 @@ import org.joda.time.Months;
 import java.util.Calendar;
 import java.util.Date;
 
-public class BudgetActivity extends AbstractActivity<BudgetControleur> {
+public class BudgetActivity extends AbstractFragmentActivity<BudgetControleur> {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide

@@ -29,6 +29,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
      */
     private DataTransformerLigneDepense dataTransformerLigneDepense = new DataTransformerLigneDepense();
     private List<CategorieDepenseDTO> listeCategories;
+
     /**
      * Constructeur pour Spring
      */
@@ -83,7 +84,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
                     for (int i = 0; i < totaux.length; i++) {
                         totauxBO[i] = totaux[i] != null ? Double.valueOf(decryptor.decrypt(totaux[i])) : 0D;
                     }
-                    LOGGER.info("SSCatégorie : " + ssCatKey + "->" + decryptor.decrypt(ssCatKey) + "->" + getCategorie(decryptor.decrypt(ssCatKey)));
+                    LOGGER.trace("SSCatégorie : " + ssCatKey + "->" + decryptor.decrypt(ssCatKey) + "->" + getCategorie(decryptor.decrypt(ssCatKey)));
                     totalSsCategorieBO.put(getCategorie(decryptor.decrypt(ssCatKey)), totauxBO);
                 }
                 bo.setTotalParSSCategories(totalSsCategorieBO);

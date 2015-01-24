@@ -1,5 +1,6 @@
 package android.finances.terrier.com.budget.abstrait;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.finances.terrier.com.budget.services.BusinessService;
 import android.finances.terrier.com.budget.services.FacadeServices;
@@ -14,7 +15,7 @@ import android.widget.Toast;
  * @param <BudgetActivity> activité associée au controleur
  * @author vzwingma
  */
-public abstract class AbstractActivityControleur<BudgetActivity extends AbstractActivity<?>> {
+public abstract class AbstractActivityControleur<BudgetActivity extends Activity> {
 
     // Logger
     private final Logger LOG = new Logger(AbstractActivityControleur.class);
@@ -94,7 +95,7 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Abstract
      * @param activityClass classe de l'activité
      */
     @SuppressWarnings("rawtypes")
-    public void startActivity(Class<? extends AbstractActivity> activityClass) {
+    public void startActivity(Class<? extends Activity> activityClass) {
         LOG.debug("	Start activity " + activityClass.getName() + " depuis " + getActivity().getClass().getName());
         Intent activiyIntent = new Intent(getActivity(), activityClass);
         getActivity().startActivity(activiyIntent);

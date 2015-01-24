@@ -1,8 +1,8 @@
 package android.finances.terrier.com.budget.abstrait;
 
-import android.app.Activity;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 /**
  * Classe abstraite d'une activité Android
@@ -10,10 +10,10 @@ import android.os.Bundle;
  * @param <BudgetActivityControleur> controleur associé é l'activité
  * @author vzwingma
  */
-public abstract class AbstractActivity<BudgetActivityControleur extends AbstractActivityControleur> extends Activity {
+public abstract class AbstractFragmentActivity<BudgetActivityControleur extends AbstractActivityControleur> extends FragmentActivity {
 
     // Logger
-    private final Logger LOG = new Logger(AbstractActivity.class);
+    private final Logger LOG = new Logger(AbstractFragmentActivity.class);
 
     /**
      * Controleur

@@ -76,7 +76,6 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
     }
 
 
-
     /**
      * Gets the data associated with the given child within the given group.
      *
@@ -196,6 +195,7 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
         ((TextView) convertView.findViewById(R.id.resume_ss_cat_libelle)).setText(ssCategorie != null ? ssCategorie.getLibelle() : "??");
         IHMViewUtils.miseAJourTextViewValeurEuro(convertView, R.id.resume_ss_cat_now, donnees != null ? donnees[0] : 0);
         IHMViewUtils.miseAJourTextViewValeurEuro(convertView, R.id.resume_ss_cat_fin, donnees != null ? donnees[1] : 0);
+        convertView.setBackgroundColor(childPosition % 2 == 0 ? IHMViewUtils.ROW_COLOR : IHMViewUtils.ROW_COLOR_ODD);
         return convertView;
 
     }

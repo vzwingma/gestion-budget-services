@@ -26,6 +26,6 @@ public class BudgetHTTPAsyncTask extends AsyncTask<BudgetMoisFragment, Void, Bud
     @Override
     protected void onPostExecute(BudgetMensuel budget) {
         LOG.info("Budget : " + budget);
-        this.fragment.miseAJourVue(budget);
+        this.fragment.getControleur().miseAJourVue(budget);
     }
 }

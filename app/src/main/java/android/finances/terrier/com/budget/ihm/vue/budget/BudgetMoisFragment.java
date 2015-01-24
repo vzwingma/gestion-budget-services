@@ -1,21 +1,14 @@
 package android.finances.terrier.com.budget.ihm.vue.budget;
 
-import android.content.Context;
 import android.finances.terrier.com.budget.R;
+import android.finances.terrier.com.budget.ihm.controleur.BudgetControleur;
 import android.finances.terrier.com.budget.ihm.controleur.BudgetHTTPAsyncTask;
-import android.finances.terrier.com.budget.models.BudgetMensuel;
-import android.finances.terrier.com.budget.utils.IHMViewUtils;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
-import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 /**
  * Fragment d'une page de budget
@@ -26,15 +19,12 @@ public class BudgetMoisFragment extends Fragment {
     // Logger
     private static final Logger LOG = new Logger(BudgetMoisFragment.class);
 
-    private final SimpleDateFormat auDateFormat = new SimpleDateFormat("dd MMM yyyy");
-    private final SimpleDateFormat finDateFormat = new SimpleDateFormat("MMM yyyy");
+
     // Informations liées au fragment
     private int mois;
     private int annee;
     private String idCompte;
-    // vue associée
-    private View rootView;
-    private BudgetMensuel budget;
+    private BudgetControleur controleur;
 
     /**
      * Constructeur public
@@ -50,10 +40,10 @@ public class BudgetMoisFragment extends Fragment {
      * @param idCompte compte
      * @return fragment à afficher
      */
-    public static BudgetMoisFragment newInstance(int mois, int annee, String idCompte) {
+    public static BudgetMoisFragment newInstance(BudgetControleur controleur, int mois, int annee, String idCompte) {
         BudgetMoisFragment fragment = new BudgetMoisFragment();
         LOG.info("Création du fragment " + mois + " " + annee + " de " + idCompte);
-        fragment.setArguments(mois, annee, idCompte);
+        fragment.setArguments(controleur, mois, annee, idCompte);
         return fragment;
     }
 
@@ -61,10 +51,11 @@ public class BudgetMoisFragment extends Fragment {
     /**
      * Ajout des arguments métier au fragment
      */
-    public void setArguments(int mois, int annee, String idCompte) {
+    public void setArguments(BudgetControleur controleur, int mois, int annee, String idCompte) {
         this.mois = mois;
         this.annee = annee;
         this.idCompte = idCompte;
+        this.controleur = controleur;
     }
 
     /**
@@ -78,52 +69,21 @@ public class BudgetMoisFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.rootView = inflater.inflate(R.layout.fragment_budget, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_budget, container, false);
+        getControleur().setRootView(rootView);
         // Déclenchement de l'appel REST si le budget n'est pas encore chargé ou s'il est actif
-        if (this.budget == null || this.budget.isActif()) {
+        if (this.controleur.getBudget() == null || this.controleur.getBudget().isActif()) {
             new BudgetHTTPAsyncTask().execute(this);
         } else {
-            miseAJourVue(budget);
+            this.controleur.miseAJourVue(this.controleur.getBudget());
         }
         return rootView;
     }
 
 
-    /**
-     * Mise à jour : données REST reçues
-     *
-     * @param budgetMensuel budget associé
-     */
-    public void miseAJourVue(BudgetMensuel budgetMensuel) {
-        this.budget = budgetMensuel;
-        // Libellé
-        Calendar dateBudget = budgetMensuel.getDateMiseAJour();
-        ((TextView) rootView.findViewById(R.id.resume_total_now)).setText("Au " + auDateFormat.format(dateBudget.getTime()));
-        ((TextView) rootView.findViewById(R.id.resume_total_now2)).setText("Au " + auDateFormat.format(dateBudget.getTime()));
-        Calendar finBudget = Calendar.getInstance();
-        finBudget.set(Calendar.MONTH, budgetMensuel.getMois());
-        finBudget.set(Calendar.YEAR, budgetMensuel.getAnnee());
-        ((TextView) rootView.findViewById(R.id.resume_total_fin_mois)).setText(" Fin " + finDateFormat.format(finBudget.getTime()));
-        ((TextView) rootView.findViewById(R.id.resume_total_fin_mois2)).setText(" Fin " + finDateFormat.format(finBudget.getTime()));
-        // Valeur
-        IHMViewUtils.miseAJourTextViewValeurEuro(rootView, R.id.resume_total_fin_argent_avance, budgetMensuel.getFinArgentAvance());
-        IHMViewUtils.miseAJourTextViewValeurEuro(rootView, R.id.resume_total_fin_argent_reel, budgetMensuel.getFinCompteReel());
-        IHMViewUtils.miseAJourTextViewValeurEuro(rootView, R.id.resume_total_now_argent_avance, budgetMensuel.getNowArgentAvance());
-        IHMViewUtils.miseAJourTextViewValeurEuro(rootView, R.id.resume_total_now_argent_reel, budgetMensuel.getNowCompteReel());
-
-
-        // Ajout de la liste des catégories
-        ExpandableListView expandableList = (ExpandableListView) rootView.findViewById(R.id.expandableListView);
-
-        expandableList.setDividerHeight(2);
-        expandableList.setGroupIndicator(null);
-        expandableList.setClickable(true);
-
-        ResumeTotauxExpandableAdapter adapter = new ResumeTotauxExpandableAdapter(this.budget, this.getActivity(), (LayoutInflater) this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-        expandableList.setAdapter(adapter);
+    public BudgetControleur getControleur() {
+        return controleur;
     }
-
-
 
     public Integer getMois() {
         return mois;

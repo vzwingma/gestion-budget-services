@@ -14,8 +14,10 @@ import java.text.NumberFormat;
 public class IHMViewUtils {
 
 
-    public static final String VALEUR_POSITIF = "#2c9720";
-    public static final String VALEUR_NEGATIF = "#FF0000";
+    public static final int ROW_COLOR_ODD = Color.parseColor("#f5f5f5");
+    public static final int ROW_COLOR = Color.parseColor("#FFFFFF");
+    private static final int COLOR_VALEUR_POSITIF = Color.parseColor("#2c9720");
+    private static final int COLOR_VALEUR_NEGATIF = Color.parseColor("#FF0000");
     private static final NumberFormat formatter = new DecimalFormat("#0.00");
 
     private IHMViewUtils() {
@@ -28,7 +30,7 @@ public class IHMViewUtils {
      * @param valeur valeur à afficher
      */
     public static void miseAJourTextViewValeurEuro(View rootView, int id, double valeur) {
-        int color = Color.parseColor(valeur >= 0 ? IHMViewUtils.VALEUR_POSITIF : IHMViewUtils.VALEUR_NEGATIF);
+        int color = valeur >= 0 ? IHMViewUtils.COLOR_VALEUR_POSITIF : IHMViewUtils.COLOR_VALEUR_NEGATIF;
         ((TextView) rootView.findViewById(id)).setText(formatter.format(valeur) + " €");
         ((TextView) rootView.findViewById(id)).setTextColor(color);
     }
