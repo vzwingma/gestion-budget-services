@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.finances.terrier.com.budget.R;
 import android.finances.terrier.com.budget.models.BudgetMensuel;
 import android.finances.terrier.com.budget.models.data.CategorieDepenseDTO;
+import android.finances.terrier.com.budget.utils.IHMViewUtils;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -156,12 +157,6 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
         CategorieDepenseDTO categorie = (CategorieDepenseDTO) getGroup(groupPosition);
         Double[] donnees = this.budgetMensuel.getTotalParCategories().get(categorie);
 
-        String valNow = "0";
-        String valFin = "0";
-        if (donnees != null) {
-            valNow = donnees[0] != null ? formatter.format(donnees[0]) : "0";
-            valFin = donnees[1] != null ? formatter.format(donnees[1]) : "0";
-        }
         ((CheckedTextView) convertView).setText(categorie != null ? categorie.getLibelle() : "??");
         ((CheckedTextView) convertView).setChecked(isExpanded);
         return convertView;
@@ -197,20 +192,10 @@ public class ResumeTotauxExpandableAdapter extends BaseExpandableListAdapter {
         LOG.trace("Affichage sscatégorie : " + childPosition + " de " + groupPosition + "(" + categorie.getLibelle() + ") =" + ssCategorie);
         Double[] donnees = this.budgetMensuel.getTotalParSSCategories().get(ssCategorie);
 
-        String libCat = "??";
-        String valNow = "0";
-        String valFin = "0";
-        if (ssCategorie != null) {
-            libCat = ssCategorie.getLibelle();
-        }
-        if (donnees != null) {
-            valNow = donnees[0] != null ? formatter.format(donnees[0]) : "0";
-            valFin = donnees[1] != null ? formatter.format(donnees[1]) : "0";
-        }
-        ((TextView) convertView.findViewById(R.id.resume_ss_cat_libelle)).setText(ssCategorie != null ? ssCategorie.getLibelle() : "??");
-        ((TextView) convertView.findViewById(R.id.resume_ss_cat_now)).setText(valNow + "€");
-        ((TextView) convertView.findViewById(R.id.resume_ss_cat_fin)).setText(valFin + " €");
 
+        ((TextView) convertView.findViewById(R.id.resume_ss_cat_libelle)).setText(ssCategorie != null ? ssCategorie.getLibelle() : "??");
+        IHMViewUtils.miseAJourTextViewValeurEuro(convertView, R.id.resume_ss_cat_now, donnees != null ? donnees[0] : 0);
+        IHMViewUtils.miseAJourTextViewValeurEuro(convertView, R.id.resume_ss_cat_fin, donnees != null ? donnees[1] : 0);
         return convertView;
 
     }

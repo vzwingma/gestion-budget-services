@@ -4,6 +4,7 @@ import android.content.Context;
 import android.finances.terrier.com.budget.R;
 import android.finances.terrier.com.budget.ihm.controleur.BudgetHTTPAsyncTask;
 import android.finances.terrier.com.budget.models.BudgetMensuel;
+import android.finances.terrier.com.budget.utils.IHMViewUtils;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,8 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -26,7 +25,7 @@ public class BudgetMoisFragment extends Fragment {
 
     // Logger
     private static final Logger LOG = new Logger(BudgetMoisFragment.class);
-    private static final NumberFormat formatter = new DecimalFormat("#0.00");
+
     private final SimpleDateFormat auDateFormat = new SimpleDateFormat("dd MMM yyyy");
     private final SimpleDateFormat finDateFormat = new SimpleDateFormat("MMM yyyy");
     // Informations liées au fragment
@@ -107,10 +106,10 @@ public class BudgetMoisFragment extends Fragment {
         ((TextView) rootView.findViewById(R.id.resume_total_fin_mois)).setText(" Fin " + finDateFormat.format(finBudget.getTime()));
         ((TextView) rootView.findViewById(R.id.resume_total_fin_mois2)).setText(" Fin " + finDateFormat.format(finBudget.getTime()));
         // Valeur
-        miseAJourTextViewValeurEuro(R.id.resume_total_fin_argent_avance, budgetMensuel.getFinArgentAvance());
-        miseAJourTextViewValeurEuro(R.id.resume_total_fin_argent_reel, budgetMensuel.getFinCompteReel());
-        miseAJourTextViewValeurEuro(R.id.resume_total_now_argent_avance, budgetMensuel.getNowArgentAvance());
-        miseAJourTextViewValeurEuro(R.id.resume_total_now_argent_reel, budgetMensuel.getNowCompteReel());
+        IHMViewUtils.miseAJourTextViewValeurEuro(rootView, R.id.resume_total_fin_argent_avance, budgetMensuel.getFinArgentAvance());
+        IHMViewUtils.miseAJourTextViewValeurEuro(rootView, R.id.resume_total_fin_argent_reel, budgetMensuel.getFinCompteReel());
+        IHMViewUtils.miseAJourTextViewValeurEuro(rootView, R.id.resume_total_now_argent_avance, budgetMensuel.getNowArgentAvance());
+        IHMViewUtils.miseAJourTextViewValeurEuro(rootView, R.id.resume_total_now_argent_reel, budgetMensuel.getNowCompteReel());
 
 
         // Ajout de la liste des catégories
@@ -124,16 +123,6 @@ public class BudgetMoisFragment extends Fragment {
         expandableList.setAdapter(adapter);
     }
 
-    /**
-     * Mise à jour d'un textview avec une valeur en €
-     *
-     * @param id     id de l'élément
-     * @param valeur valeur à afficher
-     */
-    private void miseAJourTextViewValeurEuro(int id, double valeur) {
-
-        ((TextView) rootView.findViewById(id)).setText(formatter.format(valeur) + " €");
-    }
 
 
     public Integer getMois() {
