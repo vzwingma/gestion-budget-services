@@ -20,16 +20,17 @@
     <LinearLayout
         android:layout_width="299dp"
         android:layout_height="wrap_content"
-        android:background="#ecf0f1"
+        android:background="#0072C6"
         android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:paddingBottom="5dp"
-        android:paddingTop="0dp">
+        android:orientation="horizontal"
+        android:paddingTop="0dp"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0.90"
             android:background="#0072C6"
             android:paddingLeft="5dp"
             android:text="Connexion en cours..."
@@ -38,21 +39,42 @@
 
         <ProgressBar
             android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="20dp"
+            android:layout_width="29dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.05"
             android:indeterminate="true"
             android:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="299dp"
+        android:layout_height="wrap_content"
+        android:background="#ecf0f1"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingTop="0dp">
 
         <TextView
             android:id="@+id/textViewResultat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:paddingLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:text="test"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#ffff0000"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/buttonReconnexion"
+            android:layout_width="200dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="#0072C6"
+            android:text="Reconnexion"
+            android:textColor="#FFFFFF"
             android:visibility="invisible" />
     </LinearLayout>
 

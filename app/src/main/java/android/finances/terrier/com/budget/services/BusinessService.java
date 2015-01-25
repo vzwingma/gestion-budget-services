@@ -113,16 +113,18 @@ public class BusinessService extends AbstractService {
      * @return résultat d'authentification
      */
     public boolean authenticateToServeur() {
-
-        String hashMotPasse = hashPassWord(this.mdpServeur);
-        this.contexte = FacadeServices.getInstance().getInterfaceRESTService().getContexte(this.loginServeur, hashMotPasse);
-        LOG.info("Tentative de connexion au serveur de " + this.loginServeur);
-        boolean authOk = contexte != null && contexte.getUtilisateur() != null;
-        if (authOk) {
-            this.dataTransformerBudget.setCategories(this.contexte.getCategories());
-            contexte.initEncryptor(hashPassWord("#" + this.mdpServeur + "#"));
+        boolean authOk = false;
+        if (this.loginServeur != null && this.mdpServeur != null) {
+            String hashMotPasse = hashPassWord(this.mdpServeur);
+            this.contexte = FacadeServices.getInstance().getInterfaceRESTService().getContexte(this.loginServeur, hashMotPasse);
+            LOG.info("Tentative de connexion au serveur de " + this.loginServeur);
+            authOk = contexte != null && contexte.getUtilisateur() != null;
+            if (authOk) {
+                this.dataTransformerBudget.setCategories(this.contexte.getCategories());
+                contexte.initEncryptor(hashPassWord("#" + this.mdpServeur + "#"));
+            }
+            LOG.info(" >" + authOk);
         }
-        LOG.info(" >" + authOk);
         return authOk;
     }
 
