@@ -9,7 +9,7 @@ import android.os.AsyncTask;
  * Tâche HTTP pour appel REST d'authentification
  * Created by vzwingma on 27/12/2014.
  */
-class AuthenticationHTTPAsyncTask extends AsyncTask<String, Void, Boolean> {
+class AuthenticationHTTPAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
     // Logger
     private final Logger LOG = new Logger(AuthenticationHTTPAsyncTask.class);
@@ -27,14 +27,22 @@ class AuthenticationHTTPAsyncTask extends AsyncTask<String, Void, Boolean> {
     }
 
     /**
-     * Appel d'authentification
+     * Override this method to perform a computation on a background thread. The
+     * specified parameters are the parameters passed to {@link #execute}
+     * by the caller of this task.
+     * <p/>
+     * This method can call {@link #publishProgress} to publish updates
+     * on the UI thread.
      *
-     * @param authentication données d'authentification
+     * @param params The parameters of the task.
      * @return résultat d'authentification
+     * @see #onPreExecute()
+     * @see #onPostExecute
+     * @see #publishProgress
      */
     @Override
-    protected Boolean doInBackground(String... authentication) {
-        return FacadeServices.getInstance().getBusinessService().authenticate(authentication[0], authentication[1]);
+    protected Boolean doInBackground(Void... params) {
+        return FacadeServices.getInstance().getBusinessService().authenticateToServeur();
     }
 
     // onPostExecute displays the results of the AsyncTask.

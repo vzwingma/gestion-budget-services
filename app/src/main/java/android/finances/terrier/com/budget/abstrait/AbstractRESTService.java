@@ -26,10 +26,9 @@ public abstract class AbstractRESTService extends AbstractService {
     // Logger
     private static final Logger LOG = new Logger(AbstractRESTService.class);
 
-    public static String IP_SERVEUR;
     public static String IP_SERVEUR_OPENSHIFT = "https://budget-tushkanyogik.rhcloud.com";
+    public static String IP_SERVEUR = IP_SERVEUR_OPENSHIFT;
     public static String IP_SERVEUR_LOCALHOST = "http://192.168.1.86:8080/gestion-budget";
-
     // create HttpClient
     private HttpClient httpclient;
     private ObjectMapper objectMapper = null;

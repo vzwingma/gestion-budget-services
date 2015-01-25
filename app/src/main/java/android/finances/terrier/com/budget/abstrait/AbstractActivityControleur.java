@@ -6,6 +6,7 @@ import android.finances.terrier.com.budget.services.BusinessService;
 import android.finances.terrier.com.budget.services.FacadeServices;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -102,6 +103,15 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
     }
 
 
+    /**
+     * Recherche d'un élément à partir de son id
+     *
+     * @param idElement idElement
+     * @return view correspondante
+     */
+    public TextView getElementById(int idElement) {
+        return (TextView) getActivity().findViewById(idElement);
+    }
     /**
      * @return facade des services
 

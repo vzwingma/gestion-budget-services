@@ -74,6 +74,12 @@ public abstract class AbstractFragmentControleur<BudgetFragment extends BudgetMo
         this.fragment = fragment;
     }
 
+    /**
+     * Recherche d'un élément à partir de son id
+     *
+     * @param idElement idElement
+     * @return view correspondante
+     */
     public View getElementFromView(int idElement) {
         return getFragment().getRootView().findViewById(idElement);
     }
