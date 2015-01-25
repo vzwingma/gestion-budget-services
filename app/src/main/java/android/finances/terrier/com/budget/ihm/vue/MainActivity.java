@@ -6,7 +6,6 @@ import android.finances.terrier.com.budget.abstrait.AbstractActivity;
 import android.finances.terrier.com.budget.ihm.controleur.MainControleur;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.Menu;
-import android.view.MenuItem;
 
 
 /**
@@ -63,20 +62,6 @@ public class MainActivity extends AbstractActivity<MainControleur> {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        LOG.info("onOptionsItemSelected : " + id + " == " + R.id.action_main_quitter);
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_main_quitter) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     /**
      * Création du controleur

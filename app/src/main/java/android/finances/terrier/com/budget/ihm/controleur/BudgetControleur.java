@@ -1,5 +1,6 @@
 package android.finances.terrier.com.budget.ihm.controleur;
 
+import android.finances.terrier.com.budget.R;
 import android.finances.terrier.com.budget.abstrait.AbstractActivityControleur;
 import android.finances.terrier.com.budget.ihm.vue.BudgetActivity;
 import android.finances.terrier.com.budget.utils.Logger;
@@ -34,15 +35,22 @@ public class BudgetControleur extends AbstractActivityControleur<BudgetActivity>
     }
 
     /**
-     * Menu Item select
+     * Sélection du menu
+     *
+     * @param item menu
+     * @return résultat de la sélection
      */
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-
+    public boolean onMenuItemSelected(MenuItem item) {
+        LOG.info("onMenuItemSelected >>> " + item.getItemId() + "::" + R.id.action_main_quitter);
         switch (item.getItemId()) {
+            // S'il est égal a itemQuitter
+            case R.id.action_budget_quitter:
+                // On ferme l'activité
+                stopGlobalApplication();
+                return true;
             default:
-                LOG.info("onMenuItemSelected : " + item.getItemId());
-                return super.onMenuItemSelected(featureId, item);
+                return false;
         }
     }
 }

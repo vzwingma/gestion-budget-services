@@ -162,6 +162,6 @@ public class BusinessService extends AbstractService {
      */
     @Override
     public boolean onDestroy() {
-        return false;
+        return true;
     }
 }

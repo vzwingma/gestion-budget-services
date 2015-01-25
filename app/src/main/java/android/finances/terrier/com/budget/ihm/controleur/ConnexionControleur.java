@@ -60,13 +60,8 @@ public class ConnexionControleur extends AbstractActivityControleur<ConnexionAct
      * Menu Item select
      */
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-
-        switch (item.getItemId()) {
-            default:
-                LOG.info("onMenuItemSelected : " + item.getItemId());
-                return super.onMenuItemSelected(featureId, item);
-        }
+    public boolean onMenuItemSelected(MenuItem item) {
+        return false;
     }
 
     /**
@@ -76,6 +71,7 @@ public class ConnexionControleur extends AbstractActivityControleur<ConnexionAct
      */
     @Override
     public void onClick(View v) {
+        getActivity().finish();
         startActivity(MainActivity.class);
     }
 }

@@ -71,7 +71,7 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
      *
      * @param requestCode code mode lockpattern (création/modification)
      * @param resultCode  résultat
-     * @param data data du lockpattern
+     * @param data        data du lockpattern
      */
     public void lockPatternResultat(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -126,12 +126,13 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
     private void connectUserToServeur() {
         startActivity(ConnexionActivity.class);
     }
+
     /**
      * Menu Item select
      */
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-
+    public boolean onMenuItemSelected(MenuItem item) {
+        LOG.info("onMenuItemSelected >>> " + item.getItemId() + "::" + R.id.action_main_quitter);
         switch (item.getItemId()) {
             // S'il est égal a itemQuitter
             case R.id.action_main_quitter:
@@ -139,11 +140,9 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
                 stopGlobalApplication();
                 return true;
             default:
-                LOG.info("onMenuItemSelected : " + item.getItemId());
-                return super.onMenuItemSelected(featureId, item);
+                return false;
         }
     }
-
 
 
     /**

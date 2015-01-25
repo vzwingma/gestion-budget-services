@@ -51,6 +51,7 @@ class AuthenticationHTTPAsyncTask extends AsyncTask<Void, Void, Boolean> {
         LOG.info("[REST] Réception du message : " + authenticate);
         if (authenticate) {
             this.controleur.getResultatAuth("Connecté", true);
+            this.controleur.getActivity().finish();
             this.controleur.startActivity(BudgetActivity.class);
         } else {
             this.controleur.getResultatAuth("Erreur d'authentification", false);

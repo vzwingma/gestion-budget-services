@@ -61,8 +61,9 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
     protected void stopGlobalApplication() {
         LOG.info("Arrét de l'application");
         FacadeServices.stopAndroidServices();
-        getActivity().finish();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
+
 
     /**
      * @return businessService
@@ -82,13 +83,6 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
         });
     }
 
-    /* (non-Javadoc)
-     * @see android.app.Activity#onMenuItemSelected(int, android.view.MenuItem)
-	 */
-    protected boolean onMenuItemSelected(int featureId, MenuItem item) {
-        LOG.warn("On MenuSelected : A Surcharger");
-        return true;
-    }
 
     /**
      * Démarrage d'une activite
@@ -102,6 +96,14 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
         getActivity().startActivity(activiyIntent);
     }
 
+
+    /**
+     * Sélection du menu
+     *
+     * @param item menu
+     * @return résultat de la sélection
+     */
+    public abstract boolean onMenuItemSelected(MenuItem item);
 
     /**
      * Recherche d'un élément à partir de son id
