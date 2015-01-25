@@ -49,6 +49,9 @@ public class BudgetControleur extends AbstractActivityControleur<BudgetActivity>
                 // On ferme l'activité
                 stopGlobalApplication();
                 return true;
+            case R.id.action_budget_deconnecter:
+                getActivity().finish();
+                return true;
             default:
                 return false;
         }

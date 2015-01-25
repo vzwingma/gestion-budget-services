@@ -13,6 +13,7 @@
     <string name="resume_total_argent_reel">Solde réel</string>
     <string name="main.connect.openshift">OpenShift</string>
     <string name="budget_categorie">Catégories</string>
+    <string name="action_budget_deconnecter">Déconnecter</string>
     <!-- Color -->
     <string name="color_fond_tableau">#34495e</string>
     <string name="color_text_tableau">#ffffff</string>
