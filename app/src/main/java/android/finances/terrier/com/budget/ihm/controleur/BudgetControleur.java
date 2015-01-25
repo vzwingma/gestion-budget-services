@@ -42,7 +42,7 @@ public class BudgetControleur extends AbstractActivityControleur<BudgetActivity>
      */
     @Override
     public boolean onMenuItemSelected(MenuItem item) {
-        LOG.info("onMenuItemSelected >>> " + item.getItemId() + "::" + R.id.action_main_quitter);
+        LOG.info("onMenuItemSelected >>> " + item.getItemId() + "::" + R.id.action_budget_quitter);
         switch (item.getItemId()) {
             // S'il est égal a itemQuitter
             case R.id.action_budget_quitter:

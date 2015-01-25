@@ -59,7 +59,7 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
      * Appelé sur Destroy du Main
      */
     protected void stopGlobalApplication() {
-        LOG.info("Arrét de l'application");
+        LOG.info("********* Arrét de l'application *********");
         FacadeServices.stopAndroidServices();
         android.os.Process.killProcess(android.os.Process.myPid());
     }

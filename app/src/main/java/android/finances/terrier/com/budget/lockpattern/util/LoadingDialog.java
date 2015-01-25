@@ -119,7 +119,6 @@ public abstract class LoadingDialog<Params, Progress, Result> extends
                          */
                         mDialog.show();
                     } catch (Throwable t) {
-                        // TODO
                         Log.e(CLASSNAME, "onPreExecute() - show dialog: " + t);
                     }
                 }
@@ -155,7 +154,6 @@ public abstract class LoadingDialog<Params, Progress, Result> extends
              */
             mDialog.dismiss();
         } catch (Throwable t) {
-            // TODO
             Log.e(CLASSNAME, "doFinish() - dismiss dialog: " + t);
         }
     }// doFinish()

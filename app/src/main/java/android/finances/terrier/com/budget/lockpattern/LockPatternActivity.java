@@ -370,7 +370,7 @@ public class LockPatternActivity extends Activity {
 
         @Override
         public void onPatternCellAdded(List<LockPatternView.Cell> pattern) {
-            // TODO Auto-generated method stub
+            // rien a faire
         }// onPatternCellAdded()
 
     };// mLockPatternViewListener

@@ -12,7 +12,6 @@ import android.finances.terrier.com.budget.services.FacadeServices;
 import android.finances.terrier.com.budget.utils.IHMViewUtils;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
@@ -115,19 +114,6 @@ public class BudgetFragmentControleur extends AbstractFragmentControleur<BudgetM
      */
     @Override
     public void stopControleur() {
-    }
-
-    /**
-     * Menu Item select
-     */
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-
-        switch (item.getItemId()) {
-            default:
-                LOG.info("onMenuItemSelected : " + item.getItemId());
-                return super.onMenuItemSelected(featureId, item);
-        }
     }
 
     /**
