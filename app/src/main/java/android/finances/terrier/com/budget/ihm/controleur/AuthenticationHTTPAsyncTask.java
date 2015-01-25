@@ -15,14 +15,14 @@ class AuthenticationHTTPAsyncTask extends AsyncTask<Void, Void, Boolean> {
     private final Logger LOG = new Logger(AuthenticationHTTPAsyncTask.class);
 
     // Composant associé à l'asynctask
-    private MainControleur controleur;
+    private ConnexionControleur controleur;
 
     /**
      * Tâche d'authentification
      *
      * @param controleur controleur
      */
-    public AuthenticationHTTPAsyncTask(MainControleur controleur) {
+    public AuthenticationHTTPAsyncTask(ConnexionControleur controleur) {
         this.controleur = controleur;
     }
 
@@ -50,9 +50,10 @@ class AuthenticationHTTPAsyncTask extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean authenticate) {
         LOG.info("[REST] Réception du message : " + authenticate);
         if (authenticate) {
+            this.controleur.getResultatAuth("Connecté", true);
             this.controleur.startActivity(BudgetActivity.class);
         } else {
-            this.controleur.showPopupNotification("Erreur d'authentification", 5);
+            this.controleur.getResultatAuth("Erreur d'authentification", false);
         }
     }
 }

@@ -13,11 +13,9 @@
     <string name="resume_total_argent_reel">Solde réel</string>
     <string name="main.connect.openshift">OpenShift</string>
     <string name="budget_categorie">Catégories</string>
-    <!--Color -->
+    <!-- Color -->
     <string name="color_fond_tableau">#004f8a</string>
     <string name="color_text_tableau">#ffffff</string>
-
-
     <string name="alp_42447968_cmd_confirm">Valider</string>
     <string name="alp_42447968_cmd_continue">Valider</string>
     <string name="alp_42447968_cmd_forgot_pattern">Pattern oublié ?</string>
@@ -45,4 +43,8 @@
         <item quantity="one">Connectez au moins %1$d points.\nRéessayez…</item>
         <item quantity="other">Connectez au moins %1$d points.\nRéessayez…</item>
     </plurals>
+
+    <string name="title_activity_connexion">ConnexionActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

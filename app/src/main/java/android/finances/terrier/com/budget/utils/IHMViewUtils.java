@@ -16,8 +16,8 @@ public class IHMViewUtils {
 
     public static final int ROW_COLOR_ODD = Color.parseColor("#f5f5f5");
     public static final int ROW_COLOR = Color.parseColor("#FFFFFF");
-    private static final int COLOR_VALEUR_POSITIF = Color.parseColor("#2c9720");
-    private static final int COLOR_VALEUR_NEGATIF = Color.parseColor("#FF0000");
+    public static final int COLOR_VALEUR_POSITIF = Color.parseColor("#2c9720");
+    public static final int COLOR_VALEUR_NEGATIF = Color.parseColor("#FF0000");
     private static final NumberFormat formatter = new DecimalFormat("#0.00");
 
     private IHMViewUtils() {

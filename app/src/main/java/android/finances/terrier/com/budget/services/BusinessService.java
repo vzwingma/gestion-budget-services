@@ -116,11 +116,10 @@ public class BusinessService extends AbstractService {
 
         String hashMotPasse = hashPassWord(this.mdpServeur);
         this.contexte = FacadeServices.getInstance().getInterfaceRESTService().getContexte(this.loginServeur, hashMotPasse);
-        this.dataTransformerBudget.setCategories(this.contexte.getCategories());
         LOG.info("Tentative de connexion au serveur de " + this.loginServeur);
-
         boolean authOk = contexte != null && contexte.getUtilisateur() != null;
         if (authOk) {
+            this.dataTransformerBudget.setCategories(this.contexte.getCategories());
             contexte.initEncryptor(hashPassWord("#" + this.mdpServeur + "#"));
         }
         LOG.info(" >" + authOk);

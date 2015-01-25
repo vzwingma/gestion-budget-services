@@ -148,19 +148,12 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#FFFFFF" />
 
-        <ProgressBar
-            android:id="@+id/progressBarConnexion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:indeterminate="true"
-            android:visibility="invisible" />
-
         <Button
             android:id="@+id/buttonConnectPattern"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
             android:background="#0072C6"
             android:text="@string/main.connect.pattern"
             android:textColor="#FFFFFF" />

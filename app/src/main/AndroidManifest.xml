@@ -28,11 +28,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.finances.terrier.com.budget.ihm.vue.MainActivity" />
         </activity>
-
-
         <activity
             android:name=".lockpattern.LockPatternActivity"
             android:label="@string/title_activity_budget"
+            android:parentActivityName=".ihm.vue.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.finances.terrier.com.budget.ihm.vue.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ihm.vue.ConnexionActivity"
+            android:label="@string/title_activity_connexion"
             android:parentActivityName=".ihm.vue.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

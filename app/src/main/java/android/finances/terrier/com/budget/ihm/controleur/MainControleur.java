@@ -3,6 +3,7 @@ package android.finances.terrier.com.budget.ihm.controleur;
 import android.content.Intent;
 import android.finances.terrier.com.budget.R;
 import android.finances.terrier.com.budget.abstrait.AbstractActivityControleur;
+import android.finances.terrier.com.budget.ihm.vue.ConnexionActivity;
 import android.finances.terrier.com.budget.ihm.vue.MainActivity;
 import android.finances.terrier.com.budget.lockpattern.LockPatternActivity;
 import android.finances.terrier.com.budget.services.FacadeServices;
@@ -91,20 +92,20 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
                  */
                 switch (resultCode) {
                     case LockPatternActivity.RESULT_OK:
-                        LOG.info("** Résultat LockPattern : OK");
+                        LOG.info("** Résultat LockPattern : OK **");
                         char[] pattern = data.getCharArrayExtra(
                                 LockPatternActivity.EXTRA_PATTERN);
                         getService().authenticateToMobile(pattern);
                         connectUserToServeur();
                         break;
                     case LockPatternActivity.RESULT_CANCELED:
-                        LOG.info("** Résultat LockPattern : Cancel");
+                        LOG.info("** Résultat LockPattern : Cancel **");
                         break;
                     case LockPatternActivity.RESULT_FAILED:
-                        LOG.info("** Résultat LockPattern : Echec");
+                        LOG.info("** Résultat LockPattern : Echec **");
                         break;
                     case LockPatternActivity.RESULT_FORGOT_PATTERN:
-                        LOG.info("** Résultat LockPattern : Forgot");
+                        LOG.info("** Résultat LockPattern : Forgot **");
                         break;
                 }
                 /*
@@ -123,11 +124,8 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
      * Connection d'un utilisateur
      */
     private void connectUserToServeur() {
-        getActivity().findViewById(R.id.progressBarConnexion).setVisibility(View.VISIBLE);
-        new AuthenticationHTTPAsyncTask(this).execute();
+        startActivity(ConnexionActivity.class);
     }
-
-
     /**
      * Menu Item select
      */
