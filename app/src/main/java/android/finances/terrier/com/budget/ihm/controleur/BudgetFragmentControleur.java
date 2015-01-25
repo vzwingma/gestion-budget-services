@@ -104,7 +104,9 @@ public class BudgetFragmentControleur extends AbstractFragmentControleur<BudgetM
         expandableList.setGroupIndicator(null);
         expandableList.setClickable(true);
 
-        ResumeTotauxExpandableAdapter adapter = new ResumeTotauxExpandableAdapter(this.budget, (LayoutInflater) this.getFragment().getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+        ResumeTotauxExpandableAdapter adapter = new ResumeTotauxExpandableAdapter(
+                this.budget,
+                (LayoutInflater) this.getFragment().getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
         expandableList.setAdapter(adapter);
     }
 
