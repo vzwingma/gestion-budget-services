@@ -23,7 +23,7 @@ public class FacadeServices {
     /**
      * Map des services démarrés
      */
-    private final Map<Class<? extends AbstractService>, AbstractService> mapServicesStarted = new HashMap<Class<? extends AbstractService>, AbstractService>();
+    private final Map<Class<? extends AbstractService>, AbstractService> mapServicesStarted = new HashMap<>();
 
     /**
      * Instance de facadeService (en protected car accessible des controleurs uniquement)

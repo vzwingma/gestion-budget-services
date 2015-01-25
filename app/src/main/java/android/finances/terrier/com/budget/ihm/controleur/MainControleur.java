@@ -70,7 +70,7 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
      *
      * @param requestCode code mode lockpattern (création/modification)
      * @param resultCode  résultat
-     * @param data
+     * @param data data du lockpattern
      */
     public void lockPatternResultat(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -86,15 +86,14 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
                 break;
             }// REQ_CREATE_PATTERN
             case AuthenticationConstants.REQ_ENTER_PATTERN: {
-        /*
-         * NOTE that there are 4 possible result codes!!!
-         */
+                /*
+                 * NOTE that there are 4 possible result codes!!!
+                 */
                 switch (resultCode) {
                     case LockPatternActivity.RESULT_OK:
                         LOG.info("** Résultat LockPattern : OK");
                         char[] pattern = data.getCharArrayExtra(
                                 LockPatternActivity.EXTRA_PATTERN);
-                        LOG.trace("> Pattern : " + pattern);
                         getService().authenticateToMobile(pattern);
                         connectUserToServeur();
                         break;
@@ -111,10 +110,9 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
                 /*
                  * In any case, there's always a key EXTRA_RETRY_COUNT, which holds
                  * the number of tries that the user did.
-                 */
-                int retryCount = data.getIntExtra(
+                 * int retryCount = data.getIntExtra(
                         LockPatternActivity.EXTRA_RETRY_COUNT, 0);
-
+                 */
                 break;
             }// REQ_ENTER_PATTERN
         }

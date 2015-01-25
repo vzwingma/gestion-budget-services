@@ -7,7 +7,6 @@ import android.finances.terrier.com.budget.ihm.controleur.MainControleur;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 
 
 /**
@@ -25,9 +24,9 @@ public class MainActivity extends AbstractActivity<MainControleur> {
     @Override
     public void initIHM() {
         // Création du bouton de connexion
-        ((Button) findViewById(R.id.buttonConnect)).setOnClickListener(getControleur());
-        ((Button) findViewById(R.id.buttonConnectPattern)).setOnClickListener(getControleur());
-        ((Button) findViewById(R.id.buttonSaveCompte)).setOnClickListener(getControleur());
+        (findViewById(R.id.buttonConnect)).setOnClickListener(getControleur());
+        (findViewById(R.id.buttonConnectPattern)).setOnClickListener(getControleur());
+        (findViewById(R.id.buttonSaveCompte)).setOnClickListener(getControleur());
     }
 
 
