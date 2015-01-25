@@ -35,10 +35,11 @@
     <string name="alp_42447968_msg_release_finger_when_done">Levez le doigt lorsque vous avez terminé</string>
     <string name="alp_42447968_msg_try_again">Incorrect. Réessayez</string>
     <string name="alp_42447968_msg_your_new_unlock_pattern">Votre nouveau pattern:</string>
-    <string name="main.connect.pattern">Connection avec pattern</string>
+    <string name="main.connect.pattern">Charger compte</string>
     <string name="main.connect.save.pattern">Sauvegarder compte</string>
     <string name="main.login">Login</string>
     <string name="main.motpasse">Mot de passe</string>
+    <string name="main.connexion">Connexion</string>
 
     <plurals name="alp_42447968_pmsg_connect_x_dots">
         <item quantity="one">Connectez au moins %1$d points.\nRéessayez…</item>

@@ -22,7 +22,7 @@ public class BusinessService extends AbstractService {
 
 
     // Logger
-    private static final Logger LOG = new Logger(FacadeServices.class);
+    private static final Logger LOG = new Logger(BusinessService.class);
     private ContexteUtilisateurDTO contexte;
     private DataTransformerBudget dataTransformerBudget;
 
@@ -119,7 +119,7 @@ public class BusinessService extends AbstractService {
         this.dataTransformerBudget.setCategories(this.contexte.getCategories());
         LOG.info("Tentative de connexion au serveur de " + this.loginServeur);
 
-        boolean authOk = contexte != null;
+        boolean authOk = contexte != null && contexte.getUtilisateur() != null;
         if (authOk) {
             contexte.initEncryptor(hashPassWord("#" + this.mdpServeur + "#"));
         }
