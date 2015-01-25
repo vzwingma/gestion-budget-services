@@ -1,5 +1,6 @@
 package android.finances.terrier.com.budget.services;
 
+import android.app.Application;
 import android.finances.terrier.com.budget.abstrait.AbstractService;
 import android.finances.terrier.com.budget.models.BudgetMensuel;
 import android.finances.terrier.com.budget.models.data.BudgetMensuelDTO;
@@ -60,7 +61,7 @@ public class BusinessService extends AbstractService {
      * @param motDePasse mot de passe
      * @param pattern pattern
      */
-    public boolean createAndroidId(String login, String motDePasse, char[] pattern) {
+    public boolean createAndroidId(Application application, String login, String motDePasse, char[] pattern) {
         String stringPattern = "";
         for (char p : pattern) {
             stringPattern += p;
@@ -73,9 +74,9 @@ public class BusinessService extends AbstractService {
         LOG.info("  Mdp     : [XXXXXXX]     -> [" + encryptor.encrypt(motDePasse) + "]");
         LOG.info("Enregistrement");
         boolean saved =
-                FacadeServices.getInstance().getPersistanceService().savePreference(null, AuthenticationPreferencesEnums.ANDROID_ID_PATTERN, hashPassWord(stringPattern))
-                        && FacadeServices.getInstance().getPersistanceService().savePreference(null, AuthenticationPreferencesEnums.ANDROID_ID_LOGIN, encryptor.encrypt(login))
-                        && FacadeServices.getInstance().getPersistanceService().savePreference(null, AuthenticationPreferencesEnums.ANDROID_ID_PWD, encryptor.encrypt(motDePasse));
+                FacadeServices.getInstance().getPersistanceService().savePreference(application, AuthenticationPreferencesEnums.ANDROID_ID_PATTERN, stringPattern)
+                        && FacadeServices.getInstance().getPersistanceService().savePreference(application, AuthenticationPreferencesEnums.ANDROID_ID_LOGIN, encryptor.encrypt(login))
+                        && FacadeServices.getInstance().getPersistanceService().savePreference(application, AuthenticationPreferencesEnums.ANDROID_ID_PWD, encryptor.encrypt(motDePasse));
         if (saved) {
             setServeurCredential(login, motDePasse);
         } else {
@@ -91,12 +92,12 @@ public class BusinessService extends AbstractService {
      * @param stringPattern pattern à valider
      * @return résultat de l'authentification
      */
-    public boolean authenticateToMobile(String stringPattern) {
+    public boolean authenticateToMobile(Application activity, String stringPattern) {
         LOG.info("Tentative de connexion de " + stringPattern);
 
-        String savedPattern = FacadeServices.getInstance().getPersistanceService().getPreference(null, AuthenticationPreferencesEnums.ANDROID_ID_PATTERN);
-        String savedCodeLogin = FacadeServices.getInstance().getPersistanceService().getPreference(null, AuthenticationPreferencesEnums.ANDROID_ID_LOGIN);
-        String savedCodePwd = FacadeServices.getInstance().getPersistanceService().getPreference(null, AuthenticationPreferencesEnums.ANDROID_ID_PWD);
+        String savedPattern = FacadeServices.getInstance().getPersistanceService().getPreference(activity, AuthenticationPreferencesEnums.ANDROID_ID_PATTERN);
+        String savedCodeLogin = FacadeServices.getInstance().getPersistanceService().getPreference(activity, AuthenticationPreferencesEnums.ANDROID_ID_LOGIN);
+        String savedCodePwd = FacadeServices.getInstance().getPersistanceService().getPreference(activity, AuthenticationPreferencesEnums.ANDROID_ID_PWD);
 
         if (stringPattern.equals(savedPattern)) {
             LOG.info(" Identité valide : Déchiffrement de l'identité serveur");

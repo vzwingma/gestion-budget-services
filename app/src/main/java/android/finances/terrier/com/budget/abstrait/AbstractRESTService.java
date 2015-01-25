@@ -1,8 +1,8 @@
 package android.finances.terrier.com.budget.abstrait;
 
 import android.finances.terrier.com.budget.services.rest.RESTDataModule;
-import android.finances.terrier.com.budget.utils.AuthenticationPreferencesEnums;
 import android.finances.terrier.com.budget.utils.Logger;
+import android.finances.terrier.com.budget.utils.NetworkUtils;
 import android.util.Base64;
 
 import org.apache.http.HttpResponse;
@@ -26,9 +26,7 @@ public abstract class AbstractRESTService extends AbstractService {
     // Logger
     private static final Logger LOG = new Logger(AbstractRESTService.class);
 
-    public static String IP_SERVEUR_OPENSHIFT = "https://budget-tushkanyogik.rhcloud.com";
-    public static String IP_SERVEUR = IP_SERVEUR_OPENSHIFT;
-    public static String IP_SERVEUR_LOCALHOST = "http://192.168.1.86:8080/gestion-budget";
+
     // create HttpClient
     private HttpClient httpclient;
     private ObjectMapper objectMapper = null;
@@ -59,8 +57,9 @@ public abstract class AbstractRESTService extends AbstractService {
      * @return racine de l'URL
      */
     private String getRootURL() {
-        return IP_SERVEUR + "/rest";
+        return NetworkUtils.IP_SERVEUR + "/rest";
     }
+
 
     /**
      * Appel GET
@@ -75,7 +74,8 @@ public abstract class AbstractRESTService extends AbstractService {
             // make GET request to the given URL
             HttpGet get = new HttpGet(getRootURL() + url);
             // Ajout de basic authentication
-            String authentication = AuthenticationPreferencesEnums.REST_BASIC_AUTH_LOGIN + ":" + AuthenticationPreferencesEnums.REST_BASIC_AUTH_PWD;
+
+            String authentication = NetworkUtils.REST_BASIC_AUTH_LOGIN + ":" + NetworkUtils.REST_BASIC_AUTH_PWD;
             String base64 = Base64.encodeToString(authentication.getBytes(), Base64.NO_WRAP);
             get.addHeader("Authorization", "Basic " + base64);
             HttpResponse httpResponse = httpclient.execute(get);

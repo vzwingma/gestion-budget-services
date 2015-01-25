@@ -33,7 +33,7 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
         // Démarrage des services
         FacadeServices.initServices();
         LOG.info("[AUTH] Connection via un lock pattern");
-        String pattern = getPersistanceService().getPreference(getActivity(), AuthenticationPreferencesEnums.ANDROID_ID_PATTERN);
+        String pattern = getPersistanceService().getPreference(getActivity().getApplication(), AuthenticationPreferencesEnums.ANDROID_ID_PATTERN);
         if (pattern == null) {
             getActivity().findViewById(R.id.main_connexion_layout_id).setVisibility(View.INVISIBLE);
         }
@@ -57,7 +57,7 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
         // Connexion à partir du pattern enregistré
         else if (v.getId() == R.id.buttonConnectPattern) {
             LOG.info("[AUTH] Connection via un lock pattern");
-            String pattern = getPersistanceService().getPreference(getActivity(), AuthenticationPreferencesEnums.ANDROID_ID_PATTERN);
+            String pattern = getPersistanceService().getPreference(getActivity().getApplication(), AuthenticationPreferencesEnums.ANDROID_ID_PATTERN);
             if (pattern != null) {
                 Intent intent = new Intent(LockPatternActivity.ACTION_COMPARE_PATTERN, null,
                         getActivity().getApplicationContext(), LockPatternActivity.class);
@@ -93,7 +93,7 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
                             LockPatternActivity.EXTRA_PATTERN);
                     String login = getElementById(R.id.LoginForm).getText().toString();
                     String motPasse = getElementById(R.id.PwdForm).getText().toString();
-                    if (FacadeServices.getInstance().getBusinessService().createAndroidId(login, motPasse, pattern)) {
+                    if (FacadeServices.getInstance().getBusinessService().createAndroidId(getActivity().getApplication(), login, motPasse, pattern)) {
                         connectUserToServeur();
                     } else {
                         showPopupNotification("Erreur lors de l'enregistrement du compte. Veuillez réessayer.", 5);
@@ -110,7 +110,7 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
                         LOG.info("[AUTH] ** Résultat LockPattern : OK **");
                         char[] pattern = data.getCharArrayExtra(
                                 LockPatternActivity.EXTRA_PATTERN);
-                        getBusinessService().authenticateToMobile(ResourceUtils.getCharContent(pattern));
+                        getBusinessService().authenticateToMobile(getActivity().getApplication(), ResourceUtils.getCharContent(pattern));
                         connectUserToServeur();
                         break;
                     case LockPatternActivity.RESULT_CANCELED:
