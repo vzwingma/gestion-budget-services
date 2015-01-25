@@ -5,7 +5,7 @@ import android.finances.terrier.com.budget.models.BudgetMensuel;
 import android.finances.terrier.com.budget.models.data.BudgetMensuelDTO;
 import android.finances.terrier.com.budget.models.data.ContexteUtilisateurDTO;
 import android.finances.terrier.com.budget.models.data.transformers.DataTransformerBudget;
-import android.finances.terrier.com.budget.utils.AuthenticationConstants;
+import android.finances.terrier.com.budget.utils.AuthenticationPreferencesEnums;
 import android.finances.terrier.com.budget.utils.Logger;
 
 import org.jasypt.util.text.BasicTextEncryptor;
@@ -60,7 +60,7 @@ public class BusinessService extends AbstractService {
      * @param motDePasse mot de passe
      * @param pattern pattern
      */
-    public void createAndroidId(String login, String motDePasse, char[] pattern) {
+    public boolean createAndroidId(String login, String motDePasse, char[] pattern) {
         String stringPattern = "";
         for (char p : pattern) {
             stringPattern += p;
@@ -70,30 +70,41 @@ public class BusinessService extends AbstractService {
         LOG.info("  Pattern : [" + stringPattern + "]     -> [" + hashPassWord(stringPattern) + "]");
         encryptor.setPassword(hashPassWord(stringPattern));
         LOG.info("  Login   : [" + login + "]     -> [" + encryptor.encrypt(login) + "]");
-        LOG.info("  Mdp     : [" + motDePasse + "]     -> [" + encryptor.encrypt(motDePasse) + "]");
-        setServeurCredential(login, motDePasse);
+        LOG.info("  Mdp     : [XXXXXXX]     -> [" + encryptor.encrypt(motDePasse) + "]");
+        LOG.info("Enregistrement");
+        boolean saved =
+                FacadeServices.getInstance().getPersistanceService().savePreference(null, AuthenticationPreferencesEnums.ANDROID_ID_PATTERN, hashPassWord(stringPattern))
+                        && FacadeServices.getInstance().getPersistanceService().savePreference(null, AuthenticationPreferencesEnums.ANDROID_ID_LOGIN, encryptor.encrypt(login))
+                        && FacadeServices.getInstance().getPersistanceService().savePreference(null, AuthenticationPreferencesEnums.ANDROID_ID_PWD, encryptor.encrypt(motDePasse));
+        if (saved) {
+            setServeurCredential(login, motDePasse);
+        } else {
+            LOG.error("Erreur lors de l'enregistrement de l'identité Android");
+        }
+        return saved;
     }
 
 
     /**
      * Authentification mobile
      *
-     * @param pattern pattern à valider
+     * @param stringPattern pattern à valider
      * @return résultat de l'authentification
      */
-    public boolean authenticateToMobile(char[] pattern) {
-        String stringPattern = "";
-        for (char p : pattern) {
-            stringPattern += p;
-        }
+    public boolean authenticateToMobile(String stringPattern) {
         LOG.info("Tentative de connexion de " + stringPattern);
-        if (stringPattern.equals(AuthenticationConstants.pattern)) {
+
+        String savedPattern = FacadeServices.getInstance().getPersistanceService().getPreference(null, AuthenticationPreferencesEnums.ANDROID_ID_PATTERN);
+        String savedCodeLogin = FacadeServices.getInstance().getPersistanceService().getPreference(null, AuthenticationPreferencesEnums.ANDROID_ID_LOGIN);
+        String savedCodePwd = FacadeServices.getInstance().getPersistanceService().getPreference(null, AuthenticationPreferencesEnums.ANDROID_ID_PWD);
+
+        if (stringPattern.equals(savedPattern)) {
             LOG.info(" Identité valide : Déchiffrement de l'identité serveur");
             BasicTextEncryptor encryptor = new BasicTextEncryptor();
             encryptor.setPassword(hashPassWord(stringPattern));
-            LOG.info("  Login   : [" + AuthenticationConstants.codeLogin + "]     -> [" + encryptor.decrypt(AuthenticationConstants.codeLogin) + "]");
-            LOG.info("  Mdp     : [" + AuthenticationConstants.codeMdp + "]     -> [" + encryptor.decrypt(AuthenticationConstants.codeMdp) + "]");
-            setServeurCredential(encryptor.decrypt(AuthenticationConstants.codeLogin), encryptor.decrypt(AuthenticationConstants.codeMdp));
+            LOG.info("  Login   : [" + savedCodeLogin + "]     -> [" + encryptor.decrypt(savedCodeLogin) + "]");
+            LOG.info("  Mdp     : [" + savedCodePwd + "]     -> [" + encryptor.decrypt(savedCodePwd) + "]");
+            setServeurCredential(encryptor.decrypt(savedCodeLogin), encryptor.decrypt(savedCodePwd));
             return true;
         } else {
             LOG.error("Erreur : Le pattern est incorrect");

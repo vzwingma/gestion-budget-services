@@ -32,7 +32,7 @@ public class BudgetSectionsPagerAdapter extends FragmentPagerAdapter {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
         Calendar c = Calendar.getInstance();
-        Date minDate = this.activity.getControleur().getService().getContexte().getMapMinDateCompte().get(this.activity.getControleur().getService().getContexte().getCompteCourant().getId());
+        Date minDate = this.activity.getControleur().getBusinessService().getContexte().getMapMinDateCompte().get(this.activity.getControleur().getBusinessService().getContexte().getCompteCourant().getId());
         c.setTime(minDate);
         c.add(Calendar.MONTH, position);
 
@@ -41,8 +41,8 @@ public class BudgetSectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        Date minDate = this.activity.getControleur().getService().getContexte().getMapMinDateCompte().get(this.activity.getControleur().getService().getContexte().getCompteCourant().getId());
-        Date maxDate = this.activity.getControleur().getService().getContexte().getMapMaxDateCompte().get(this.activity.getControleur().getService().getContexte().getCompteCourant().getId());
+        Date minDate = this.activity.getControleur().getBusinessService().getContexte().getMapMinDateCompte().get(this.activity.getControleur().getBusinessService().getContexte().getCompteCourant().getId());
+        Date maxDate = this.activity.getControleur().getBusinessService().getContexte().getMapMaxDateCompte().get(this.activity.getControleur().getBusinessService().getContexte().getCompteCourant().getId());
         DateMidnight minDateJoda = new DateMidnight(minDate, DateTimeZone.UTC);
         DateMidnight maxDateJoda = new DateMidnight(maxDate, DateTimeZone.UTC);
         // Show nombre de pages disponibles

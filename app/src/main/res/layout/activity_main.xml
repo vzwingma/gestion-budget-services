@@ -132,6 +132,7 @@
         android:layout_weight="0.15" />
 
     <LinearLayout
+        android:id="@+id/main.connexion.layout.id"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.29"

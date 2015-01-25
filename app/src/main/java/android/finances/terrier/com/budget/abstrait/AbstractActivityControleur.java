@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.finances.terrier.com.budget.services.BusinessService;
 import android.finances.terrier.com.budget.services.FacadeServices;
+import android.finances.terrier.com.budget.services.PersistanceService;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -31,7 +32,7 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
      * Démarrage du controleur parent puis le controleur spécifique
      */
     protected void startParentControleur() {
-        LOG.trace("Démarrage du controleur " + this.getClass().getName());
+        LOG.trace("[IHM] Démarrage du controleur " + this.getClass().getName());
         startControleur();
     }
 
@@ -44,7 +45,7 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
      * Arrét du controleur
      */
     protected void stopParentControleur() {
-        LOG.trace("Arrét du controleur " + this.getClass().getName());
+        LOG.trace("[IHM] Arrét du controleur " + this.getClass().getName());
         stopControleur();
     }
 
@@ -59,7 +60,7 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
      * Appelé sur Destroy du Main
      */
     protected void stopGlobalApplication() {
-        LOG.info("********* Arrét de l'application *********");
+        LOG.info("[IHM] ********* Arrét de l'application *********");
         FacadeServices.stopAndroidServices();
         android.os.Process.killProcess(android.os.Process.myPid());
     }
@@ -68,8 +69,16 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
     /**
      * @return businessService
      */
-    public BusinessService getService() {
+    public BusinessService getBusinessService() {
         return FacadeServices.getInstance().getBusinessService();
+    }
+
+
+    /**
+     * @return getPersistanceService
+     */
+    public PersistanceService getPersistanceService() {
+        return FacadeServices.getInstance().getPersistanceService();
     }
 
     /**
@@ -91,7 +100,7 @@ public abstract class AbstractActivityControleur<BudgetActivity extends Activity
      */
     @SuppressWarnings("rawtypes")
     public void startActivity(Class<? extends Activity> activityClass) {
-        LOG.debug("	Start activity " + activityClass.getName() + " depuis " + getActivity().getClass().getName());
+        LOG.debug("[IHM] Start activity " + activityClass.getName() + " depuis " + getActivity().getClass().getName());
         Intent activiyIntent = new Intent(getActivity(), activityClass);
         getActivity().startActivity(activiyIntent);
     }

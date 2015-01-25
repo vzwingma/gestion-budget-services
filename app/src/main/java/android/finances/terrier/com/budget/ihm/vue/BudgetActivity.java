@@ -52,7 +52,7 @@ public class BudgetActivity extends AbstractFragmentActivity<BudgetControleur> {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // Affichage de la page initiale : la courante
-        Date minDate = getControleur().getService().getContexte().getMapMinDateCompte().get(getControleur().getService().getContexte().getCompteCourant().getId());
+        Date minDate = getControleur().getBusinessService().getContexte().getMapMinDateCompte().get(getControleur().getBusinessService().getContexte().getCompteCourant().getId());
         Date maxDate = Calendar.getInstance().getTime();
         DateMidnight minDateJoda = new DateMidnight(minDate, DateTimeZone.UTC);
         DateMidnight currentDateJoda = new DateMidnight(maxDate, DateTimeZone.UTC);

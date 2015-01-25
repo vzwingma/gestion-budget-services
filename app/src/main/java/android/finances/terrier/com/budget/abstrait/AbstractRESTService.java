@@ -1,7 +1,7 @@
 package android.finances.terrier.com.budget.abstrait;
 
 import android.finances.terrier.com.budget.services.rest.RESTDataModule;
-import android.finances.terrier.com.budget.utils.AuthenticationConstants;
+import android.finances.terrier.com.budget.utils.AuthenticationPreferencesEnums;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.util.Base64;
 
@@ -75,7 +75,7 @@ public abstract class AbstractRESTService extends AbstractService {
             // make GET request to the given URL
             HttpGet get = new HttpGet(getRootURL() + url);
             // Ajout de basic authentication
-            String authentication = AuthenticationConstants.REST_BASIC_AUTH_LOGIN + ":" + AuthenticationConstants.REST_BASIC_AUTH_PWD;
+            String authentication = AuthenticationPreferencesEnums.REST_BASIC_AUTH_LOGIN + ":" + AuthenticationPreferencesEnums.REST_BASIC_AUTH_PWD;
             String base64 = Base64.encodeToString(authentication.getBytes(), Base64.NO_WRAP);
             get.addHeader("Authorization", "Basic " + base64);
             HttpResponse httpResponse = httpclient.execute(get);

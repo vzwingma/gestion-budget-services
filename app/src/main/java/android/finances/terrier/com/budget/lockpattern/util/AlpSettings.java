@@ -124,6 +124,8 @@ public class AlpSettings {
          * @see #setCaptchaWiredDots(android.content.Context, int)
          */
         public static final String METADATA_CAPTCHA_WIRED_DOTS = "captchaWiredDots";
+        public static final int REQ_CREATE_PATTERN = 1;
+        public static final int REQ_ENTER_PATTERN = 2;
 
         /**
          * This is singleton class.

@@ -63,4 +63,12 @@ public class ResourceUtils {
         return defaultValue;
     }// resolveAttribute()
 
+
+    public static String getCharContent(char[] pattern) {
+        String stringPattern = "";
+        for (char p : pattern) {
+            stringPattern += p;
+        }
+        return stringPattern;
+    }
 }

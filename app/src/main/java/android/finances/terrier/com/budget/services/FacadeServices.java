@@ -44,6 +44,7 @@ public class FacadeServices {
     public static void initServices() {
         getInstance().startService(InterfaceRESTService.class);
         getInstance().startService(BusinessService.class);
+        getInstance().startService(PersistanceService.class);
     }
 
     /**
@@ -68,8 +69,18 @@ public class FacadeServices {
         return getServiceStarted(InterfaceRESTService.class);
     }
 
+    /**
+     * @return Service métier
+     */
     public BusinessService getBusinessService() {
         return getServiceStarted(BusinessService.class);
+    }
+
+    /**
+     * @return service Persistance
+     */
+    public PersistanceService getPersistanceService() {
+        return getServiceStarted(PersistanceService.class);
     }
 
     /**

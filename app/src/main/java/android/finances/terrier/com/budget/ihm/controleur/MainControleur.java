@@ -6,8 +6,10 @@ import android.finances.terrier.com.budget.abstrait.AbstractActivityControleur;
 import android.finances.terrier.com.budget.ihm.vue.ConnexionActivity;
 import android.finances.terrier.com.budget.ihm.vue.MainActivity;
 import android.finances.terrier.com.budget.lockpattern.LockPatternActivity;
+import android.finances.terrier.com.budget.lockpattern.util.AlpSettings;
+import android.finances.terrier.com.budget.lockpattern.util.ResourceUtils;
 import android.finances.terrier.com.budget.services.FacadeServices;
-import android.finances.terrier.com.budget.utils.AuthenticationConstants;
+import android.finances.terrier.com.budget.utils.AuthenticationPreferencesEnums;
 import android.finances.terrier.com.budget.utils.Logger;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,8 +32,12 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
     public void startControleur() {
         // Démarrage des services
         FacadeServices.initServices();
+        LOG.info("[AUTH] Connection via un lock pattern");
+        String pattern = getPersistanceService().getPreference(getActivity(), AuthenticationPreferencesEnums.ANDROID_ID_PATTERN);
+        if (pattern == null) {
+            getActivity().findViewById(R.id.main_connexion_layout_id).setVisibility(View.INVISIBLE);
+        }
     }
-
 
     /**
      * Called when buttonConnect has been clicked.
@@ -45,23 +51,29 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
         if (v.getId() == R.id.buttonConnect) {
             String login = getElementById(R.id.LoginForm).getText().toString();
             String motPasse = getElementById(R.id.PwdForm).getText().toString();
-            getService().setServeurCredential(login, motPasse);
+            getBusinessService().setServeurCredential(login, motPasse);
             connectUserToServeur();
         }
         // Connexion à partir du pattern enregistré
         else if (v.getId() == R.id.buttonConnectPattern) {
-            LOG.info("Connection via un lock pattern");
-            Intent intent = new Intent(LockPatternActivity.ACTION_COMPARE_PATTERN, null,
-                    getActivity().getApplicationContext(), LockPatternActivity.class);
-            intent.putExtra(LockPatternActivity.EXTRA_PATTERN, AuthenticationConstants.pattern.toCharArray());
-            getActivity().startActivityForResult(intent, AuthenticationConstants.REQ_ENTER_PATTERN);
+            LOG.info("[AUTH] Connection via un lock pattern");
+            String pattern = getPersistanceService().getPreference(getActivity(), AuthenticationPreferencesEnums.ANDROID_ID_PATTERN);
+            if (pattern != null) {
+                Intent intent = new Intent(LockPatternActivity.ACTION_COMPARE_PATTERN, null,
+                        getActivity().getApplicationContext(), LockPatternActivity.class);
+                intent.putExtra(LockPatternActivity.EXTRA_PATTERN, pattern.toCharArray());
+                getActivity().startActivityForResult(intent, AlpSettings.Display.REQ_ENTER_PATTERN);
+            } else {
+                LOG.error("[AUTH] Aucun Lockpattern enregistré. Veuillez enregistrer un lockpattern");
+                showPopupNotification("Aucun Lockpattern enregistré. Veuillez enregistrer un compte", 10);
+            }
         }
         // Enregistrement d'un pattern
         else if (v.getId() == R.id.buttonSaveCompte) {
-            LOG.info("Création d'une identité Android");
+            LOG.info("[AUTH] Création d'une identité Android");
             Intent intent = new Intent(LockPatternActivity.ACTION_CREATE_PATTERN, null,
                     getActivity().getApplicationContext(), LockPatternActivity.class);
-            getActivity().startActivityForResult(intent, AuthenticationConstants.REQ_CREATE_PATTERN);
+            getActivity().startActivityForResult(intent, AlpSettings.Display.REQ_CREATE_PATTERN);
         }
     }
 
@@ -75,37 +87,40 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
      */
     public void lockPatternResultat(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case AuthenticationConstants.REQ_CREATE_PATTERN: {
+            case AlpSettings.Display.REQ_CREATE_PATTERN: {
                 if (resultCode == LockPatternActivity.RESULT_OK) {
                     char[] pattern = data.getCharArrayExtra(
                             LockPatternActivity.EXTRA_PATTERN);
                     String login = getElementById(R.id.LoginForm).getText().toString();
                     String motPasse = getElementById(R.id.PwdForm).getText().toString();
-                    FacadeServices.getInstance().getBusinessService().createAndroidId(login, motPasse, pattern);
-                    connectUserToServeur();
+                    if (FacadeServices.getInstance().getBusinessService().createAndroidId(login, motPasse, pattern)) {
+                        connectUserToServeur();
+                    } else {
+                        showPopupNotification("Erreur lors de l'enregistrement du compte. Veuillez réessayer.", 5);
+                    }
                 }
                 break;
             }// REQ_CREATE_PATTERN
-            case AuthenticationConstants.REQ_ENTER_PATTERN: {
+            case AlpSettings.Display.REQ_ENTER_PATTERN: {
                 /*
                  * NOTE that there are 4 possible result codes!!!
                  */
                 switch (resultCode) {
                     case LockPatternActivity.RESULT_OK:
-                        LOG.info("** Résultat LockPattern : OK **");
+                        LOG.info("[AUTH] ** Résultat LockPattern : OK **");
                         char[] pattern = data.getCharArrayExtra(
                                 LockPatternActivity.EXTRA_PATTERN);
-                        getService().authenticateToMobile(pattern);
+                        getBusinessService().authenticateToMobile(ResourceUtils.getCharContent(pattern));
                         connectUserToServeur();
                         break;
                     case LockPatternActivity.RESULT_CANCELED:
-                        LOG.info("** Résultat LockPattern : Cancel **");
+                        LOG.info("[AUTH] ** Résultat LockPattern : Cancel **");
                         break;
                     case LockPatternActivity.RESULT_FAILED:
-                        LOG.info("** Résultat LockPattern : Echec **");
+                        LOG.info("[AUTH] ** Résultat LockPattern : Echec **");
                         break;
                     case LockPatternActivity.RESULT_FORGOT_PATTERN:
-                        LOG.info("** Résultat LockPattern : Forgot **");
+                        LOG.info("[AUTH] ** Résultat LockPattern : Forgot **");
                         break;
                 }
                 /*
@@ -132,7 +147,7 @@ public class MainControleur extends AbstractActivityControleur<MainActivity> imp
      */
     @Override
     public boolean onMenuItemSelected(MenuItem item) {
-        LOG.info("onMenuItemSelected >>> " + item.getItemId() + "::" + R.id.action_main_quitter);
+        LOG.trace("[IHM] onMenuItemSelected >>> " + item.getItemId() + "::" + R.id.action_main_quitter);
         switch (item.getItemId()) {
             // S'il est égal a itemQuitter
             case R.id.action_main_quitter:
