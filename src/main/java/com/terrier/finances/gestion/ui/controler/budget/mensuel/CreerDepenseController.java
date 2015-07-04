@@ -6,9 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
-import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
-import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
@@ -17,13 +16,14 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.components.Cree
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.controler.validators.ValeurDepenseValidator;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionValiderCreationDepenseClickListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.AutocompleteDescriptionQueryListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.AutocompleteDescriptionSuggestionPickedListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Notification;
 import com.zybnet.autocomplete.server.AutocompleteField;
 import com.zybnet.autocomplete.server.AutocompleteQueryListener;
-import com.zybnet.autocomplete.server.AutocompleteSuggestionPickedListener;
 
 /**
  * Controleur de créer des dépenses
@@ -163,30 +163,11 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		/**
 		 *  Query
 		 */
-		AutocompleteQueryListener<String> listener = new AutocompleteQueryListener<String>() {
+		AutocompleteQueryListener<String> listener = new AutocompleteDescriptionQueryListener(
+				UISessionManager.getSession().getBudgetMensuelCourant()) ;
 
-			@Override
-			public void handleUserQuery(
-					AutocompleteField<String> autocompleteField, String query) {
-				// Création de la liste correspondante à l'autocomplete
-				BudgetMensuel budget = UISessionManager.getSession().getBudgetMensuelCourant();
-				for (String libelleDepense : budget.getSetLibellesDepensesForAutocomplete()) {
-					if(libelleDepense != null && libelleDepense.toLowerCase().startsWith(query.toLowerCase())){
-						autocompleteField.addSuggestion(libelleDepense, libelleDepense);	
-					}
-				}
-			}
-			
-			
-		};
-		getComponent().getTextFieldDescription().setSuggestionPickedListener(
-				new AutocompleteSuggestionPickedListener<String>() {
-			  @Override
-			  public void onSuggestionPicked(String libelle) {
-			    getComponent().getTextFieldDescription().setValue(libelle);
-			  }
-			});
-		
+		AutocompleteField<String> descriptionField = getComponent().getTextFieldDescription();
+		descriptionField.setSuggestionPickedListener(new AutocompleteDescriptionSuggestionPickedListener(descriptionField));
 		getComponent().getTextFieldDescription().setQueryListener(listener);
 		
 		
