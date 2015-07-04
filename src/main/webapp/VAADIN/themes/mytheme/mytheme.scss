@@ -1,0 +1,246 @@
+/* Import the Valo theme. */
+
+/* Surcharge des valeurs de Valo */
+$v-app-loading-text: "Chargement de l'application";
+$v-font-size: 12px;
+
+/* 		METRO 		*/
+$v-font-family: "Source Sans Pro", sans-serif;
+$v-app-background-color: #fff;
+$v-background-color: #fff;
+$v-focus-color: #0072C6;
+$v-focus-style: 0 0 0 1px $v-focus-color;
+$valo-menu-background-color: darken($v-focus-color, 10%);
+$v-border: 1px solid v-shade;
+$v-border-radius: 0px;
+$v-bevel: false;
+$v-gradient: false;
+$v-shadow: true;
+$v-textfield-bevel: false;
+$v-textfield-shadow: false;
+$v-textfield-border: 1px solid v-shade;
+$v-link-text-decoration: none;
+$v-overlay-shadow: 0 0 0 2px #000;
+$v-overlay-border-width: 2px; // For IE8
+$v-window-shadow: $v-overlay-shadow;
+$v-selection-overlay-background-color: #fff;
+$v-selection-overlay-padding-horizontal: 0;
+$v-selection-overlay-padding-vertical: 6px;
+$v-panel-border: 2px solid v-shade;
+
+$v-layout-margin-top: 10px;
+$v-layout-margin-left: 10px;
+$v-layout-margin-right: 10px;
+$v-layout-margin-bottom: 10px;
+$v-layout-padding-top: 10px;
+$v-layout-padding-left: 10px;
+$v-layout-padding-right: 10px;
+$v-layout-padding-bottom: 10px;
+
+
+@import "../valo/valo.scss";
+
+/* Mon theme */
+@mixin mytheme {
+  /* Include all the styles from the Valo theme */
+  @include valo;
+
+/* http://flatuicolors.com/ */
+
+  /* surcharge de la désactivation */
+  .v-disabled{
+  	opacity: 1;
+  }
+
+  .v-generated-body{
+  	font-family: Arial Unicode MS, Arial, sans-serif;
+  	font-size: small;
+  }
+  
+  .v-label{
+  	font-weight: 400;
+  	color: #2c3e50;
+  }
+    
+ /* Table */
+  .v-table-body {
+    background-color: #fff;
+	font-weight: 400;
+	color: #2c3e50;
+  }  
+  
+  .v-table-header {
+  	background-color: #004f8a;
+  	color: #fff;
+  	font-weight: bold;
+  }
+  
+  .v-window-header{
+    background-color: #004f8a;
+  	color: #fff;
+  	font-weight: bold;
+  }
+  
+  
+ /* Couleurs du tableau des dépenses */
+ .v-table-row-realisee{
+	background-color: #c9ebd8;
+ }
+ .v-table-row-realisee-odd{
+	background-color: #e9f7ef;
+ }
+ 
+ .v-table-row-prevue{
+	background-color: #fce6c4;
+ }
+ .v-table-row-prevue-odd{
+	background-color: #fdeed6;
+ }
+
+ .v-table-row-reportee{
+	background-color: #e6d6ed;
+ }
+ .v-table-row-reportee-odd{
+	background-color: #dcc5e6;
+ }
+ 
+ .v-table-row-annulee{
+	background-color: #cad2d3;
+ }
+ .v-table-row-annulee-odd{
+	background-color: #dadfe0;
+ }
+  
+ /* Couleurs de la colonne des valeurs */
+    .last-depense{
+	color: #000000;
+	font-weight: bold;
+  }
+  
+ /* Couleurs de la colonne des valeurs */
+    .v-table-cell-content-valeur{
+	color: #2c9720;
+  }
+  .v-table-cell-content-valeur_rouge{
+	color: red;
+  }
+   
+    
+  .v-table-cell-content-totaux{
+  	font-size: 16px;
+  }
+    
+  .v-table-cell-content-tree-ss-categorie{
+  	font-weight: 200;
+  }
+  
+  
+  /* */
+ .v-autocomplete{
+ 	position:absolute; 
+ 	top: 5px;
+ 	height:26px;
+ 	left:-379px;
+ }
+
+  
+  /* Boutons actions */
+
+  .v-button-actions {
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	color: #fff;
+	background: transparent;
+	height: 26px;
+	width: 26px;
+	border: 0px;
+  }
+
+.v-table-caption-container{
+	min-height:0px;
+}
+
+ 
+.v-button-reinit {
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	color: #fff;
+	background: transparent;
+	border: 0px;  
+  	background-image: url('./img/circle_reinit.png'); 
+  }
+  
+    
+ 
+  .v-button-logout {
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	color: #fff;
+	background: transparent;
+	border: 0px;  
+  	background-image: url('./img/logout.png'); 
+  }
+  
+  
+  .v-button-reel {
+  	background-image: url('./img/circle_ok.png'); 
+  }
+  
+
+  .v-button-supprimer {
+  	background-image: url('./img/circle_remove.png'); 
+  }
+    
+    .v-button-annuler {
+  	background-image: url('./img/circle_cancel.png'); 
+  }
+  
+    .v-button-reporter {
+  	background-image: url('./img/circle_arrow_right.png');
+  }
+  
+    .v-button-prevue {
+  	background-image: url('./img/circle_clock.png');
+  }
+  
+  
+  
+ /* Login */
+ .fondbleu {
+   background-color: #34495e;
+  }
+ 
+ .versionLabel {
+ 	color: #fff;
+ }
+ 
+ .login-header{
+    background-color: #0072C6;
+  	color: #fff;
+  	/* font-weight: bold; */
+	font-size: 20px;
+ }
+ 
+ .loginLayout{
+	background-color: #ecf0f1;
+ }
+ 
+ 
+.v-button-locked {
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	color: #fff;
+	background: transparent;
+	border: 0px;  
+  	background-image: url('./img/locked.png'); 
+  }
+
+.v-button-unlocked {
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	color: #fff;
+	background: transparent;
+	border: 0px;  
+  	background-image: url('./img/unlocked.png'); 
+  }
+}
