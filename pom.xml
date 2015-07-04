@@ -27,7 +27,16 @@
 					<exclude>*.properties</exclude>
 				</excludes>
 			</resource>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources/config/budget/dev</directory>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources/config/log/dev</directory>
+			</resource>
 		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>com.keyboardsamurais.maven</groupId>
@@ -103,6 +112,24 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+					<filters>
+						<filter>${basedir}\src\main\resources\config\budget\dev\config.profile.properties</filter>
+					</filters>
+					<warSourceExcludes>
+						VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
+					</warSourceExcludes>
+					<packagingExcludes>
+						VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
+					</packagingExcludes>
+				</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -143,41 +170,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<profiles>
-		<profile>
-			<id>vaadin</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<resources>
-					<resource>
-						<filtering>true</filtering>
-						<directory>src/main/resources/config/budget/dev</directory>
-					</resource>
-					<resource>
-						<filtering>false</filtering>
-						<directory>src/main/resources/config/log/dev</directory>
-					</resource>
-				</resources>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<failOnMissingWebXml>false</failOnMissingWebXml>
-							<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-							<filters>
-								<filter>${basedir}\src\main\resources\config\budget\dev\config.profile.properties</filter>
-							</filters>
-						</configuration>
-					</plugin>
-				</plugins>
-
-			</build>
-		</profile>
-	</profiles>
 
 	<dependencies>
 
