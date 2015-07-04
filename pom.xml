@@ -27,16 +27,7 @@
 					<exclude>*.properties</exclude>
 				</excludes>
 			</resource>
-			<resource>
-				<filtering>true</filtering>
-				<directory>src/main/resources/config/budget/dev</directory>
-			</resource>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/resources/config/log/dev</directory>
-			</resource>
 		</resources>
-
 		<plugins>
 			<plugin>
 				<groupId>com.keyboardsamurais.maven</groupId>
@@ -112,24 +103,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-					<filters>
-						<filter>${basedir}\src\main\resources\config\budget\dev\config.profile.properties</filter>
-					</filters>
-					<warSourceExcludes>
-						VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
-					</warSourceExcludes>
-					<packagingExcludes>
-						VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
-					</packagingExcludes>
-				</configuration>
-			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -170,6 +143,103 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<profiles>
+		<profile>
+			<id>vaadin</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources/config/budget/dev</directory>
+					</resource>
+					<resource>
+						<filtering>false</filtering>
+						<directory>src/main/resources/config/log/dev</directory>
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.6</version>
+						<configuration>
+							<failOnMissingWebXml>false</failOnMissingWebXml>
+							<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+							<filters>
+								<filter>${basedir}\src\main\resources\config\budget\dev\config.profile.properties</filter>
+							</filters>
+							<warSourceExcludes>
+								VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
+							</warSourceExcludes>
+							<packagingExcludes>
+								VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
+							</packagingExcludes>
+						</configuration>
+					</plugin>
+				</plugins>
+
+			</build>
+		</profile>
+		<profile>
+			<!-- When built in OpenShift the 'openshift' profile will be used when 
+				invoking mvn. -->
+			<!-- Use this profile for any OpenShift specific customization your app 
+				will need. -->
+			<!-- By default that is to put the resulting archive into the 'webapps' 
+				folder. -->
+			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+			<id>openshift2</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.6</version>
+						<configuration>
+							<failOnMissingWebXml>false</failOnMissingWebXml>
+							<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+							<filters>
+								<filter>${basedir}/src/main/resources/config/budget/openshift/config.properties</filter>
+								<filter>${basedir}/src/main/resources/config/budget/openshift/config.profile.properties</filter>
+							</filters>
+							<warSourceExcludes>
+								VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
+							</warSourceExcludes>
+							<packagingExcludes>
+								VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
+							</packagingExcludes>
+							<outputDirectory>target/webapps</outputDirectory>
+							<warName>ROOT</warName>
+						</configuration>
+					</plugin>
+					<!-- Assembly en tar.gz -->
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.3</version>
+						<configuration>
+							<finalName>Budget-v${project.version}</finalName>
+							<appendAssemblyId>true</appendAssemblyId>
+							<descriptors>
+								<descriptor>src/main/assembly/assembly.xml</descriptor>
+							</descriptors>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencies>
 

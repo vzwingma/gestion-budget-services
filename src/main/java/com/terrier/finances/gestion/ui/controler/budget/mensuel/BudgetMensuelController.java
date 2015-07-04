@@ -130,7 +130,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(UISessionManager.getSession().getUtilisateurCourant());
 			for (CompteBancaire compte : comptes) {
 				this.compte.addItem(compte.getId());
-				this.compte.setItemCaption(compte.getId(), compte.getLibelle());
+				this.compte.setItemCaption(compte.getId(), "  " + compte.getLibelle());
 				if(compte.isDefaut()){
 					this.compte.select(compte.getId());
 					libelleCompte = compte.getLibelle();
