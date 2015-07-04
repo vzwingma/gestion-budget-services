@@ -4,7 +4,7 @@
 	<groupId>com.terrier.finances</groupId>
 	<artifactId>gestion-budget</artifactId>
 	<packaging>war</packaging>
-	<version>3.2.2</version>
+	<version>3.3.0</version>
 	<name>Gestion Budget</name>
 
 	<properties>
