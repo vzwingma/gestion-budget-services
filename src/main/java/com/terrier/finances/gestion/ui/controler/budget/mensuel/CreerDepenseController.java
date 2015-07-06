@@ -18,9 +18,12 @@ import com.terrier.finances.gestion.ui.controler.validators.ValeurDepenseValidat
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionValiderCreationDepenseClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.AutocompleteDescriptionQueryListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.AutocompleteDescriptionSuggestionPickedListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.BlurDescriptionValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
 import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.ui.Notification;
 import com.zybnet.autocomplete.server.AutocompleteField;
 import com.zybnet.autocomplete.server.AutocompleteQueryListener;
@@ -61,18 +64,29 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		// Sélection d'une catégorie
 		getComponent().getComboBoxCategorie().setImmediate(true);
 		getComponent().getComboBoxCategorie().addValueChangeListener(new SelectionCategorieValueChangeListener(this));
+		getComponent().getComboBoxCategorie().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
+		
 		// Sélection d'une sous catégorie
 		getComponent().getComboBoxSsCategorie().addValueChangeListener(new SelectionSousCategorieValueChangeListener(this));
+		getComponent().getComboBoxSsCategorie().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
+		
 		getComponent().getListSelectComptes().setVisible(false);
+		getComponent().getListSelectComptes().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		getComponent().getLayoutCompte().setVisible(false);
 		getComponent().getLabelCompte().setVisible(false);
+		getComponent().getLabelCompte().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		// Périodique
 		getComponent().getCheckBoxPeriodique().setCaption(null);
 		getComponent().getCheckBoxPeriodique().setDescription("Cocher pour une dépense mensuelle");
+		getComponent().getCheckBoxPeriodique().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
+
 		// Description
-		getComponent().getTextFieldDescription().setImmediate(true);
 		getComponent().getTextFieldDescription().setTrimQuery(true);
 		getComponent().getTextFieldDescription().setRequired(true);
+
+		// Valeur
+		getComponent().getListSelectType().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
+		getComponent().getTextFieldValeur().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		
 		// Bouton
 		getComponent().getButtonValider().addClickListener(new ActionValiderCreationDepenseClickListener());
@@ -162,20 +176,21 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		// SS catégorie
 		getComponent().getComboBoxSsCategorie().removeAllItems();
 		getComponent().getComboBoxSsCategorie().setEnabled(false);
-	
+
 		/**
 		 *  Query
 		 */
 		AutocompleteField<String> descriptionField = getComponent().getTextFieldDescription();
-		descriptionField.setSuggestionPickedListener(new AutocompleteDescriptionSuggestionPickedListener(descriptionField));
+		descriptionField.setSuggestionPickedListener(new AutocompleteDescriptionSuggestionPickedListener(descriptionField, this));
 
 		AutocompleteQueryListener<String> listener = new AutocompleteDescriptionQueryListener(
-				UISessionManager.getSession().getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete()) ;
+				UISessionManager.getSession().getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete(), this) ;
 		getComponent().getTextFieldDescription().setQueryListener(listener);
 		// Description
 		getComponent().getTextFieldDescription().setText("");
 		getComponent().getTextFieldDescription().clearChoices();
 		getComponent().getTextFieldDescription().clear();
+
 		
 		
 		// Compte
@@ -203,6 +218,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 				getComponent().getListSelectType().select(type);
 			}
 		}
+				
 		// Etat
 		getComponent().getListSelectEtat().setNullSelectionAllowed(false);
 		getComponent().getListSelectEtat().removeAllItems();
@@ -212,5 +228,21 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		}
 		// Périodique
 		getComponent().getCheckBoxPeriodique().setValue(Boolean.FALSE);
+	}
+	
+
+
+	/**
+	 * Lorsque Focus sur l'autocomplete : Désactivation de la validation du formulaire par Entrée
+	 */
+	public void focusOnAutocompleteField(){
+		getComponent().getButtonValider().setClickShortcut(KeyCode.INSERT, ModifierKey.CTRL);
+	}
+	
+	/**
+	 * Lorsque Blur sur l'autocomplete : Réactivation de la validation du formulaire par Entrée
+	 */
+	public void blurOnAutocompleteField(){
+		getComponent().getButtonValider().setClickShortcut(KeyCode.ENTER);
 	}
 }

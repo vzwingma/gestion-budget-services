@@ -51,5 +51,4 @@ public class SelectionCategorieValueChangeListener extends AbstractComponentList
 			controleur.getComponent().getComboBoxSsCategorie().setEnabled(false);
 		}
 	}
-
 }

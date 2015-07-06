@@ -13,8 +13,6 @@ import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.TextField;
 import com.zybnet.autocomplete.server.AutocompleteField;
 
-import elemental.events.KeyboardEvent.KeyCode;
-
 /**
  * Formulaire de création d'une dépense
  * @author vzwingma
@@ -431,7 +429,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// listSelectComptes
 		listSelectComptes = new ListSelect();
-		listSelectComptes.setImmediate(false);
+		listSelectComptes.setImmediate(true);
 		listSelectComptes.setWidth("183px");
 		listSelectComptes.setHeight("-1px");
 		listSelectComptes.setRequired(true);
@@ -457,7 +455,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		// textFieldDescription
 		textFieldDescription = new AutocompleteField<String>();
 		textFieldDescription.setMinimumQueryCharacters(1);
-		textFieldDescription.setImmediate(false);
+		textFieldDescription.setImmediate(true);
 		textFieldDescription.setWidth("370px");
 		textFieldDescription.setRequired(true);
 		textFieldDescription.setStyleName("v-textfield");
@@ -481,7 +479,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// comboBoxType
 		comboBoxType = new ListSelect();
-		comboBoxType.setImmediate(false);
+		comboBoxType.setImmediate(true);
 		comboBoxType.setWidth("-1px");
 		comboBoxType.setHeight("30px");
 		comboBoxType.setRequired(true);
@@ -491,7 +489,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// textFieldValeur
 		textFieldValeur = new TextField();
-		textFieldValeur.setImmediate(false);
+		textFieldValeur.setImmediate(true);
 		textFieldValeur.setWidth("270px");
 		textFieldValeur.setHeight("-1px");
 		textFieldValeur.setRequired(true);
@@ -526,7 +524,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// listSelectEtat
 		listSelectEtat = new ListSelect();
-		listSelectEtat.setImmediate(false);
+		listSelectEtat.setImmediate(true);
 		listSelectEtat.setWidth("370px");
 		listSelectEtat.setHeight("30px");
 		listSelectEtat.setRequired(true);
@@ -553,7 +551,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		checkBoxPeriodique = new CheckBox();
 		checkBoxPeriodique.setStyleName("color2");
 		checkBoxPeriodique.setCaption("CheckBox");
-		checkBoxPeriodique.setImmediate(false);
+		checkBoxPeriodique.setImmediate(true);
 		checkBoxPeriodique.setWidth("-1px");
 		checkBoxPeriodique.setHeight("-1px");
 		horizontalLayout_6.addComponent(checkBoxPeriodique);
@@ -582,7 +580,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		buttonValider.setImmediate(true);
 		buttonValider.setWidth("-1px");
 		buttonValider.setHeight("-1px");
-		buttonValider.setClickShortcut(KeyCode.ENTER);
 		horizontalLayout_7.addComponent(buttonValider);
 		horizontalLayout_7.setComponentAlignment(buttonValider, new Alignment(
 				48));
@@ -600,7 +597,4 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		return horizontalLayout_7;
 	}
-
-
-
 }

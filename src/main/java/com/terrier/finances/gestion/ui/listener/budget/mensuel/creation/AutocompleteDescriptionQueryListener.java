@@ -8,6 +8,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.CreerDepenseController;
 import com.zybnet.autocomplete.server.AutocompleteField;
 import com.zybnet.autocomplete.server.AutocompleteQueryListener;
 
@@ -21,6 +22,7 @@ public class AutocompleteDescriptionQueryListener implements AutocompleteQueryLi
 	// Liste des libelles pour l'autocomplete
 	private Set<String> setLibellesDepensesForAutocomplete;
 	
+	private CreerDepenseController controleur;
 	/**
 	 * Logger
 	 */
@@ -30,10 +32,12 @@ public class AutocompleteDescriptionQueryListener implements AutocompleteQueryLi
 	
 	/**
 	 * Constructeur
-	 * @param budget budget courant contenant la liste 
+	 * @param liste des libellées de l'autocomplete
+	 * @param controleur controleur associé au formulaire 
 	 */
-	public AutocompleteDescriptionQueryListener(Set<String> setLibellesDepensesForAutocomplete){
+	public AutocompleteDescriptionQueryListener(Set<String> setLibellesDepensesForAutocomplete, CreerDepenseController controleur){
 		this.setLibellesDepensesForAutocomplete = setLibellesDepensesForAutocomplete;
+		this.controleur = controleur;
 	}
 
 	
@@ -42,7 +46,7 @@ public class AutocompleteDescriptionQueryListener implements AutocompleteQueryLi
 			String query) {
 		
 		LOGGER.debug("[IHM] Autocomplete query : {}", query);
-		
+		controleur.focusOnAutocompleteField();
 		// Création de la liste correspondante à l'autocomplete
 		for (String libelleDepense : this.setLibellesDepensesForAutocomplete) {
 			if(libelleDepense != null && libelleDepense.toLowerCase().contains(query.toLowerCase())){

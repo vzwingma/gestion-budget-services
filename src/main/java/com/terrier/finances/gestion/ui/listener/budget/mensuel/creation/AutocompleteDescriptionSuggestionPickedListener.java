@@ -6,6 +6,7 @@ package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.CreerDepenseController;
 import com.zybnet.autocomplete.server.AutocompleteField;
 import com.zybnet.autocomplete.server.AutocompleteSuggestionPickedListener;
 
@@ -19,7 +20,8 @@ public class AutocompleteDescriptionSuggestionPickedListener implements
 
 	// Textfield
 	private AutocompleteField<String> descriptionField;
-
+	
+	private CreerDepenseController controleur;
 	/**
 	 * Logger
 	 */
@@ -28,9 +30,11 @@ public class AutocompleteDescriptionSuggestionPickedListener implements
 	/**
 	 * Constructeur
 	 * @param descriptionField texte field
+	 * @param controleur controleur associé au formulaire 
 	 */
-	public AutocompleteDescriptionSuggestionPickedListener(AutocompleteField<String> descriptionField){
+	public AutocompleteDescriptionSuggestionPickedListener(AutocompleteField<String> descriptionField, CreerDepenseController controleur){
 		this.descriptionField = descriptionField;
+		this.controleur = controleur;
 	}
 	
 	@Override
@@ -38,5 +42,6 @@ public class AutocompleteDescriptionSuggestionPickedListener implements
 		
 		LOGGER.debug("[IHM] Autocomplete picked : {}", suggestion);
 		descriptionField.setText(suggestion);
+		controleur.blurOnAutocompleteField();
 	}
 }
