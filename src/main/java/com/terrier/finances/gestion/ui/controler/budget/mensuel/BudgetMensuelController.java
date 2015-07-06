@@ -292,7 +292,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			Notification.show(e.getMessage(), Notification.Type.WARNING_MESSAGE);
 			return;
 		}
-		LOGGER.warn("[IHM] >> Mise à jour des vues >> {}", budgetCourant.isActif());		
+		LOGGER.debug("[IHM] >> Mise à jour des vues >> {}", budgetCourant.isActif());		
 		LOGGER.debug("[IHM] Affichage des données dans le tableau de suivi des dépenses");
 		List<LigneDepense> listeDepenses = budgetCourant.getListeDepenses();		
 		/**
@@ -345,7 +345,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		 */
 		tableTotalResumeControleur.miseAJourVueDonnees(budgetCourant, getMaxDate(listeDepenses, budgetCourant.getMois(), budgetCourant.getAnnee()));
 
-		LOGGER.warn("<< Mise à jour des vues <<");
+		LOGGER.debug("<< Mise à jour des vues <<");
 		this.refreshAllTable = false;
 	}
 
