@@ -3,6 +3,9 @@
  */
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.zybnet.autocomplete.server.AutocompleteField;
 import com.zybnet.autocomplete.server.AutocompleteSuggestionPickedListener;
 
@@ -16,7 +19,11 @@ public class AutocompleteDescriptionSuggestionPickedListener implements
 
 	// Textfield
 	private AutocompleteField<String> descriptionField;
-	
+
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(AutocompleteDescriptionSuggestionPickedListener.class);
 	
 	/**
 	 * Constructeur
@@ -28,6 +35,8 @@ public class AutocompleteDescriptionSuggestionPickedListener implements
 	
 	@Override
 	public void onSuggestionPicked(String suggestion) {
+		
+		LOGGER.debug("[IHM] Autocomplete picked : {}", suggestion);
 		descriptionField.setValue(suggestion);
 	}
 }
