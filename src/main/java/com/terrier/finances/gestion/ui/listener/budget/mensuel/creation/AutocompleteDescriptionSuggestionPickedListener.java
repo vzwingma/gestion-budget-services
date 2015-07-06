@@ -37,6 +37,6 @@ public class AutocompleteDescriptionSuggestionPickedListener implements
 	public void onSuggestionPicked(String suggestion) {
 		
 		LOGGER.debug("[IHM] Autocomplete picked : {}", suggestion);
-		descriptionField.setValue(suggestion);
+		descriptionField.setText(suggestion);
 	}
 }

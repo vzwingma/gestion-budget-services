@@ -69,6 +69,11 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		// Périodique
 		getComponent().getCheckBoxPeriodique().setCaption(null);
 		getComponent().getCheckBoxPeriodique().setDescription("Cocher pour une dépense mensuelle");
+		// Description
+		getComponent().getTextFieldDescription().setImmediate(true);
+		getComponent().getTextFieldDescription().setTrimQuery(true);
+		getComponent().getTextFieldDescription().setRequired(true);
+		
 		// Bouton
 		getComponent().getButtonValider().addClickListener(new ActionValiderCreationDepenseClickListener());
 		getComponent().getButtonValider().setDescription("Valider l'opération et fermer l'écran de saisie");
@@ -157,18 +162,20 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		// SS catégorie
 		getComponent().getComboBoxSsCategorie().removeAllItems();
 		getComponent().getComboBoxSsCategorie().setEnabled(false);
-		// Description
-		getComponent().getTextFieldDescription().setValue("");
-		
+	
 		/**
 		 *  Query
 		 */
-		AutocompleteQueryListener<String> listener = new AutocompleteDescriptionQueryListener(
-				UISessionManager.getSession().getBudgetMensuelCourant()) ;
-
 		AutocompleteField<String> descriptionField = getComponent().getTextFieldDescription();
 		descriptionField.setSuggestionPickedListener(new AutocompleteDescriptionSuggestionPickedListener(descriptionField));
+
+		AutocompleteQueryListener<String> listener = new AutocompleteDescriptionQueryListener(
+				UISessionManager.getSession().getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete()) ;
 		getComponent().getTextFieldDescription().setQueryListener(listener);
+		// Description
+		getComponent().getTextFieldDescription().setText("");
+		getComponent().getTextFieldDescription().clearChoices();
+		getComponent().getTextFieldDescription().clear();
 		
 		
 		// Compte

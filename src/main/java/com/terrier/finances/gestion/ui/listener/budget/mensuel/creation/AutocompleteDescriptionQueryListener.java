@@ -50,6 +50,6 @@ public class AutocompleteDescriptionQueryListener implements AutocompleteQueryLi
 			}
 		}
 		// Injection de la valeur de la query sur la valeur du champs des fois que la saisie ne corresponde pas à un autocomplete
-		autocompleteField.setValue(query);
+		autocompleteField.setText(query);
 	}
 }
