@@ -44,7 +44,7 @@ public class LoginController extends AbstractUIController<Login>{
 	@Override
 	public void initDynamicComponentsOnPage() {
 		// Ajout controle
-		getComponent().getButtonConnexion().addClickListener(new LoginConnexionClickListener());
+		getComponent().getButtonConnexion().addClickListener(new LoginConnexionClickListener(this.getComponent()));
 
 	}
 

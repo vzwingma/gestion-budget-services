@@ -32,15 +32,24 @@ public class LoginConnexionClickListener extends AbstractComponentListener imple
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoginConnexionClickListener.class);
 
+	/*
+	 * Page de login
+	 */
+	private Login loginPage;
+	
+	public LoginConnexionClickListener(Login loginPage){
+		this.loginPage = loginPage;
+	}
+	
+	
 	@Override
 	public void buttonClick(ClickEvent event) {
 
-		Login pageLogin = (Login)event.getButton().getParent().getParent().getParent().getParent();
 		boolean auth = getControleur(LoginController.class).getServiceAuthentification().validate(
-				pageLogin.getTextLoginValue(), 
-				pageLogin.getPasswordField().getValue());
+				loginPage.getTextLoginValue(), 
+				loginPage.getPasswordField().getValue());
 		if(auth){	
-			LOGGER.info("Accès autorisé pour {}", pageLogin.getTextLoginValue());
+			LOGGER.info("Accès autorisé pour {}", loginPage.getTextLoginValue());
 			// MAJ
 			UISessionManager.getSession().getMainLayout().removeAllComponents();
 			UISessionManager.getSession().getMainLayout().addComponent(new BudgetMensuelPage());
