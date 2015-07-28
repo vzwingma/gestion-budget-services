@@ -95,7 +95,7 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 			for (Iterator iteratorP = table.getItem(itemId).getItemPropertyIds().iterator(); iteratorP.hasNext();){
 				String propId = (String) iteratorP.next();
 				
-				LOGGER.info(" Refresh modèle {} de {} : {}", propId, itemId, table.getItem(itemId).getItemProperty(propId).getValue());
+				LOGGER.trace(" Refresh modèle {} de {} : {}", propId, itemId, table.getItem(itemId).getItemProperty(propId).getValue());
 				/**
 				 * Pour les actions, on transforme ActionsLigneBudget en booléen
 				 */
