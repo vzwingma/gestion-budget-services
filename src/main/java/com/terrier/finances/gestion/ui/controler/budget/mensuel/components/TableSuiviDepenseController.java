@@ -116,7 +116,9 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), TAILLE_COLONNE_AUTEUR);
 		
 		// Ajout du mode Dernier ligne sur la liste des dépenses
-		getComponent().addActionHandler(new TableSuiviDepensesActionMenuHandler());
+		TableSuiviDepensesActionMenuHandler handler = new TableSuiviDepensesActionMenuHandler();
+		getComponent().addActionHandler(handler);
+		getComponent().addItemClickListener(handler);
 	}
 
 	/**

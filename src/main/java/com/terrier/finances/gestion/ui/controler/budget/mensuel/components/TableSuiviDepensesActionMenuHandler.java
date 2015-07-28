@@ -11,13 +11,15 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.components.Tabl
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.event.Action;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 
 /**
  * Controleur du menu du tableau des résumés
  * @author vzwingma
  *
  */
-public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListener implements Action.Handler{
+public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListener implements Action.Handler, ItemClickListener{
 
 
 	/**
@@ -61,10 +63,29 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 	public void handleAction(Action action, Object sender, Object target) {
 		TableSuiviDepense tableSuivi = (TableSuiviDepense)sender;
 		if(SET_LAST_DEPENSE.equals(action) && target != null){
-			String idDepense = (String) target;
-			LOGGER.info("Marquage de la dépense {} comme dernière action relevée", idDepense);
-			tableSuivi.getControleur().getServiceDepense().setLigneDepenseAsDerniereOperation(UISessionManager.getSession().getBudgetMensuelCourant(), idDepense);
-			getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
+			putIdAsLastDepense(tableSuivi, (String)target);
 		}		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.vaadin.event.ItemClickEvent.ItemClickListener#itemClick(com.vaadin.event.ItemClickEvent)
+	 */
+	@Override
+	public void itemClick(ItemClickEvent event) {
+		if(event.isDoubleClick()){
+			TableSuiviDepense tableSuivi = (TableSuiviDepense)event.getSource();
+			putIdAsLastDepense(tableSuivi, (String)event.getItemId());
+		}
+	}
+	
+	/**
+	 * Set as last depense 
+	 * @param tableSuivi table
+	 * @param idDepense id
+	 */
+	private void putIdAsLastDepense(TableSuiviDepense tableSuivi, String idDepense){
+		LOGGER.info("Marquage de la dépense {} comme dernière action relevée", idDepense);
+		tableSuivi.getControleur().getServiceDepense().setLigneDepenseAsDerniereOperation(UISessionManager.getSession().getBudgetMensuelCourant(), idDepense);
+		getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
 	}
 }
