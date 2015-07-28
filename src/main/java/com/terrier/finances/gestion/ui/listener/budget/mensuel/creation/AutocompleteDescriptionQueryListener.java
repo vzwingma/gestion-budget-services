@@ -3,6 +3,7 @@
  */
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -17,12 +18,21 @@ import com.zybnet.autocomplete.server.AutocompleteQueryListener;
  * @author vzwingma
  *
  */
-public class AutocompleteDescriptionQueryListener implements AutocompleteQueryListener<String> {
+public class AutocompleteDescriptionQueryListener implements AutocompleteQueryListener<String>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6274274186572281747L;
 
 	// Liste des libelles pour l'autocomplete
 	private Set<String> setLibellesDepensesForAutocomplete;
 	
+	/**
+	 * Controleur associé
+	 */
 	private CreerDepenseController controleur;
+	
 	/**
 	 * Logger
 	 */
@@ -46,14 +56,14 @@ public class AutocompleteDescriptionQueryListener implements AutocompleteQueryLi
 			String query) {
 		
 		LOGGER.debug("[IHM] Autocomplete query : {}", query);
+		autocompleteField.setData(query);
 		controleur.focusOnAutocompleteField();
+		
 		// Création de la liste correspondante à l'autocomplete
 		for (String libelleDepense : this.setLibellesDepensesForAutocomplete) {
 			if(libelleDepense != null && libelleDepense.toLowerCase().contains(query.toLowerCase())){
 				autocompleteField.addSuggestion(libelleDepense, libelleDepense);	
 			}
 		}
-		// Injection de la valeur de la query sur la valeur du champs des fois que la saisie ne corresponde pas à un autocomplete
-		autocompleteField.setText(query);
 	}
 }

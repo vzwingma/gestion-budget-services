@@ -46,6 +46,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreerDepenseController.class);
 
+	private boolean focus = false;
 
 	/**
 	 * Contructeur
@@ -83,7 +84,11 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		// Description
 		getComponent().getTextFieldDescription().setTrimQuery(true);
 		getComponent().getTextFieldDescription().setRequired(true);
-
+		getComponent().getTextFieldDescription().setBuffered(false);
+		getComponent().getTextFieldDescription().setInvalidAllowed(true);
+		getComponent().getTextFieldDescription().setInvalidCommitted(true);
+		getComponent().getTextFieldDescription().setDelay(0);
+		
 		// Valeur
 		getComponent().getListSelectType().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		getComponent().getTextFieldValeur().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
@@ -188,6 +193,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getTextFieldDescription().setQueryListener(listener);
 		// Description
 		getComponent().getTextFieldDescription().setText("");
+		getComponent().getTextFieldDescription().setData("");
 		getComponent().getTextFieldDescription().clearChoices();
 		getComponent().getTextFieldDescription().clear();
 
@@ -236,13 +242,21 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 	 * Lorsque Focus sur l'autocomplete : Désactivation de la validation du formulaire par Entrée
 	 */
 	public void focusOnAutocompleteField(){
-		getComponent().getButtonValider().setClickShortcut(KeyCode.INSERT, ModifierKey.CTRL);
+		if(!focus){
+			LOGGER.debug("[IHM] Focus on AutoComplete");
+			getComponent().getButtonValider().setClickShortcut(KeyCode.INSERT, ModifierKey.CTRL);
+			focus = true;
+		}
 	}
 	
 	/**
 	 * Lorsque Blur sur l'autocomplete : Réactivation de la validation du formulaire par Entrée
 	 */
 	public void blurOnAutocompleteField(){
-		getComponent().getButtonValider().setClickShortcut(KeyCode.ENTER);
+		if(focus){
+			LOGGER.debug("[IHM] Blur from AutoComplete");
+			getComponent().getButtonValider().setClickShortcut(KeyCode.ENTER);
+			focus = false;
+		}
 	}
 }

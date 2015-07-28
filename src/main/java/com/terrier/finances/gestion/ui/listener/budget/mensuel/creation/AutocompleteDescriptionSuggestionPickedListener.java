@@ -39,9 +39,10 @@ public class AutocompleteDescriptionSuggestionPickedListener implements
 	
 	@Override
 	public void onSuggestionPicked(String suggestion) {
-		
+
+		controleur.blurOnAutocompleteField();
 		LOGGER.debug("[IHM] Autocomplete picked : {}", suggestion);
 		descriptionField.setText(suggestion);
-		controleur.blurOnAutocompleteField();
+		descriptionField.setData(suggestion);
 	}
 }

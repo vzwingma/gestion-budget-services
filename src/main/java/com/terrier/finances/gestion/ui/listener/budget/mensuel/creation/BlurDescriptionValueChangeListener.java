@@ -36,6 +36,9 @@ public class BlurDescriptionValueChangeListener extends AbstractComponentListene
 	@Override
 	public void valueChange(ValueChangeEvent event) {		
 		this.controleur.blurOnAutocompleteField();
+		
+		// Injection de la valeur de la query sur la valeur du champ Autocomplete des fois que la saisie ne corresponde pas à un autocomplete
+		this.controleur.getComponent().getTextFieldDescription().setText((String)this.controleur.getComponent().getTextFieldDescription().getData());
 	}
 
 }
