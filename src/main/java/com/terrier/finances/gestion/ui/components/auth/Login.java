@@ -193,7 +193,7 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// textLogin
 		textLogin = new TextField();
 		textLogin.setCaption("Login");
-		textLogin.setImmediate(false);
+		textLogin.setImmediate(true);
 		textLogin.setDescription("Entrer le login");
 		textLogin.setWidth("100.0%");
 		textLogin.setHeight("-1px");
@@ -203,7 +203,7 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// passwordField
 		passwordField = new PasswordField();
 		passwordField.setCaption("Mot de passe");
-		passwordField.setImmediate(false);
+		passwordField.setImmediate(true);
 		passwordField.setDescription("Entrer le mot de passe");
 		passwordField.setWidth("100.0%");
 		passwordField.setHeight("-1px");

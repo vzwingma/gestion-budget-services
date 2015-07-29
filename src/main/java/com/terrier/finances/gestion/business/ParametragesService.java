@@ -29,9 +29,6 @@ public class ParametragesService {
 	private String version;
 	private String buildTime;
 	
-	private String defaultLogin;
-	private String defaultPwd;
-	
 	/**
 	 * Logger
 	 */
@@ -80,36 +77,6 @@ public class ParametragesService {
 
 	
 	
-	/**
-	 * @return the defaultLogin
-	 */
-	public String getDefaultLogin() {
-		return defaultLogin;
-	}
-
-	/**
-	 * @param defaultLogin the defaultLogin to set
-	 */
-	@Value("${budget.default.login}")
-	public void setDefaultLogin(String defaultLogin) {
-		this.defaultLogin = defaultLogin;
-	}
-
-	/**
-	 * @return the defaultPwd
-	 */
-	public String getDefaultPwd() {
-		return defaultPwd;
-	}
-
-	/**
-	 * @param defaultPwd the defaultPwd to set
-	 */
-	@Value("${budget.default.mdp}")
-	public void setDefaultPwd(String defaultPwd) {
-		this.defaultPwd = defaultPwd;
-	}
-
 	/**
 	 * @return liste des catégories
 	 */

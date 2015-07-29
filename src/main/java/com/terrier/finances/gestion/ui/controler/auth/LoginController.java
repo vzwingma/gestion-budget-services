@@ -7,10 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.ParametragesService;
+import com.terrier.finances.gestion.ui.UISessionManager;
 import com.terrier.finances.gestion.ui.components.auth.Login;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.auth.LoginConnexionClickListener;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Notification;
 
 /**
  * Controleur du login
@@ -28,8 +31,8 @@ public class LoginController extends AbstractUIController<Login>{
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(ParametragesService.class);
-	
-	
+
+
 	/**
 	 * Démarrage du contoleur
 	 * @param composant
@@ -45,8 +48,8 @@ public class LoginController extends AbstractUIController<Login>{
 	public void initDynamicComponentsOnPage() {
 		// Ajout controle
 		getComponent().getButtonConnexion().addClickListener(new LoginConnexionClickListener(this.getComponent()));
-
 	}
+
 
 
 	/* (non-Javadoc)
@@ -54,17 +57,39 @@ public class LoginController extends AbstractUIController<Login>{
 	 */
 	@Override
 	public void miseAJourVueDonnees() {
-		
+
 		LOGGER.info("Démarrage de l'application [{}][{}]", getServiceParams().getVersion(), getServiceParams().getBuildTime());
-		
+
 		getComponent().getTextLogin().setIcon(new ThemeResource("img/login.png"));
 		getComponent().getPasswordField().setIcon(new ThemeResource("img/passwd.png"));
 
-		getComponent().getTextLogin().setValue(getServiceParams().getDefaultLogin());
-		getComponent().getPasswordField().setValue(getServiceParams().getDefaultPwd());
+		//		getComponent().getTextLogin().setValue(getServiceParams().getDefaultLogin());
+		//		getComponent().getPasswordField().setValue(getServiceParams().getDefaultPwd());
 
-		
+
 		getComponent().getLabelVersion().setValue("Version : " + getServiceParams().getVersion());
 		getComponent().getLabelBuildTime().setValue("Build : " + getServiceParams().getBuildTime());
+	}
+
+
+
+	/**
+	 * Méthode d'authenticiation de l'utilisateur
+	 */
+	public void authenticateUser(){
+		boolean auth = getServiceAuthentification().validate(
+				getComponent().getTextLoginValue(), 
+				getComponent().getPasswordField().getValue());
+		if(auth){	
+			LOGGER.info("Accès autorisé pour {}", getComponent().getTextLoginValue());
+			// MAJ
+			UISessionManager.getSession().getMainLayout().removeAllComponents();
+			UISessionManager.getSession().getMainLayout().addComponent(new BudgetMensuelPage());
+
+		}
+		else{
+			LOGGER.error("****************** ECHEC AUTH ***********************");
+			Notification.show("Les login et mot de passe sont incorrects", Notification.Type.ERROR_MESSAGE);
+		}
 	}
 }

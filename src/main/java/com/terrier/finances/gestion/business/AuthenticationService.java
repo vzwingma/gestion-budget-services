@@ -98,7 +98,6 @@ public class AuthenticationService {
 	 * @return utilisateur
 	 */
 	public Utilisateur getUtilisateur(String login, String mdpHashed){
-		LOGGER.info("Tentative d'authentification de {}", login);
 		String logAttempt;
 		logAttempt = hashPassWord(login+"::"+mdpHashed);
 		LOGGER.debug(">{}<", logAttempt);
