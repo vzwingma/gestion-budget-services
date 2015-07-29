@@ -65,13 +65,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 
 
 	/**
-	 * @return login
-	 */
-	public String getTextLoginValue() {
-		return textLogin.getValue();
-	}
-
-	/**
 	 * @return the buttonConnexion
 	 */
 	public Button getButtonConnexion() {

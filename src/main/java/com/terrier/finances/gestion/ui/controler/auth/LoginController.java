@@ -63,11 +63,6 @@ public class LoginController extends AbstractUIController<Login>{
 
 		getComponent().getTextLogin().setIcon(new ThemeResource("img/login.png"));
 		getComponent().getPasswordField().setIcon(new ThemeResource("img/passwd.png"));
-
-		//		getComponent().getTextLogin().setValue(getServiceParams().getDefaultLogin());
-		//		getComponent().getPasswordField().setValue(getServiceParams().getDefaultPwd());
-
-
 		getComponent().getLabelVersion().setValue("Version : " + getServiceParams().getVersion());
 		getComponent().getLabelBuildTime().setValue("Build : " + getServiceParams().getBuildTime());
 	}
@@ -76,13 +71,14 @@ public class LoginController extends AbstractUIController<Login>{
 
 	/**
 	 * Méthode d'authenticiation de l'utilisateur
+	 * @param login de l'utilisateur
+	 * @param password en clair de l'utilisateur
 	 */
-	public void authenticateUser(){
+	public void authenticateUser(String login, String password){
 		boolean auth = getServiceAuthentification().validate(
-				getComponent().getTextLoginValue(), 
-				getComponent().getPasswordField().getValue());
+				login, password);
 		if(auth){	
-			LOGGER.info("Accès autorisé pour {}", getComponent().getTextLoginValue());
+			LOGGER.info("Accès autorisé pour {}", login);
 			// MAJ
 			UISessionManager.getSession().getMainLayout().removeAllComponents();
 			UISessionManager.getSession().getMainLayout().addComponent(new BudgetMensuelPage());

@@ -35,8 +35,9 @@ public class LoginConnexionClickListener extends AbstractComponentListener imple
 	
 	@Override
 	public void buttonClick(ClickEvent event) {
-		System.err.println(this.loginPage.getTextLogin().getValue() + "::"+this.loginPage.getPasswordField().getValue());
 		// Authentification
-		getControleur(LoginController.class).authenticateUser();
+		getControleur(LoginController.class).authenticateUser(
+				this.loginPage.getTextLogin().getValue(), 
+				this.loginPage.getPasswordField().getValue());
 	}
 }
