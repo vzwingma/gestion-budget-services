@@ -89,7 +89,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		getComponent().getButtonCreate().setDescription("Ajouter une nouvelle opération");
 		getComponent().getComboBoxComptes().setNullSelectionAllowed(false);
 		getComponent().getComboBoxComptes().setImmediate(true);
-		
+
 		getComponent().getButtonValider().setVisible(false);
 		getComponent().getButtonValider().setEnabled(false);
 		getComponent().getButtonValider().addClickListener(new ActionValiderAnnulerEditionDepenseListener());
@@ -100,14 +100,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		getComponent().getButtonAnnuler().addClickListener(new ActionValiderAnnulerEditionDepenseListener());
 		getComponent().getButtonAnnuler().setDescription("Annuler les modifications du tableau des dépenses");
 
-		
+
 		// Init des controleurs
 		this.tableSuiviDepenseControleur = getComponent().getTableSuiviDepense().getControleur();
 		this.treeResumeControleur = getComponent().getTreeResume().getControleur();
 		this.tableTotalResumeControleur = getComponent().getTableTotalResume().getControleur();
 
-		// Maj des composants MOIS/COMPTES
-		getComponent().getMois().setResolution(Resolution.MONTH);
 		// Init premiere fois
 		Calendar dateBudget = Calendar.getInstance();
 		dateBudget.set(Calendar.DAY_OF_MONTH, 1);
@@ -115,10 +113,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			getComponent().getMois().setValue(dateBudget.getTime());
 			LOGGER.debug("[INIT] Init du mois géré : {}", dateBudget.getTime());
 		}
+
+
+		// Maj des composants MOIS/COMPTES
+		getComponent().getMois().setResolution(Resolution.MONTH);
 		getComponent().getMois().setImmediate(true);
 		getComponent().getMois().addValueChangeListener(this);
-
-
 
 		this.compte = getComponent().getComboBoxComptes();
 		this.compte.setImmediate(true);
@@ -141,6 +141,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 				}
 				this.compte.setItemIcon(compte.getId(), new ThemeResource(compte.getItemIcon()));
 			}
+			String idCompte = (String)this.compte.getConvertedValue();
+			setRangeDebutMois(idCompte);
 			this.compte.setTextInputAllowed(false);
 			this.compte.addValueChangeListener(this);
 			// Bouton stat
@@ -213,11 +215,15 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			Calendar d = Calendar.getInstance();
 			d.setTime((Date)event.getProperty().getValue());
 			d.set(Calendar.DAY_OF_MONTH, 1);
+			setRangeFinMois(d);
 			miseAJour = d.get(Calendar.MONTH) != this.oldMois || d.get(Calendar.YEAR) != this.oldAnnee;			
 		}
 		else{
 			// Modification du compte
 			miseAJour = true;
+
+			String idCompte = (String)this.compte.getConvertedValue();
+			setRangeDebutMois(idCompte);
 		}
 		// Si oui : refresh
 		if(miseAJour){
@@ -226,6 +232,41 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	}
 
 
+	/**
+	 * Mise à jour du range fin
+	 * @param dateFin
+	 */
+	private void setRangeDebutMois(String idCompte){
+		if(idCompte != null){
+			// Bouton Mois précédent limité au mois du
+			// Premier budget du compte de cet utilisateur
+			try {
+				Calendar datePremierBudget = getServiceDepense().getDatePremierBudget(idCompte);
+				getComponent().getMois().setRangeStart(datePremierBudget.getTime());
+
+			} catch (DataNotFoundException e) {
+				LOGGER.error("[IHM] Erreur lors du chargement du premier budget");
+			}
+
+		}
+		LOGGER.info("[IHM] > Affichage limité à > [{}/{}]", getComponent().getMois().getRangeStart(), getComponent().getMois().getRangeEnd());
+
+	}
+	/**
+	 * Mise à jour du range fin
+	 * @param dateFin
+	 */
+	private void setRangeFinMois(Calendar dateFin){
+		if(dateFin != null){
+			// Bouton Mois suivant limité au mois prochain.
+			Calendar dateRangeBudget = Calendar.getInstance();
+			dateRangeBudget.setTime(dateFin.getTime());
+			dateRangeBudget.add(Calendar.MONTH, 1);
+			getComponent().getMois().setRangeEnd(dateRangeBudget.getTime());
+		}
+		LOGGER.info("[IHM] < Affichage limité à [{}/{}] <", getComponent().getMois().getRangeStart(), getComponent().getMois().getRangeEnd());
+
+	}
 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.ui.controler.AbstractUIController#chargeDonnees()
@@ -244,11 +285,14 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		LOGGER.debug("[BUDGET] Gestion du Compte : {} du mois {}",idCompte, c.getTime());
 
 		try {
+			// Budget
 			BudgetMensuel budget = getServiceDepense().chargerBudgetMensuel(
 					UISessionManager.getSession().getUtilisateurCourant(),
 					idCompte,
 					c.get(Calendar.MONTH), 
 					c.get(Calendar.YEAR));
+
+			// Maj du budget
 			UISessionManager.getSession().setBudgetMensuelCourant(budget);
 			if(c.get(Calendar.MONTH) == oldMois && idCompte.equals(oldIdCompte)){
 				refreshAllTable = false;

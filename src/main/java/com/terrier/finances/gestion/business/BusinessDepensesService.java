@@ -101,6 +101,16 @@ public class BusinessDepensesService {
 
 		return budgetMensuel;
 	}
+	
+	/**
+	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
+	 * @param utilisateur utilisateur
+	 * @param compte id du compte
+	 * @return la date du premier budget décrit pour cet utilisateur
+	 */
+	public Calendar getDatePremierBudget(String compte) throws DataNotFoundException{
+		return this.dataDepenses.getDatePremierBudget(compte);
+	}
 
 	/**
 	 * Chargement du budget du mois courant
@@ -170,7 +180,14 @@ public class BusinessDepensesService {
 		budget.setCompteBancaire(serviceParams.getCompteById(compte, utilisateur));
 
 		// Init si dans le futur par rapport au démarrage
-		if(annee >= 2015 || (annee == 2014 && mois > Calendar.SEPTEMBER)){
+		Calendar datePremierBudget = getDatePremierBudget(compte);
+		datePremierBudget.set(Calendar.DAY_OF_MONTH, 1);
+		
+		Calendar dateCourante = Calendar.getInstance();
+		dateCourante.set(Calendar.MONTH, mois);
+		dateCourante.set(Calendar.YEAR, annee);
+		
+		if(dateCourante.after(datePremierBudget)){
 			// MAJ Calculs à partir du mois précédent
 			// Mois précédent
 			int moisPrecedent = 0;

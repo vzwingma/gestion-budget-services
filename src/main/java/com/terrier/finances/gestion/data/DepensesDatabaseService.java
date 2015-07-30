@@ -1,11 +1,13 @@
 package com.terrier.finances.gestion.data;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -100,6 +102,30 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 
 	
 	
+	/**
+	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
+	 * @param utilisateur utilisateur
+	 * @param compte id du compte
+	 * @return la date du premier budget décrit pour cet utilisateur
+	 */
+	public Calendar getDatePremierBudget(String compte) throws DataNotFoundException{
+		Query queryBudget = new Query();
+		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is("inglivretA"));
+		queryBudget.with(new Sort(Sort.Direction.ASC, "annee")).with(new Sort(Sort.Direction.ASC, "mois"));
+		queryBudget.limit(1);
+		try{
+			BudgetMensuelDTO premierbudget = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class);
+			Calendar premier = Calendar.getInstance();
+			premier.set(Calendar.MONTH, premierbudget.getMois());
+			premier.set(Calendar.YEAR, premierbudget.getAnnee());
+			return premier;
+		}
+		catch(Exception e){
+			LOGGER.error("Erreur lors du chargement", e);
+			throw new DataNotFoundException("Erreur lors du chargement");
+		}
+	}
+
 	/**
 	 * 
 	 * @param idBudget
