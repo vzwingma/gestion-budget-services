@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jasypt.util.text.BasicTextEncryptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +27,6 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 public class DataTransformerLigneDepense implements IDataTransformer<LigneDepense, LigneDepenseDTO> {
 
 	
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataTransformerLigneDepense.class);
 	@Autowired
 	private ParametragesDatabaseService parametrageService;
 	
@@ -43,7 +37,9 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneDepens
 	public LigneDepense transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
 		LigneDepense bo = new LigneDepense();
 		bo.setId(dto.getId());
-		bo.setAuteur(decryptor.decrypt(dto.getAuteur()));
+		if(dto.getAuteur() !=null){
+			bo.setAuteur(decryptor.decrypt(dto.getAuteur()));
+		}
 		bo.setDateMaj(dto.getDateMaj());
 		bo.setDateOperation(dto.getDateOperation());
 		bo.setDerniereOperation(dto.isDerniereOperation());
