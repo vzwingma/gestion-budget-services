@@ -3,8 +3,9 @@ package com.terrier.finances.gestion.business;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
+import java.util.Calendar;
 
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,9 +83,25 @@ public class AuthenticationService {
 		Utilisateur utilisateur = getUtilisateur(login, mdpHashed);
 
 		if(utilisateur != null){
-			utilisateur.initEncryptor(motPasseClair);
-			UISessionManager.getSession().registerUtilisateur(utilisateur);
-			return true;
+			if(utilisateur.getCleChiffrementDonnees() == null){
+				LOGGER.warn("Clé de chiffrement nulle : Initialisation");
+				BasicTextEncryptor encryptorCle = new BasicTextEncryptor();
+				encryptorCle.setPassword(motPasseClair);
+				String cleChiffrementDonneesChiffree = encryptorCle.encrypt(motPasseClair);
+				LOGGER.warn("Clé de chiffrement chiffrée avec le mot de passe : {}", cleChiffrementDonneesChiffree);
+				utilisateur.setCleChiffrementDonnees(cleChiffrementDonneesChiffree);
+				dataDBParams.majUtilisateur(utilisateur);
+				utilisateur.initEncryptor(motPasseClair);
+			}
+			else{
+				LOGGER.debug("> Clé de chiffrement des données : {}", utilisateur.getCleChiffrementDonnees());
+				BasicTextEncryptor decryptorCle = new BasicTextEncryptor();
+				decryptorCle.setPassword(motPasseClair);
+				String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getCleChiffrementDonnees());
+				utilisateur.initEncryptor(cleChiffrementDonnees);
+			}
+			
+			return UISessionManager.getSession().registerUtilisateur(utilisateur);
 		}
 		else{
 			LOGGER.error("Erreur lors de l'authentification");
@@ -98,22 +115,22 @@ public class AuthenticationService {
 	 * @return utilisateur
 	 */
 	public Utilisateur getUtilisateur(String login, String mdpHashed){
-		String logAttempt;
-		logAttempt = hashPassWord(login+"::"+mdpHashed);
-		LOGGER.debug(">{}<", logAttempt);
 		try {
-			List<Utilisateur> listeUtilisateurs = dataDBParams.chargeUtilisateurs();
-			for (Utilisateur utilisateur : listeUtilisateurs) {
-
-				String logUser = hashPassWord(utilisateur.getLogin()+"::"+utilisateur.getHashMotDePasse());
-				if(logUser != null && logAttempt != null && logUser.equals(logAttempt)){
-					return utilisateur;
-				}
+			Utilisateur utilisateur = dataDBParams.chargeUtilisateur(login, mdpHashed);
+			if(utilisateur != null){
+				// Enregistrement de la date du dernier accès à maintenant
+				Calendar dernierAcces = utilisateur.getDateDernierAcces();
+				utilisateur.setDateDernierAcces(Calendar.getInstance());
+				dataDBParams.majUtilisateur(utilisateur);
+				utilisateur.setDateDernierAcces(dernierAcces);
+				return utilisateur;
+			}
+			else{
+				LOGGER.error("Erreur lors de l'authentification");
 			}
 		} catch (DataNotFoundException e) {
+			LOGGER.error("Erreur lors de l'authentification");
 		}
-
-		LOGGER.error("Erreur lors de l'authentification");
 		return null;
 	}
 

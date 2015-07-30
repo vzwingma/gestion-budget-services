@@ -72,11 +72,11 @@ public class LoginController extends AbstractUIController<Login>{
 	/**
 	 * Méthode d'authenticiation de l'utilisateur
 	 * @param login de l'utilisateur
-	 * @param password en clair de l'utilisateur
+	 * @param passwordEnClair en clair de l'utilisateur
 	 */
-	public void authenticateUser(String login, String password){
+	public void authenticateUser(String login, String passwordEnClair){
 		boolean auth = getServiceAuthentification().validate(
-				login, password);
+				login, passwordEnClair);
 		if(auth){	
 			LOGGER.info("Accès autorisé pour {}", login);
 			// MAJ

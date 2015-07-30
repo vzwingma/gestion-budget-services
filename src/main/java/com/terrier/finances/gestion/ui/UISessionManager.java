@@ -129,9 +129,10 @@ public class UISessionManager {
 	 * Enregistrement de l'utilisateur
 	 * @param utilisateur USER
 	 */
-	public void registerUtilisateur(Utilisateur utilisateur){
+	public boolean registerUtilisateur(Utilisateur utilisateur){
 		LOGGER.info("[{}] Enregistrement de l'utilisateur : {}", idSession, utilisateur);
 		this.utilisateurCourant = utilisateur;
+		return true;
 	}
 	
 	

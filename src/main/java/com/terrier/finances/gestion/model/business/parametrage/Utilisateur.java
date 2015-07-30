@@ -4,6 +4,7 @@
 package com.terrier.finances.gestion.model.business.parametrage;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Map;
 
 import org.jasypt.util.text.BasicTextEncryptor;
@@ -36,6 +37,10 @@ public class Utilisateur implements Serializable {
 	
 	private String hashMotDePasse;
 
+	// Clé de chiffrement des données. Le mot de passe du user permet de la déchiffrer
+	private String cleChiffrementDonnees;
+	
+	private Calendar dateDernierAcces;
 	/**
 	 *  Encryptor
 	 */
@@ -136,12 +141,58 @@ public class Utilisateur implements Serializable {
 		this.encryptor.setPassword(AuthenticationService.hashPassWord("#"+motDePasse+"#"));
 	}
 
+	
+	/**
+	 * @return the cleChiffrementDonnees
+	 */
+	public String getCleChiffrementDonnees() {
+		return cleChiffrementDonnees;
+	}
+
+	/**
+	 * @param cleChiffrementDonnees the cleChiffrementDonnees to set
+	 */
+	public void setCleChiffrementDonnees(String cleChiffrementDonnees) {
+		this.cleChiffrementDonnees = cleChiffrementDonnees;
+	}
+	
+	
+
+	/**
+	 * @return the dateDernierAcces
+	 */
+	public Calendar getDateDernierAcces() {
+		return dateDernierAcces;
+	}
+
+	/**
+	 * @param dateDernierAcces the dateDernierAcces to set
+	 */
+	public void setDateDernierAcces(Calendar dateDernierAcces) {
+		this.dateDernierAcces = dateDernierAcces;
+	}
+	
+	
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Utilisateur [id=" + id + ", login=" + login + ", libelle="
-				+ libelle + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Utilisateur [login=").append(login)
+				.append(", cleChiffrementDonnees=")
+				.append(cleChiffrementDonnees).append(", dateDernierAcces=")
+				.append(dateDernierAcces != null ? dateDernierAcces.getTime() : "nulle").append(", libelle=").append(libelle)
+				.append("]");
+		return builder.toString();
 	}
+
 }

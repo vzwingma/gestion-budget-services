@@ -99,6 +99,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	/**
 	 * @return la liste des catégories
 	 */
+	@Deprecated
 	public List<Utilisateur> chargeUtilisateurs() throws DataNotFoundException{
 		if(listeUtilisateurs.size() == 0){
 			try{
@@ -115,6 +116,37 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 
 
 	/**
+	 * @return la liste des catégories
+	 */
+	public Utilisateur chargeUtilisateur(String login, String mdpHashed) throws DataNotFoundException{
+		try{
+			LOGGER.info("Recherche de l'utilisateur {}/{}", login, mdpHashed);
+			Query queryUser = new Query();
+			queryUser.addCriteria(Criteria.where("login").is(login).and("hashMotDePasse").is(mdpHashed));
+			return getMongoOperation().findOne(queryUser, Utilisateur.class);
+		}
+		catch(Exception e){
+			LOGGER.error("Erreur lors de la recherche", e);
+			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur");
+		}
+	}
+
+
+	/**
+	 * @return la liste des catégories
+	 */
+	public void majUtilisateur(Utilisateur utilisateur){
+		try{
+			getMongoOperation().save(utilisateur);
+		}
+		catch(Exception e){
+			LOGGER.error("Erreur lors de la recherche", e);
+		}
+	}
+
+
+
+	/**
 	 * Chargement des comptes
 	 * @param utilisateur utilisateur 
 	 * @return liste des comptes associés
@@ -123,9 +155,9 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	public List<CompteBancaire> chargeComptes(Utilisateur utilisateur) throws DataNotFoundException{
 		List<CompteBancaire>  listeComptes = new ArrayList<CompteBancaire>();
 		try{
-			LOGGER.info("Chargement des comptes de {}", utilisateur);
+			LOGGER.info("Chargement des comptes de {} [_id={}]", utilisateur, utilisateur.getId());
 			Query queryBudget = new Query();
-			queryBudget.addCriteria(Criteria.where("listeProprietaires").in(utilisateur));
+			queryBudget.addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(utilisateur.getId())));
 			try{
 				listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class);
 				LOGGER.info(" {} comptes chargés ", listeComptes.size());
