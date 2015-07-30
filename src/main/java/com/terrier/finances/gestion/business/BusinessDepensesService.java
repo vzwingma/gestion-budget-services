@@ -184,7 +184,7 @@ public class BusinessDepensesService {
 			}
 			// Recherche du budget précédent 
 			// Si impossible : BudgetNotFoundException
-			BudgetMensuel budgetPrecedent = this.dataDepenses.chargeBudgetMensuel(compte, moisPrecedent, anneePrecedente);
+			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(utilisateur, compte, moisPrecedent, anneePrecedente);
 			initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 		}
 		else{
@@ -220,7 +220,7 @@ public class BusinessDepensesService {
 	private void initBudgetFromBudgetPrecedent(BudgetMensuel budget, BudgetMensuel budgetPrecedent){
 		// Calcul
 		calculBudget(budgetPrecedent);
-
+		budget.setCompteBancaire(budgetPrecedent.getCompteBancaire());
 		budget.setMargeSecurite(budgetPrecedent.getMargeSecurite());
 		budget.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
 		for (LigneDepense depenseMoisPrecedent : budgetPrecedent.getListeDepenses()) {
