@@ -20,7 +20,7 @@ import com.vaadin.ui.VerticalLayout;
  *
  */
 @Theme("mytheme")
-@Title("Budget de Tushkan i Yogik")
+@Title("Gestion de budget")
 public class FinancesVaadinUI extends UI
 {
 
