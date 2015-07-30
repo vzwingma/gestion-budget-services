@@ -1,9 +1,11 @@
 package com.terrier.finances.gestion.ui.controler.budget.mensuel;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +115,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			getComponent().getMois().setValue(dateBudget.getTime());
 			LOGGER.debug("[INIT] Init du mois géré : {}", dateBudget.getTime());
 		}
-
+		// Label lastconnextion
+		if(UISessionManager.getSession().getUtilisateurCourant().getDateDernierAcces() != null){
+			SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm", Locale.FRENCH);
+			String date = sdf.format(UISessionManager.getSession().getUtilisateurCourant().getDateDernierAcces().getTime());
+			this.getComponent().getLabelLastConnected().setValue("Dernière connexion : \n" + date);
+		}
 
 		// Maj des composants MOIS/COMPTES
 		getComponent().getMois().setResolution(Resolution.MONTH);
