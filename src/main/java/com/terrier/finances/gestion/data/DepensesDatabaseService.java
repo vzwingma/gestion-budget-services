@@ -108,17 +108,28 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	 * @param compte id du compte
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
-	public Calendar getDatePremierBudget(String compte) throws DataNotFoundException{
-		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is("inglivretA"));
-		queryBudget.with(new Sort(Sort.Direction.ASC, "annee")).with(new Sort(Sort.Direction.ASC, "mois"));
-		queryBudget.limit(1);
+	public Calendar[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
+		Query query1erBudget = new Query();
+		query1erBudget.addCriteria(Criteria.where("compteBancaire.id").is(compte));
+		query1erBudget.with(new Sort(Sort.Direction.ASC, "annee")).with(new Sort(Sort.Direction.ASC, "mois"));
+		query1erBudget.limit(1);
+		
+		Query querydernierBudget = new Query();
+		querydernierBudget.addCriteria(Criteria.where("compteBancaire.id").is(compte));
+		querydernierBudget.with(new Sort(Sort.Direction.DESC, "annee")).with(new Sort(Sort.Direction.DESC, "mois"));
+		querydernierBudget.limit(1);
 		try{
-			BudgetMensuelDTO premierbudget = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class);
+			BudgetMensuelDTO premierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class);
 			Calendar premier = Calendar.getInstance();
 			premier.set(Calendar.MONTH, premierbudget.getMois());
 			premier.set(Calendar.YEAR, premierbudget.getAnnee());
-			return premier;
+			
+			BudgetMensuelDTO dernierbudget = getMongoOperation().findOne(querydernierBudget, BudgetMensuelDTO.class);
+			Calendar dernier = Calendar.getInstance();
+			dernier.set(Calendar.MONTH, dernierbudget.getMois());
+			dernier.set(Calendar.YEAR, dernierbudget.getAnnee());
+			dernier.add(Calendar.MONTH, 1);
+			return new Calendar[]{premier, dernier};
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement", e);

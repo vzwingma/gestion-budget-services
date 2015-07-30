@@ -142,7 +142,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 				this.compte.setItemIcon(compte.getId(), new ThemeResource(compte.getItemIcon()));
 			}
 			String idCompte = (String)this.compte.getConvertedValue();
-			setRangeDebutMois(idCompte);
+			initRangeDebutFinMois(idCompte);
 			this.compte.setTextInputAllowed(false);
 			this.compte.addValueChangeListener(this);
 			// Bouton stat
@@ -202,7 +202,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		}
 	}
 
-
+	
 	/**
 	 * Modif du compte ou bien de la date
 	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
@@ -216,14 +216,15 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			d.setTime((Date)event.getProperty().getValue());
 			d.set(Calendar.DAY_OF_MONTH, 1);
 			setRangeFinMois(d);
-			miseAJour = d.get(Calendar.MONTH) != this.oldMois || d.get(Calendar.YEAR) != this.oldAnnee;			
+			if(d.get(Calendar.MONTH) != this.oldMois || d.get(Calendar.YEAR) != this.oldAnnee){
+				miseAJourVueDonnees();			
+			}
 		}
 		else{
 			// Modification du compte
 			miseAJour = true;
-
 			String idCompte = (String)this.compte.getConvertedValue();
-			setRangeDebutMois(idCompte);
+			initRangeDebutFinMois(idCompte);
 		}
 		// Si oui : refresh
 		if(miseAJour){
@@ -232,18 +233,21 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	}
 
 
+
+
+
 	/**
 	 * Mise à jour du range fin
 	 * @param dateFin
 	 */
-	private void setRangeDebutMois(String idCompte){
+	private void initRangeDebutFinMois(String idCompte){
 		if(idCompte != null){
 			// Bouton Mois précédent limité au mois du
 			// Premier budget du compte de cet utilisateur
 			try {
-				Calendar datePremierBudget = getServiceDepense().getDatePremierBudget(idCompte);
-				getComponent().getMois().setRangeStart(datePremierBudget.getTime());
-
+				Calendar[] datePremierDernierBudgets = getServiceDepense().getDatePremierDernierBudgets(idCompte);
+				getComponent().getMois().setRangeStart(datePremierDernierBudgets[0].getTime());
+				getComponent().getMois().setRangeEnd(datePremierDernierBudgets[1].getTime());
 			} catch (DataNotFoundException e) {
 				LOGGER.error("[IHM] Erreur lors du chargement du premier budget");
 			}
@@ -262,7 +266,9 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			Calendar dateRangeBudget = Calendar.getInstance();
 			dateRangeBudget.setTime(dateFin.getTime());
 			dateRangeBudget.add(Calendar.MONTH, 1);
-			getComponent().getMois().setRangeEnd(dateRangeBudget.getTime());
+			if(dateRangeBudget.getTime().after(getComponent().getMois().getRangeEnd())){
+				getComponent().getMois().setRangeEnd(dateRangeBudget.getTime());
+			}
 		}
 		LOGGER.info("[IHM] < Affichage limité à [{}/{}] <", getComponent().getMois().getRangeStart(), getComponent().getMois().getRangeEnd());
 
@@ -383,11 +389,11 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		 * Affichage par catégorie
 		 */
 		LOGGER.debug("[IHM] Total par categorie");
-		treeResumeControleur.miseAJourVueDonnees(budgetCourant, getMaxDate(listeDepenses, budgetCourant.getMois(), budgetCourant.getAnnee()));
+		treeResumeControleur.miseAJourVueDonnees(budgetCourant, getMaxDateListeDepenses(listeDepenses, budgetCourant.getMois(), budgetCourant.getAnnee()));
 		/**
 		 * Affichage du résumé
 		 */
-		tableTotalResumeControleur.miseAJourVueDonnees(budgetCourant, getMaxDate(listeDepenses, budgetCourant.getMois(), budgetCourant.getAnnee()));
+		tableTotalResumeControleur.miseAJourVueDonnees(budgetCourant, getMaxDateListeDepenses(listeDepenses, budgetCourant.getMois(), budgetCourant.getAnnee()));
 
 		LOGGER.debug("<< Mise à jour des vues <<");
 		this.refreshAllTable = false;
@@ -398,7 +404,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * @param listeDepenses
 	 * @return date max d'une liste de dépenses
 	 */
-	private Calendar getMaxDate(List<LigneDepense> listeDepenses, int moisBudgetCourant, int anneeBudgetCourant){
+	private Calendar getMaxDateListeDepenses(List<LigneDepense> listeDepenses, int moisBudgetCourant, int anneeBudgetCourant){
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR, anneeBudgetCourant);
 		c.set(Calendar.MONTH, moisBudgetCourant);

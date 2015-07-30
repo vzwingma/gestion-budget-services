@@ -108,8 +108,8 @@ public class BusinessDepensesService {
 	 * @param compte id du compte
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
-	public Calendar getDatePremierBudget(String compte) throws DataNotFoundException{
-		return this.dataDepenses.getDatePremierBudget(compte);
+	public Calendar[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
+		return this.dataDepenses.getDatePremierDernierBudgets(compte);
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class BusinessDepensesService {
 		budget.setCompteBancaire(serviceParams.getCompteById(compte, utilisateur));
 
 		// Init si dans le futur par rapport au démarrage
-		Calendar datePremierBudget = getDatePremierBudget(compte);
+		Calendar datePremierBudget = getDatePremierDernierBudgets(compte)[0];
 		datePremierBudget.set(Calendar.DAY_OF_MONTH, 1);
 		
 		Calendar dateCourante = Calendar.getInstance();
