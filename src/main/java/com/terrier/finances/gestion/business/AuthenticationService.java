@@ -5,20 +5,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 
-import org.apache.commons.codec.binary.Base64;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.business.rest.auth.RestSessionManager;
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
@@ -30,7 +22,7 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
  *
  */
 @Service
-public class AuthenticationService implements AuthenticationProvider {
+public class AuthenticationService {
 
 	/**
 	 * Logger
@@ -50,6 +42,7 @@ public class AuthenticationService implements AuthenticationProvider {
 	private ParametragesDatabaseService dataDBParams;
 	@Autowired
 	private ParametragesService serviceParametrages;
+
 	/**
 	 * @param password mot de passe
 	 * @return password hashé en 256
@@ -135,41 +128,5 @@ public class AuthenticationService implements AuthenticationProvider {
 	 */
 	public <T> T getPreferenceUtilisateurCourant(String clePreference, Class<T> typeValeurPreference){
 		return UISessionManager.getSession().getUtilisateurCourant().getPreference(clePreference, typeValeurPreference);
-	}
-
-
-	/**
-	 * Authentification REST
-	 * @see org.springframework.security.authentication.AuthenticationProvider#authenticate(org.springframework.security.core.Authentication)
-	 */
-	@Override
-	public Authentication authenticate(Authentication authentication)
-			throws AuthenticationException {
-		String username = authentication.getName();
-		String password = (String) authentication.getCredentials();
-		Utilisateur utilisateur = authenticate(username, password);
-		if (utilisateur == null) {
-			throw new BadCredentialsException("Erreur d'authentification.");
-		}
-		else{
-			RestSessionManager.getInstance().registerSession(getIdSession(username+":"+password), utilisateur);
-		}
-		return new UsernamePasswordAuthenticationToken(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.security.authentication.AuthenticationProvider#supports(java.lang.Class)
-	 */
-	@Override
-	public boolean supports(Class<?> authentication) {
-		return true;
-	}
-	
-	/**
-	 * @param data données
-	 * @return données en base64
-	 */
-	private String getIdSession(String data){
-		return Base64.encodeBase64String(data.getBytes());
 	}
 }
