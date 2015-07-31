@@ -55,7 +55,6 @@ public class RestSessionManager {
 	 * @throws UnsupportedEncodingException 
 	 */
 	public RestSession getSession(String authUser) throws UserNotAuthorizedException{
-		LOGGER.info("AuthUser : {}", authUser);
 		String idSession = AuthenticationService.hashPassWord(authUser);
 		if(authUser == null){
 			LOGGER.error("Session {} introuvable", idSession);

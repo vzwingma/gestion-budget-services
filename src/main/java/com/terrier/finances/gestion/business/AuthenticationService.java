@@ -84,7 +84,7 @@ public class AuthenticationService implements AuthenticationProvider {
 	 */
 	public Utilisateur authenticate(String login, String motPasseClair){
 
-		LOGGER.info("Tentative d'authentification de {}:{}", login, motPasseClair);
+		LOGGER.info("Tentative d'authentification de {}", login);
 		String mdpHashed = hashPassWord(motPasseClair);
 		Utilisateur utilisateur;
 		try {
@@ -170,8 +170,6 @@ public class AuthenticationService implements AuthenticationProvider {
 	 * @return données en base64
 	 */
 	private String getIdSession(String data){
-		String b64 = Base64.encodeBase64String(data.getBytes());
-		LOGGER.info("b64 : [{}]", b64);
-		return b64;
+		return Base64.encodeBase64String(data.getBytes());
 	}
 }
