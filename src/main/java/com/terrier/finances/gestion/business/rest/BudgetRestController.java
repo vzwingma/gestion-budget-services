@@ -80,7 +80,7 @@ public class BudgetRestController {
 	public List<CategorieDepenseDTO> getCategoriesDepenses(
 			HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
 
-		RestSession restSession = RestSessionManager.getSession(request.getHeader("Authorization"));
+		RestSession restSession = RestSessionManager.getInstance().getSession(request.getHeader("Authorization"));
 		LOGGER.debug("[REST][{}] Appel REST GetCategoriesDepenses", restSession);
 		try{
 			return dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null);
@@ -101,7 +101,7 @@ public class BudgetRestController {
 			method=RequestMethod.GET, produces = "application/json")
 	public ContexteUtilisateurDTO getContexteUtilisateur(HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
 
-		RestSession restSession = RestSessionManager.getSession(request.getHeader("Authorization"));
+		RestSession restSession = RestSessionManager.getInstance().getSession(request.getHeader("Authorization"));
 		LOGGER.debug("[REST][{}] Appel REST getContexteUtilisateur", restSession);
 
 		ContexteUtilisateurDTO contexteUtilisateur = new ContexteUtilisateurDTO();
@@ -160,7 +160,7 @@ public class BudgetRestController {
 			@PathVariable String strAnnee, 
 			HttpServletRequest request) throws BudgetNotFoundException, DataNotFoundException, UserNotAuthorizedException{
 
-		RestSession restSession = RestSessionManager.getSession(request.getHeader("Authorization"));
+		RestSession restSession = RestSessionManager.getInstance().getSession(request.getHeader("Authorization"));
 		LOGGER.debug("[REST][{}] Appel REST getContexteUtilisateur", restSession);
 
 		LOGGER.debug("Appel REST getBudget : compte : {}, période : {}", idCompte, strMois, strAnnee);
@@ -203,7 +203,7 @@ public class BudgetRestController {
 	public List<LigneDepenseDTO> getLignesDepenses(@PathVariable String idbudget, HttpServletRequest request) 
 			throws UserNotAuthorizedException, DataNotFoundException{
 
-		RestSession restSession = RestSessionManager.getSession(request.getHeader("Authorization"));
+		RestSession restSession = RestSessionManager.getInstance().getSession(request.getHeader("Authorization"));
 		LOGGER.debug("[REST][{}] Appel REST getLignesDepenses", restSession);
 
 		LOGGER.debug("Appel REST getLignesDepenses : idbudget={}", idbudget);

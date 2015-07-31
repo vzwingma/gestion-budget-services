@@ -152,7 +152,7 @@ public class AuthenticationService implements AuthenticationProvider {
 			throw new BadCredentialsException("Erreur d'authentification.");
 		}
 		else{
-			RestSessionManager.registerSession(getIdSession(username+":"+password), utilisateur);
+			RestSessionManager.getInstance().registerSession(getIdSession(username+":"+password), utilisateur);
 		}
 		return new UsernamePasswordAuthenticationToken(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
 	}
