@@ -1,6 +1,6 @@
 package com.terrier.finances.gestion.ui.components.confirm;
 
-import com.terrier.finances.gestion.ui.UISessionManager;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;

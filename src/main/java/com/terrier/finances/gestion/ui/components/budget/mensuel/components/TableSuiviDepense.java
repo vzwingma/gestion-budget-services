@@ -9,9 +9,9 @@ import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
-import com.terrier.finances.gestion.ui.UISessionManager;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITableComponent;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.data.Property;
 
 /**

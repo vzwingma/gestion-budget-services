@@ -16,7 +16,6 @@ import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.UISessionManager;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.stats.StatistiquesPage;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableResumeTotauxController;
@@ -30,6 +29,7 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionLockBudgetC
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionRefreshMonthBudgetClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionValiderAnnulerEditionDepenseListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionCreerDepenseClickListener;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -175,7 +175,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * Déconnexion de l'utilisateur
 	 */
 	public void deconnexion(){
-		UISessionManager.getSession().deconnexion();
+		UISessionManager.deconnexion();
 	}
 
 

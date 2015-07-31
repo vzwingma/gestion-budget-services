@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.ui;
+package com.terrier.finances.gestion.ui.sessions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,14 +24,11 @@ import com.vaadin.ui.Window;
  * @author vzwingma
  *
  */
-public class UISessionManager {
+public class UISession {
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UISessionManager.class);
-
-	// Gestionnaire des composants UI
-	private static Map<String, UISessionManager> componentsManager = new HashMap<String, UISessionManager>();
+	private static final Logger LOGGER = LoggerFactory.getLogger(UISession.class);
 
 	private String idSession;
 	
@@ -39,8 +36,8 @@ public class UISessionManager {
 	 * Session Manager
 	 * @param idSession idSessions
 	 */
-	public UISessionManager(String idSession){
-		LOGGER.debug("[INIT][{}] UISessionManager ", idSession);
+	public UISession(String idSession){
+		LOGGER.debug("[INIT][{}] Session UI ", idSession);
 		this.idSession = idSession;
 	}
 
@@ -61,23 +58,6 @@ public class UISessionManager {
 
 	private Window popupModale;
 
-	/**
-	 * @return l'instance du manager UI
-	 */
-	public static UISessionManager getSession(){
-		String idSession = null;
-		if(UI.getCurrent() != null && UI.getCurrent().getSession() != null && UI.getCurrent().getSession().getCsrfToken() != null){
-			 idSession = UI.getCurrent().getSession().getCsrfToken();
-		}
-		else{
-			LOGGER.warn("[TEST] ***** id session de test  ***** ");
-			idSession = "TEST";
-		}
-		if(componentsManager.get(idSession) == null){
-			componentsManager.put(idSession, new UISessionManager(idSession));
-		}
-		return componentsManager.get(idSession);
-	}
 
 	/**
 	 * Déconnexion de l'utilisateur

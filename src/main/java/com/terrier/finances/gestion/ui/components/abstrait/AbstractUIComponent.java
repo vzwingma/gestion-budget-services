@@ -6,8 +6,8 @@ package com.terrier.finances.gestion.ui.components.abstrait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.ui.UISessionManager;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 

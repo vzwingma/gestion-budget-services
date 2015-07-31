@@ -18,7 +18,7 @@ import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.UISessionManager;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 
 /**
  * DAO Dépenses vers MongoDB

@@ -7,11 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.ParametragesService;
-import com.terrier.finances.gestion.ui.UISessionManager;
 import com.terrier.finances.gestion.ui.components.auth.Login;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.auth.LoginConnexionClickListener;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Notification;
 

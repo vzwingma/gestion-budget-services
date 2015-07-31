@@ -5,8 +5,8 @@ import java.io.Serializable;
 import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.business.ParametragesService;
-import com.terrier.finances.gestion.ui.UISessionManager;
 import com.terrier.finances.gestion.ui.controler.FacadeServices;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.AbstractComponent;
 
 /**

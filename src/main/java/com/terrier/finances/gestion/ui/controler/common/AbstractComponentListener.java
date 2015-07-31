@@ -3,7 +3,7 @@
  */
 package com.terrier.finances.gestion.ui.controler.common;
 
-import com.terrier.finances.gestion.ui.UISessionManager;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.CustomComponent;
 
 /**

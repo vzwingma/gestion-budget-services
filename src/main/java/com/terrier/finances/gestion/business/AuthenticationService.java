@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.UISessionManager;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 
 /**
  * Service d'authentification
@@ -78,9 +78,8 @@ public class AuthenticationService {
 	 */
 	public boolean validate(String login, String motPasseClair){
 
-		String mdpHashed = hashPassWord(motPasseClair);
 		LOGGER.info("Tentative d'authentification de {}", login);
-		Utilisateur utilisateur = getUtilisateur(login, mdpHashed);
+		Utilisateur utilisateur = getUtilisateur(login, motPasseClair);
 
 		if(utilisateur != null){
 			if(utilisateur.getCleChiffrementDonnees() == null){
@@ -114,8 +113,9 @@ public class AuthenticationService {
 	 * @param motPasseClair
 	 * @return utilisateur
 	 */
-	public Utilisateur getUtilisateur(String login, String mdpHashed){
+	public Utilisateur getUtilisateur(String login, String motPasseClair){
 		try {
+			String mdpHashed = hashPassWord(motPasseClair);
 			Utilisateur utilisateur = dataDBParams.chargeUtilisateur(login, mdpHashed);
 			if(utilisateur != null){
 				// Enregistrement de la date du dernier accès à maintenant
