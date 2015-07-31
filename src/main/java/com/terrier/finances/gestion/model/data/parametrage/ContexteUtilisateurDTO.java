@@ -25,8 +25,6 @@ public class ContexteUtilisateurDTO {
 	private Map<String, Date> mapMinDateCompte = new HashMap<String, Date>();
 	private Map<String, Date> mapMaxDateCompte = new HashMap<String, Date>();
 
-	private List<CategorieDepenseDTO> categoriesDTO;
-	
 	/**
 	 * @return the utilisateur
 	 */
@@ -93,20 +91,6 @@ public class ContexteUtilisateurDTO {
 	public void setIntervalleCompte(CompteBancaire compte, Calendar minDate, Calendar maxDate){
 		this.mapMinDateCompte.put(compte.getId(), minDate.getTime());
 		this.mapMaxDateCompte.put(compte.getId(), maxDate.getTime());
-	}
-
-	/**
-	 * @return the categories
-	 */
-	public List<CategorieDepenseDTO> getCategories() {
-		return categoriesDTO;
-	}
-
-	/**
-	 * @param categories the categories to set
-	 */
-	public void setCategories(List<CategorieDepenseDTO> categories) {
-		this.categoriesDTO = categories;
 	}
 }
 

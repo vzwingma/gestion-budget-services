@@ -5,12 +5,20 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 
+import org.apache.commons.codec.binary.Base64;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
+import com.terrier.finances.gestion.business.rest.auth.RestSessionManager;
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
@@ -22,7 +30,7 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
  *
  */
 @Service
-public class AuthenticationService {
+public class AuthenticationService implements AuthenticationProvider {
 
 	/**
 	 * Logger
@@ -62,9 +70,7 @@ public class AuthenticationService {
 			}
 
 			return hexString.toString();
-		} catch (NoSuchAlgorithmException e){
-			return null;
-		} catch (UnsupportedEncodingException e) {
+		} catch (NullPointerException | NoSuchAlgorithmException | UnsupportedEncodingException e){
 			return null;
 		}
 	}
@@ -76,12 +82,24 @@ public class AuthenticationService {
 	 * @param motPasseClair mdp
 	 * @return si valide
 	 */
-	public boolean validate(String login, String motPasseClair){
+	public Utilisateur authenticate(String login, String motPasseClair){
 
-		LOGGER.info("Tentative d'authentification de {}", login);
-		Utilisateur utilisateur = getUtilisateur(login, motPasseClair);
+		LOGGER.info("Tentative d'authentification de {}:{}", login, motPasseClair);
+		String mdpHashed = hashPassWord(motPasseClair);
+		Utilisateur utilisateur;
+		try {
+			utilisateur = dataDBParams.chargeUtilisateur(login, mdpHashed);
+		} catch (DataNotFoundException e) {
+			utilisateur = null;
+		}
 
 		if(utilisateur != null){
+			// Enregistrement de la date du dernier accès à maintenant
+			Calendar dernierAcces = utilisateur.getDateDernierAcces();
+			utilisateur.setDateDernierAcces(Calendar.getInstance());
+			dataDBParams.majUtilisateur(utilisateur);
+			utilisateur.setDateDernierAcces(dernierAcces);
+
 			if(utilisateur.getCleChiffrementDonnees() == null){
 				LOGGER.warn("Clé de chiffrement nulle : Initialisation");
 				BasicTextEncryptor encryptorCle = new BasicTextEncryptor();
@@ -99,40 +117,15 @@ public class AuthenticationService {
 				String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getCleChiffrementDonnees());
 				utilisateur.initEncryptor(cleChiffrementDonnees);
 			}
-			
-			return UISessionManager.getSession().registerUtilisateur(utilisateur);
+
+			return utilisateur;
 		}
 		else{
 			LOGGER.error("Erreur lors de l'authentification");
 		}
-		return false;
-	}
-
-	/**
-	 * @param login
-	 * @param motPasseClair
-	 * @return utilisateur
-	 */
-	public Utilisateur getUtilisateur(String login, String motPasseClair){
-		try {
-			String mdpHashed = hashPassWord(motPasseClair);
-			Utilisateur utilisateur = dataDBParams.chargeUtilisateur(login, mdpHashed);
-			if(utilisateur != null){
-				// Enregistrement de la date du dernier accès à maintenant
-				Calendar dernierAcces = utilisateur.getDateDernierAcces();
-				utilisateur.setDateDernierAcces(Calendar.getInstance());
-				dataDBParams.majUtilisateur(utilisateur);
-				utilisateur.setDateDernierAcces(dernierAcces);
-				return utilisateur;
-			}
-			else{
-				LOGGER.error("Erreur lors de l'authentification. Utilisateur introuvable");
-			}
-		} catch (DataNotFoundException e) {
-			LOGGER.error("Erreur lors de l'authentification");
-		}
 		return null;
 	}
+
 
 	/**
 	 * Retourne la valeur d'une préférence pour l'utilisateur cournat
@@ -142,5 +135,43 @@ public class AuthenticationService {
 	 */
 	public <T> T getPreferenceUtilisateurCourant(String clePreference, Class<T> typeValeurPreference){
 		return UISessionManager.getSession().getUtilisateurCourant().getPreference(clePreference, typeValeurPreference);
+	}
+
+
+	/**
+	 * Authentification REST
+	 * @see org.springframework.security.authentication.AuthenticationProvider#authenticate(org.springframework.security.core.Authentication)
+	 */
+	@Override
+	public Authentication authenticate(Authentication authentication)
+			throws AuthenticationException {
+		String username = authentication.getName();
+		String password = (String) authentication.getCredentials();
+		Utilisateur utilisateur = authenticate(username, password);
+		if (utilisateur == null) {
+			throw new BadCredentialsException("Erreur d'authentification.");
+		}
+		else{
+			RestSessionManager.registerSession(getIdSession(username+":"+password), utilisateur);
+		}
+		return new UsernamePasswordAuthenticationToken(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
+	}
+
+	/* (non-Javadoc)
+	 * @see org.springframework.security.authentication.AuthenticationProvider#supports(java.lang.Class)
+	 */
+	@Override
+	public boolean supports(Class<?> authentication) {
+		return true;
+	}
+	
+	/**
+	 * @param data données
+	 * @return données en base64
+	 */
+	private String getIdSession(String data){
+		String b64 = Base64.encodeBase64String(data.getBytes());
+		LOGGER.info("b64 : [{}]", b64);
+		return b64;
 	}
 }

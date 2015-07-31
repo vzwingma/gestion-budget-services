@@ -6,6 +6,8 @@ package com.terrier.finances.gestion.business.rest;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.business.ParametragesService;
+import com.terrier.finances.gestion.business.rest.auth.RestSession;
+import com.terrier.finances.gestion.business.rest.auth.RestSessionManager;
 import com.terrier.finances.gestion.data.transformer.DataTransformerCategoriesDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
+import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseDTO;
 import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurDTO;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
@@ -62,56 +67,28 @@ public class BudgetRestController {
 
 	@Autowired @Qualifier("dataTransformerCategoriesDepense")
 	private DataTransformerCategoriesDepense dataTransformerCategoriesDepense;
-	/**
-	 * @param idCompte compte
-	 * @param strMois mois en chaine
-	 * @param strAnnee année en chaine
-	 * @return budget correspondant
-	 * @throws DataNotFoundException  erreur de connexion à la BDD
-	 * @throws BudgetNotFoundException  erreur budget introuvable
-	 */
-	@RequestMapping(value="/budget/{idCompte}/{strMois}/{strAnnee}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
-	public BudgetMensuelDTO getBudget(@PathVariable String idCompte, 
-			@PathVariable String strMois,
-			@PathVariable String strAnnee) throws BudgetNotFoundException, DataNotFoundException{
-
-		LOGGER.debug("Appel REST getBudget : compte : {}, période : {}", idCompte, strMois, strAnnee);
-		int mois = Calendar.getInstance().get(Calendar.MONTH);
-		try{
-			mois = Integer.parseInt(strMois);
-		}
-		catch(NumberFormatException e){
-			LOGGER.error("Erreur dans le mois reçu : utilisation de la valeur courante {}", mois, e);
-		}
-		int annee = Calendar.getInstance().get(Calendar.YEAR);
-		try{
-			annee = Integer.parseInt(strAnnee);
-		}
-		catch(NumberFormatException e){
-			LOGGER.error("Erreur dans l'année reçu : utilisation de la valeur courante {}", annee, e);
-		}
-		return businessDepenses.chargerBudgetMensuelConsultation(idCompte, mois, annee);
-	}
 
 
 
 	/**
-	 * @param idCompte compte
-	 * @param strMois mois en chaine
-	 * @param strAnnee année en chaine
-	 * @return budget correspondant
-	 * @throws DataNotFoundException  erreur de connexion à la BDD
-	 * @throws BudgetNotFoundException  erreur budget introuvable
+	 * @return contexte catégories
+	 * @throws UserNotAuthorizedException utilisateur non trouvé
+	 * @throws DataNotFoundException données non trouvées
 	 */
-	@RequestMapping(value="/depenses/{idbudget}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
-	public List<LigneDepenseDTO> getLignesDepenses(@PathVariable String idbudget) throws BudgetNotFoundException, DataNotFoundException{
+	@RequestMapping(value="/categories/depenses", 
+			method=RequestMethod.GET, produces = "application/json")
+	public List<CategorieDepenseDTO> getCategoriesDepenses(
+			HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
 
-		LOGGER.debug("Appel REST getLignesDepenses : idbudget={}", idbudget);
-		return businessDepenses.chargerLignesDepensesConsultation(idbudget);
+		RestSession restSession = RestSessionManager.getSession(request.getHeader("Authorization"));
+		LOGGER.debug("[REST][{}] Appel REST GetCategoriesDepenses", restSession);
+		try{
+			return dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null);
+		}
+		catch(Exception e){
+			throw new DataNotFoundException(e.getMessage());
+		}
 	}
-
-
-
 
 	/**
 	 * @param login login
@@ -120,19 +97,20 @@ public class BudgetRestController {
 	 * @throws UserNotAuthorizedException utilisateur non trouvé
 	 * @throws DataNotFoundException données non trouvées
 	 */
-	@RequestMapping(value="/utilisateur/{login}/{motpasseHashed}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
-	public ContexteUtilisateurDTO getContexteUtilisateur(@PathVariable String login, @PathVariable String motpasseHashed) throws DataNotFoundException, UserNotAuthorizedException{
+	@RequestMapping(value="/utilisateur", 
+			method=RequestMethod.GET, produces = "application/json")
+	public ContexteUtilisateurDTO getContexteUtilisateur(HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
 
-		LOGGER.debug("Appel REST getContexteUtilisateur : login={}", login);
+		RestSession restSession = RestSessionManager.getSession(request.getHeader("Authorization"));
+		LOGGER.debug("[REST][{}] Appel REST getContexteUtilisateur", restSession);
+
 		ContexteUtilisateurDTO contexteUtilisateur = new ContexteUtilisateurDTO();
-		Utilisateur utilisateur = businessAuthentication.getUtilisateur(login, motpasseHashed);
+		Utilisateur utilisateur = restSession.getUtilisateur();
 		if(utilisateur != null) {
 			try{
 				contexteUtilisateur.setUtilisateur(utilisateur);
 				List<CompteBancaire> comptes = businessParams.getComptesUtilisateur(utilisateur);
 				contexteUtilisateur.setComptes(comptes);
-
-				contexteUtilisateur.setCategories(dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null));
 
 				for (CompteBancaire compteBancaire : comptes) {
 					List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(utilisateur, compteBancaire.getId());
@@ -162,9 +140,77 @@ public class BudgetRestController {
 			}
 		}
 		else{
+			LOGGER.error("L'utilisateur n'a pas le droit d'utiliser cette ressource ");
 			throw new UserNotAuthorizedException();
 		}
 	}
+
+	/**
+	 * @param idCompte compte
+	 * @param strMois mois en chaine
+	 * @param strAnnee année en chaine
+	 * @return budget correspondant
+	 * @throws DataNotFoundException  erreur de connexion à la BDD
+	 * @throws BudgetNotFoundException  erreur budget introuvable
+	 */
+	@RequestMapping(value="/budget/{idCompte}/{strMois}/{strAnnee}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
+	public BudgetMensuelDTO getBudget(
+			@PathVariable String idCompte, 
+			@PathVariable String strMois,
+			@PathVariable String strAnnee, 
+			HttpServletRequest request) throws BudgetNotFoundException, DataNotFoundException, UserNotAuthorizedException{
+
+		RestSession restSession = RestSessionManager.getSession(request.getHeader("Authorization"));
+		LOGGER.debug("[REST][{}] Appel REST getContexteUtilisateur", restSession);
+
+		LOGGER.debug("Appel REST getBudget : compte : {}, période : {}", idCompte, strMois, strAnnee);
+		int mois = Calendar.getInstance().get(Calendar.MONTH);
+		try{
+			mois = Integer.parseInt(strMois);
+		}
+		catch(NumberFormatException e){
+			LOGGER.error("Erreur dans le mois reçu : utilisation de la valeur courante {}", mois, e);
+		}
+		int annee = Calendar.getInstance().get(Calendar.YEAR);
+		try{
+			annee = Integer.parseInt(strAnnee);
+		}
+		catch(NumberFormatException e){
+			LOGGER.error("Erreur dans l'année reçu : utilisation de la valeur courante {}", annee, e);
+		}
+		BudgetMensuelDTO budget = businessDepenses.chargerBudgetMensuelConsultation(idCompte, mois, annee);
+
+		// Vérification que le buget est lisible par l'utilisateur
+		for(Utilisateur proprietaire : budget.getCompteBancaire().getListeProprietaires()){
+			if(proprietaire.getId().equals(restSession.getUtilisateur().getId())){
+				return budget;
+			}
+		}
+		return null;
+	}
+
+
+
+	/**
+	 * @param idCompte compte
+	 * @param strMois mois en chaine
+	 * @param strAnnee année en chaine
+	 * @return budget correspondant
+	 * @throws DataNotFoundException  erreur de connexion à la BDD
+	 * @throws BudgetNotFoundException  erreur budget introuvable
+	 */
+	@RequestMapping(value="/depenses/{idbudget}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
+	public List<LigneDepenseDTO> getLignesDepenses(@PathVariable String idbudget, HttpServletRequest request) 
+			throws UserNotAuthorizedException, DataNotFoundException{
+
+		RestSession restSession = RestSessionManager.getSession(request.getHeader("Authorization"));
+		LOGGER.debug("[REST][{}] Appel REST getLignesDepenses", restSession);
+
+		LOGGER.debug("Appel REST getLignesDepenses : idbudget={}", idbudget);
+		return businessDepenses.chargerLignesDepensesConsultation(idbudget);
+	}
+
+
 
 	/**
 	 * Appel PING
