@@ -126,7 +126,7 @@ public class AuthenticationService {
 				return utilisateur;
 			}
 			else{
-				LOGGER.error("Erreur lors de l'authentification");
+				LOGGER.error("Erreur lors de l'authentification. Utilisateur introuvable");
 			}
 		} catch (DataNotFoundException e) {
 			LOGGER.error("Erreur lors de l'authentification");

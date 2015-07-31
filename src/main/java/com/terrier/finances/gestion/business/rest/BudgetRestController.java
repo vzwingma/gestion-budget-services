@@ -6,6 +6,8 @@ package com.terrier.finances.gestion.business.rest;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +94,7 @@ public class BudgetRestController {
 		return businessDepenses.chargerBudgetMensuelConsultation(idCompte, mois, annee);
 	}
 
-	
+
 
 	/**
 	 * @param idCompte compte
@@ -109,7 +111,7 @@ public class BudgetRestController {
 		return businessDepenses.chargerLignesDepensesConsultation(idbudget);
 	}
 
-	
+
 
 
 	/**
@@ -120,41 +122,52 @@ public class BudgetRestController {
 	 * @throws DataNotFoundException
 	 */
 	@RequestMapping(value="/utilisateur/{login}/{motpasseHashed}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
-	public ContexteUtilisateurDTO getContexteUtilisateur(@PathVariable String login, @PathVariable String motpasseHashed) throws DataNotFoundException{
+	public ContexteUtilisateurDTO getContexteUtilisateur(@PathVariable String login, @PathVariable String motpasseHashed, HttpServletResponse response){
 
 		LOGGER.debug("Appel REST getContexteUtilisateur : login={}", login);
 		ContexteUtilisateurDTO contexteUtilisateur = new ContexteUtilisateurDTO();
 		Utilisateur utilisateur = businessAuthentication.getUtilisateur(login, motpasseHashed);
-		contexteUtilisateur.setUtilisateur(utilisateur);
-		List<CompteBancaire> comptes = businessParams.getComptesUtilisateur(utilisateur);
-		contexteUtilisateur.setComptes(comptes);
-		
-		contexteUtilisateur.setCategories(dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null));
-		
-		for (CompteBancaire compteBancaire : comptes) {
-			List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(utilisateur, compteBancaire.getId());
-			LOGGER.debug(" {} budget chargé pour {}", listeBudget != null ? listeBudget.size() : 0, compteBancaire.getLibelle());
-			Calendar minBudget = null;
-			Calendar maxBudget = null;
-			// Calcul des min/max pour le compte
-			for (BudgetMensuelDTO budgetDTO : listeBudget) {
-				Calendar dateBudget = Calendar.getInstance();
-				dateBudget.set(Calendar.DAY_OF_MONTH, 1);
-				dateBudget.set(Calendar.MONTH, budgetDTO.getMois());
-				dateBudget.set(Calendar.YEAR, budgetDTO.getAnnee());
-				
-				if(minBudget == null || dateBudget.before(minBudget)){
-					minBudget = dateBudget;
+		if(utilisateur != null) {
+			try{
+			contexteUtilisateur.setUtilisateur(utilisateur);
+			List<CompteBancaire> comptes = businessParams.getComptesUtilisateur(utilisateur);
+			contexteUtilisateur.setComptes(comptes);
+
+			contexteUtilisateur.setCategories(dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null));
+
+			for (CompteBancaire compteBancaire : comptes) {
+				List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(utilisateur, compteBancaire.getId());
+				LOGGER.debug(" {} budget chargé pour {}", listeBudget != null ? listeBudget.size() : 0, compteBancaire.getLibelle());
+				Calendar minBudget = null;
+				Calendar maxBudget = null;
+				// Calcul des min/max pour le compte
+				for (BudgetMensuelDTO budgetDTO : listeBudget) {
+					Calendar dateBudget = Calendar.getInstance();
+					dateBudget.set(Calendar.DAY_OF_MONTH, 1);
+					dateBudget.set(Calendar.MONTH, budgetDTO.getMois());
+					dateBudget.set(Calendar.YEAR, budgetDTO.getAnnee());
+
+					if(minBudget == null || dateBudget.before(minBudget)){
+						minBudget = dateBudget;
+					}
+					if(maxBudget == null || dateBudget.after(maxBudget)){
+						maxBudget = dateBudget;
+					}
 				}
-				if(maxBudget == null || dateBudget.after(maxBudget)){
-					maxBudget = dateBudget;
-				}
+				contexteUtilisateur.setIntervalleCompte(compteBancaire, minBudget, maxBudget);
 			}
-			contexteUtilisateur.setIntervalleCompte(compteBancaire, minBudget, maxBudget);
+			return contexteUtilisateur;
+			}
+			catch(Exception e){
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
 		}
-		return contexteUtilisateur;
+		else{
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+		}
+		return null;
 	}
-	
+
 	/**
 	 * Appel PING
 	 * @return résultat du ping
