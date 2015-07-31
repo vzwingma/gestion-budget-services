@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.model.exception.UserNotAuthorizedException;
 
 /**
  * Gestion des exceptions dans le service REST
@@ -40,9 +41,9 @@ class GlobalControllerExceptionHandler {
     
     
     @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(UserNotAuthorizedException.class)
     public void handlException() {
-    	 LOGGER.error("Erreur Interne : Données introuvables");
+    	 LOGGER.error("Erreur Interne : Accès non autorisé");
     }
     
 }

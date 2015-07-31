@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.ParametragesService;
+import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.ui.components.auth.Login;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
@@ -75,8 +76,9 @@ public class LoginController extends AbstractUIController<Login>{
 	 * @param passwordEnClair en clair de l'utilisateur
 	 */
 	public void authenticateUser(String login, String passwordEnClair){
-		boolean auth = getServiceAuthentification().validate(
+		Utilisateur utilisateur = getServiceAuthentification().authenticate(
 				login, passwordEnClair);
+		boolean auth = UISessionManager.getSession().registerUtilisateur(utilisateur);
 		if(auth){	
 			LOGGER.info("Accès autorisé pour {}", login);
 			// MAJ
