@@ -38,4 +38,11 @@ class GlobalControllerExceptionHandler {
     	 LOGGER.error("Erreur Interne : Données introuvables");
     }
     
+    
+    @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
+    @ExceptionHandler(Exception.class)
+    public void handlException() {
+    	 LOGGER.error("Erreur Interne : Données introuvables");
+    }
+    
 }

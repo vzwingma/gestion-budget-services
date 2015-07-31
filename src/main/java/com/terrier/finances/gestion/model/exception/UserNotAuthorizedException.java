@@ -4,11 +4,11 @@
 package com.terrier.finances.gestion.model.exception;
 
 /**
- * Budget non trouvé
+ * Utilisateur non autorisé
  * @author vzwingma
  *
  */
-public class BudgetNotFoundException extends Exception {
+public class UserNotAuthorizedException extends Exception {
 
 	/**
 	 * 

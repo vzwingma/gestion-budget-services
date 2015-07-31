@@ -6,8 +6,6 @@ package com.terrier.finances.gestion.business.rest;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,7 @@ import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurDTO;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.model.exception.UserNotAuthorizedException;
 
 /**
  * Controleur REST pour récupérer les budgets
@@ -118,54 +117,53 @@ public class BudgetRestController {
 	 * @param login login
 	 * @param motpasse mot de passe
 	 * @return contexte utilisateur
-	 * @throws BudgetNotFoundException
-	 * @throws DataNotFoundException
+	 * @throws UserNotAuthorizedException utilisateur non trouvé
+	 * @throws DataNotFoundException données non trouvées
 	 */
 	@RequestMapping(value="/utilisateur/{login}/{motpasseHashed}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
-	public ContexteUtilisateurDTO getContexteUtilisateur(@PathVariable String login, @PathVariable String motpasseHashed, HttpServletResponse response){
+	public ContexteUtilisateurDTO getContexteUtilisateur(@PathVariable String login, @PathVariable String motpasseHashed) throws DataNotFoundException, UserNotAuthorizedException{
 
 		LOGGER.debug("Appel REST getContexteUtilisateur : login={}", login);
 		ContexteUtilisateurDTO contexteUtilisateur = new ContexteUtilisateurDTO();
 		Utilisateur utilisateur = businessAuthentication.getUtilisateur(login, motpasseHashed);
 		if(utilisateur != null) {
 			try{
-			contexteUtilisateur.setUtilisateur(utilisateur);
-			List<CompteBancaire> comptes = businessParams.getComptesUtilisateur(utilisateur);
-			contexteUtilisateur.setComptes(comptes);
+				contexteUtilisateur.setUtilisateur(utilisateur);
+				List<CompteBancaire> comptes = businessParams.getComptesUtilisateur(utilisateur);
+				contexteUtilisateur.setComptes(comptes);
 
-			contexteUtilisateur.setCategories(dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null));
+				contexteUtilisateur.setCategories(dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null));
 
-			for (CompteBancaire compteBancaire : comptes) {
-				List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(utilisateur, compteBancaire.getId());
-				LOGGER.debug(" {} budget chargé pour {}", listeBudget != null ? listeBudget.size() : 0, compteBancaire.getLibelle());
-				Calendar minBudget = null;
-				Calendar maxBudget = null;
-				// Calcul des min/max pour le compte
-				for (BudgetMensuelDTO budgetDTO : listeBudget) {
-					Calendar dateBudget = Calendar.getInstance();
-					dateBudget.set(Calendar.DAY_OF_MONTH, 1);
-					dateBudget.set(Calendar.MONTH, budgetDTO.getMois());
-					dateBudget.set(Calendar.YEAR, budgetDTO.getAnnee());
+				for (CompteBancaire compteBancaire : comptes) {
+					List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(utilisateur, compteBancaire.getId());
+					LOGGER.debug(" {} budget chargé pour {}", listeBudget != null ? listeBudget.size() : 0, compteBancaire.getLibelle());
+					Calendar minBudget = null;
+					Calendar maxBudget = null;
+					// Calcul des min/max pour le compte
+					for (BudgetMensuelDTO budgetDTO : listeBudget) {
+						Calendar dateBudget = Calendar.getInstance();
+						dateBudget.set(Calendar.DAY_OF_MONTH, 1);
+						dateBudget.set(Calendar.MONTH, budgetDTO.getMois());
+						dateBudget.set(Calendar.YEAR, budgetDTO.getAnnee());
 
-					if(minBudget == null || dateBudget.before(minBudget)){
-						minBudget = dateBudget;
+						if(minBudget == null || dateBudget.before(minBudget)){
+							minBudget = dateBudget;
+						}
+						if(maxBudget == null || dateBudget.after(maxBudget)){
+							maxBudget = dateBudget;
+						}
 					}
-					if(maxBudget == null || dateBudget.after(maxBudget)){
-						maxBudget = dateBudget;
-					}
+					contexteUtilisateur.setIntervalleCompte(compteBancaire, minBudget, maxBudget);
 				}
-				contexteUtilisateur.setIntervalleCompte(compteBancaire, minBudget, maxBudget);
-			}
-			return contexteUtilisateur;
+				return contexteUtilisateur;
 			}
 			catch(Exception e){
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				throw new DataNotFoundException(e.getMessage());
 			}
 		}
 		else{
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			throw new UserNotAuthorizedException();
 		}
-		return null;
 	}
 
 	/**
