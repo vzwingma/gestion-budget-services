@@ -65,7 +65,6 @@ public class RestSessionManager implements AuthenticationProvider {
 			// 2eme chance pour l'auth
 			try {
 				String[] loginMdp = new String(Base64.decodeBase64(authUser.substring(6)), "UTF-8").split(":");
-				LOGGER.debug("loginMdp : {}", loginMdp.length);
 				Utilisateur utilisateur = authenticationService.authenticate(loginMdp[0], loginMdp[1]);
 				registerSession(authUser, utilisateur);
 			} catch (Exception e) {
