@@ -89,7 +89,6 @@ public abstract class AbstractRESTService extends AbstractService {
             // Ajout de basic authentication
             String authentication = this.loginToServeurREST + ":" + this.mdpToServeurREST;
             String base64 = Base64.encodeToString(authentication.getBytes(), Base64.NO_WRAP);
-            LOG.info(" Auth : " + loginToServeurREST + ":" + mdpToServeurREST + " = " + base64);
             get.addHeader("Authorization", "Basic " + base64);
             HttpResponse httpResponse = httpclient.execute(get);
             LOG.info("  [" + httpResponse.getStatusLine() + "]");

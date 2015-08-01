@@ -15,6 +15,9 @@ import org.joda.time.Months;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Affichage de la page de budget
+ */
 public class BudgetActivity extends AbstractFragmentActivity<BudgetControleur> {
 
     /**

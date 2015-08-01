@@ -33,5 +33,4 @@ public class ConnexionActivity extends AbstractActivity<ConnexionControleur> {
     protected ConnexionControleur createControleur() {
         return new ConnexionControleur();
     }
-
 }

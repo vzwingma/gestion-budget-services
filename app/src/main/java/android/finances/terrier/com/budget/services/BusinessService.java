@@ -133,7 +133,9 @@ public class BusinessService extends AbstractService {
         LOG.info("Tentative de connexion au serveur de " + FacadeServices.getInstance().getInterfaceRESTService().getLoginToServeurREST());
         boolean authOk = contexte != null && contexte.getUtilisateur() != null;
             if (authOk) {
+                LOG.info("Chargement des catégories ");
                 List<CategorieDepenseDTO> listeDepenses = FacadeServices.getInstance().getInterfaceRESTService().getCategoriesDepensesDTO();
+                LOG.info("> " + listeDepenses);
                 this.dataTransformerBudget.setCategories(listeDepenses);
                 contexte.initEncryptor(hashPassWord("#" + FacadeServices.getInstance().getInterfaceRESTService().getMdpToServeurREST() + "#"));
             }
