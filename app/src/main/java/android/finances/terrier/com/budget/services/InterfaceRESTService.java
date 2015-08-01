@@ -2,6 +2,7 @@ package android.finances.terrier.com.budget.services;
 
 import android.finances.terrier.com.budget.abstrait.AbstractRESTService;
 import android.finances.terrier.com.budget.models.data.BudgetMensuelDTO;
+import android.finances.terrier.com.budget.models.data.CategorieDepenseDTO;
 import android.finances.terrier.com.budget.models.data.ContexteUtilisateurDTO;
 import android.finances.terrier.com.budget.models.data.LigneDepenseDTO;
 
@@ -15,6 +16,7 @@ public class InterfaceRESTService extends AbstractRESTService {
 
     // Logger
     //private static final Logger LOG = new Logger(InterfaceRESTService.class);
+
 
     /**
      * chargement des localisations cons depuis le serveur
@@ -41,12 +43,22 @@ public class InterfaceRESTService extends AbstractRESTService {
 
 
     /**
-     * @param login          login de l'utilisateur
-     * @param motPasseHashed mot de passe de l'utilisateur
      * @return Contexte utilisateur
      */
-    public ContexteUtilisateurDTO getContexte(String login, String motPasseHashed) {
-        final String url = "/utilisateur/" + login + "/" + motPasseHashed;
+    public ContexteUtilisateurDTO getContexteUtilisateur() {
+        final String url = "/utilisateur";
         return GET(url, ContexteUtilisateurDTO.class);
     }
+
+
+    /**
+     * Liste des catégories
+     *
+     * @return liste des catégories
+     */
+    public List<CategorieDepenseDTO> getCategoriesDepensesDTO() {
+        final String url = "/categories/depenses";
+        return GET(url, List.class);
+    }
+
 }

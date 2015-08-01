@@ -5,11 +5,12 @@ import android.finances.terrier.com.budget.utils.Logger;
 import android.finances.terrier.com.budget.utils.NetworkUtils;
 import android.util.Base64;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +32,9 @@ public abstract class AbstractRESTService extends AbstractService {
     private HttpClient httpclient;
     private ObjectMapper objectMapper = null;
 
+    // Auth Basic vers le serveur REST
+    private String loginToServeurREST = null;
+    private String mdpToServeurREST = null;
     /**
      * Création du service
      */
@@ -43,6 +47,15 @@ public abstract class AbstractRESTService extends AbstractService {
 
     }
 
+    /**
+     * Init de l'auth vers le serveur REST
+     * @param loginServeur login
+     * @param mdpServeur mdp
+     */
+    public void setServeurCredential(String loginServeur, String mdpServeur) {
+        this.loginToServeurREST = loginServeur;
+        this.mdpToServeurREST = mdpServeur;
+    }
 
     /**
      * Arrêt du service
@@ -74,9 +87,9 @@ public abstract class AbstractRESTService extends AbstractService {
             // make GET request to the given URL
             HttpGet get = new HttpGet(getRootURL() + url);
             // Ajout de basic authentication
-
-            String authentication = NetworkUtils.REST_BASIC_AUTH_LOGIN + ":" + NetworkUtils.REST_BASIC_AUTH_PWD;
+            String authentication = this.loginToServeurREST + ":" + this.mdpToServeurREST;
             String base64 = Base64.encodeToString(authentication.getBytes(), Base64.NO_WRAP);
+            LOG.info(" Auth : " + loginToServeurREST + ":" + mdpToServeurREST + " = " + base64);
             get.addHeader("Authorization", "Basic " + base64);
             HttpResponse httpResponse = httpclient.execute(get);
             LOG.info("  [" + httpResponse.getStatusLine() + "]");
@@ -102,5 +115,20 @@ public abstract class AbstractRESTService extends AbstractService {
      */
     private <T> T convertInputStreamToObject(InputStream inputStream, Class<T> classeAttendue) throws IOException {
         return objectMapper.readValue(inputStream, classeAttendue);
+    }
+
+
+    /**
+     * @return login to user
+     */
+    public String getLoginToServeurREST() {
+        return loginToServeurREST;
+    }
+
+    /**
+     * @return mdp to serveur
+     */
+    public String getMdpToServeurREST() {
+        return mdpToServeurREST;
     }
 }

@@ -2,8 +2,8 @@ package android.finances.terrier.com.budget.services.rest;
 
 import android.finances.terrier.com.budget.models.DepenseCategorie;
 
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.KeyDeserializer;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.KeyDeserializer;
 
 import java.io.IOException;
 

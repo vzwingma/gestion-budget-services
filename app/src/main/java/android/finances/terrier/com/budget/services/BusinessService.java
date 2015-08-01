@@ -4,6 +4,7 @@ import android.app.Application;
 import android.finances.terrier.com.budget.abstrait.AbstractService;
 import android.finances.terrier.com.budget.models.BudgetMensuel;
 import android.finances.terrier.com.budget.models.data.BudgetMensuelDTO;
+import android.finances.terrier.com.budget.models.data.CategorieDepenseDTO;
 import android.finances.terrier.com.budget.models.data.ContexteUtilisateurDTO;
 import android.finances.terrier.com.budget.models.data.transformers.DataTransformerBudget;
 import android.finances.terrier.com.budget.utils.AuthenticationPreferencesEnums;
@@ -14,6 +15,7 @@ import org.jasypt.util.text.BasicTextEncryptor;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * Services métier
@@ -27,8 +29,6 @@ public class BusinessService extends AbstractService {
     private ContexteUtilisateurDTO contexte;
     private DataTransformerBudget dataTransformerBudget;
 
-    private String loginServeur = null;
-    private String mdpServeur = null;
     /**
      * @param password mot de passe
      * @return password hashé en 256
@@ -78,13 +78,21 @@ public class BusinessService extends AbstractService {
                         && FacadeServices.getInstance().getPersistanceService().savePreference(application, AuthenticationPreferencesEnums.ANDROID_ID_LOGIN, encryptor.encrypt(login))
                         && FacadeServices.getInstance().getPersistanceService().savePreference(application, AuthenticationPreferencesEnums.ANDROID_ID_PWD, encryptor.encrypt(motDePasse));
         if (saved) {
-            setServeurCredential(login, motDePasse);
+            FacadeServices.getInstance().getInterfaceRESTService().setServeurCredential(login, motDePasse);
         } else {
             LOG.error("Erreur lors de l'enregistrement de l'identité Android");
         }
         return saved;
     }
 
+    /**
+     * Authentification vers le serveur REST
+     * @param login login
+     * @param mdp mdp
+     */
+    public void setServeurCredential(String login, String mdp) {
+        FacadeServices.getInstance().getInterfaceRESTService().setServeurCredential(login, mdp);
+    }
 
     /**
      * Authentification mobile
@@ -105,7 +113,7 @@ public class BusinessService extends AbstractService {
             encryptor.setPassword(hashPassWord(stringPattern));
             LOG.info("  Login   : [" + savedCodeLogin + "]     -> [" + encryptor.decrypt(savedCodeLogin) + "]");
             LOG.info("  Mdp     : [" + savedCodePwd + "]     -> [" + encryptor.decrypt(savedCodePwd) + "]");
-            setServeurCredential(encryptor.decrypt(savedCodeLogin), encryptor.decrypt(savedCodePwd));
+            FacadeServices.getInstance().getInterfaceRESTService().setServeurCredential(encryptor.decrypt(savedCodeLogin), encryptor.decrypt(savedCodePwd));
             return true;
         } else {
             LOG.error("Erreur : Le pattern est incorrect");
@@ -114,10 +122,6 @@ public class BusinessService extends AbstractService {
     }
 
 
-    public void setServeurCredential(String loginServeur, String mdpServeur) {
-        this.loginServeur = loginServeur;
-        this.mdpServeur = mdpServeur;
-    }
 
     /**
      * Authentification serveur
@@ -125,18 +129,15 @@ public class BusinessService extends AbstractService {
      * @return résultat d'authentification
      */
     public boolean authenticateToServeur() {
-        boolean authOk = false;
-        if (this.loginServeur != null && this.mdpServeur != null) {
-            String hashMotPasse = hashPassWord(this.mdpServeur);
-            this.contexte = FacadeServices.getInstance().getInterfaceRESTService().getContexte(this.loginServeur, hashMotPasse);
-            LOG.info("Tentative de connexion au serveur de " + this.loginServeur);
-            authOk = contexte != null && contexte.getUtilisateur() != null;
+        this.contexte = FacadeServices.getInstance().getInterfaceRESTService().getContexteUtilisateur();
+        LOG.info("Tentative de connexion au serveur de " + FacadeServices.getInstance().getInterfaceRESTService().getLoginToServeurREST());
+        boolean authOk = contexte != null && contexte.getUtilisateur() != null;
             if (authOk) {
-                this.dataTransformerBudget.setCategories(this.contexte.getCategories());
-                contexte.initEncryptor(hashPassWord("#" + this.mdpServeur + "#"));
+                List<CategorieDepenseDTO> listeDepenses = FacadeServices.getInstance().getInterfaceRESTService().getCategoriesDepensesDTO();
+                this.dataTransformerBudget.setCategories(listeDepenses);
+                contexte.initEncryptor(hashPassWord("#" + FacadeServices.getInstance().getInterfaceRESTService().getMdpToServeurREST() + "#"));
             }
             LOG.info(" >" + authOk);
-        }
         return authOk;
     }
 

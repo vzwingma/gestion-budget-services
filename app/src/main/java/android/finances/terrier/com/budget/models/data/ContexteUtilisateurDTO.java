@@ -4,7 +4,8 @@ import android.finances.terrier.com.budget.models.CompteBancaire;
 import android.finances.terrier.com.budget.models.Utilisateur;
 import android.finances.terrier.com.budget.utils.Logger;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.jasypt.util.text.BasicTextEncryptor;
 
 import java.util.Date;
@@ -39,8 +40,6 @@ public class ContexteUtilisateurDTO {
     private BasicTextEncryptor encryptor;
     @JsonIgnore
     private CompteBancaire compteCourant;
-
-    private List<CategorieDepenseDTO> categoriesDTO;
 
     /**
      * @return the utilisateur
@@ -123,21 +122,6 @@ public class ContexteUtilisateurDTO {
 
     public CompteBancaire getCompteCourant() {
         return compteCourant;
-    }
-
-
-    /**
-     * @return the categories
-     */
-    public List<CategorieDepenseDTO> getCategories() {
-        return categoriesDTO;
-    }
-
-    /**
-     * @param categories the categories to set
-     */
-    public void setCategories(List<CategorieDepenseDTO> categories) {
-        this.categoriesDTO = categories;
     }
 }
 

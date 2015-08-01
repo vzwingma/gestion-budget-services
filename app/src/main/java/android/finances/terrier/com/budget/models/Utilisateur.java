@@ -89,9 +89,18 @@ public class Utilisateur implements Serializable {
         return (T) preferences.get(clePreference);
     }
 
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
+         * @see java.lang.Object#toString()
+         */
     @Override
     public String toString() {
         return "Utilisateur [id=" + id + ", login=" + login + ", libelle="
