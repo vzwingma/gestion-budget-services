@@ -17,12 +17,10 @@ import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
-import com.terrier.finances.gestion.ui.components.stats.StatistiquesPage;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TreeResumeCategoriesController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.terrier.finances.gestion.ui.listener.ChangePageListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionDeconnexionClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionEditerDepensesClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionLockBudgetClickListener;
@@ -153,7 +151,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			this.compte.setTextInputAllowed(false);
 			this.compte.addValueChangeListener(this);
 			// Bouton stat
-			getComponent().getButtonStatistique().addClickListener(new ChangePageListener(StatistiquesPage.class));
+			//getComponent().getButtonStatistique().addClickListener(new ChangePageListener(StatistiquesPage.class));
 			// Bouton déconnexion
 			getComponent().getButtonDeconnexion().setCaption("");
 			getComponent().getButtonDeconnexion().addClickListener(new ActionDeconnexionClickListener());
