@@ -38,8 +38,10 @@ public class Utilisateur implements Serializable {
 	private String hashMotDePasse;
 
 	// Clé de chiffrement des données. Le mot de passe du user permet de la déchiffrer
+	@JsonIgnore
 	private String cleChiffrementDonnees;
 	
+	@JsonIgnore	
 	private Calendar dateDernierAcces;
 	/**
 	 *  Encryptor
