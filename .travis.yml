@@ -1,7 +1,5 @@
+language: java
 # whitelist
 branches:
-  only:
-    - android
-    - webapp
-	
-language: java
+  except:
+    - master
