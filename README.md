@@ -3,7 +3,7 @@
 
 ### Native Android
 <a href='https://www.versioneye.com/user/projects/55c4b2b065376200170035c5'><img src='https://www.versioneye.com/user/projects/55c4b2b065376200170035c5/badge.svg?style=flat' alt='Dependency Status' /></a>
-<a href='https://travis-ci.org/vzwingma/gestion-budget/branches'><img src='https://travis-ci.org/vzwingma/gestion-budget.svg?branch=master' alt='Build Status' /></a>
+<a href='https://travis-ci.org/vzwingma/gestion-budget/branches'><img src='https://travis-ci.org/vzwingma/gestion-budget.svg?branch=android' alt='Build Status' /></a>
 
 
 ### Web
