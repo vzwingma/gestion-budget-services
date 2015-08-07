@@ -113,7 +113,7 @@
 					<resource>
 						<directory>src/main/resources/config/openshift</directory>
 						<excludes>
-							<exclude>**</exclude>
+							<exclude>*.*</exclude>
 						</excludes>
 					</resource>
 				</resources>
