@@ -19,6 +19,12 @@
 
 
 	<build>
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources/config</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>com.keyboardsamurais.maven</groupId>
@@ -105,17 +111,9 @@
 			<build>
 				<resources>
 					<resource>
-						<filtering>true</filtering>
-						<directory>src/main/resources/config/dev</directory>
-					</resource>
-					<resource>
-						<filtering>false</filtering>
-						<directory>src/main/resources/config/dev</directory>
-					</resource>
-					<resource>
 						<directory>src/main/resources/config/openshift</directory>
 						<excludes>
-							<exclude>**.*</exclude>
+							<exclude>**</exclude>
 						</excludes>
 					</resource>
 				</resources>
@@ -153,7 +151,7 @@
 					<resource>
 						<directory>src/main/resources/config/openshift</directory>
 						<excludes>
-							<exclude>*.properties</exclude>
+							<exclude>*.xml</exclude>
 						</excludes>
 					</resource>
 				</resources>
@@ -434,5 +432,4 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
 </project>

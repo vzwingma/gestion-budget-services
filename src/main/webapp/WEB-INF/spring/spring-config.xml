@@ -21,12 +21,6 @@
 	</bean>
 		
 	<!-- Properties par Config.properties -->
+	<context:property-placeholder location="classpath:config.properties" ignore-resource-not-found="true" />
 	
-	<beans:beans profile="dev">
-		<context:property-placeholder location="classpath:config.properties" ignore-resource-not-found="true" />
-	</beans:beans>
-	<beans:beans profile="openshift">
-		<context:property-placeholder location="file:/var/lib/openshift/548476244382ec7dd8000068/app-root/data/config.properties" ignore-resource-not-found="true" />
-	</beans:beans>
-		
 </beans>
