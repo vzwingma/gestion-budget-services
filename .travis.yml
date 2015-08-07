@@ -1,3 +1,10 @@
 language: java
-
 install: mvn install -DskipTests=true -B -P openshift2
+deploy:
+  provider: releases
+  api_key:
+    secure: OQSeaBukuIfLcDR4UiWig3HJC6zgYjtfsEx1ztwIG27C2eOhSHyjzyO87711dtA8EO6J90g/8lKfwB7OCLsx6323gYk243nM3j2Ph2orMc3vWQCzsM3N6mLak95FuJRiPZ67xPRLcPtC73NaATc6QFxnigjkAz9wtfliTIigTg2+0NvyikkbitK490wwhNikKBrumMeXJLhm3tW/bTy9bKZQXGRSsPWiUb2FgIx+A/OziGdp7wtnnQu+ar+3B3TET9ewVtmZHpa93yS5FqdSlUGRn+2Cs+iNhJG6SudAiNqESPpaf4xZBqtzoY9U1rC/kbX9i9lxa29Ch5CmfGcmCIrhMtMj0zolamEo2l47zsL7poeagmctJqc8H/G5NE7bbGsVRSzRU2I9BaiQuj9u36Dj8oqpSfF/lQnU0JC7BrTz6ldjtZrnvs/gxOdEXobdyBPo2HqIlSM4sqdwI7L9KMAG1p5T3lzs5FQd7N4Eiqn4xe6E8pz3xnl+PBZcnkPfxSFrc9tg9QqFVoHFQLu5VG1EhSgIAgSP3Qz47KExUnQ0/zinIUTXDOe1k1IoUkIiAVSApJV93Q1vHI1QNff9aLAU4saTQtULMYOTEutsnR3X24CojzrKyvVkAeKHUd6bRfGf49Bhl4yUyLXKMP1dhsa5ZI7Dvkr2gtvEz/v0d/0=
+  file: target/gestion-budget-3.4.0.war
+  on:
+    repo: vzwingma/gestion-budget
+    branch: webapp
