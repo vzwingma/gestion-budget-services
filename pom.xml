@@ -19,15 +19,6 @@
 
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<excludes>
-					<exclude>*.properties</exclude>
-				</excludes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>com.keyboardsamurais.maven</groupId>
@@ -104,44 +95,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.vaadin</groupId>
-										<artifactId>
-											vaadin-maven-plugin
-										</artifactId>
-										<versionRange>
-											[7.1.6,)
-										</versionRange>
-										<goals>
-											<goal>resources</goal>
-											<goal>update-widgetset</goal>
-											<goal>compile</goal>
-											<goal>update-theme</goal>
-											<goal>compile-theme</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 	<profiles>
 		<profile>
@@ -153,11 +106,17 @@
 				<resources>
 					<resource>
 						<filtering>true</filtering>
-						<directory>src/main/resources/config/budget/dev</directory>
+						<directory>src/main/resources/config/dev</directory>
 					</resource>
 					<resource>
 						<filtering>false</filtering>
-						<directory>src/main/resources/config/log/dev</directory>
+						<directory>src/main/resources/config/dev</directory>
+					</resource>
+					<resource>
+						<directory>src/main/resources/config/openshift</directory>
+						<excludes>
+							<exclude>**.*</exclude>
+						</excludes>
 					</resource>
 				</resources>
 				<plugins>
@@ -168,9 +127,6 @@
 						<configuration>
 							<failOnMissingWebXml>false</failOnMissingWebXml>
 							<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-							<filters>
-								<filter>${basedir}\src\main\resources\config\budget\dev\config.profile.properties</filter>
-							</filters>
 							<warSourceExcludes>
 								VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
 							</warSourceExcludes>
@@ -193,6 +149,15 @@
 			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
 			<id>openshift2</id>
 			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources/config/openshift</directory>
+						<excludes>
+							<exclude>*.properties</exclude>
+						</excludes>
+					</resource>
+				</resources>
+
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -202,8 +167,7 @@
 							<failOnMissingWebXml>false</failOnMissingWebXml>
 							<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
 							<filters>
-								<filter>${basedir}/src/main/resources/config/budget/openshift/config.properties</filter>
-								<filter>${basedir}/src/main/resources/config/budget/openshift/config.profile.properties</filter>
+								<filter>${basedir}/src/main/resources/config/openshift/config.properties</filter>
 							</filters>
 							<warSourceExcludes>
 								VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
