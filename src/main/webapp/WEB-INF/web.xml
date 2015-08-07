@@ -20,7 +20,8 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 	 		/WEB-INF/spring/spring-config.xml,
-	 		/WEB-INF/spring/spring-security.xml
+	 		/WEB-INF/spring/spring-security.xml,
+	 		/WEB-INF/spring/spring-mongodb-persistence-context.xml
 		</param-value>
 	</context-param>
 	<context-param>

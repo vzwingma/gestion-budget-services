@@ -19,6 +19,7 @@
 	        </list>
 	    </property>
 	</bean>
+		
 	<!-- Properties par Config.properties -->
 	
 	<beans:beans profile="dev">
