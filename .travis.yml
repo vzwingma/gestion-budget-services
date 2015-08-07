@@ -1,0 +1,5 @@
+# whitelist
+branches:
+  only:
+    - android
+    - webapp
