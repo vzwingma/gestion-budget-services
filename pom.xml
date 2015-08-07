@@ -19,12 +19,6 @@
 
 
 	<build>
-		<resources>
-			<resource>
-				<filtering>true</filtering>
-				<directory>src/main/resources/config</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>com.keyboardsamurais.maven</groupId>
@@ -111,6 +105,10 @@
 			<build>
 				<resources>
 					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources/config/dev</directory>
+					</resource>
+					<resource>
 						<directory>src/main/resources/config/openshift</directory>
 						<excludes>
 							<exclude>*.*</exclude>
@@ -138,18 +136,18 @@
 			</build>
 		</profile>
 		<profile>
-			<!-- When built in OpenShift the 'openshift' profile will be used when 
-				invoking mvn. -->
-			<!-- Use this profile for any OpenShift specific customization your app 
-				will need. -->
-			<!-- By default that is to put the resulting archive into the 'webapps' 
-				folder. -->
-			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
 			<id>openshift2</id>
 			<build>
 				<resources>
 					<resource>
+						<directory>src/main/resources/config/dev</directory>
+						<excludes>
+							<exclude>*.*</exclude>
+						</excludes>
+					</resource>				
+					<resource>
 						<directory>src/main/resources/config/openshift</directory>
+						<filtering>true</filtering>
 						<excludes>
 							<exclude>*.xml</exclude>
 						</excludes>
@@ -164,9 +162,6 @@
 						<configuration>
 							<failOnMissingWebXml>false</failOnMissingWebXml>
 							<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-							<filters>
-								<filter>${basedir}/src/main/resources/config/openshift/config.properties</filter>
-							</filters>
 							<warSourceExcludes>
 								VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
 							</warSourceExcludes>
