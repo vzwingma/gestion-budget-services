@@ -1,2 +1,12 @@
 language: java
 install: mvn install -DskipTests=true -B -P openshift2
+deploy:
+  provider: openshift
+  user: vincent.zwingmann@gmail.com
+  password:
+    secure: DynIZ/fjI3yPjHMz+AeKrSoRiaILw7z+ueDZHSREH/GmJqZ/knE+Z85A2Oz1948oo1L3fYHoIKg8dltxk2R6z3zMP2Ub8sXARYwdBWB88ds/AGbOAczr+PGY9A92m4+WEyopq7XhyCEU0sTs4dczLZF8GDNhPE8cyGUbyRDC9ItnSdn55irPd8fj/6/HgV4OGV8TGl1YTzxM6QFv321KQ1hpTtPH84A1ARNfmaHJ/RY3OkOJXwpgM6o7slTL0tFclDF+N0jtGOYd6YdRdawl0o2v/2jQHM/6yx0Luu4animwfQS+UW2Dxg+/xw92cvKVJ9Cr8/xXFhdRe5x56DnStjOlps24snZIvyjHonbxDgM5cF74ib+KMLxb/xxQbXtYgQ+iV+mHtWnN8QnrHhz2P5ObHzCSlUfzmWGuFyBSFYKkqpQTpQCFljNCpShD5ALFEadV6bBHM0/wk9VYG+WaIF957cGSkq5zBBKnLOEkhh+Q972ugb8DW5z0domeKezN+/sOE1Wm4qwfRI7AZkXHz8me1XjXwFQ70amBTWumBcnJ31eYcNAvGOeYj4xDL7JCy3e9/T2khwXFpALSXAxIWzLlEuXfET7HuQKUDjFJ6Lc6PcffuQtivrWJIB5xybeE2BHzuLqueQa2lYG3DuGRJebcxgOLnpa+GvfLcXtKbKg=
+  app: budget
+  domain: tushkanyogik
+  on:
+    repo: vzwingma/gestion-budget
+    branch: webapp
