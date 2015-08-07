@@ -11,9 +11,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<spring.version>4.2.0.RELEASE</spring.version>
-		<vaadin.plugin.version>7.5.2</vaadin.plugin.version>
-		<vaadin.version>7.5.2</vaadin.version>
+		<spring.version>4.1.6.RELEASE</spring.version>
+		<vaadin.plugin.version>7.4.5</vaadin.plugin.version>
+		<vaadin.version>7.4.5</vaadin.version>
 	</properties>
 
 
@@ -102,15 +102,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<!-- Coverage.io -->
-			<plugin>
-				<groupId>org.eluder.coveralls</groupId>
-				<artifactId>coveralls-maven-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<repoToken>mrAZ0zh08UobvCrLQ591kBBB2tJpoBp0L</repoToken>
-				</configuration>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -378,7 +369,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
-			<version>1.7.2.RELEASE</version>
+			<version>1.7.0.RELEASE</version>
 		</dependency>
 
 		<dependency>
