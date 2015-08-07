@@ -1,0 +1,5 @@
+<project>
+    <target name="compile">
+        <echo message="Application de gestion de budget"/>
+    </target>
+</project>
