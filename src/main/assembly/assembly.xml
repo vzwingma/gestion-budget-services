@@ -18,10 +18,10 @@
 			<fileMode>0755</fileMode>
 		</fileSet>
 		<fileSet>
-			<directory>${project.build.directory}/gestion-budget-${project.version}/WEB-INF/classes/config/openshift</directory>
+			<directory>${project.build.directory}/../src/main/resources/config/openshift</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
-				<include>logback.xml</include>
+				<include>*.xml</include>
 			</includes>
 			<fileMode>0755</fileMode>
 			<directoryMode>0755</directoryMode>
