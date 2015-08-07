@@ -1,5 +1,5 @@
 ## Application de Gestion budget
-<a href='https://github.com/vzwingma/gestion-budget/issues'><img src='http://githubbadges.herokuapp.com/vzwingma/gestion-budget/issues?style=flat-square' alt='Issues number' /></a>
+<a href='https://github.com/vzwingma/gestion-budget/issues'><img src='http://githubbadges.herokuapp.com/vzwingma/gestion-budget/issues?style=square' alt='Issues number' /></a>
 
 ### Application Android
 <a href='https://www.versioneye.com/user/projects/55c4b2b065376200170035c5'><img src='https://www.versioneye.com/user/projects/55c4b2b065376200170035c5/badge.svg?style=flat' alt='Dependency Status' /></a>
