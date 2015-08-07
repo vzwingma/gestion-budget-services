@@ -2,4 +2,4 @@ language: android
 # whitelist
 branches:
   except:
-    - mobile
+    - master
