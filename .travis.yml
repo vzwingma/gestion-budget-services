@@ -1,12 +1,11 @@
 language: java
 install: mvn install -DskipTests=true -B -P openshift2
-skip_cleanup: true
 deploy:
   provider: s3
-  bucket: "gestion-budget"
+  access_key_id: AKIAIRBGIULVVE3U4GPQ
+  secret_access_key: pDHH5Gat2mZ++Wm+lfTBHZk/9vefQA3qI3P1emcjk1BluGBUZi/Ukt141lh3T2EdXlT+LK0RvSX+QerRWEgoxqVXYZxdUnMd8jZngKsYkKvLFrRha/hRD1KALL4Mgu1sy0wI6P3ME/gdMJsXy8YVkQKjPIeKbMd12laonfFD//QOuzDKEL16frTvClXHER/O/Q0gMJ+O77hHx0rg8aRM61qFKQWy7f2KRcMxquq9mYPkrqmHeL07sJ3/5NGPkwT7Ma0fLYqg9tia2ZQfwCrPoZtSj69FiCfYLZiqkAli/Oqac47E56160MDK0bYAc8A2fbae6ZKKnQV9asH1qO+FtQ+2fhDBOB4a1jOHhrXctl1O/n/uhkcRfjzRffNfZ6+5/C+ioXYLaSKMv79ptMmR89ti9Z+wXJLbKDbsUTN9Q9wmtdZskJpqzhWAvcF60nbIG1XxmNOT/RIcC4uuwqf2AWYfDFMAuYQpeUGPtAYwUa/vKZYZISrfbW/uLkYkBfAH5l6AHNsxSqE6KUO4gOdlCJdO3EfV4XhaYOUda8PgwOze9W3NGpxlCrybwddnXhJ82BNvTsNXJj49dUI/AbXwy8qQLQzIp6dHvfk4wYb7JzbZHRpNZKrV9vouxLLX38JAe79rOTo48WL25Q5zG3yzFenn8PsRtLXTS3p8nngCqLU=
+  bucket: gestion-budget
   skip_cleanup: true
   endpoint: s3-website-eu-west-1.amazonaws.com
   region: eu-west-1
   local_dir: target
-addons:
-  artifacts: true  
