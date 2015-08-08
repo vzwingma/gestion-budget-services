@@ -9,4 +9,4 @@ install: mvn install -DskipTests=true -B -P openshift2
 before_script:
   - "gem install travis-artifacts"
 after_script:
-  - "travis-artifacts upload --path target/*.tar.gz --target-path artifacts/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID"
+  - "travis-artifacts upload --path target/*.tar.gz --target-path artifacts/$TRAVIS_BUILD_NUMBER"
