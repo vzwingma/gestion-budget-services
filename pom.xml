@@ -178,7 +178,7 @@
 						<version>2.5.5</version>
 						<configuration>
 							<finalName>Budget-v${project.version}</finalName>
-							<appendAssemblyId>true</appendAssemblyId>
+							<appendAssemblyId>false</appendAssemblyId>
 							<descriptors>
 								<descriptor>src/main/assembly/assembly.xml</descriptor>
 							</descriptors>
