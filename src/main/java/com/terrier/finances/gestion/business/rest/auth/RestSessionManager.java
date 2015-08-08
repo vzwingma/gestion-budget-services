@@ -1,10 +1,5 @@
 package com.terrier.finances.gestion.business.rest.auth;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
-import com.terrier.finances.gestion.model.exception.UserNotAuthorizedException;
 
 /**
  * Gestionnaire de sessions REST
@@ -34,54 +28,7 @@ public class RestSessionManager implements AuthenticationProvider {
 
 	@Autowired
 	private AuthenticationService authenticationService;
-	
-	// Gestionnaire des sessions REST
-	private Map<String, RestSession> sessionsManager = new HashMap<String, RestSession>();
-
-	/**
-	 * @return l'instance du manager UI
-	 */
-	public void registerSession(String authUser, Utilisateur utilisateur){
-		String idSession = AuthenticationService.hashPassWord(authUser);
-		if(sessionsManager.get(idSession) == null){
-			LOGGER.info("Création de la session : {}", idSession);
-			sessionsManager.put(idSession, new RestSession(idSession));
-		}
-		sessionsManager.get(idSession).registerUtilisateur(utilisateur);
-	}
-	
-	/**
-	 * @return l'instance du manager UI
-	 * @throws UnsupportedEncodingException 
-	 */
-	public RestSession getSession(String authUser) throws UserNotAuthorizedException{
-		String idSession = AuthenticationService.hashPassWord(authUser);
-		if(authUser == null){
-			LOGGER.error("Session {} introuvable", idSession);
-			throw new UserNotAuthorizedException();
-		}
-
-		if(sessionsManager.get(idSession) == null){
-			// 2eme chance pour l'auth
-			try {
-				String[] loginMdp = new String(Base64.decodeBase64(authUser.substring(6)), "UTF-8").split(":");
-				Utilisateur utilisateur = authenticationService.authenticate(loginMdp[0], loginMdp[1]);
-				registerSession(authUser, utilisateur);
-			} catch (Exception e) {
-				LOGGER.error("Erreur", e);
-				throw new UserNotAuthorizedException();
-			}
-		}
 		
-		if(sessionsManager.get(idSession) == null){
-			LOGGER.error("Session {} introuvable", idSession);
-			throw new UserNotAuthorizedException();
-		}
-		return sessionsManager.get(idSession);
-	}
-	
-	
-	
 
 
 	/**
@@ -97,10 +44,9 @@ public class RestSessionManager implements AuthenticationProvider {
 		if (utilisateur == null) {
 			throw new BadCredentialsException("Erreur d'authentification.");
 		}
-		else{
-			registerSession(getIdSession(username+":"+password), utilisateur);
-		}
-		return new UsernamePasswordAuthenticationToken(username, password, AuthorityUtils.createAuthorityList("ROLE_USER"));
+		Authentication token = new UsernamePasswordAuthenticationToken(utilisateur, password, AuthorityUtils.createAuthorityList("ROLE_REST_USER"));
+		LOGGER.info("[SEC] AuthToken : [{}]", token);
+		return token;
 	}
 
 	/* (non-Javadoc)
@@ -109,14 +55,5 @@ public class RestSessionManager implements AuthenticationProvider {
 	@Override
 	public boolean supports(Class<?> authentication) {
 		return true;
-	}
-	
-
-	/**
-	 * @param data données
-	 * @return données en base64
-	 */
-	private String getIdSession(String data){
-		return "Basic " + Base64.encodeBase64String(data.getBytes());
 	}
 }

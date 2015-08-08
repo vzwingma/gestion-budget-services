@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.business.ParametragesService;
-import com.terrier.finances.gestion.business.rest.auth.RestSession;
 import com.terrier.finances.gestion.business.rest.auth.RestSessionManager;
 import com.terrier.finances.gestion.data.transformer.DataTransformerCategoriesDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
@@ -81,13 +81,18 @@ public class BudgetRestController {
 	public List<CategorieDepenseDTO> getCategoriesDepenses(
 			HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
 
-		RestSession restSession = manager.getSession(request.getHeader("Authorization"));
-		LOGGER.debug("[REST][{}] Appel REST GetCategoriesDepenses", restSession);
-		try{
-			return dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null);
+		Utilisateur userSpringSec = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		LOGGER.debug("[REST][{}] Appel REST GetCategoriesDepenses", userSpringSec);
+		if(userSpringSec != null){
+			try{
+				return dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null);
+			}
+			catch(Exception e){
+				throw new DataNotFoundException(e.getMessage());
+			}
 		}
-		catch(Exception e){
-			throw new DataNotFoundException(e.getMessage());
+		else{
+			throw new UserNotAuthorizedException();
 		}
 	}
 
@@ -102,19 +107,17 @@ public class BudgetRestController {
 			method=RequestMethod.GET, produces = "application/json")
 	public ContexteUtilisateurDTO getContexteUtilisateur(HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
 
-		RestSession restSession = manager.getSession(request.getHeader("Authorization"));
-		LOGGER.debug("[REST][{}] Appel REST getContexteUtilisateur", restSession);
-
+		Utilisateur userSpringSec = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		LOGGER.debug("[REST][{}] Appel REST getContexteUtilisateur", userSpringSec);		
 		ContexteUtilisateurDTO contexteUtilisateur = new ContexteUtilisateurDTO();
-		Utilisateur utilisateur = restSession.getUtilisateur();
-		if(utilisateur != null) {
+		if(userSpringSec != null) {
 			try{
-				contexteUtilisateur.setUtilisateur(utilisateur);
-				List<CompteBancaire> comptes = businessParams.getComptesUtilisateur(utilisateur);
+				contexteUtilisateur.setUtilisateur(userSpringSec);
+				List<CompteBancaire> comptes = businessParams.getComptesUtilisateur(userSpringSec);
 				contexteUtilisateur.setComptes(comptes);
 
 				for (CompteBancaire compteBancaire : comptes) {
-					List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(utilisateur, compteBancaire.getId());
+					List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(userSpringSec, compteBancaire.getId());
 					LOGGER.debug(" {} budget chargé pour {}", listeBudget != null ? listeBudget.size() : 0, compteBancaire.getLibelle());
 					Calendar minBudget = null;
 					Calendar maxBudget = null;
@@ -161,8 +164,8 @@ public class BudgetRestController {
 			@PathVariable String strAnnee, 
 			HttpServletRequest request) throws BudgetNotFoundException, DataNotFoundException, UserNotAuthorizedException{
 
-		RestSession restSession = manager.getSession(request.getHeader("Authorization"));
-		LOGGER.debug("[REST][{}] Appel REST getContexteUtilisateur", restSession);
+		Utilisateur userSpringSec = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		LOGGER.debug("[REST][{}] Appel REST getBudget", userSpringSec);		
 
 		LOGGER.debug("Appel REST getBudget : compte : {}, période : {}", idCompte, strMois, strAnnee);
 		int mois = Calendar.getInstance().get(Calendar.MONTH);
@@ -183,7 +186,7 @@ public class BudgetRestController {
 
 		// Vérification que le buget est lisible par l'utilisateur
 		for(Utilisateur proprietaire : budget.getCompteBancaire().getListeProprietaires()){
-			if(proprietaire.getId().equals(restSession.getUtilisateur().getId())){
+			if(proprietaire.getId().equals(userSpringSec.getId())){
 				return budget;
 			}
 		}
@@ -198,17 +201,20 @@ public class BudgetRestController {
 	 * @param strAnnee année en chaine
 	 * @return budget correspondant
 	 * @throws DataNotFoundException  erreur de connexion à la BDD
-	 * @throws BudgetNotFoundException  erreur budget introuvable
+	 * @throws UserNotAuthorizedException  erreur budget introuvable
 	 */
 	@RequestMapping(value="/depenses/{idbudget}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
 	public List<LigneDepenseDTO> getLignesDepenses(@PathVariable String idbudget, HttpServletRequest request) 
 			throws UserNotAuthorizedException, DataNotFoundException{
 
-		RestSession restSession = manager.getSession(request.getHeader("Authorization"));
-		LOGGER.debug("[REST][{}] Appel REST getLignesDepenses", restSession);
 
-		LOGGER.debug("Appel REST getLignesDepenses : idbudget={}", idbudget);
-		return businessDepenses.chargerLignesDepensesConsultation(idbudget);
+		Utilisateur userSpringSec = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		LOGGER.debug("[REST][{}] Appel REST getLignesDepenses", userSpringSec);		
+		if(userSpringSec != null){
+			LOGGER.debug("Appel REST getLignesDepenses : idbudget={}", idbudget);
+			return businessDepenses.chargerLignesDepensesConsultation(idbudget);
+		}
+		throw new UserNotAuthorizedException();
 	}
 
 

@@ -188,6 +188,10 @@ public class Utilisateur implements Serializable {
 	 */
 	@Override
 	public String toString() {
+		return this.login;
+	}
+	
+	public String toFullString(){
 		StringBuilder builder = new StringBuilder();
 		builder.append("Utilisateur [login=").append(login)
 				.append(", cleChiffrementDonnees=")
