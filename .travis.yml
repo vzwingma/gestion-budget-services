@@ -3,5 +3,4 @@ install: mvn install -DskipTests=true -B -P openshift2
 skip_cleanup: true
 addons:
   artifacts: true
-    paths:
-      - $(git ls-files -o target/*.*ar* | tr "\n" ":")
+  paths: $(git ls-files -o target/*.*ar* | tr "\n" ":")
