@@ -427,4 +427,5 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+	<description>Application Web de gestion de budget</description>
 </project>
