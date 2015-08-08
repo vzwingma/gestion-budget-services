@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.business.rest.auth;
+package com.terrier.finances.gestion.business.auth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +20,11 @@ import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
  *
  */
 @Service
-public class RestSessionManager implements AuthenticationProvider {
+public class UserAuthProvider implements AuthenticationProvider {
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(RestSessionManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthProvider.class);
 
 	@Autowired
 	private AuthenticationService authenticationService;

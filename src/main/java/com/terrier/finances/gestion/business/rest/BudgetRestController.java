@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.business.ParametragesService;
-import com.terrier.finances.gestion.business.rest.auth.RestSessionManager;
+import com.terrier.finances.gestion.business.auth.UserAuthProvider;
 import com.terrier.finances.gestion.data.transformer.DataTransformerCategoriesDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
@@ -69,7 +69,7 @@ public class BudgetRestController {
 	private DataTransformerCategoriesDepense dataTransformerCategoriesDepense;
 
 	@Autowired
-	private RestSessionManager manager;
+	private UserAuthProvider manager;
 
 	/**
 	 * @return contexte catégories
