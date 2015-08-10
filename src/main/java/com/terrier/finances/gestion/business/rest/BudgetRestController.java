@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -81,9 +82,9 @@ public class BudgetRestController {
 	public List<CategorieDepenseDTO> getCategoriesDepenses(
 			HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
 
-		Utilisateur userSpringSec = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		LOGGER.debug("[REST][{}] Appel REST GetCategoriesDepenses", userSpringSec);
-		if(userSpringSec != null){
+		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			try{
 				return dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null);
 			}
@@ -106,18 +107,18 @@ public class BudgetRestController {
 	@RequestMapping(value="/utilisateur", 
 			method=RequestMethod.GET, produces = "application/json")
 	public ContexteUtilisateurDTO getContexteUtilisateur(HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
-
-		Utilisateur userSpringSec = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		LOGGER.debug("[REST][{}] Appel REST getContexteUtilisateur", userSpringSec);		
 		ContexteUtilisateurDTO contexteUtilisateur = new ContexteUtilisateurDTO();
-		if(userSpringSec != null) {
+		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			try{
-				contexteUtilisateur.setUtilisateur(userSpringSec);
-				List<CompteBancaire> comptes = businessParams.getComptesUtilisateur(userSpringSec);
+				Utilisateur user = (Utilisateur)userSpringSec;
+				contexteUtilisateur.setUtilisateur(user);
+				List<CompteBancaire> comptes = businessParams.getComptesUtilisateur(user);
 				contexteUtilisateur.setComptes(comptes);
 
 				for (CompteBancaire compteBancaire : comptes) {
-					List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(userSpringSec, compteBancaire.getId());
+					List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(user, compteBancaire.getId());
 					LOGGER.debug(" {} budget chargé pour {}", listeBudget != null ? listeBudget.size() : 0, compteBancaire.getLibelle());
 					Calendar minBudget = null;
 					Calendar maxBudget = null;
@@ -164,33 +165,38 @@ public class BudgetRestController {
 			@PathVariable String strAnnee, 
 			HttpServletRequest request) throws BudgetNotFoundException, DataNotFoundException, UserNotAuthorizedException{
 
-		Utilisateur userSpringSec = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		LOGGER.debug("[REST][{}] Appel REST getBudget", userSpringSec);		
-
-		LOGGER.debug("Appel REST getBudget : compte : {}, période : {}", idCompte, strMois, strAnnee);
-		int mois = Calendar.getInstance().get(Calendar.MONTH);
-		try{
-			mois = Integer.parseInt(strMois);
-		}
-		catch(NumberFormatException e){
-			LOGGER.error("Erreur dans le mois reçu : utilisation de la valeur courante {}", mois, e);
-		}
-		int annee = Calendar.getInstance().get(Calendar.YEAR);
-		try{
-			annee = Integer.parseInt(strAnnee);
-		}
-		catch(NumberFormatException e){
-			LOGGER.error("Erreur dans l'année reçu : utilisation de la valeur courante {}", annee, e);
-		}
-		BudgetMensuelDTO budget = businessDepenses.chargerBudgetMensuelConsultation(idCompte, mois, annee);
-
-		// Vérification que le buget est lisible par l'utilisateur
-		for(Utilisateur proprietaire : budget.getCompteBancaire().getListeProprietaires()){
-			if(proprietaire.getId().equals(userSpringSec.getId())){
-				return budget;
+		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
+			LOGGER.debug("Appel REST getBudget : compte : {}, période : {}", idCompte, strMois, strAnnee);
+			int mois = Calendar.getInstance().get(Calendar.MONTH);
+			try{
+				mois = Integer.parseInt(strMois);
 			}
+			catch(NumberFormatException e){
+				LOGGER.error("Erreur dans le mois reçu : utilisation de la valeur courante {}", mois, e);
+			}
+			int annee = Calendar.getInstance().get(Calendar.YEAR);
+			try{
+				annee = Integer.parseInt(strAnnee);
+			}
+			catch(NumberFormatException e){
+				LOGGER.error("Erreur dans l'année reçu : utilisation de la valeur courante {}", annee, e);
+			}
+			BudgetMensuelDTO budget = businessDepenses.chargerBudgetMensuelConsultation(idCompte, mois, annee);
+
+			// Vérification que le buget est lisible par l'utilisateur
+			for(Utilisateur proprietaire : budget.getCompteBancaire().getListeProprietaires()){
+				if(proprietaire.getId().equals(((Utilisateur)userSpringSec).getId())){
+					return budget;
+				}
+			}
+			return null;
 		}
-		return null;
+		else{
+			throw new UserNotAuthorizedException();
+		}
+
 	}
 
 
@@ -208,9 +214,9 @@ public class BudgetRestController {
 			throws UserNotAuthorizedException, DataNotFoundException{
 
 
-		Utilisateur userSpringSec = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		LOGGER.debug("[REST][{}] Appel REST getLignesDepenses", userSpringSec);		
-		if(userSpringSec != null){
+		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			LOGGER.debug("Appel REST getLignesDepenses : idbudget={}", idbudget);
 			return businessDepenses.chargerLignesDepensesConsultation(idbudget);
 		}
