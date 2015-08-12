@@ -72,13 +72,13 @@ public class AuthenticationService {
 	/**
 	 * Validation login/mdp
 	 * @param login login
-	 * @param motPasseClair mdp
+	 * @param motPasseBasicAuth mdp
 	 * @return si valide
 	 */
-	public Utilisateur authenticate(String login, String motPasseClair){
+	public Utilisateur authenticate(String login, String motPasseBasicAuth){
 
 		LOGGER.info("Tentative d'authentification de {}", login);
-		String mdpHashed = hashPassWord(motPasseClair);
+		String mdpHashed = hashPassWord(motPasseBasicAuth);
 		Utilisateur utilisateur;
 		try {
 			utilisateur = dataDBParams.chargeUtilisateur(login, mdpHashed);
@@ -96,17 +96,17 @@ public class AuthenticationService {
 			if(utilisateur.getCleChiffrementDonnees() == null){
 				LOGGER.warn("Clé de chiffrement nulle : Initialisation");
 				BasicTextEncryptor encryptorCle = new BasicTextEncryptor();
-				encryptorCle.setPassword(motPasseClair);
-				String cleChiffrementDonneesChiffree = encryptorCle.encrypt(motPasseClair);
+				encryptorCle.setPassword(motPasseBasicAuth);
+				String cleChiffrementDonneesChiffree = encryptorCle.encrypt(motPasseBasicAuth);
 				LOGGER.warn("Clé de chiffrement chiffrée avec le mot de passe : {}", cleChiffrementDonneesChiffree);
 				utilisateur.setCleChiffrementDonnees(cleChiffrementDonneesChiffree);
 				dataDBParams.majUtilisateur(utilisateur);
-				utilisateur.initEncryptor(motPasseClair);
+				utilisateur.initEncryptor(motPasseBasicAuth);
 			}
 			else{
-				LOGGER.debug("> Clé de chiffrement des données : {}", utilisateur.getCleChiffrementDonnees());
+				LOGGER.debug("> Clé chiffrée de chiffrement des données : {}", utilisateur.getCleChiffrementDonnees());
 				BasicTextEncryptor decryptorCle = new BasicTextEncryptor();
-				decryptorCle.setPassword(motPasseClair);
+				decryptorCle.setPassword(motPasseBasicAuth);
 				String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getCleChiffrementDonnees());
 				utilisateur.initEncryptor(cleChiffrementDonnees);
 			}

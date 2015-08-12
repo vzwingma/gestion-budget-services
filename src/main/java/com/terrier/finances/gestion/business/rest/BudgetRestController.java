@@ -22,7 +22,9 @@ import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.business.ParametragesService;
 import com.terrier.finances.gestion.business.auth.UserAuthProvider;
+import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.data.transformer.DataTransformerCategoriesDepense;
+import com.terrier.finances.gestion.data.transformer.DataTransformerLigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
@@ -67,6 +69,10 @@ public class BudgetRestController {
 
 	@Autowired @Qualifier("dataTransformerCategoriesDepense")
 	private DataTransformerCategoriesDepense dataTransformerCategoriesDepense;
+	@Autowired @Qualifier("dataTransformerBudget")
+	private DataTransformerBudget dataTransformerBudget;
+	@Autowired @Qualifier("dataTransformerLigneDepense")
+	private DataTransformerLigneDepense dataTransformerLigneDepense;
 
 	@Autowired
 	private UserAuthProvider manager;
@@ -182,8 +188,8 @@ public class BudgetRestController {
 			catch(NumberFormatException e){
 				LOGGER.error("Erreur dans l'année reçu : utilisation de la valeur courante {}", annee, e);
 			}
-			BudgetMensuelDTO budget = businessDepenses.chargerBudgetMensuelConsultation(idCompte, mois, annee);
-
+			BudgetMensuelDTO budgetDTO = businessDepenses.chargerBudgetMensuelConsultation(idCompte, mois, annee);
+			BudgetMensuelDTO budget = dataTransformerBudget.decryptDTO(budgetDTO, ((Utilisateur)userSpringSec).getEncryptor());
 			// Vérification que le buget est lisible par l'utilisateur
 			for(Utilisateur proprietaire : budget.getCompteBancaire().getListeProprietaires()){
 				if(proprietaire.getId().equals(((Utilisateur)userSpringSec).getId())){
@@ -217,7 +223,8 @@ public class BudgetRestController {
 		LOGGER.debug("[REST][{}] Appel REST getLignesDepenses", userSpringSec);		
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			LOGGER.debug("Appel REST getLignesDepenses : idbudget={}", idbudget);
-			return businessDepenses.chargerLignesDepensesConsultation(idbudget);
+			List<LigneDepenseDTO> listeDepensesDTO = businessDepenses.chargerLignesDepensesConsultation(idbudget);
+			return dataTransformerLigneDepense.decryptDTO(listeDepensesDTO, ((Utilisateur)userSpringSec).getEncryptor());
 		}
 		throw new UserNotAuthorizedException();
 	}

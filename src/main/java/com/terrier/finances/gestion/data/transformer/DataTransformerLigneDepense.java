@@ -106,4 +106,41 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneDepens
 		}
 		return listeDepensesBO;
 	}
+	
+	
+
+
+	/* (non-Javadoc)
+	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object)
+	 */
+	public List<LigneDepenseDTO> decryptDTO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
+		List<LigneDepenseDTO> listeDepensesDTO = new ArrayList<>();
+		if(listeDTO != null){
+			for (LigneDepenseDTO dto : listeDTO) {
+				listeDepensesDTO.add(decryptDTO(dto, decryptor));
+			}
+		}
+		return listeDepensesDTO;
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
+	 */
+	
+	private LigneDepenseDTO decryptDTO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
+		if(dto.getAuteur() !=null){
+			dto.setAuteur(decryptor.decrypt(dto.getAuteur()));
+		}
+		dto.setEtat(decryptor.decrypt(dto.getEtat()));
+		dto.setIdCategorie(decryptor.decrypt(dto.getIdCategorie()));
+		dto.setIdSSCategorie(decryptor.decrypt(dto.getIdSSCategorie()));
+		dto.setLibelle(decryptor.decrypt(dto.getLibelle()));
+		dto.setTypeDepense(decryptor.decrypt(dto.getTypeDepense()));
+		dto.setValeur(decryptor.decrypt(dto.getValeur()));
+		return dto;
+	}
+	
+	
 }
