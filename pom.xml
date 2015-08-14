@@ -6,7 +6,7 @@
 	<packaging>war</packaging>
 	<version>3.5.0</version>
 	<name>Gestion Budget</name>
-
+	<description>Application Web de gestion de budget</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
@@ -79,9 +79,9 @@
 				<executions>
 					<execution>
 						<configuration>
-							<!-- if you don't specify any modules, the plugin will find them -->
-							<!-- <modules> <module>com.vaadin.demo.mobilemail.gwt.ColorPickerWidgetSet</module> 
-								</modules> -->
+							<modules> 
+								<module>com.terrier.finances.gestion.AppWidgetSet</module> 
+							</modules>
 						</configuration>
 						<goals>
 							<goal>clean</goal>
@@ -150,6 +150,7 @@
 						<filtering>true</filtering>
 						<excludes>
 							<exclude>*.xml</exclude>
+							<exclude>*.sh</exclude>
 						</excludes>
 					</resource>
 				</resources>
@@ -427,5 +428,5 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-	<description>Application Web de gestion de budget</description>
+
 </project>
