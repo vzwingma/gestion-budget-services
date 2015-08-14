@@ -22,6 +22,7 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>*.xml</include>
+				<include>*.sh</include>
 			</includes>
 			<fileMode>0755</fileMode>
 			<directoryMode>0755</directoryMode>
