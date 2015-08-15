@@ -49,7 +49,7 @@ public class RestCorsFilter implements Filter {
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT");
 		response.setHeader("Access-Control-Max-Age", "3600");
-		response.setHeader("Access-Control-Allow-Headers", "Authorization, Origin, Accept, x-requested-with, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin");
+		response.setHeader("Access-Control-Allow-Headers", "Authorization, Origin, Accept, x-requested-with, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin, X-CSRFToken");
 		filterChain.doFilter(servletRequest, servletResponse);
 		
 	}

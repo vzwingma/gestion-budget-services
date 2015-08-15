@@ -15,7 +15,7 @@
 		<security:intercept-url pattern="/rest/ping" 			access="ROLE_ANONYMOUS" />
 		<security:intercept-url pattern="/ihm" 					access="ROLE_IHM_USER" />
 		<security:http-basic />
-		<security:csrf/>
+		<security:csrf disabled="true"/>
 	</security:http>
 	
 	<!--  Gestion d'authentification par un manager -->
