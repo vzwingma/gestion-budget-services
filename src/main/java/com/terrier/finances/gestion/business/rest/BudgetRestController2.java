@@ -244,7 +244,12 @@ public class BudgetRestController2 {
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			
 			LOGGER.debug("[REST][{}] Appel REST updateDepense : idbudget={} et idDepense={} : [{}]", userSpringSec, idBudget, idDepense, depense);
-			businessDepenses.majEtatLigneDepense(idBudget, idDepense, EtatLigneDepenseEnum.valueOf(depense.getEtat()), ((Utilisateur)userSpringSec).getLibelle());
+			
+			EtatLigneDepenseEnum nvEtat = null;
+			if(depense.getEtat() != null && !depense.getEtat().equals("SUPPRIMER")){
+				nvEtat = EtatLigneDepenseEnum.valueOf(depense.getEtat());
+			}
+			businessDepenses.majEtatLigneDepense(idBudget, idDepense, nvEtat, ((Utilisateur)userSpringSec).getLibelle());
 		}
 		else{
 			throw new UserNotAuthorizedException();	

@@ -140,6 +140,7 @@ public class BusinessDepensesService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
+	@Deprecated
 	public BudgetMensuelDTO chargerBudgetMensuelConsultation(String compte, int mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget {} de {}/{}", compte, mois, annee);
 		BudgetMensuelDTO budgetMensuel = this.dataDepenses.chargeBudgetMensuelDTO(compte, mois, annee);
