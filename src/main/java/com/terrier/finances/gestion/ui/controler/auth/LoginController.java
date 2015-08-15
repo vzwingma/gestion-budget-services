@@ -78,8 +78,8 @@ public class LoginController extends AbstractUIController<Login>{
 	public void authenticateUser(String login, String passwordEnClair){
 		Utilisateur utilisateur = getServiceAuthentification().authenticate(
 				login, passwordEnClair);
-		boolean auth = UISessionManager.getSession().registerUtilisateur(utilisateur);
-		if(auth){	
+		if(utilisateur != null){
+			UISessionManager.getSession().registerUtilisateur(utilisateur);
 			LOGGER.info("Accès autorisé pour {}", login);
 			// MAJ
 			UISessionManager.getSession().getMainLayout().removeAllComponents();
