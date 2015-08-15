@@ -8,12 +8,14 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
+import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableResumeTotaux;
 import com.terrier.finances.gestion.ui.components.style.TableTotalCellStyle;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.ui.Table.Align;
 
 /**
  * Controleur du tableau des résumés
@@ -84,6 +86,9 @@ public class TableResumeTotauxController extends AbstractUIController<TableResum
 				EntetesTreeResumeDepenseEnum.VALEUR_NOW.getLibelle()+ auDateFormat.format(dateBudget.getTime()));
 		getComponent().setColumnHeader(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), 
 				EntetesTreeResumeDepenseEnum.VALEUR_FIN.getLibelle() + finDateFormat.format(dateBudget.getTime()));
+		getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), Align.RIGHT);
+		getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), Align.RIGHT);
+		
 		
 		getComponent().addItem("avance"); // Create item by explicit ID
 		Item item1 = getComponent().getItem("avance");

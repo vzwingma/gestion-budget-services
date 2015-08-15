@@ -15,12 +15,14 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepenseComparator;
+import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TreeResumeCategories;
 import com.terrier.finances.gestion.ui.components.style.TreeResumeCellStyle;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Table.Align;
 
 /**
  * Controleur du tableau des résumés
@@ -62,8 +64,12 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 		getComponent().addContainerProperty(EntetesTreeResumeDepenseEnum.CATEGORIE.getId(), String.class, null);
 		getComponent().addContainerProperty(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), Double.class, null);
 		getComponent().setColumnWidth(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), TAILLE_COLONNE_VALEUR);
+		getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), Align.RIGHT);
+		
 		getComponent().addContainerProperty(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), Double.class, null);
 		getComponent().setColumnWidth(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), TAILLE_COLONNE_VALEUR);
+		getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), Align.RIGHT);
+		
 		getComponent().setColumnHeader(EntetesTreeResumeDepenseEnum.CATEGORIE.getId(), EntetesTreeResumeDepenseEnum.CATEGORIE.getLibelle());
 		getComponent().setImmediate(true);
 		

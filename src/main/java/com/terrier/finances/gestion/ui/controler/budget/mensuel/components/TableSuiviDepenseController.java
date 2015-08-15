@@ -24,6 +24,7 @@ import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Table.Align;
 
 /**
  * @author vzwingma
@@ -96,6 +97,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.VALEUR.getId(), Float.class, null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.VALEUR.getId(), EntetesTableSuiviDepenseEnum.VALEUR.getLibelle());
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.VALEUR.getId(), TAILLE_COLONNE_VALEUR);
+		getComponent().setColumnAlignment(EntetesTableSuiviDepenseEnum.VALEUR.getId(), Align.RIGHT);
 		
 		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), Boolean.class, null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), EntetesTableSuiviDepenseEnum.PERIODIQUE.getLibelle());
