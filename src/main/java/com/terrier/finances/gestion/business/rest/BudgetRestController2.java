@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,7 @@ import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseDTO;
 import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurDTO;
+import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.model.exception.UserNotAuthorizedException;
@@ -171,9 +173,8 @@ public class BudgetRestController2 {
 			HttpServletRequest request) throws BudgetNotFoundException, DataNotFoundException, UserNotAuthorizedException{
 
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		LOGGER.debug("[REST][{}] Appel REST getBudget", userSpringSec);		
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
-			LOGGER.debug("Appel REST getBudget : compte : {}, période : {}", idCompte, strMois, strAnnee);
+			LOGGER.debug("[REST][{}] Appel REST getBudget : compte : {}, période : {}/{}", userSpringSec, idCompte, strMois, strAnnee);
 			int mois = Calendar.getInstance().get(Calendar.MONTH);
 			try{
 				mois = Integer.parseInt(strMois);
@@ -207,26 +208,48 @@ public class BudgetRestController2 {
 
 
 	/**
-	 * @param idCompte compte
-	 * @param strMois mois en chaine
-	 * @param strAnnee année en chaine
-	 * @return budget correspondant
+	 * Chargement de la liste des dépenses
+	 * @param idbudget identifiant du budget
+	 * @return liste des dépenses
+	 * @throws UserNotAuthorizedException erreur d'authentification
 	 * @throws DataNotFoundException  erreur de connexion à la BDD
-	 * @throws UserNotAuthorizedException  erreur budget introuvable
 	 */
 	@RequestMapping(value="/depenses/{idbudget}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
-	public List<LigneDepenseDTO> getLignesDepenses(@PathVariable String idbudget, HttpServletRequest request) 
+	public List<LigneDepenseDTO> getLignesDepenses(@PathVariable String idbudget) 
 			throws UserNotAuthorizedException, DataNotFoundException{
-
-
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		LOGGER.debug("[REST][{}] Appel REST getLignesDepenses", userSpringSec);		
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
-			LOGGER.debug("Appel REST getLignesDepenses : idbudget={}", idbudget);
+			LOGGER.debug("[REST][{}] Appel REST getLignesDepenses : idbudget={}", userSpringSec, idbudget);
 			List<LigneDepenseDTO> listeDepensesDTO = businessDepenses.chargerLignesDepensesConsultation(idbudget);
 			return dataTransformerLigneDepense.decryptDTO(listeDepensesDTO, ((Utilisateur)userSpringSec).getEncryptor());
 		}
 		throw new UserNotAuthorizedException();
+	}
+
+	
+	
+	/**
+	 * Chargement de la liste des dépenses
+	 * @param idbudget identifiant du budget
+	 * @return liste des dépenses
+	 * @throws UserNotAuthorizedException erreur d'authentification
+	 * @throws DataNotFoundException  erreur de connexion à la BDD
+	 * @throws BudgetNotFoundException erreur budget introuvable
+	 */
+	@RequestMapping(value="/depenses/{idBudget}/{idDepense}", method=RequestMethod.PUT, produces = "application/json",headers="Accept=application/json")
+	public void updateDepense(@PathVariable String idBudget, @PathVariable String idDepense, @RequestBody LigneDepenseDTO depense) 
+			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
+
+		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
+			
+			LOGGER.debug("[REST][{}] Appel REST updateDepense : idbudget={} et idDepense={} : [{}]", userSpringSec, idBudget, idDepense, depense);
+			businessDepenses.majEtatLigneDepense(idBudget, idDepense, EtatLigneDepenseEnum.valueOf(depense.getEtat()), ((Utilisateur)userSpringSec).getLibelle());
+		}
+		else{
+			throw new UserNotAuthorizedException();	
+		}
+		
 	}
 
 

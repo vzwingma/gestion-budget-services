@@ -45,7 +45,6 @@ public class RestCorsFilter implements Filter {
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
 			FilterChain filterChain) throws IOException, ServletException {
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		LOGGER.info("[REST] Access-Control-Allow-Origin : *");
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT");

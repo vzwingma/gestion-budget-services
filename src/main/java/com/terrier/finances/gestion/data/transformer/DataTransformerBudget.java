@@ -27,7 +27,7 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
  *
  */
 @Component("dataTransformerBudget")
-public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
+public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
 
 	@Autowired @Qualifier("dataTransformerLigneDepense")
 	private DataTransformerLigneDepense dataTransformerLigneDepense = new DataTransformerLigneDepense();
@@ -47,7 +47,10 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	 * @see com.terrier.finances.gestion.model.AbstractTransformer#transformDTOtoBO(java.lang.Object)
 	 */
 	@Override
-	public BudgetMensuel transformDTOtoBO(BudgetMensuelDTO dto, BasicTextEncryptor decryptor) {
+	public BudgetMensuel transformDTOtoBO(BudgetMensuelDTO dto) {
+		
+		BasicTextEncryptor decryptor = getEncryptor();
+		
 		BudgetMensuel bo = new BudgetMensuel();
 		bo.setActif(dto.isActif());
 		bo.setAnnee(dto.getAnnee());
@@ -57,7 +60,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 			c.setTime(dto.getDateMiseAJour());
 			bo.setDateMiseAJour(c);
 		}
-		bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses(), decryptor));
+		bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses()));
 		bo.setMargeSecurite(dto.getMargeSecurite() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecurite())) : 0D);
 		bo.setMargeSecuriteFinMois(dto.getMargeSecuriteFinMois() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecuriteFinMois())) : 0D);
 		bo.setMois(dto.getMois());
@@ -164,13 +167,16 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	 * @see com.terrier.finances.gestion.model.AbstractTransformer#transformBOtoDTO(java.lang.Object)
 	 */
 	@Override
-	public BudgetMensuelDTO transformBOtoDTO(BudgetMensuel bo, BasicTextEncryptor encrytor) {
+	public BudgetMensuelDTO transformBOtoDTO(BudgetMensuel bo) {
+		
+		BasicTextEncryptor encrytor = getEncryptor();
+		
 		BudgetMensuelDTO dto = new BudgetMensuelDTO();
 		dto.setActif(bo.isActif());
 		dto.setAnnee(bo.getAnnee());
 		dto.setCompteBancaire(bo.getCompteBancaire());
 		dto.setDateMiseAJour(bo.getDateMiseAJour() != null ? bo.getDateMiseAJour().getTime() : null);
-		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeDepenses(), encrytor));
+		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeDepenses()));
 		dto.setMargeSecurite(bo.getMargeSecurite() != null ? encrytor.encrypt(bo.getMargeSecurite().toString()) : null);
 		dto.setMargeSecuriteFinMois(bo.getMargeSecuriteFinMois() != null ?  encrytor.encrypt(bo.getMargeSecuriteFinMois().toString()) : null);
 		dto.setMois(bo.getMois());

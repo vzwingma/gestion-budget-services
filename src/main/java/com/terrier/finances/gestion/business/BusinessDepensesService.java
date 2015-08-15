@@ -349,11 +349,24 @@ public class BusinessDepensesService {
 	}	
 
 
+	/**
+	 * Mise à jour de la ligne de dépense à partir des ids
+	 * @param idBudget id du budget 
+	 * @param ligneId ligne à modifier
+	 * @param etat état de la ligne
+	 * @param auteur auteur de l'action
+	 * @throws BudgetNotFoundException erreur budget non trouvé
+	 */
+	public void majEtatLigneDepense(String idBudget, String ligneId, EtatLigneDepenseEnum etat, String auteur) throws BudgetNotFoundException{
+		majEtatLigneDepense(dataDepenses.chargeBudgetMensuelById(idBudget), ligneId, etat, auteur);
+	}
 
 	/**
-	 * Mise à jour des lignes de dépenses
-	 * @param ligneId
-	 * @param etat
+	 * Mise à jour de la ligne de dépense du budhet
+	 * @param ligneId ligne à modifier
+	 * @param etat état de la ligne
+	 * @param auteur auteur de l'action
+	 * @throws BudgetNotFoundException erreur budget non trouvé
 	 */
 	public void majEtatLigneDepense(BudgetMensuel budget, String ligneId, EtatLigneDepenseEnum etat, String auteur){
 		LigneDepense ligneDepense = getLigneDepense(budget, ligneId);

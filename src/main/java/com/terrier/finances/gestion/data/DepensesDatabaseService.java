@@ -18,7 +18,6 @@ import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 
 /**
  * DAO Dépenses vers MongoDB
@@ -55,16 +54,42 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 			throw new BudgetNotFoundException();
 		}
 		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
-		BudgetMensuel budgetMensuel = dataTransformerBudget.transformDTOtoBO(budgetDTO, UISessionManager.getSession().getUtilisateurCourant().getEncryptor());
+		BudgetMensuel budgetMensuel = dataTransformerBudget.transformDTOtoBO(budgetDTO);
 		LOGGER.debug("	> Transformation en BO : {}", budgetMensuel);
 		return budgetMensuel;
 	}
 
+	
 	/**
 	 * @param mois mois 
 	 * @param annee année
 	 * @return budget mensuel
 	 */
+	public BudgetMensuel chargeBudgetMensuelById(String idBudget) throws BudgetNotFoundException{
+		LOGGER.info("Chargement du budget d'id {}", idBudget);
+		Query queryBudget = new Query();
+		queryBudget.addCriteria(Criteria.where("id").is(idBudget));
+		BudgetMensuelDTO budgetDTO = null;
+		try{
+			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class);
+		}
+		catch(Exception e){
+			LOGGER.error("Erreur lors du chargement", e);
+		}
+		if(budgetDTO == null){
+			throw new BudgetNotFoundException();
+		}
+		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
+		BudgetMensuel budgetMensuel = dataTransformerBudget.transformDTOtoBO(budgetDTO);
+		LOGGER.debug("	> Transformation en BO : {}", budgetMensuel);
+		return budgetMensuel;
+	}
+	/**
+	 * @param mois mois 
+	 * @param annee année
+	 * @return budget mensuel
+	 */
+	@Deprecated
 	public BudgetMensuelDTO chargeBudgetMensuelDTO(String idCompte, int mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", idCompte, mois, annee);
 		Query queryBudget = new Query();
@@ -170,7 +195,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		if(budgetBO == null){
 			return false;
 		}
-		BudgetMensuelDTO budgetDTO = dataTransformerBudget.transformBOtoDTO(budgetBO, UISessionManager.getSession().getUtilisateurCourant().getEncryptor());
+		BudgetMensuelDTO budgetDTO = dataTransformerBudget.transformBOtoDTO(budgetBO);
 		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budgetDTO.getCompteBancaire().getLibelle(), budgetDTO.getMois(), budgetDTO.getAnnee());
 		try{
 			getMongoOperation().save(budgetDTO);

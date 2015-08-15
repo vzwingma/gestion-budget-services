@@ -24,7 +24,7 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
  *
  */
 @Component("dataTransformerLigneDepense")
-public class DataTransformerLigneDepense implements IDataTransformer<LigneDepense, LigneDepenseDTO> {
+public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, LigneDepenseDTO> {
 
 	
 	@Autowired
@@ -34,7 +34,10 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneDepens
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
 	 */
 	@Override
-	public LigneDepense transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
+	public LigneDepense transformDTOtoBO(LigneDepenseDTO dto) {
+		
+		BasicTextEncryptor decryptor = getEncryptor();
+		
 		LigneDepense bo = new LigneDepense();
 		bo.setId(dto.getId());
 		if(dto.getAuteur() !=null){
@@ -60,7 +63,10 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneDepens
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoDTO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
 	 */
 	@Override
-	public LigneDepenseDTO transformBOtoDTO(LigneDepense bo, BasicTextEncryptor encryptor) {
+	public LigneDepenseDTO transformBOtoDTO(LigneDepense bo) {
+		
+		BasicTextEncryptor encryptor = getEncryptor();
+		
 		LigneDepenseDTO dto = new LigneDepenseDTO();
 		dto.setAuteur( encryptor.encrypt(bo.getAuteur()));
 		dto.setDateMaj(bo.getDateMaj());
@@ -82,11 +88,11 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneDepens
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoDTO(java.lang.Object)
 	 */
-	public List<LigneDepenseDTO> transformBOtoDTO(List<LigneDepense> listeBO, BasicTextEncryptor encryptor) {
+	public List<LigneDepenseDTO> transformBOtoDTO(List<LigneDepense> listeBO) {
 		List<LigneDepenseDTO> listeDepensesDTO = new ArrayList<>();
 		if(listeBO != null){
 			for (LigneDepense bo : listeBO) {
-				listeDepensesDTO.add(transformBOtoDTO(bo, encryptor));
+				listeDepensesDTO.add(transformBOtoDTO(bo));
 			}
 		}
 		return listeDepensesDTO;
@@ -97,11 +103,11 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneDepens
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object)
 	 */
-	public List<LigneDepense> transformDTOtoBO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
+	public List<LigneDepense> transformDTOtoBO(List<LigneDepenseDTO> listeDTO) {
 		List<LigneDepense> listeDepensesBO = new ArrayList<>();
 		if(listeDTO != null){
 			for (LigneDepenseDTO dto : listeDTO) {
-				listeDepensesBO.add(transformDTOtoBO(dto, decryptor));
+				listeDepensesBO.add(transformDTOtoBO(dto));
 			}
 		}
 		return listeDepensesBO;
