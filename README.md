@@ -9,7 +9,7 @@
 ### Web
 <a href='https://www.versioneye.com/user/projects/55c4b29e653762001a003599'><img src='https://www.versioneye.com/user/projects/55c4b29e653762001a003599/badge.svg?style=flat' alt='Dependency Status' /></a>
 <a href='https://travis-ci.org/vzwingma/gestion-budget/branches'><img src='https://travis-ci.org/vzwingma/gestion-budget.svg?branch=webapp' alt='Build Status' /></a>
-<a href='https://github.com/vzwingma/gestion-budget/releases/latest/'><img src='https://badge.fury.io/gh/vzwingma%2Fgestion-budget.svg' alt='Version Build' /></a>
+<a href='https://github.com/vzwingma/gestion-budget/releases/latest/'><img src='https://d25lcipzij17d.cloudfront.net/badge.svg?id=gh&type=6&v=3.5.0&x2=0' alt='Version Build' /></a>
 
 ### Mobile (Android / iOS)
 <a href='https://travis-ci.org/vzwingma/gestion-budget/branches'><img src='https://travis-ci.org/vzwingma/gestion-budget.svg?branch=mobile' alt='Build Status' /></a>
