@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,6 +117,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		// Label lastconnextion
 		if(UISessionManager.getSession().getUtilisateurCourant().getDateDernierAcces() != null){
 			SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm", Locale.FRENCH);
+			sdf.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
 			String date = sdf.format(UISessionManager.getSession().getUtilisateurCourant().getDateDernierAcces().getTime());
 			this.getComponent().getLabelLastConnected().setValue("Dernière connexion : \n" + date);
 		}
