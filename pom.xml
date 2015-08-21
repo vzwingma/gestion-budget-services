@@ -131,6 +131,27 @@
 							</packagingExcludes>
 						</configuration>
 					</plugin>
+					<!-- Copy vers le répertoire partagé avec le conteneur Ansible -->
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<configuration>
+									<tasks>
+										<echo >Deploy for Ansible</echo>
+										<!-- Place any Ant task here. You can add anything you can add 
+											between <target> and </target> in a build.xml. -->
+										<copy file="target/gestion-budget-${project.version}.war" tofile="D:\\Users\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war"/>
+										<copy file="src/main/resources/config/dev/context.xml" tofile="D:\\Users\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml"/>
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 				</plugins>
 
 			</build>
@@ -144,7 +165,7 @@
 						<excludes>
 							<exclude>*.*</exclude>
 						</excludes>
-					</resource>				
+					</resource>
 					<resource>
 						<directory>src/main/resources/config/openshift</directory>
 						<filtering>true</filtering>
