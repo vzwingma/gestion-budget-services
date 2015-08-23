@@ -49,7 +49,7 @@ public class SpringMongoDBConfig implements ObjectFactory {
 	    String host = null;
 	    String username = null;
 	    String password = null;
-	    int port = 27017;
+	    int port = 0;
 
 	    Reference ref = (Reference) obj;
 	    Enumeration<RefAddr> props = ref.getAll();
@@ -57,6 +57,7 @@ public class SpringMongoDBConfig implements ObjectFactory {
 	        RefAddr addr = (RefAddr) props.nextElement();
 	        String propName = addr.getType();
 	        String propValue = (String) addr.getContent();
+	        LOGGER.info("JNDI Prop : [{}] : [{}]", propName, propValue);
 	        if (propName.equals("db")) {
 	            db = propValue;
 	        } else if (propName.equals("host")) {
@@ -65,10 +66,11 @@ public class SpringMongoDBConfig implements ObjectFactory {
 	            username = propValue;
 	        } else if (propName.equals("password")) {
 	            password = propValue;
-	        } else if (name.equals("port")) {
+	        } else if (propName.equals("port")) {
 	            try {
 	                port = Integer.parseInt(propValue);
 	            } catch (NumberFormatException e) {
+	            	LOGGER.error("Erreur dans le traitement de {}", propValue);
 	                throw new NamingException("Invalid port value " + propValue);
 	            }
 	        }
