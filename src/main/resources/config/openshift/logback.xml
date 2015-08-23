@@ -8,7 +8,7 @@
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>/var/lib/openshift/548476244382ec7dd8000068/app-root/logs/budget.log</file>
+		<file>~/app-root/logs/budget.log</file>
 		<append>false</append>
 		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
 			by default -->
@@ -22,6 +22,7 @@
 
 	<logger name="root" level="INFO" />
 	<logger name="org.hibernate" level="INFO" />
+	<logger name="org.mongodb.driver" level="INFO" />
 	<!-- interrogation -->
 	<logger name="com.terrier.finances" level="DEBUG" />
 
