@@ -114,7 +114,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			getComponent().getMois().setValue(dateBudget.getTime());
 			LOGGER.debug("[INIT] Init du mois géré : {}", dateBudget.getTime());
 		}
-		// Label lastconnextion
+		// Label last connexion
 		if(UISessionManager.getSession().getUtilisateurCourant().getDateDernierAcces() != null){
 			SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm", Locale.FRENCH);
 			sdf.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));

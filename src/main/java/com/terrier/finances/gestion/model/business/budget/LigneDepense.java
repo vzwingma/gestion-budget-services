@@ -32,12 +32,10 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	// SS Catégorie
 	@Transient
 	private CategorieDepense ssCategorie;
-	@Deprecated
-	private String idSSCategorie;
-	@Deprecated
-	private String idCategorie;	
 	// Libellé
 	private String libelle;
+	// Notes
+	private String notes;
 	// Type de dépense
 	private TypeDepenseEnum typeDepense;
 	// Etat de la ligne
@@ -63,28 +61,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	// Constructeur
 	public LigneDepense(){}
 	
-	/**
-	 * Constructeur
-	 * @param ssCategorie Catégorie
-	 * @param libelle libellé
-	 * @param typeDepense type de dépense
-	 * @param valeur valeur
-	 * @param etat état
-	 */
-	public LigneDepense(CategorieDepense ssCategorie, String libelle, TypeDepenseEnum typeDepense, float valeur, EtatLigneDepenseEnum etat){
-		this.id = UUID.randomUUID().toString();
-		this.ssCategorie = ssCategorie;
-		this.libelle = libelle;
-		this.typeDepense = typeDepense;
-		this.valeur = valeur;
-		this.etat = etat;
-		this.auteur = "vzwingma";
-		this.dateMaj = Calendar.getInstance().getTime();
-		this.dateOperation = Calendar.getInstance().getTime();
-		this.periodique = false;
-		this.derniereOperation = false;
-	}
-	
+
 	
 	/**
 	 * Constructeur
@@ -147,38 +124,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	}
 	
 	
-	
-	/**
-	 * @return the idSSCategorie
-	 */
-	@Deprecated
-	public String getIdSSCategorie() {
-		return idSSCategorie;
-	}
-
-	/**
-	 * @param idSSCategorie the idSSCategorie to set
-	 */
-	@Deprecated
-	public void setIdSSCategorie(String idSSCategorie) {
-		this.idSSCategorie = idSSCategorie;
-	}
-
-	/**
-	 * @return the idCategorie
-	 */
-	@Deprecated
-	public String getIdCategorie() {
-		return idCategorie;
-	}
-
-	/**
-	 * @param idCategorie the idCategorie to set
-	 */
-	@Deprecated
-	public void setIdCategorie(String idCategorie) {
-		this.idCategorie = idCategorie;
-	}
 
 	/**
 	 * @return Ligne dépense clonée
@@ -188,6 +133,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		LigneDepense ligneDepenseClonee = new LigneDepense();
 		ligneDepenseClonee.setId(UUID.randomUUID().toString());
 		ligneDepenseClonee.setLibelle(this.libelle);
+		ligneDepenseClonee.setNotes(this.notes);
 		ligneDepenseClonee.setSsCategorie(this.ssCategorie);
 		ligneDepenseClonee.setDateMaj(Calendar.getInstance().getTime());
 		ligneDepenseClonee.setDateOperation(null);
@@ -237,6 +183,20 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	}
 
 	
+	/**
+	 * @return the notes
+	 */
+	public String getNotes() {
+		return notes;
+	}
+
+	/**
+	 * @param notes the notes to set
+	 */
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
 	/**
 	 * @return the categorie
 	 */

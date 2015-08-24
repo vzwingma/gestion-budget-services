@@ -3,9 +3,6 @@ package com.terrier.finances.gestion.model.data.budget;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 
  * Ligne de dépense dans un budget mensuel
@@ -25,6 +22,8 @@ public class LigneDepenseDTO implements Serializable {
 	private String idCategorie;
 	// Libellé
 	private String libelle;
+	// Notes
+	private String notes;
 	// Type de dépense
 	private String typeDepense;
 	// Etat de la ligne
@@ -45,7 +44,7 @@ public class LigneDepenseDTO implements Serializable {
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(LigneDepenseDTO.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(LigneDepenseDTO.class);
 	
 	// Constructeur
 	public LigneDepenseDTO(){}
@@ -175,6 +174,22 @@ public class LigneDepenseDTO implements Serializable {
 	
 
 	
+
+	/**
+	 * @return the notes
+	 */
+	public String getNotes() {
+		return notes;
+	}
+
+
+	/**
+	 * @param notes the notes to set
+	 */
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

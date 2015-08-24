@@ -225,7 +225,4 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public void setDataTransformerBudget(DataTransformerBudget dataTransformerBudget) {
 		this.dataTransformerBudget = dataTransformerBudget;
 	}
-	
-	
-	
 }

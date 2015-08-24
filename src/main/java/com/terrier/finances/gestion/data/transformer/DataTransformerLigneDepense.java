@@ -51,6 +51,10 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 			bo.setSsCategorie(parametrageService.chargeCategorieParId(decryptor.decrypt(dto.getIdSSCategorie())));
 		} catch (DataNotFoundException e) {	}
 		bo.setLibelle(decryptor.decrypt(dto.getLibelle()));
+		if(dto.getNotes() != null){
+			bo.setNotes(decryptor.decrypt(dto.getNotes()));
+		}
+		
 		bo.setPeriodique(dto.isPeriodique());
 		bo.setTypeDepense(TypeDepenseEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
 		bo.setValeur(Float.valueOf(decryptor.decrypt(dto.getValeur())));
@@ -77,6 +81,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		dto.setIdCategorie(bo.getCategorie() != null ? encryptor.encrypt(bo.getCategorie().getId()) : null);
 		dto.setIdSSCategorie(bo.getSsCategorie() != null ? encryptor.encrypt(bo.getSsCategorie().getId()) : null);
 		dto.setLibelle(encryptor.encrypt(bo.getLibelle()));
+		dto.setNotes(bo.getNotes() != null ? encryptor.encrypt(bo.getNotes()) : null);
 		dto.setPeriodique(bo.isPeriodique());
 		dto.setTypeDepense(encryptor.encrypt(bo.getTypeDepense().name()));
 		dto.setValeur(encryptor.encrypt(String.valueOf(bo.getValeur())));
@@ -143,6 +148,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		dto.setIdCategorie(decryptor.decrypt(dto.getIdCategorie()));
 		dto.setIdSSCategorie(decryptor.decrypt(dto.getIdSSCategorie()));
 		dto.setLibelle(decryptor.decrypt(dto.getLibelle()));
+		dto.setNotes(decryptor.decrypt(dto.getNotes()));
 		dto.setTypeDepense(decryptor.decrypt(dto.getTypeDepense()));
 		dto.setValeur(decryptor.decrypt(dto.getValeur()));
 		return dto;

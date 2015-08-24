@@ -57,7 +57,7 @@ public class SpringMongoDBConfig implements ObjectFactory {
 	        RefAddr addr = (RefAddr) props.nextElement();
 	        String propName = addr.getType();
 	        String propValue = (String) addr.getContent();
-	        LOGGER.info("JNDI Prop : [{}] : [{}]", propName, propValue);
+	        // LOGGER.info("JNDI Prop : [{}] : [{}]", propName, propValue);
 	        if (propName.equals("db")) {
 	            db = propValue;
 	        } else if (propName.equals("host")) {

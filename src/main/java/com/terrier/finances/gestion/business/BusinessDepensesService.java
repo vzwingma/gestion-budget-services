@@ -362,6 +362,21 @@ public class BusinessDepensesService {
 		majEtatLigneDepense(dataDepenses.chargeBudgetMensuelById(idBudget), ligneId, etat, auteur);
 	}
 
+	
+	/**
+	 * Enregistrement de la note pour une ligne
+	 * @param budget budget courant
+	 * @param ligneId id de la ligne à mettre à jour
+	 * @param note note à enregistrer
+	 * @param auteur auteur auteur de la note
+	 */
+	public void majNotesLignesDepenses(BudgetMensuel budget, String ligneId, String note, String auteur){
+		majLigneDepense(budget, ligneId, "Notes", String.class, note, auteur);
+		// Mise à jour du budget
+		dataDepenses.sauvegardeBudgetMensuel(budget);
+	}
+	
+	
 	/**
 	 * Mise à jour de la ligne de dépense du budhet
 	 * @param ligneId ligne à modifier

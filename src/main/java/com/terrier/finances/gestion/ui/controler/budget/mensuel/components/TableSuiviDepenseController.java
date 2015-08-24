@@ -21,9 +21,12 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.components.Tabl
 import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode.TableSuiviDepenseEditedFieldFactory;
 import com.terrier.finances.gestion.ui.components.style.TableDepensesCellStyle;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.PopupNoteVisibitilityListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.PopupView;
+import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Table.Align;
 
 /**
@@ -51,6 +54,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	public static final int TAILLE_COLONNE_ACTIONS = 110;
 	public static final int TAILLE_COLONNE_TYPE_MENSUEL = 65;
 	public static final int TAILLE_COLONNE_VALEUR = 100;
+
 	
 	/**
 	 * Constructeur du controleur du composant
@@ -86,7 +90,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId(), EntetesTableSuiviDepenseEnum.SSCATEGORIE.getLibelle());
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId(), TAILLE_COLONNE_CATEGORIE);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), String.class, null);
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), PopupView.class, null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), EntetesTableSuiviDepenseEnum.LIBELLE.getLibelle());
 		
 		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.TYPE.getId(), TypeDepenseEnum.class, null);
@@ -180,7 +184,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			getComponent().refreshRowCache();
 		}
 		
-		for (LigneDepense ligneDepense : listeDepenses) {
+		for (final LigneDepense ligneDepense : listeDepenses) {
 			// Access items and properties through the component
 			Item item1 = getComponent().getItem(ligneDepense.getId()); // Get item by explicit ID
 			if(item1 == null){
@@ -193,8 +197,17 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			property3.setValue(ligneDepense.getCategorie());
 			Property<CategorieDepense> property4 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId());
 			property4.setValue(ligneDepense.getSsCategorie());
-			Property<String> property5 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId());
-			property5.setValue(ligneDepense.getLibelle());
+			Property<PopupView> property5 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId());
+			
+			final RichTextArea rta = new RichTextArea();
+			rta.setImmediate(true);
+			rta.setValue(ligneDepense.getNotes() != null ? ligneDepense.getNotes() : "");
+		
+			final PopupView ppv = new PopupView(ligneDepense.getLibelle(), rta);
+			ppv.addPopupVisibilityListener(new PopupNoteVisibitilityListener(ligneDepense.getId(), getServiceDepense()));
+			ppv.setHideOnMouseOut(false);
+			property5.setValue(ppv);
+
 			Property<TypeDepenseEnum> property6 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.TYPE.getId());
 			property6.setValue(ligneDepense.getTypeDepense());			
 			Property<Float> property7 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.VALEUR.getId());
