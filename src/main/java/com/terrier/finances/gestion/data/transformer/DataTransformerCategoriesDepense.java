@@ -6,7 +6,6 @@ package com.terrier.finances.gestion.data.transformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +13,7 @@ import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.IDataTransformer;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseDTO;
+import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseXO;
 
 /**
  * DataTransformer
@@ -21,7 +21,7 @@ import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseDTO;
  *
  */
 @Component("dataTransformerCategoriesDepense")
-public class DataTransformerCategoriesDepense extends IDataTransformer<CategorieDepense, CategorieDepenseDTO> {
+public class DataTransformerCategoriesDepense extends IDataTransformer<CategorieDepense, CategorieDepenseDTO, CategorieDepenseXO> {
 
 	@Autowired
 	private ParametragesDatabaseService parametrageService;
@@ -35,17 +35,17 @@ public class DataTransformerCategoriesDepense extends IDataTransformer<Categorie
 	 */
 	@Override
 	public CategorieDepense transformDTOtoBO(CategorieDepenseDTO dto) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	
-	/* (non-Javadoc)
-	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoDTO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
+	/**
+	 * @param bos lliste de BOs
+	 * @param encryptor encryptor
+	 * @return liste des DTO
 	 */
-	public List<CategorieDepenseDTO> transformBOstoDTOs(List<CategorieDepense> bos,
-			BasicTextEncryptor encryptor) {
+	public List<CategorieDepenseDTO> transformBOstoDTOs(List<CategorieDepense> bos) {
 		
 		List<CategorieDepenseDTO> dtos = new ArrayList<>();
 		for (CategorieDepense categorieDepenseBO : bos) {
@@ -55,6 +55,21 @@ public class DataTransformerCategoriesDepense extends IDataTransformer<Categorie
 		return dtos;
 	}
 	
+	
+	/**
+	 * Transformation des BO en XO
+	 * @param bos liste de BO
+	 * @return liste de XO
+	 */
+	public List<CategorieDepenseXO> transformBOstoXOs(List<CategorieDepense> bos) {
+		
+		List<CategorieDepenseXO> xos = new ArrayList<>();
+		for (CategorieDepense categorieDepenseBO : bos) {
+			CategorieDepenseXO xo = transformBOtoXO(categorieDepenseBO);
+			xos.add(xo);
+		}
+		return xos;
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoDTO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
@@ -71,5 +86,20 @@ public class DataTransformerCategoriesDepense extends IDataTransformer<Categorie
 		}
 		return dto;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoXO(java.lang.Object)
+	 */
+	@Override
+	public CategorieDepenseXO transformBOtoXO(CategorieDepense bo) {
+		CategorieDepenseXO xo = new CategorieDepenseXO();
+		xo.setId(bo.getId());
+		xo.setCategorie(bo.isCategorie());
+		xo.setIdCategorieParente(bo.getIdCategorieParente());
+		xo.setLibelle(bo.getLibelle());
+		for (CategorieDepense ssCatBO : bo.getListeSSCategories()) {
+			xo.getListeSSCategories().add(transformBOtoXO(ssCatBO));
+		}
+		return xo;
+	}
 }

@@ -23,6 +23,7 @@ import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.business.ParametragesService;
 import com.terrier.finances.gestion.business.auth.UserAuthProvider;
 import com.terrier.finances.gestion.data.transformer.DataTransformerCategoriesDepense;
+import com.terrier.finances.gestion.data.transformer.DataTransformerLigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
@@ -67,7 +68,9 @@ public class BudgetRestController {
 
 	@Autowired @Qualifier("dataTransformerCategoriesDepense")
 	private DataTransformerCategoriesDepense dataTransformerCategoriesDepense;
-
+	@Autowired @Qualifier("dataTransformerLigneDepense")
+	private DataTransformerLigneDepense dataTransformerLigneDepense;
+	
 	@Autowired
 	private UserAuthProvider manager;
 
@@ -85,7 +88,7 @@ public class BudgetRestController {
 		LOGGER.debug("[REST][{}] Appel REST GetCategoriesDepenses", userSpringSec);
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			try{
-				return dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null);
+				return dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories());
 			}
 			catch(Exception e){
 				throw new DataNotFoundException(e.getMessage());
@@ -210,14 +213,14 @@ public class BudgetRestController {
 	 */
 	@RequestMapping(value="/depenses/{idbudget}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
 	public List<LigneDepenseDTO> getLignesDepenses(@PathVariable String idbudget, HttpServletRequest request) 
-			throws UserNotAuthorizedException, DataNotFoundException{
+			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
 
 
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		LOGGER.debug("[REST][{}] Appel REST getLignesDepenses", userSpringSec);		
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			LOGGER.debug("Appel REST getLignesDepenses : idbudget={}", idbudget);
-			return businessDepenses.chargerLignesDepensesConsultation(idbudget);
+			return dataTransformerLigneDepense.transformBOtoDTO(businessDepenses.chargerLignesDepenses(idbudget));
 		}
 		throw new UserNotAuthorizedException();
 	}

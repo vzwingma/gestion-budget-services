@@ -25,7 +25,7 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
  *
  */
 @Component("dataTransformerLigneDepense")
-public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, LigneDepenseDTO> {
+public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, LigneDepenseDTO, LigneDepenseXO> {
 
 	
 	@Autowired
@@ -122,42 +122,44 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	
 
 
+	
+	
+	/* (non-Javadoc)
+	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoXO(java.lang.Object)
+	 */
+	@Override
+	public LigneDepenseXO transformBOtoXO(LigneDepense bo) {
+		LigneDepenseXO xo = new LigneDepenseXO();
+		if(bo.getAuteur() !=null){
+			xo.setAuteur(bo.getAuteur());
+		}
+		xo.setDateMaj(bo.getDateMaj());
+		xo.setDateOperation(bo.getDateOperation());
+		xo.setDerniereOperation(bo.isDerniereOperation());
+		xo.setEtat(bo.getEtat().getId());
+		xo.setId(bo.getId());
+		xo.setIdCategorie(bo.getCategorie().getId());
+		xo.setIdSSCategorie(bo.getSsCategorie().getId());
+		xo.setLibelle(bo.getLibelle());
+		xo.setNotes(bo.getNotes());
+		xo.setPeriodique(bo.isPeriodique());
+		xo.setTypeDepense(bo.getTypeDepense().getId());
+		xo.setValeur(bo.getValeur()+ "");
+		return xo;
+	}
+
+
+
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object)
 	 */
-	public List<LigneDepenseXO> transformDTOtoXO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
+	public List<LigneDepenseXO> transformBOtoXO(List<LigneDepense> listeBO) {
 		List<LigneDepenseXO> listeDepensesXO = new ArrayList<>();
-		if(listeDTO != null){
-			for (LigneDepenseDTO dto : listeDTO) {
-				listeDepensesXO.add(transformDTOtoXO(dto, decryptor));
+		if(listeBO != null){
+			for (LigneDepense bo : listeBO) {
+				listeDepensesXO.add(transformBOtoXO(bo));
 			}
 		}
 		return listeDepensesXO;
-	}
-	
-	
-
-	/* (non-Javadoc)
-	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
-	 */
-	
-	private LigneDepenseXO transformDTOtoXO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
-		LigneDepenseXO xo = new LigneDepenseXO();
-		if(dto.getAuteur() !=null){
-			xo.setAuteur(decryptor.decrypt(dto.getAuteur()));
-		}
-		xo.setDateMaj(dto.getDateMaj());
-		xo.setDateOperation(dto.getDateOperation());
-		xo.setDerniereOperation(dto.isDerniereOperation());
-		xo.setEtat(decryptor.decrypt(dto.getEtat()));
-		xo.setId(dto.getId());
-		xo.setIdCategorie(decryptor.decrypt(dto.getIdCategorie()));
-		xo.setIdSSCategorie(decryptor.decrypt(dto.getIdSSCategorie()));
-		xo.setLibelle(decryptor.decrypt(dto.getLibelle()));
-		xo.setNotes(decryptor.decrypt(dto.getNotes()));
-		xo.setPeriodique(dto.isPeriodique());
-		xo.setTypeDepense(decryptor.decrypt(dto.getTypeDepense()));
-		xo.setValeur(decryptor.decrypt(dto.getValeur()));
-		return xo;
 	}
 }

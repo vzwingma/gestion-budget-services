@@ -4,8 +4,6 @@
 package com.terrier.finances.gestion.model;
 
 import org.jasypt.util.text.BasicTextEncryptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
@@ -13,19 +11,13 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 
 
 /**
- * Transformer
+ * Transformer de données entre les couches
  * @author vzwingma
  *
  */
-public abstract class IDataTransformer<BO, DTO> {
+public abstract class IDataTransformer<BO, DTO, XO> {
 
-	
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(IDataTransformer.class);
 
-	
 	
 	/**
 	 * @return l'encryptor de l'utilisateur courant
@@ -51,4 +43,11 @@ public abstract class IDataTransformer<BO, DTO> {
 	 * @param bo business object
 	 */
 	public abstract DTO transformBOtoDTO(BO bo);
+	
+	/**
+	 * Transformation d'un BO en XO
+	 * @return xo xml data object (REST)
+	 * @param bo business object
+	 */
+	public abstract XO transformBOtoXO(BO bo);
 }

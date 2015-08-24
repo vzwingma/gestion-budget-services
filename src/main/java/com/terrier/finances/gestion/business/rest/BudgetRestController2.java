@@ -26,14 +26,15 @@ import com.terrier.finances.gestion.business.auth.UserAuthProvider;
 import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.data.transformer.DataTransformerCategoriesDepense;
 import com.terrier.finances.gestion.data.transformer.DataTransformerLigneDepense;
+import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
+import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelXO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseXO;
-import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseDTO;
-import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurDTO;
+import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseXO;
 import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurXO;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
@@ -89,14 +90,14 @@ public class BudgetRestController2 {
 	 */
 	@RequestMapping(value="/categories/depenses", 
 			method=RequestMethod.GET, produces = "application/json")
-	public List<CategorieDepenseDTO> getCategoriesDepenses(
+	public List<CategorieDepenseXO> getCategoriesDepenses(
 			HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
 
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		LOGGER.debug("[REST][{}] Appel REST GetCategoriesDepenses", userSpringSec);
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			try{
-				return dataTransformerCategoriesDepense.transformBOstoDTOs(businessParams.getCategories(), null);
+				return dataTransformerCategoriesDepense.transformBOstoXOs(businessParams.getCategories());
 			}
 			catch(Exception e){
 				throw new DataNotFoundException(e.getMessage());
@@ -192,8 +193,8 @@ public class BudgetRestController2 {
 			catch(NumberFormatException e){
 				LOGGER.error("Erreur dans l'année reçu : utilisation de la valeur courante {}", annee, e);
 			}
-			BudgetMensuelDTO budgetDTO = businessDepenses.chargerBudgetMensuelConsultation(idCompte, mois, annee);
-			BudgetMensuelDTO budget = dataTransformerBudget.decryptDTO(budgetDTO, ((Utilisateur)userSpringSec).getEncryptor());
+			BudgetMensuel budgetBO = businessDepenses.chargerBudgetMensuel((Utilisateur)userSpringSec, idCompte, mois, annee);
+			BudgetMensuelXO budget = dataTransformerBudget.transformBOtoXO(budgetBO);
 			// Vérification que le buget est lisible par l'utilisateur
 			for(Utilisateur proprietaire : budget.getCompteBancaire().getListeProprietaires()){
 				if(proprietaire.getId().equals(((Utilisateur)userSpringSec).getId())){
@@ -219,12 +220,12 @@ public class BudgetRestController2 {
 	 */
 	@RequestMapping(value="/depenses/{idbudget}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
 	public List<LigneDepenseXO> getLignesDepenses(@PathVariable String idbudget) 
-			throws UserNotAuthorizedException, DataNotFoundException{
+			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			LOGGER.debug("[REST][{}] Appel REST getLignesDepenses : idbudget={}", userSpringSec, idbudget);
-			List<LigneDepenseDTO> listeDepensesDTO = businessDepenses.chargerLignesDepensesConsultation(idbudget);
-			return dataTransformerLigneDepense.transformDTOtoXO(listeDepensesDTO, ((Utilisateur)userSpringSec).getEncryptor());
+			List<LigneDepense> listeDepensesDTO = businessDepenses.chargerLignesDepenses(idbudget);
+			return dataTransformerLigneDepense.transformBOtoXO(listeDepensesDTO);
 		}
 		throw new UserNotAuthorizedException();
 	}

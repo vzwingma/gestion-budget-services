@@ -19,6 +19,7 @@ import com.terrier.finances.gestion.model.IDataTransformer;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
+import com.terrier.finances.gestion.model.data.budget.BudgetMensuelXO;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**
@@ -27,7 +28,7 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
  *
  */
 @Component("dataTransformerBudget")
-public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
+public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, BudgetMensuelDTO, BudgetMensuelXO> {
 
 	@Autowired @Qualifier("dataTransformerLigneDepense")
 	private DataTransformerLigneDepense dataTransformerLigneDepense = new DataTransformerLigneDepense();
@@ -118,49 +119,51 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 
 
 	/* (non-Javadoc)
-	 * @see com.terrier.finances.gestion.model.AbstractTransformer#transformDTOtoBO(java.lang.Object)
+	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoXO(java.lang.Object)
 	 */
-	public BudgetMensuelDTO decryptDTO(BudgetMensuelDTO dto, BasicTextEncryptor decryptor) {
+	@Override
+	public BudgetMensuelXO transformBOtoXO(BudgetMensuel bo) {
 		//		bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses(), decryptor));
-		dto.setMargeSecurite(dto.getMargeSecurite() != null ? decryptor.decrypt(dto.getMargeSecurite()) : "0");
-		dto.setMargeSecuriteFinMois(dto.getMargeSecuriteFinMois() != null ? decryptor.decrypt(dto.getMargeSecuriteFinMois()) : "0");
-		dto.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? decryptor.decrypt(dto.getResultatMoisPrecedent()) : "0");
+		BudgetMensuelXO xo = new BudgetMensuelXO();
+		xo.setMargeSecurite("" + bo.getMargeSecurite());
+		xo.setMargeSecuriteFinMois("" + bo.getMargeSecuriteFinMois());
+		xo.setResultatMoisPrecedent("" + bo.getResultatMoisPrecedent());
 
 		/*
 		 * Budget clos : utilisation des valeurs calculées
 		 */
-		dto.setNowArgentAvance(dto.getNowArgentAvance() != null ? decryptor.decrypt(dto.getNowArgentAvance()) : "0");
-		dto.setNowCompteReel(dto.getNowCompteReel() != null ? decryptor.decrypt(dto.getNowCompteReel()) : "0");
-		dto.setFinArgentAvance(dto.getFinArgentAvance() != null ? decryptor.decrypt(dto.getFinArgentAvance()) : "0");
-		dto.setFinCompteReel(dto.getFinCompteReel() != null ? decryptor.decrypt(dto.getFinCompteReel()) :"0");
+		xo.setNowArgentAvance(bo.getNowArgentAvance() + "");
+		xo.setNowCompteReel(bo.getNowCompteReel() + "");
+		xo.setFinArgentAvance(bo.getFinArgentAvance() + "");
+		xo.setFinCompteReel(bo.getFinCompteReel() + "");
 
 		// Complétion des totaux
-		Map<String, String[]> totalCategorieDTO = new HashMap<String, String[]>();
-		if(dto.getTotalParCategories() != null){
-			for (String catKey : dto.getTotalParCategories().keySet()) {
-				String[] totaux = dto.getTotalParCategories().get(catKey);
-				String[] totauxBO = new String[totaux.length];
+		Map<String, String[]> totalCategorieXO = new HashMap<String, String[]>();
+		if(bo.getTotalParCategories() != null){
+			for (CategorieDepense catKey : bo.getTotalParCategories().keySet()) {
+				Double[] totaux = bo.getTotalParCategories().get(catKey);
+				String[] totauxXO = new String[totaux.length];
 				for (int i = 0; i < totaux.length; i++) {
-					totauxBO[i] = totaux[i] != null ? decryptor.decrypt(totaux[i]) : "0";
+					totauxXO[i] = totaux[i] + "";
 				}
-				totalCategorieDTO.put(decryptor.decrypt(catKey), totauxBO);
+				totalCategorieXO.put(catKey.getId(), totauxXO);
 			}
 		}
-		dto.setTotalParCategories(totalCategorieDTO);
+		xo.setTotalParCategories(totalCategorieXO);
 		// Complétion des totaux ss catégorie
-		Map<String, String[]> totalSsCategorieDTO = new HashMap<String, String[]>();
-		if(dto.getTotalParSSCategories() != null){
-			for (String ssCatKey : dto.getTotalParSSCategories().keySet()) {
-				String[] totaux = dto.getTotalParSSCategories().get(ssCatKey);
-				String[] totauxBO = new String[totaux.length];
+		Map<String, String[]> totalSsCategorieXO = new HashMap<String, String[]>();
+		if(bo.getTotalParSSCategories() != null){
+			for (CategorieDepense ssCatKey : bo.getTotalParSSCategories().keySet()) {
+				Double[] totaux = bo.getTotalParSSCategories().get(ssCatKey);
+				String[] totauxXO = new String[totaux.length];
 				for (int i = 0; i < totaux.length; i++) {
-					totauxBO[i] = totaux[i] != null ? decryptor.decrypt(totaux[i]) : "0";
+					totauxXO[i] = totaux[i] + "";
 				}
-				totalSsCategorieDTO.put(decryptor.decrypt(ssCatKey), totauxBO);
+				totalSsCategorieXO.put(ssCatKey.getId(), totauxXO);
 			}
 		}
-		dto.setTotalParSSCategories(totalSsCategorieDTO);
-		return dto;
+		xo.setTotalParSSCategories(totalSsCategorieXO);
+		return xo;
 	}
 
 	/* (non-Javadoc)

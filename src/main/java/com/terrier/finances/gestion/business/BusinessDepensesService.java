@@ -13,7 +13,6 @@ import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
-import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -151,15 +150,15 @@ public class BusinessDepensesService {
 	}
 
 	/**
-	 * Chargement des lignes de dépenses en consultation
+	 * Chargement des lignes de dépenses 
 	 * @param idBudget idBudget
 	 * @return lignes de dépenses du budget
 	 * @throws DataNotFoundException erreur
 	 */
-	public List<LigneDepenseDTO> chargerLignesDepensesConsultation(String idBudget) throws DataNotFoundException{
+	public List<LigneDepense> chargerLignesDepenses(String idBudget) throws BudgetNotFoundException{
 		LOGGER.debug("Chargement des dépenses de {}", idBudget);
-		List<LigneDepenseDTO> listeDepenses = this.dataDepenses.chargerLignesDepenses(idBudget);
-		return listeDepenses;
+		BudgetMensuel budgetMensuel = this.dataDepenses.chargeBudgetMensuelById(idBudget);
+		return budgetMensuel.getListeDepenses();
 	}
 
 	/**
