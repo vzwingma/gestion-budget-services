@@ -4,10 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
-import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.PopupView.PopupVisibilityEvent;
 import com.vaadin.ui.PopupView.PopupVisibilityListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.RichTextArea;
 
 /**
@@ -51,16 +52,38 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 	public void popupVisibilityChange(PopupVisibilityEvent event) {
 		if(!event.isPopupVisible()){
 			// Mise à jour de la ligne de dépense
-			RichTextArea rta = (RichTextArea)event.getPopupView().getContent().getPopupComponent();
+			final RichTextArea rta = (RichTextArea)event.getPopupView().getContent().getPopupComponent();
 			LOGGER.debug("[IHM] Dépense [{}] Mise à jour de la note [{}]", idLigneDepense, rta.getValue());
 			this.serviceDepenses.majNotesLignesDepenses(
 					UISessionManager.getSession().getBudgetMensuelCourant(), 
 					idLigneDepense, 
 					rta.getValue(), 
 					UISessionManager.getSession().getUtilisateurCourant().getLogin());
+			
+			String libellePPV = event.getPopupView().getContent().getMinimizedValueAsHTML();
+			libellePPV = libellePPV != null ? libellePPV.replaceAll("\\*", "").trim() : "";
+			if(rta.getValue() != null && rta.getValue().length() > 0){
+				libellePPV += "  *";
+			}
+			final String libellePopupView = libellePPV;
+			
+			event.getPopupView().setContent(new PopupView.Content() {
+				
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 3147461186004228578L;
+
+				@Override
+				public Component getPopupComponent() {
+					return rta;
+				}
+				
+				@Override
+				public String getMinimizedValueAsHTML() {
+					return libellePopupView;
+				}
+			});
 		}
 	}
-
-	
-	
 }

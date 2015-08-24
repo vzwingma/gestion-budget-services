@@ -13,10 +13,9 @@ import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
  * Contexte d'un utilisateur
  * 
  * @author vzwingma
- * @deprecated : Utiliser la v2 des services REST et {@link ContexteUtilisateurXO} 
+ * 
  */
-@Deprecated
-public class ContexteUtilisateurDTO {
+public class ContexteUtilisateurXO {
 
 	private Utilisateur utilisateur;
 

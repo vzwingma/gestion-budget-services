@@ -29,9 +29,12 @@ import com.terrier.finances.gestion.data.transformer.DataTransformerLigneDepense
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
+import com.terrier.finances.gestion.model.data.budget.BudgetMensuelXO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
+import com.terrier.finances.gestion.model.data.budget.LigneDepenseXO;
 import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseDTO;
 import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurDTO;
+import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurXO;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
@@ -113,10 +116,10 @@ public class BudgetRestController2 {
 	 */
 	@RequestMapping(value="/utilisateur", 
 			method=RequestMethod.GET, produces = "application/json")
-	public ContexteUtilisateurDTO getContexteUtilisateur(HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
+	public ContexteUtilisateurXO getContexteUtilisateur(HttpServletRequest request) throws DataNotFoundException, UserNotAuthorizedException{
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		LOGGER.debug("[REST][{}] Appel REST getContexteUtilisateur", userSpringSec);		
-		ContexteUtilisateurDTO contexteUtilisateur = new ContexteUtilisateurDTO();
+		ContexteUtilisateurXO contexteUtilisateur = new ContexteUtilisateurXO();
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			try{
 				Utilisateur user = (Utilisateur)userSpringSec;
@@ -215,13 +218,13 @@ public class BudgetRestController2 {
 	 * @throws DataNotFoundException  erreur de connexion à la BDD
 	 */
 	@RequestMapping(value="/depenses/{idbudget}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
-	public List<LigneDepenseDTO> getLignesDepenses(@PathVariable String idbudget) 
+	public List<LigneDepenseXO> getLignesDepenses(@PathVariable String idbudget) 
 			throws UserNotAuthorizedException, DataNotFoundException{
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			LOGGER.debug("[REST][{}] Appel REST getLignesDepenses : idbudget={}", userSpringSec, idbudget);
 			List<LigneDepenseDTO> listeDepensesDTO = businessDepenses.chargerLignesDepensesConsultation(idbudget);
-			return dataTransformerLigneDepense.decryptDTO(listeDepensesDTO, ((Utilisateur)userSpringSec).getEncryptor());
+			return dataTransformerLigneDepense.transformDTOtoXO(listeDepensesDTO, ((Utilisateur)userSpringSec).getEncryptor());
 		}
 		throw new UserNotAuthorizedException();
 	}

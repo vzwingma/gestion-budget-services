@@ -14,6 +14,7 @@ import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.IDataTransformer;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
+import com.terrier.finances.gestion.model.data.budget.LigneDepenseXO;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
@@ -124,14 +125,14 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object)
 	 */
-	public List<LigneDepenseDTO> decryptDTO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
-		List<LigneDepenseDTO> listeDepensesDTO = new ArrayList<>();
+	public List<LigneDepenseXO> transformDTOtoXO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
+		List<LigneDepenseXO> listeDepensesXO = new ArrayList<>();
 		if(listeDTO != null){
 			for (LigneDepenseDTO dto : listeDTO) {
-				listeDepensesDTO.add(decryptDTO(dto, decryptor));
+				listeDepensesXO.add(transformDTOtoXO(dto, decryptor));
 			}
 		}
-		return listeDepensesDTO;
+		return listeDepensesXO;
 	}
 	
 	
@@ -140,19 +141,23 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
 	 */
 	
-	private LigneDepenseDTO decryptDTO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
+	private LigneDepenseXO transformDTOtoXO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
+		LigneDepenseXO xo = new LigneDepenseXO();
 		if(dto.getAuteur() !=null){
-			dto.setAuteur(decryptor.decrypt(dto.getAuteur()));
+			xo.setAuteur(decryptor.decrypt(dto.getAuteur()));
 		}
-		dto.setEtat(decryptor.decrypt(dto.getEtat()));
-		dto.setIdCategorie(decryptor.decrypt(dto.getIdCategorie()));
-		dto.setIdSSCategorie(decryptor.decrypt(dto.getIdSSCategorie()));
-		dto.setLibelle(decryptor.decrypt(dto.getLibelle()));
-		dto.setNotes(decryptor.decrypt(dto.getNotes()));
-		dto.setTypeDepense(decryptor.decrypt(dto.getTypeDepense()));
-		dto.setValeur(decryptor.decrypt(dto.getValeur()));
-		return dto;
+		xo.setDateMaj(dto.getDateMaj());
+		xo.setDateOperation(dto.getDateOperation());
+		xo.setDerniereOperation(dto.isDerniereOperation());
+		xo.setEtat(decryptor.decrypt(dto.getEtat()));
+		xo.setId(dto.getId());
+		xo.setIdCategorie(decryptor.decrypt(dto.getIdCategorie()));
+		xo.setIdSSCategorie(decryptor.decrypt(dto.getIdSSCategorie()));
+		xo.setLibelle(decryptor.decrypt(dto.getLibelle()));
+		xo.setNotes(decryptor.decrypt(dto.getNotes()));
+		xo.setPeriodique(dto.isPeriodique());
+		xo.setTypeDepense(decryptor.decrypt(dto.getTypeDepense()));
+		xo.setValeur(decryptor.decrypt(dto.getValeur()));
+		return xo;
 	}
-	
-	
 }

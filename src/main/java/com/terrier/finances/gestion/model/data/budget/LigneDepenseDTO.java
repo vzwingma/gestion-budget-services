@@ -196,12 +196,23 @@ public class LigneDepenseDTO implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "LigneDepenseDTO [id=" + id + ", ssCategorie=" + idSSCategorie +", libelle=" + libelle + ", typeDepense=" + typeDepense
-				+ ", etat=" + etat + ", valeur=" + valeur + ", dateOperation="
-				+ dateOperation + ", dateMaj=" + dateMaj + ", auteur=" + auteur
-				+ ", periodique=" + periodique + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("LigneDepenseDTO [id=").append(id)
+				.append(", idSSCategorie=").append(idSSCategorie)
+				.append(", idCategorie=").append(idCategorie)
+				.append(", libelle=").append(libelle).append(", notes=")
+				.append(notes).append(", typeDepense=").append(typeDepense)
+				.append(", etat=").append(etat).append(", valeur=")
+				.append(valeur).append(", dateOperation=")
+				.append(dateOperation).append(", dateMaj=").append(dateMaj)
+				.append(", auteur=").append(auteur).append(", periodique=")
+				.append(periodique).append(", derniereOperation=")
+				.append(derniereOperation).append("]");
+		return builder.toString();
 	}
 
+	
+	
 	/**
 	 * @return the idSSCategorie
 	 */
