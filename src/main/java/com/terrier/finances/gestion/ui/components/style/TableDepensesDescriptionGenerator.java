@@ -27,14 +27,13 @@ public class TableDepensesDescriptionGenerator implements ItemDescriptionGenerat
 	 * 
 	 */
 	private static final long serialVersionUID = -1811163367277413727L;
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(TableDepensesDescriptionGenerator.class);
-
-
+	// Controleur
 	private TableSuiviDepenseController controleur;
 
+	/**
+	 * Constructeur
+	 * @param controleur ajout du controleur
+	 */
 	public TableDepensesDescriptionGenerator(TableSuiviDepenseController controleur){
 		this.controleur = controleur;
 	}
