@@ -32,11 +32,9 @@ import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelXO;
-import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseXO;
 import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseXO;
 import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurXO;
-import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.model.exception.UserNotAuthorizedException;
@@ -241,7 +239,7 @@ public class BudgetRestController2 {
 	 * @throws BudgetNotFoundException erreur budget introuvable
 	 */
 	@RequestMapping(value="/depenses/{idBudget}/{idDepense}", method=RequestMethod.PUT, produces = "application/json",headers="Accept=application/json")
-	public void updateDepense(@PathVariable String idBudget, @PathVariable String idDepense, @RequestBody LigneDepenseDTO depense) 
+	public void majLigneDepense(@PathVariable String idBudget, @PathVariable String idDepense, @RequestBody LigneDepenseXO depense) 
 			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
 
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -249,11 +247,7 @@ public class BudgetRestController2 {
 			
 			LOGGER.debug("[REST][{}] Appel REST updateDepense : idbudget={} et idDepense={} : [{}]", userSpringSec, idBudget, idDepense, depense);
 			
-			EtatLigneDepenseEnum nvEtat = null;
-			if(depense.getEtat() != null && !depense.getEtat().equals("SUPPRIMER")){
-				nvEtat = EtatLigneDepenseEnum.valueOf(depense.getEtat());
-			}
-			businessDepenses.majEtatLigneDepense(idBudget, idDepense, nvEtat, ((Utilisateur)userSpringSec).getLibelle());
+			businessDepenses.majLigneDepense(idBudget, dataTransformerLigneDepense.transformXOtoBO(depense), ((Utilisateur)userSpringSec).getLibelle());
 		}
 		else{
 			throw new UserNotAuthorizedException();	

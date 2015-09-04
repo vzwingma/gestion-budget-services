@@ -113,6 +113,8 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 			bo.setTotalParSSCategories(totalSsCategorieBO);
 		}
 		bo.setId(dto.getId());
+		
+		LOGGER.debug("	[{}] > Transformation en BO > [{}]", dto, bo);
 		return bo;
 	}
 
@@ -163,6 +165,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 			}
 		}
 		xo.setTotalParSSCategories(totalSsCategorieXO);
+		LOGGER.debug("	[{}] > Transformation en XO > [{}]", bo, xo);
 		return xo;
 	}
 
@@ -213,6 +216,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		dto.setTotalParSSCategories(totalSsCategorieDTO);
 
 		dto.setId(bo.getId());
+		LOGGER.debug("	[{}] > Transformation en DTO > [{}]", bo, dto);
 		return dto;
 	}
 }

@@ -64,6 +64,10 @@ public class ActionsLigneBudgetController extends AbstractUIController<ActionsLi
 		getComponent().getButtonSupprimer().setDescription("Suppression de la dépense");		
 	}
 
+	/**
+	 * set id dépense
+	 * @param idDepense
+	 */
 	public void setidDepense(String idDepense){
 		this.idDepense = idDepense;
 	}

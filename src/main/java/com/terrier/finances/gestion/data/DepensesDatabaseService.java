@@ -55,7 +55,6 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		}
 		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
 		BudgetMensuel budgetMensuel = dataTransformerBudget.transformDTOtoBO(budgetDTO);
-		LOGGER.debug("	> Transformation en BO : {}", budgetMensuel);
 		return budgetMensuel;
 	}
 
@@ -79,9 +78,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		if(budgetDTO == null){
 			throw new BudgetNotFoundException();
 		}
-		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
 		BudgetMensuel budgetMensuel = dataTransformerBudget.transformDTOtoBO(budgetDTO);
-		LOGGER.debug("	> Transformation en BO : {}", budgetMensuel);
 		return budgetMensuel;
 	}
 	/**

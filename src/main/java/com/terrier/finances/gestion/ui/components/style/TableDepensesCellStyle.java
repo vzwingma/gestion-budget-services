@@ -52,7 +52,6 @@ public class TableDepensesCellStyle implements CellStyleGenerator {
 		if(controleur.getServiceDepense() != null && budgetCourant != null && idDepense != null){
 			List<LigneDepense> listeDepenses = budgetCourant.getListeDepenses();
 
-
 			// Style sur les cellules
 			String idProperty = (String)propertyId;
 			if(idProperty != null){

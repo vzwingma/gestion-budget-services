@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.business;
 
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -356,17 +357,51 @@ public class BusinessDepensesService {
 
 
 	/**
-	 * Mise à jour de la ligne de dépense à partir des ids
-	 * @param idBudget id du budget 
-	 * @param ligneId ligne à modifier
-	 * @param etat état de la ligne
-	 * @param auteur auteur de l'action
-	 * @throws BudgetNotFoundException erreur budget non trouvé
-	 * @throws DataNotFoundException erreur ligne
+	 * Mise à jour d'une ligne de dépense 
+	 * @param idBudget identifiant de budget
+	 * @param ligneDepense ligne de dépense
+	 * @param auteur auteur
+	 * @throws DataNotFoundException
+	 * @throws BudgetNotFoundException
 	 */
-	public void majEtatLigneDepense(String idBudget, String ligneId, EtatLigneDepenseEnum etat, String auteur) throws BudgetNotFoundException, DataNotFoundException{
-		majEtatLigneDepense(dataDepenses.chargeBudgetMensuelById(idBudget), ligneId, etat, auteur);
-	}
+	public BudgetMensuel majLigneDepense(String idBudget, LigneDepense ligneDepense, String auteur) throws DataNotFoundException, BudgetNotFoundException{
+		if(ligneDepense != null){
+			BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
+			if(ligneDepense.getEtat() == null){
+				LOGGER.info("budget.getListeDepenses() : {}", budget.getListeDepenses().size());
+				for (Iterator<LigneDepense> iterator = budget.getListeDepenses().iterator(); iterator
+						.hasNext();) {
+					LigneDepense type = (LigneDepense) iterator.next();
+					if(type.getId().equals(ligneDepense.getId())){
+						iterator.remove();
+					}
+				}
+				LOGGER.info("budget.getListeDepenses() : {}", budget.getListeDepenses().size());
+				
+		
+			}
+			else{
+				ligneDepense.setDateMaj(Calendar.getInstance().getTime());
+				ligneDepense.setAuteur(auteur);
+				// Mise à jour de la ligne de dépense
+				for (int i = 0; i < budget.getListeDepenses().size(); i++) {
+					if(budget.getListeDepenses().get(i).getId().equals(ligneDepense.getId())){
+						budget.getListeDepenses().set(i, ligneDepense);
+						break;
+					}
+				}
+			}
+			// Mise à jour du budget
+			budget.setDateMiseAJour(Calendar.getInstance());
+			// Budget
+			calculBudgetEtSauvegarde(budget);
+			return budget;
+		}
+		else{
+			throw new DataNotFoundException("La ligne de dépense est introuvable");
+		}
+	}	
+
 
 
 	/**
@@ -376,8 +411,10 @@ public class BusinessDepensesService {
 	 * @param note note à enregistrer
 	 * @param auteur auteur auteur de la note
 	 * @throws DataNotFoundException données introuvable
+	 * @throws BudgetNotFoundException erreur budget non trouvé
 	 */
-	public void majNotesLignesDepenses(BudgetMensuel budget, String ligneId, String note, String auteur) throws DataNotFoundException{
+	public void majNotesLignesDepenses(String idBudget, String ligneId, String note, String auteur) throws DataNotFoundException, BudgetNotFoundException{
+		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
 		majLigneDepense(budget, ligneId, "Notes", String.class, note, auteur);
 		// Mise à jour du budget
 		dataDepenses.sauvegardeBudgetMensuel(budget);
@@ -385,16 +422,17 @@ public class BusinessDepensesService {
 
 
 	/**
-	 * Mise à jour de la ligne de dépense du budhet
+	 * Mise à jour de la ligne de dépense du budget
 	 * @param ligneId ligne à modifier
 	 * @param etat état de la ligne
 	 * @param auteur auteur de l'action
 	 * @throws DataNotFoundException erreur ligne non trouvé
+	 * @throws BudgetNotFoundException not found
 	 */
-	public void majEtatLigneDepense(BudgetMensuel budget, String ligneId, EtatLigneDepenseEnum etat, String auteur) throws DataNotFoundException{
+	public void majEtatLigneDepense(BudgetMensuel budget, String ligneId, EtatLigneDepenseEnum etat, String auteur) throws DataNotFoundException, BudgetNotFoundException{
 		LigneDepense ligneDepense = getLigneDepense(budget, ligneId);
 		// Mise à jour de l'état
-		if(ligneDepense != null && etat != null){
+		if(ligneDepense != null){
 			ligneDepense.setEtat(etat);
 			if(EtatLigneDepenseEnum.REALISEE.equals(etat)){
 				ligneDepense.setDateOperation(Calendar.getInstance().getTime());
@@ -405,13 +443,8 @@ public class BusinessDepensesService {
 			// Mise à jour de la ligne
 			ligneDepense.setDateMaj(Calendar.getInstance().getTime());
 			ligneDepense.setAuteur(auteur);
+			budget = majLigneDepense(budget.getId(), ligneDepense, auteur);
 		}
-		majLigneDepense(budget, ligneId, "Etat", EtatLigneDepenseEnum.class, etat, auteur);
-
-		// Mise à jour du budget
-		budget.setDateMiseAJour(Calendar.getInstance());
-		// Budget
-		calculBudgetEtSauvegarde(budget);
 	}	
 
 

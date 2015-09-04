@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.PopupView;
@@ -60,7 +61,7 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 
 			try{
 				this.serviceDepenses.majNotesLignesDepenses(
-						UISessionManager.getSession().getBudgetMensuelCourant(), 
+						UISessionManager.getSession().getBudgetMensuelCourant().getId(), 
 						idLigneDepense, 
 						rta.getValue(), 
 						UISessionManager.getSession().getUtilisateurCourant().getLogin());
@@ -90,7 +91,7 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 					}
 				});
 			}
-			catch(DataNotFoundException e){
+			catch(DataNotFoundException|BudgetNotFoundException e){
 				Notification.show("La dépense ["+idLigneDepense+"] est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
 			}
 		}

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
+import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
@@ -122,7 +123,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 					tableauDepense.removeItem(actions.getControleur().getIdDepense());
 				}
 			}
-			catch(DataNotFoundException e){
+			catch(DataNotFoundException|BudgetNotFoundException e){
 				Notification.show("La dépense est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
 			}
 			getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
