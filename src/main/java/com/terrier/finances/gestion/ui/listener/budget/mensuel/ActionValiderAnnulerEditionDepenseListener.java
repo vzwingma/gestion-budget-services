@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
+import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIComponent;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
@@ -23,6 +24,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification.Type;
 
 /**
  * @author vzwingma
@@ -118,15 +120,24 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 						else if(!actions.getButtonReporter().isVisible()){
 							etat = EtatLigneDepenseEnum.REPORTEE;
 						}
-
-						getControleur(BudgetMensuelController.class).getServiceDepense().majLigneDepense(budgetCourant, itemId,  "Etat", EtatLigneDepenseEnum.class, etat, auteur);
+						try{
+							getControleur(BudgetMensuelController.class).getServiceDepense().majLigneDepense(budgetCourant, itemId,  "Etat", EtatLigneDepenseEnum.class, etat, auteur);
+						}
+						catch(DataNotFoundException e){
+							Notification.show("La dépense ["+itemId+"] est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
+						}
 					}
 				}
 				else{
 					/**
 					 * Mise à jour de la dépense
 					 */
-					getControleur(BudgetMensuelController.class).getServiceDepense().majLigneDepense(budgetCourant, itemId,  propId, table.getItem(itemId).getItemProperty(propId).getType(), table.getItem(itemId).getItemProperty(propId).getValue(), auteur);
+					try{
+						getControleur(BudgetMensuelController.class).getServiceDepense().majLigneDepense(budgetCourant, itemId,  propId, table.getItem(itemId).getItemProperty(propId).getType(), table.getItem(itemId).getItemProperty(propId).getValue(), auteur);
+					}
+					catch(DataNotFoundException e){
+						Notification.show("La dépense ["+itemId+"] est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
+					}
 				}
 			}
 

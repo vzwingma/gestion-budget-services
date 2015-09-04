@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
+import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog;
@@ -22,6 +23,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 
 /**
  * Listener sur les actions sur la ligne de dépenses
@@ -108,13 +111,19 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 			 * Recalcul du budget
 			 */
 			BudgetMensuel budget = UISessionManager.getSession().getBudgetMensuelCourant();
-			getControleur(BudgetMensuelController.class).getServiceDepense().majEtatLigneDepense(budget, actions.getControleur().getIdDepense(), etat, auteur);
-			/**
-			 * MAJ des tableaux
-			 */
-			if(etat == null){
-				// Ligne supprimée
-				tableauDepense.removeItem(actions.getControleur().getIdDepense());
+			
+			try{
+				getControleur(BudgetMensuelController.class).getServiceDepense().majEtatLigneDepense(budget, actions.getControleur().getIdDepense(), etat, auteur);
+				/**
+				 * MAJ des tableaux
+				 */
+				if(etat == null){
+					// Ligne supprimée
+					tableauDepense.removeItem(actions.getControleur().getIdDepense());
+				}
+			}
+			catch(DataNotFoundException e){
+				Notification.show("La dépense est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
 			}
 			getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
 		}

@@ -100,7 +100,7 @@ public class BusinessDepensesService {
 
 		return budgetMensuel;
 	}
-	
+
 	/**
 	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
 	 * @param utilisateur utilisateur
@@ -182,11 +182,11 @@ public class BusinessDepensesService {
 		// Init si dans le futur par rapport au démarrage
 		Calendar datePremierBudget = getDatePremierDernierBudgets(compte)[0];
 		datePremierBudget.set(Calendar.DAY_OF_MONTH, 1);
-		
+
 		Calendar dateCourante = Calendar.getInstance();
 		dateCourante.set(Calendar.MONTH, mois);
 		dateCourante.set(Calendar.YEAR, annee);
-		
+
 		if(dateCourante.after(datePremierBudget)){
 			// MAJ Calculs à partir du mois précédent
 			// Mois précédent
@@ -326,26 +326,32 @@ public class BusinessDepensesService {
 	 * @param propertyId id de la propriété
 	 * @param propClass classe de la propriété
 	 * @param value nouvelle valeur
+	 * @throws DataNotFoundException données introuvable
 	 */
-	public void majLigneDepense(BudgetMensuel budget, String ligneId, String propertyId, @SuppressWarnings("rawtypes") Class propClass, Object value, String auteur){
+	public void majLigneDepense(BudgetMensuel budget, String ligneId, String propertyId, @SuppressWarnings("rawtypes") Class propClass, Object value, String auteur) throws DataNotFoundException{
 		// Recherche de la ligne
 		LigneDepense ligneDepense = getLigneDepense(budget, ligneId);
 		boolean ligneUpdated = false;
 		// Maj du modele (sauf pour Etat=null car cela signifie suppression de la ligne)
-		if(ligneDepense != null && propertyId.equals("Etat") && value == null){
-			ligneUpdated = budget.getListeDepenses().remove(ligneDepense);
-		}
-		// Maj du modele (sauf pour CATEGORIE)
-		else if(ligneDepense != null && !propertyId.equals(EntetesTableSuiviDepenseEnum.CATEGORIE.getId())){
-			ligneUpdated = ligneDepense.updateProperty(propertyId, propClass, value);
-		}
+		if(ligneDepense != null){
+			if(propertyId.equals("Etat") && value == null){
+				ligneUpdated = budget.getListeDepenses().remove(ligneDepense);
+			}
+			// Maj du modele (sauf pour CATEGORIE)
+			else if(!propertyId.equals(EntetesTableSuiviDepenseEnum.CATEGORIE.getId())){
+				ligneUpdated = ligneDepense.updateProperty(propertyId, propClass, value);
+			}
 
-		if(ligneUpdated){
-			ligneDepense.setDateMaj(Calendar.getInstance().getTime());
-			ligneDepense.setAuteur(auteur);
+			if(ligneUpdated){
+				ligneDepense.setDateMaj(Calendar.getInstance().getTime());
+				ligneDepense.setAuteur(auteur);
+				// Mise à jour du budget
+				budget.setDateMiseAJour(Calendar.getInstance());
+			}
 		}
-		// Mise à jour du budget
-		budget.setDateMiseAJour(Calendar.getInstance());
+		else{
+			throw new DataNotFoundException("La ligne de dépense est introuvable");
+		}
 	}	
 
 
@@ -356,34 +362,36 @@ public class BusinessDepensesService {
 	 * @param etat état de la ligne
 	 * @param auteur auteur de l'action
 	 * @throws BudgetNotFoundException erreur budget non trouvé
+	 * @throws DataNotFoundException erreur ligne
 	 */
-	public void majEtatLigneDepense(String idBudget, String ligneId, EtatLigneDepenseEnum etat, String auteur) throws BudgetNotFoundException{
+	public void majEtatLigneDepense(String idBudget, String ligneId, EtatLigneDepenseEnum etat, String auteur) throws BudgetNotFoundException, DataNotFoundException{
 		majEtatLigneDepense(dataDepenses.chargeBudgetMensuelById(idBudget), ligneId, etat, auteur);
 	}
 
-	
+
 	/**
 	 * Enregistrement de la note pour une ligne
 	 * @param budget budget courant
 	 * @param ligneId id de la ligne à mettre à jour
 	 * @param note note à enregistrer
 	 * @param auteur auteur auteur de la note
+	 * @throws DataNotFoundException données introuvable
 	 */
-	public void majNotesLignesDepenses(BudgetMensuel budget, String ligneId, String note, String auteur){
+	public void majNotesLignesDepenses(BudgetMensuel budget, String ligneId, String note, String auteur) throws DataNotFoundException{
 		majLigneDepense(budget, ligneId, "Notes", String.class, note, auteur);
 		// Mise à jour du budget
 		dataDepenses.sauvegardeBudgetMensuel(budget);
 	}
-	
-	
+
+
 	/**
 	 * Mise à jour de la ligne de dépense du budhet
 	 * @param ligneId ligne à modifier
 	 * @param etat état de la ligne
 	 * @param auteur auteur de l'action
-	 * @throws BudgetNotFoundException erreur budget non trouvé
+	 * @throws DataNotFoundException erreur ligne non trouvé
 	 */
-	public void majEtatLigneDepense(BudgetMensuel budget, String ligneId, EtatLigneDepenseEnum etat, String auteur){
+	public void majEtatLigneDepense(BudgetMensuel budget, String ligneId, EtatLigneDepenseEnum etat, String auteur) throws DataNotFoundException{
 		LigneDepense ligneDepense = getLigneDepense(budget, ligneId);
 		// Mise à jour de l'état
 		if(ligneDepense != null && etat != null){

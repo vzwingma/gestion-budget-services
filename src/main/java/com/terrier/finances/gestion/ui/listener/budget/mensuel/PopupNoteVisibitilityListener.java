@@ -4,11 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.PopupView;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PopupView.PopupVisibilityEvent;
 import com.vaadin.ui.PopupView.PopupVisibilityListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.RichTextArea;
 
 /**
@@ -18,7 +21,7 @@ import com.vaadin.ui.RichTextArea;
  */
 public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 
-	
+
 	/**
 	 * 
 	 */
@@ -33,7 +36,7 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 	private final String idLigneDepense;
 	// Controleur
 	private final BusinessDepensesService serviceDepenses;
-	
+
 	/**
 	 * Popup visibility listener
 	 * @param ligneDepense
@@ -43,8 +46,8 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 		this.idLigneDepense = idLigneDepense;
 		this.serviceDepenses = serviceDepenses;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see com.vaadin.ui.PopupView.PopupVisibilityListener#popupVisibilityChange(com.vaadin.ui.PopupView.PopupVisibilityEvent)
 	 */
@@ -54,36 +57,42 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 			// Mise à jour de la ligne de dépense
 			final RichTextArea rta = (RichTextArea)event.getPopupView().getContent().getPopupComponent();
 			LOGGER.debug("[IHM] Dépense [{}] Mise à jour de la note [{}]", idLigneDepense, rta.getValue());
-			this.serviceDepenses.majNotesLignesDepenses(
-					UISessionManager.getSession().getBudgetMensuelCourant(), 
-					idLigneDepense, 
-					rta.getValue(), 
-					UISessionManager.getSession().getUtilisateurCourant().getLogin());
-			
-			String libellePPV = event.getPopupView().getContent().getMinimizedValueAsHTML();
-			libellePPV = libellePPV != null ? libellePPV.replaceAll("\\*", "").trim() : "";
-			if(rta.getValue() != null && rta.getValue().length() > 0){
-				libellePPV += "  *";
-			}
-			final String libellePopupView = libellePPV;
-			
-			event.getPopupView().setContent(new PopupView.Content() {
-				
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 3147461186004228578L;
 
-				@Override
-				public Component getPopupComponent() {
-					return rta;
+			try{
+				this.serviceDepenses.majNotesLignesDepenses(
+						UISessionManager.getSession().getBudgetMensuelCourant(), 
+						idLigneDepense, 
+						rta.getValue(), 
+						UISessionManager.getSession().getUtilisateurCourant().getLogin());
+
+				String libellePPV = event.getPopupView().getContent().getMinimizedValueAsHTML();
+				libellePPV = libellePPV != null ? libellePPV.replaceAll("\\*", "").trim() : "";
+				if(rta.getValue() != null && rta.getValue().length() > 0){
+					libellePPV += "  *";
 				}
-				
-				@Override
-				public String getMinimizedValueAsHTML() {
-					return libellePopupView;
-				}
-			});
+				final String libellePopupView = libellePPV;
+
+				event.getPopupView().setContent(new PopupView.Content() {
+
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 3147461186004228578L;
+
+					@Override
+					public Component getPopupComponent() {
+						return rta;
+					}
+
+					@Override
+					public String getMinimizedValueAsHTML() {
+						return libellePopupView;
+					}
+				});
+			}
+			catch(DataNotFoundException e){
+				Notification.show("La dépense ["+idLigneDepense+"] est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
+			}
 		}
 	}
 }
