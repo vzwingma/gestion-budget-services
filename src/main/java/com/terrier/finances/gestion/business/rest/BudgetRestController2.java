@@ -37,6 +37,7 @@ import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseXO;
 import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurXO;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.model.exception.NotModifiedException;
 import com.terrier.finances.gestion.model.exception.UserNotAuthorizedException;
 
 /**
@@ -240,14 +241,17 @@ public class BudgetRestController2 {
 	 */
 	@RequestMapping(value="/depenses/{idBudget}/{idDepense}", method=RequestMethod.PUT, produces = "application/json",headers="Accept=application/json")
 	public void majLigneDepense(@PathVariable String idBudget, @PathVariable String idDepense, @RequestBody LigneDepenseXO depense) 
-			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
+			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, NotModifiedException{
 
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
 			
-			LOGGER.debug("[REST][{}] Appel REST updateDepense : idbudget={} et idDepense={} : [{}]", userSpringSec, idBudget, idDepense, depense);
+			LOGGER.debug("[REST][{}] Appel REST majLigneDepense : idbudget={} et idDepense={} : [{}]", userSpringSec, idBudget, idDepense, depense);
 			
-			businessDepenses.majLigneDepense(idBudget, dataTransformerLigneDepense.transformXOtoBO(depense), ((Utilisateur)userSpringSec).getLibelle());
+			BudgetMensuel b = businessDepenses.majLigneDepense(idBudget, dataTransformerLigneDepense.transformXOtoBO(depense), ((Utilisateur)userSpringSec).getLibelle());
+			if(b == null) {
+				throw new NotModifiedException();
+			}
 		}
 		else{
 			throw new UserNotAuthorizedException();	

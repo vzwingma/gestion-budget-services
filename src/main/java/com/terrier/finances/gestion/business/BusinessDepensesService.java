@@ -365,20 +365,19 @@ public class BusinessDepensesService {
 	 * @throws BudgetNotFoundException
 	 */
 	public BudgetMensuel majLigneDepense(String idBudget, LigneDepense ligneDepense, String auteur) throws DataNotFoundException, BudgetNotFoundException{
+
+		boolean ligneupdated = false;
 		if(ligneDepense != null){
 			BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
 			if(ligneDepense.getEtat() == null){
-				LOGGER.info("budget.getListeDepenses() : {}", budget.getListeDepenses().size());
 				for (Iterator<LigneDepense> iterator = budget.getListeDepenses().iterator(); iterator
 						.hasNext();) {
 					LigneDepense type = (LigneDepense) iterator.next();
 					if(type.getId().equals(ligneDepense.getId())){
 						iterator.remove();
+						ligneupdated = true;
 					}
 				}
-				LOGGER.info("budget.getListeDepenses() : {}", budget.getListeDepenses().size());
-				
-		
 			}
 			else{
 				ligneDepense.setDateMaj(Calendar.getInstance().getTime());
@@ -387,15 +386,21 @@ public class BusinessDepensesService {
 				for (int i = 0; i < budget.getListeDepenses().size(); i++) {
 					if(budget.getListeDepenses().get(i).getId().equals(ligneDepense.getId())){
 						budget.getListeDepenses().set(i, ligneDepense);
+						ligneupdated = true;
 						break;
 					}
 				}
 			}
-			// Mise à jour du budget
-			budget.setDateMiseAJour(Calendar.getInstance());
-			// Budget
-			calculBudgetEtSauvegarde(budget);
-			return budget;
+			if(ligneupdated){
+				// Mise à jour du budget
+				budget.setDateMiseAJour(Calendar.getInstance());
+				// Budget
+				calculBudgetEtSauvegarde(budget);
+				return budget;
+			}
+			else{
+				return null;
+			}
 		}
 		else{
 			throw new DataNotFoundException("La ligne de dépense est introuvable");

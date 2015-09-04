@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.model.exception.NotModifiedException;
 import com.terrier.finances.gestion.model.exception.UserNotAuthorizedException;
 
 /**
@@ -39,6 +40,12 @@ class GlobalControllerExceptionHandler {
     	 LOGGER.error("Erreur Interne : Données introuvables");
     }
     
+    
+    @ResponseStatus(HttpStatus.NOT_MODIFIED)  // 204
+    @ExceptionHandler(NotModifiedException.class)
+    public void handlNotModifiedException() {
+    	 LOGGER.info("Non modifiée");
+    }
     
     @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
     @ExceptionHandler(UserNotAuthorizedException.class)
