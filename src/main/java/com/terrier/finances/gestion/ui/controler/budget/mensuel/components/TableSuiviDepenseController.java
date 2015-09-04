@@ -20,6 +20,7 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBud
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode.TableSuiviDepenseEditedFieldFactory;
 import com.terrier.finances.gestion.ui.components.style.TableDepensesCellStyle;
+import com.terrier.finances.gestion.ui.components.style.TableDepensesDescriptionGenerator;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.PopupNoteVisibitilityListener;
 import com.vaadin.data.Item;
@@ -139,6 +140,8 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			getComponent().setTableFieldFactory(new TableSuiviDepenseEditedFieldFactory(getServiceParams().getCategories()));
 			// Style
 			getComponent().setCellStyleGenerator(new TableDepensesCellStyle(this));
+			// Tooltip
+			getComponent().setItemDescriptionGenerator(new TableDepensesDescriptionGenerator(this));
 		
 		} catch (DataNotFoundException e) {
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
