@@ -127,6 +127,10 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	public BudgetMensuelXO transformBOtoXO(BudgetMensuel bo) {
 		//		bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses(), decryptor));
 		BudgetMensuelXO xo = new BudgetMensuelXO();
+		xo.setCompteBancaire(bo.getCompteBancaire());
+		xo.setMois(bo.getMois());
+		xo.setAnnee(bo.getAnnee());
+		xo.setId(bo.getId());
 		xo.setMargeSecurite("" + bo.getMargeSecurite());
 		xo.setMargeSecuriteFinMois("" + bo.getMargeSecuriteFinMois());
 		xo.setResultatMoisPrecedent("" + bo.getResultatMoisPrecedent());

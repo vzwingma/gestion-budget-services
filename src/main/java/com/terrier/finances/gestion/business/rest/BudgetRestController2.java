@@ -240,7 +240,7 @@ public class BudgetRestController2 {
 	 * @throws BudgetNotFoundException erreur budget introuvable
 	 */
 	@RequestMapping(value="/depenses/{idBudget}/{idDepense}", method=RequestMethod.PUT, produces = "application/json",headers="Accept=application/json")
-	public void majLigneDepense(@PathVariable String idBudget, @PathVariable String idDepense, @RequestBody LigneDepenseXO depense) 
+	public BudgetMensuelXO majLigneDepense(@PathVariable String idBudget, @PathVariable String idDepense, @RequestBody LigneDepenseXO depense) 
 			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, NotModifiedException{
 
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -251,6 +251,11 @@ public class BudgetRestController2 {
 			BudgetMensuel b = businessDepenses.majLigneDepense(idBudget, dataTransformerLigneDepense.transformXOtoBO(depense), ((Utilisateur)userSpringSec).getLibelle());
 			if(b == null) {
 				throw new NotModifiedException();
+			}
+			else{
+				BudgetMensuelXO bxo = dataTransformerBudget.transformBOtoXO(b);
+				bxo.getListeDepenses().clear();
+				return bxo;
 			}
 		}
 		else{
