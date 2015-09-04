@@ -3,9 +3,6 @@
  */
 package com.terrier.finances.gestion.ui.components.style;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
