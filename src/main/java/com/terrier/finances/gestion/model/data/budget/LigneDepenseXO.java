@@ -1,6 +1,5 @@
 package com.terrier.finances.gestion.model.data.budget;
 
-import java.util.Date;
 
 /**
  * 
