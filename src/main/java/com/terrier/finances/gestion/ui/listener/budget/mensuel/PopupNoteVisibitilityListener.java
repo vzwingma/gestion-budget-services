@@ -3,9 +3,9 @@ package com.terrier.finances.gestion.ui.listener.budget.mensuel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
@@ -36,16 +36,16 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 	// Ligne de dépense
 	private final String idLigneDepense;
 	// Controleur
-	private final BusinessDepensesService serviceDepenses;
+	private final TableSuiviDepenseController controleur;
 
 	/**
 	 * Popup visibility listener
 	 * @param ligneDepense
 	 * @param controleur
 	 */
-	public PopupNoteVisibitilityListener(final String idLigneDepense, final BusinessDepensesService serviceDepenses){
+	public PopupNoteVisibitilityListener(final String idLigneDepense, final TableSuiviDepenseController controleur){
 		this.idLigneDepense = idLigneDepense;
-		this.serviceDepenses = serviceDepenses;
+		this.controleur = controleur;
 	}
 
 
@@ -58,14 +58,15 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 			// Mise à jour de la ligne de dépense
 			final RichTextArea rta = (RichTextArea)event.getPopupView().getContent().getPopupComponent();
 			LOGGER.debug("[IHM] Dépense [{}] Mise à jour de la note [{}]", idLigneDepense, rta.getValue());
-
+			this.controleur.getComponent().setImmediate(true);
 			try{
-				this.serviceDepenses.majNotesLignesDepenses(
+				this.controleur.getServiceDepense().majNotesLignesDepenses(
 						UISessionManager.getSession().getBudgetMensuelCourant().getId(), 
 						idLigneDepense, 
 						rta.getValue(), 
 						UISessionManager.getSession().getUtilisateurCourant().getLogin());
 
+				// Mise à jour de l'étoile si nécessaire
 				String libellePPV = event.getPopupView().getContent().getMinimizedValueAsHTML();
 				libellePPV = libellePPV != null ? libellePPV.replaceAll("\\*", "").trim() : "";
 				if(rta.getValue() != null && rta.getValue().length() > 0){
@@ -90,6 +91,10 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 						return libellePopupView;
 					}
 				});
+				// Refresh du tableau
+				this.controleur.miseAJourVueDonnees();
+				this.controleur.getComponent().refreshRowCache();
+				
 			}
 			catch(DataNotFoundException|BudgetNotFoundException e){
 				Notification.show("La dépense ["+idLigneDepense+"] est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);

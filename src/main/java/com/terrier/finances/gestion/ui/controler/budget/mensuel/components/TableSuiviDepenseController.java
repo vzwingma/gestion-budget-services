@@ -186,7 +186,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			rta.setValue(ligneDepense.getNotes() != null ? ligneDepense.getNotes() : "");
 			String noteStar = ligneDepense.getNotes() != null ? "  *" : "";
 			final PopupView ppv = new PopupView(ligneDepense.getLibelle() + noteStar, rta);
-			ppv.addPopupVisibilityListener(new PopupNoteVisibitilityListener(ligneDepense.getId(), getServiceDepense()));
+			ppv.addPopupVisibilityListener(new PopupNoteVisibitilityListener(ligneDepense.getId(), this));
 			ppv.setHideOnMouseOut(false);
 			property5.setValue(ppv);
 

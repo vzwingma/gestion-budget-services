@@ -19,6 +19,7 @@ import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 
 /**
  * Service Métier : Dépenses
@@ -423,6 +424,7 @@ public class BusinessDepensesService {
 		majLigneDepense(budget, ligneId, "Notes", String.class, note, auteur);
 		// Mise à jour du budget
 		dataDepenses.sauvegardeBudgetMensuel(budget);
+		UISessionManager.getSession().setBudgetMensuelCourant(budget);
 	}
 
 
