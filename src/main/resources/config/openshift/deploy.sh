@@ -16,4 +16,4 @@ wget https://s3-eu-west-1.amazonaws.com/gestion-budget/artifacts/$BUILD/target/B
 
 tar xvzf *.tar.gz
 mv $OPENSHIFT_DATA_DIR/ROOT.war $OPENSHIFT_JBOSSEWS_DIR/webapps/ROOT.war
-mv *.tar.gz old/
+rm *.tar.gz
