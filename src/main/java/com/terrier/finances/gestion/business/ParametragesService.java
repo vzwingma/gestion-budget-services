@@ -86,6 +86,7 @@ public class ParametragesService {
 			this.buildTime = sdflocale.format(dateBuild);
 
 		} catch (ParseException e) {
+			this.buildTime = UTCBuildTime;
 		}
 	}
 

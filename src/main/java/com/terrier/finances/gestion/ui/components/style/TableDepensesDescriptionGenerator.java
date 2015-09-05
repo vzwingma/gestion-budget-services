@@ -41,7 +41,10 @@ public class TableDepensesDescriptionGenerator implements ItemDescriptionGenerat
 	@Override
 	public String generateDescription(Component source, Object itemId, Object propertyId) {
 
-		if(propertyId != null && ((String)propertyId).equals(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId())){
+		if(propertyId != null && 
+				(((String)propertyId).equals(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId())
+						||
+						((String)propertyId).equals(EntetesTableSuiviDepenseEnum.LIBELLE.getId()))){
 
 			BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
 			String idDepense = (String)itemId;

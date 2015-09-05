@@ -192,7 +192,13 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 
 			// Type String
 			Property<String> property5b = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId());
-			property5b.setValue(ligneDepense.getLibelle());
+			if(budgetIsActif){
+				property5b.setValue(ligneDepense.getLibelle());	
+			}
+			else{
+				property5b.setValue(ligneDepense.getLibelle() + noteStar);
+			}
+			
 			
 			Property<TypeDepenseEnum> property6 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.TYPE.getId());
 			property6.setValue(ligneDepense.getTypeDepense());			
