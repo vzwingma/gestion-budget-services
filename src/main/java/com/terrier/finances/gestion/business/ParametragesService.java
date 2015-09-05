@@ -1,6 +1,11 @@
 package com.terrier.finances.gestion.business;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
-import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
@@ -68,11 +73,20 @@ public class ParametragesService {
 	}
 
 	/**
-	 * @param buildTime the buildTime to set
+	 * @param UTCBuildTime the buildTime to set (en UTC)
 	 */
 	@Value("${budget.build.time}")
-	public void setBuildTime(String buildTime) {
-		this.buildTime = buildTime;
+	public void setBuildTime(String UTCBuildTime) {
+		try {
+			SimpleDateFormat sdfutc = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
+			sdfutc.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date dateBuild = sdfutc.parse(UTCBuildTime);
+			SimpleDateFormat sdflocale = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
+			sdflocale.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
+			this.buildTime = sdflocale.format(dateBuild);
+
+		} catch (ParseException e) {
+		}
 	}
 
 	

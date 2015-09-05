@@ -14,28 +14,14 @@
 		<spring.version>4.2.0.RELEASE</spring.version>
 		<spring.security.version>4.0.2.RELEASE</spring.security.version>
 		<vaadin.version>7.5.4</vaadin.version>
+		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
+		<timestamp>${maven.build.timestamp}</timestamp>
 	</properties>
 
 
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>com.keyboardsamurais.maven</groupId>
-				<artifactId>maven-timestamp-plugin</artifactId>
-				<version>1.0</version>
-				<configuration>
-					<propertyName>timestamp</propertyName>
-					<timestampPattern>dd/MM/yyyy HH:mm</timestampPattern>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -79,8 +65,8 @@
 				<executions>
 					<execution>
 						<configuration>
-							<modules> 
-								<module>com.terrier.finances.gestion.AppWidgetSet</module> 
+							<modules>
+								<module>com.terrier.finances.gestion.AppWidgetSet</module>
 							</modules>
 						</configuration>
 						<goals>
@@ -139,11 +125,13 @@
 								<phase>install</phase>
 								<configuration>
 									<tasks>
-										<echo >Deploy for Ansible</echo>
+										<echo>Deploy for Ansible</echo>
 										<!-- Place any Ant task here. You can add anything you can add 
 											between <target> and </target> in a build.xml. -->
-										<copy file="target/gestion-budget-${project.version}.war" tofile="D:\\Users\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war"/>
-										<copy file="src/main/resources/config/dev/context.xml" tofile="D:\\Users\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml"/>
+										<copy file="target/gestion-budget-${project.version}.war"
+											tofile="D:\\Users\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" />
+										<copy file="src/main/resources/config/dev/context.xml"
+											tofile="D:\\Users\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" />
 									</tasks>
 								</configuration>
 								<goals>
@@ -220,6 +208,23 @@
 		</profile>
 	</profiles>
 
+	<issueManagement>
+		<url>https://github.com/vzwingma/gestion-budget/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+	<scm>
+		<url>https://github.com/vzwingma/gestion-budget/tree/webapp</url>
+		<connection>scm:git:git://github.com/vzwingmagestion-budget.git</connection>
+		<developerConnection>scm:git:git@github.com:vzwingma/gestion-budget.git</developerConnection>
+	</scm>
+	<developers>
+		<developer>
+			<email>vincent.zwingmann@gmail.com</email>
+			<name>Vincent Zwingmann</name>
+			<url>https://github.com/vzwingma</url>
+			<id>vzwingma</id>
+		</developer>
+	</developers>
 	<dependencies>
 
 		<!-- VAADIN -->
