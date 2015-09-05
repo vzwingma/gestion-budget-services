@@ -340,7 +340,7 @@ public class BusinessDepensesService {
 			}
 			// Maj du modele (sauf pour CATEGORIE)
 			else if(!propertyId.equals(EntetesTableSuiviDepenseEnum.CATEGORIE.getId())){
-				ligneUpdated = ligneDepense.updateProperty(propertyId, propClass, value);
+				ligneUpdated = ligneDepense.updateProperty(ligneId, propertyId, propClass, value);
 			}
 
 			if(ligneUpdated){

@@ -7,12 +7,12 @@ import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.PopupView.PopupVisibilityEvent;
-import com.vaadin.ui.PopupView.PopupVisibilityListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.PopupView;
+import com.vaadin.ui.PopupView.PopupVisibilityEvent;
+import com.vaadin.ui.PopupView.PopupVisibilityListener;
 import com.vaadin.ui.RichTextArea;
 
 /**

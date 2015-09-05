@@ -31,6 +31,10 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 	private Collection<CategorieDepense> categories;
 
 	/**
+	 * Logger
+	 */
+	// private static final Logger LOGGER = LoggerFactory.getLogger(TableSuiviDepenseEditedFieldFactory.class);
+	/**
 	 * Constructeur
 	 * @param categories catégories de dépenses
 	 */
@@ -44,9 +48,11 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 	@Override
 	public Field createField(Container container, Object itemId,
 			Object propertyId, Component uiContext) {
+		
 		// Create fields by their class
 		Class<?> cls = container.getType(propertyId);
 		Field editorField;
+
 		// Create a DateField with year resolution for dates
 		if(propertyId.equals(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId())){
 			editorField = new TextField();

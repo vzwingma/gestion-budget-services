@@ -85,18 +85,25 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	
 	/**
 	 * Invoke dynamique de setter sur ligne dépense
-	 * @param ligneDepense
-	 * @param propertyId
-	 * @param propClass
-	 * @param value
+	 * @param ligneId id de la ligne
+	 * @param propertyId propriété
+	 * @param propClass classe
+	 * @param value nouvelle valeur
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public boolean updateProperty(String propertyId, Class propClass, Object value){
+	public boolean updateProperty(String ligneId, String propertyId, Class propClass, Object value){
 		Class ldClass = this.getClass();
 		boolean res = false; 
 		
 		String setMethodName = "set"+propertyId;
-		String getMethodName = (propertyId.equals("Periodique") ? "is" : "get")+propertyId; 
+		String getMethodName = "get"+propertyId; 
+		
+		if(propertyId.equals("Periodique")){
+			getMethodName = "is" + propertyId;
+		}
+		else if(propertyId.equals("LibelleView")){
+			return true;
+		}
 		Method g = null;
 		Method s = null;
 		try {
@@ -107,7 +114,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 			
 			if((value != null && !value.equals(getted)) || (value == null && getted != null)){
 				s.invoke(this, value); // field value	
-				LOGGER.debug("Modification de la ligne : {}={}", propertyId, value);
+				LOGGER.debug("Modification de la ligne [{}] : {}={}", ligneId, propertyId, value);
 				res = true;
 			}
 		}

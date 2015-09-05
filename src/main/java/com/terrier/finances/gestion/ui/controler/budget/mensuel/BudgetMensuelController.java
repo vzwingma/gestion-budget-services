@@ -209,7 +209,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		}
 	}
 
-	
+
 	/**
 	 * Modif du compte ou bien de la date
 	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
@@ -357,14 +357,11 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		 **/
 
 		tableSuiviDepenseControleur.miseAJourVueDonnees(this.refreshAllTable, budgetCourant.isActif(), listeDepenses);
-		if(!budgetCourant.isActif()){
-			tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), false);
-			tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), true);
-		}
-		else{
-			tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), true);
-			tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), false);
-		}
+
+		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), budgetCourant.isActif());
+		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), !budgetCourant.isActif());
+		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), budgetCourant.isActif());
+		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), !budgetCourant.isActif());
 
 		// Maj du mois
 		Calendar c = Calendar.getInstance();

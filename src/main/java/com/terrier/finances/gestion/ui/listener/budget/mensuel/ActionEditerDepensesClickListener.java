@@ -35,7 +35,9 @@ public class ActionEditerDepensesClickListener extends AbstractComponentListener
 		// Activation du tableau
 		page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.TYPE.getId(), false);
 		page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), false);
-		
+		// Inversion du champ Libelle
+		page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), false);
+		page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), true);
 		page.getTableSuiviDepense().setEditable(true);
 		page.getTableSuiviDepense().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), TableSuiviDepenseController.TAILLE_COLONNE_DATE_EDITEE);
 		

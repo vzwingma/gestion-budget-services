@@ -32,6 +32,10 @@ public class TableSuiviDepense extends AbstractUITableComponent<TableSuiviDepens
 	private final TimeZone tzParis = TimeZone.getTimeZone("Europe/Paris");
 
 	/**
+	 * Logger
+	 */
+	// private static final Logger LOGGER = LoggerFactory.getLogger(TableSuiviDepense.class);
+	/**
 	 * Constructure : démarrage du controleur
 	 */
 	public TableSuiviDepense(){

@@ -7,9 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
@@ -43,10 +40,6 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	 */
 	private static final long serialVersionUID = 5190668755144306669L;
 
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(TableSuiviDepenseController.class);
 	
 	public static final int TAILLE_COLONNE_DATE = 95;
 	public static final int TAILLE_COLONNE_CATEGORIE = 150;
@@ -79,45 +72,50 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 		getComponent().setColumnCollapsingAllowed(true);
 		getComponent().setSortEnabled(true);
 		// Ajout des propriétés : ATTENTION les ID doivent correspondrent aux attributs de l'objet mappé
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), Date.class, null);
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), EntetesTableSuiviDepenseEnum.DATE_OPERATION.getType(), null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), EntetesTableSuiviDepenseEnum.DATE_OPERATION.getLibelle());
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), TAILLE_COLONNE_DATE);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.CATEGORIE.getId(), CategorieDepense.class, null);
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.CATEGORIE.getId(),  EntetesTableSuiviDepenseEnum.CATEGORIE.getType(), null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.CATEGORIE.getId(), EntetesTableSuiviDepenseEnum.CATEGORIE.getLibelle());
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.CATEGORIE.getId(), TAILLE_COLONNE_CATEGORIE);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId(), CategorieDepense.class, null);
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId(),  EntetesTableSuiviDepenseEnum.SSCATEGORIE.getType(), null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId(), EntetesTableSuiviDepenseEnum.SSCATEGORIE.getLibelle());
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId(), TAILLE_COLONNE_CATEGORIE);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), PopupView.class, null);
+		// Type Popup view pour avoir les notes
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getType(), null);
+		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getLibelle());
+		// Type String pour le mode éditable
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), EntetesTableSuiviDepenseEnum.LIBELLE.getType(), null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), EntetesTableSuiviDepenseEnum.LIBELLE.getLibelle());
+		getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), true);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.TYPE.getId(), TypeDepenseEnum.class, null);
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.TYPE.getId(), EntetesTableSuiviDepenseEnum.TYPE.getType(), null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.TYPE.getId(), EntetesTableSuiviDepenseEnum.TYPE.getLibelle());
 		getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.TYPE.getId(), true);
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.TYPE.getId(), TAILLE_COLONNE_TYPE_MENSUEL);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.VALEUR.getId(), Float.class, null);
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.VALEUR.getId(), EntetesTableSuiviDepenseEnum.VALEUR.getType(), null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.VALEUR.getId(), EntetesTableSuiviDepenseEnum.VALEUR.getLibelle());
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.VALEUR.getId(), TAILLE_COLONNE_VALEUR);
 		getComponent().setColumnAlignment(EntetesTableSuiviDepenseEnum.VALEUR.getId(), Align.RIGHT);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), Boolean.class, null);
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), EntetesTableSuiviDepenseEnum.PERIODIQUE.getType(), null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), EntetesTableSuiviDepenseEnum.PERIODIQUE.getLibelle());
 		getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), true);
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), TAILLE_COLONNE_TYPE_MENSUEL);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), ActionsLigneBudget.class, null);
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), EntetesTableSuiviDepenseEnum.ACTIONS.getType(), null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), EntetesTableSuiviDepenseEnum.ACTIONS.getLibelle());
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), TAILLE_COLONNE_ACTIONS);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId(), Date.class, Calendar.getInstance().getTime());
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId(), EntetesTableSuiviDepenseEnum.DATE_MAJ.getType(), Calendar.getInstance().getTime());
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId(), EntetesTableSuiviDepenseEnum.DATE_MAJ.getLibelle());
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId(), TAILLE_COLONNE_DATE + 10);
 		
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), String.class, null);
+		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), EntetesTableSuiviDepenseEnum.AUTEUR.getType(), null);
 		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), EntetesTableSuiviDepenseEnum.AUTEUR.getLibelle());
 		getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), true);
 		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), TAILLE_COLONNE_AUTEUR);
@@ -135,8 +133,8 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	@Override
 	public void miseAJourVueDonnees() {
 
-		// Table Factory pour le mode édition
 		try {
+			// Table Factory pour le mode édition
 			getComponent().setTableFieldFactory(new TableSuiviDepenseEditedFieldFactory(getServiceParams().getCategories()));
 			// Style
 			getComponent().setCellStyleGenerator(new TableDepensesCellStyle(this));
@@ -150,27 +148,6 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 
 	}
 	
-
-	/**
-	 * Effacement des données
-	 */
-	public void resetVueDonnees(){
-		LOGGER.info("resetVueDonnees");
-		getComponent().setImmediate(false);
-		LOGGER.info("> removeAllItems");
-		getComponent().removeAllItems();
-		LOGGER.info(">>" + getComponent().getItemIds().size());
-		getComponent().markAsDirty();
-		LOGGER.info("> markAsDirty");
-		getComponent().markAsDirtyRecursive();
-		LOGGER.info("> markAsDirtyRecursive");
-		getComponent().refreshRowCache();
-		LOGGER.info("> refreshRowCache");
-		getComponent().commit();
-		LOGGER.info("> commit");
-		getComponent().setImmediate(true);
-		
-	}
 	
 	
 	/**
@@ -200,7 +177,9 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			property3.setValue(ligneDepense.getCategorie());
 			Property<CategorieDepense> property4 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId());
 			property4.setValue(ligneDepense.getSsCategorie());
-			Property<PopupView> property5 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId());
+			
+			// Type Popup view pour avoir les notes
+			Property<PopupView> property5 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId());
 			
 			final RichTextArea rta = new RichTextArea();
 			rta.setImmediate(true);
@@ -211,6 +190,10 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			ppv.setHideOnMouseOut(false);
 			property5.setValue(ppv);
 
+			// Type String
+			Property<String> property5b = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId());
+			property5b.setValue(ligneDepense.getLibelle());
+			
 			Property<TypeDepenseEnum> property6 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.TYPE.getId());
 			property6.setValue(ligneDepense.getTypeDepense());			
 			Property<Float> property7 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.VALEUR.getId());

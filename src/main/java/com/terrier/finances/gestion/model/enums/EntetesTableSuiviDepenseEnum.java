@@ -1,5 +1,11 @@
 package com.terrier.finances.gestion.model.enums;
 
+import java.util.Date;
+
+import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
+import com.vaadin.ui.PopupView;
+
 
 
 /**
@@ -15,29 +21,31 @@ public enum EntetesTableSuiviDepenseEnum {
 	 * 	1er caractère en majuscule
 	 * 	doit correspondre à la méthode setXXXX de LigneDepense
 	 */
-	CATEGORIE("Categorie", "Catégorie"),
-	SSCATEGORIE("SsCategorie", "Ss catégorie"),
-	LIBELLE("Libelle", "Description"),
-	TYPE("TypeDepense", "Operation"),
-	VALEUR("Valeur", "Valeur"),
-	PERIODIQUE("Periodique", "Mensuel"),
-	DATE_OPERATION("DateOperation", "Jour opération"),
-	ACTIONS("Actions", "Actions"),
-	DATE_MAJ("DateMaj", "Date MAJ"),
-	AUTEUR("Auteur", "Auteur");
+	CATEGORIE		("Categorie", 		"Catégorie", 		CategorieDepense.class),
+	SSCATEGORIE		("SsCategorie", 	"Ss catégorie", 	CategorieDepense.class),
+	LIBELLE_VIEW	("LibelleView",		"Description", 		PopupView.class),
+	LIBELLE			("Libelle",			"Description", 		String.class),
+	TYPE			("TypeDepense", 	"Operation", 		TypeDepenseEnum.class),
+	VALEUR			("Valeur", 			"Valeur", 			Float.class),
+	PERIODIQUE		("Periodique", 		"Mensuel", 			Boolean.class),
+	DATE_OPERATION	("DateOperation",	"Jour opération", 	Date.class),
+	ACTIONS			("Actions", 		"Actions", 			ActionsLigneBudget.class),
+	DATE_MAJ		("DateMaj", 		"Date MAJ", 		Date.class),
+	AUTEUR			("Auteur", 			"Auteur", 			String.class);
 	
 	
 	private String id;
 	private String libelle;
-	
+	private Class<?> type;
 	/**
 	 * Constructeur
 	 * @param id
 	 * @param libelle
 	 */
-	private EntetesTableSuiviDepenseEnum(String id, String libelle){
+	private EntetesTableSuiviDepenseEnum(String id, String libelle, Class<?> type){
 		this.id = id;
 		this.libelle = libelle;
+		this.type = type;
 	}
 
 	
@@ -59,6 +67,17 @@ public enum EntetesTableSuiviDepenseEnum {
 	public String getLibelle() {
 		return libelle;
 	}
+
+
+
+
+	/**
+	 * @return the type
+	 */
+	public Class<?> getType() {
+		return type;
+	}
+	
 	
 	
 }
