@@ -171,7 +171,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		bo.setDateMaj(xo.getDateMaj());
 		bo.setDateOperation(xo.getDateOperation());
 		bo.setDerniereOperation(xo.isDerniereOperation());
-		bo.setEtat(xo.getEtat() != null && !xo.getEtat().equals("SUPPRIMER") ? EtatLigneDepenseEnum.valueOf(xo.getEtat()) : null);
+		bo.setEtat(xo.getEtat() != null && !xo.getEtat().equals("SUPPRIMER") ? EtatLigneDepenseEnum.valueOf(xo.getEtat().toUpperCase()) : null);
 		bo.setId(xo.getId());
 		bo.setSsCategorie(parametrageService.chargeCategorieParId(xo.getIdSSCategorie()));
 		bo.setLibelle(xo.getLibelle());

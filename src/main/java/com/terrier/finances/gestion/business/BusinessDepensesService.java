@@ -260,8 +260,9 @@ public class BusinessDepensesService {
 	 * @throws BudgetNotFoundException erreur budget introuvable
 	 * @throws DataNotFoundException erreur données
 	 */
-	public void ajoutLigneTransfertIntercompte(BudgetMensuel budget, LigneDepense ligneDepense, String compteCrediteur, Utilisateur utilisateur) throws BudgetNotFoundException, DataNotFoundException{
+	public void ajoutLigneTransfertIntercompte(String idBudget, LigneDepense ligneDepense, String compteCrediteur, Utilisateur utilisateur) throws BudgetNotFoundException, DataNotFoundException{
 
+		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
 		LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneDepense);
 		/**
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
@@ -274,7 +275,7 @@ public class BusinessDepensesService {
 		 *  Ajout de la ligne dans le budget courant
 		 */
 		ligneDepense.setLibelle("[vers "+budgetTransfert.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle());
-		ajoutLigneDepenseEtCalcul(budget, ligneDepense, utilisateur.getLibelle());
+		ajoutLigneDepenseEtCalcul(idBudget, ligneDepense, utilisateur.getLibelle());
 	}
 
 
@@ -296,11 +297,14 @@ public class BusinessDepensesService {
 	 * Ajout d'une ligne de dépense
 	 * @param ligneDepense ligne de dépense
 	 * @param auteur auteur de l'action 
+	 * @throws BudgetNotFoundException 
 	 */
-	public void ajoutLigneDepenseEtCalcul(BudgetMensuel budget, LigneDepense ligneDepense, String auteur){
+	public BudgetMensuel ajoutLigneDepenseEtCalcul(String idBudget, LigneDepense ligneDepense, String auteur) throws BudgetNotFoundException{
+		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
 		ajoutLigneDepense(budget, ligneDepense, auteur);
 		// Résultat mensuel
 		calculBudgetEtSauvegarde(budget);
+		return budget;
 	}
 
 	/**

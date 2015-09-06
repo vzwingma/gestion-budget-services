@@ -74,12 +74,12 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 			try{
 				if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ligneDepense.getSsCategorie().getId())){
 					LOGGER.info("[IHM] Ajout d'un nouveau transfert intercompte");
-					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget, ligneDepense, ((String)form.getListSelectComptes().getConvertedValue()), UISessionManager.getSession().getUtilisateurCourant());
+					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, ((String)form.getListSelectComptes().getConvertedValue()), UISessionManager.getSession().getUtilisateurCourant());
 					Notification.show("Le transfert inter-compte a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 				}
 				else{
 					LOGGER.info("[IHM] Ajout d'une nouvelle dépense");
-					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneDepenseEtCalcul(budget, ligneDepense, auteur);
+					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneDepenseEtCalcul(budget.getId(), ligneDepense, auteur);
 					Notification.show("La dépense a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 				}
 			}

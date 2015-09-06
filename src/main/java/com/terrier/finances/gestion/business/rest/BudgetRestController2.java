@@ -5,8 +5,10 @@ package com.terrier.finances.gestion.business.rest;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,7 @@ import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelXO;
+import com.terrier.finances.gestion.model.data.budget.IdLigneDepenseXO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseXO;
 import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseXO;
 import com.terrier.finances.gestion.model.data.parametrage.ContexteUtilisateurXO;
@@ -217,7 +220,7 @@ public class BudgetRestController2 {
 	 * @throws UserNotAuthorizedException erreur d'authentification
 	 * @throws DataNotFoundException  erreur de connexion à la BDD
 	 */
-	@RequestMapping(value="/depenses/{idbudget}", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
+	@RequestMapping(value="/budget/{idbudget}/depenses", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
 	public List<LigneDepenseXO> getLignesDepenses(@PathVariable String idbudget) 
 			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -232,14 +235,14 @@ public class BudgetRestController2 {
 	
 	
 	/**
-	 * Chargement de la liste des dépenses
+	 * Mise à jour d'une dépense
 	 * @param idbudget identifiant du budget
-	 * @return liste des dépenses
+	 * @return budget recalculé
 	 * @throws UserNotAuthorizedException erreur d'authentification
 	 * @throws DataNotFoundException  erreur de connexion à la BDD
 	 * @throws BudgetNotFoundException erreur budget introuvable
 	 */
-	@RequestMapping(value="/depenses/{idBudget}/{idDepense}", method=RequestMethod.PUT, produces = "application/json",headers="Accept=application/json")
+	@RequestMapping(value="/budget/{idBudget}/depense/{idDepense}", method=RequestMethod.PUT, produces = "application/json",headers="Accept=application/json")
 	public BudgetMensuelXO majLigneDepense(@PathVariable String idBudget, @PathVariable String idDepense, @RequestBody LigneDepenseXO depense) 
 			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, NotModifiedException{
 
@@ -253,9 +256,7 @@ public class BudgetRestController2 {
 				throw new NotModifiedException();
 			}
 			else{
-				BudgetMensuelXO bxo = dataTransformerBudget.transformBOtoXO(b);
-				bxo.getListeDepenses().clear();
-				return bxo;
+				return dataTransformerBudget.transformBOtoXO(b);
 			}
 		}
 		else{
@@ -265,6 +266,38 @@ public class BudgetRestController2 {
 	}
 
 
+	/**
+	 * Création d'une nouvelle dépense
+	 * @param idbudget identifiant du budget
+	 * @return budget recalculé
+	 * TODO : Ne doit normalement retourner que l'id de la dépense. et il faudrait rappeler le service Budget pour obtenir celui à jour
+	 * @throws UserNotAuthorizedException erreur d'authentification
+	 * @throws DataNotFoundException  erreur de connexion à la BDD
+	 * @throws BudgetNotFoundException erreur budget introuvable
+	 */
+	@RequestMapping(value="/budget/{idBudget}/depense", method=RequestMethod.POST, produces = "application/json",headers="Accept=application/json")
+	public IdLigneDepenseXO createLigneDepense(@PathVariable String idBudget, @RequestBody LigneDepenseXO nelledepense, HttpServletResponse response) 
+			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, NotModifiedException{
+
+		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
+			// Création de l'id de la nouvelle dépense
+			String newId = UUID.randomUUID().toString();
+			nelledepense.setId(newId);
+			LOGGER.debug("[REST][{}] Appel REST création dépense : idbudget={} : [{}]", userSpringSec, idBudget, nelledepense);
+			
+			BudgetMensuel b = businessDepenses.ajoutLigneDepenseEtCalcul(idBudget, dataTransformerLigneDepense.transformXOtoBO(nelledepense), ((Utilisateur)userSpringSec).getLibelle());
+			if(b == null) {
+				throw new NotModifiedException();
+			}
+			else{
+				return new IdLigneDepenseXO(newId);
+			}
+		}
+		else{
+			throw new UserNotAuthorizedException();	
+		}
+	}
 
 	/**
 	 * Appel PING
