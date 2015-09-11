@@ -65,7 +65,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		bo.setPeriodique(dto.isPeriodique());
 		bo.setTypeDepense(TypeDepenseEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
 		bo.setValeur(Float.valueOf(decryptor.decrypt(dto.getValeur())));
-		LOGGER.trace("	[{}] > Transformation en BO > [{}]", dto, bo);
+		LOGGER.trace("	[{}] \n > Transformation en BO > [{}]", dto, bo);
 		return bo;
 	}
 	
@@ -93,7 +93,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		dto.setPeriodique(bo.isPeriodique());
 		dto.setTypeDepense(encryptor.encrypt(bo.getTypeDepense().name()));
 		dto.setValeur(encryptor.encrypt(String.valueOf(bo.getValeur())));
-		LOGGER.trace("	[{}] > Transformation en DTO > [{}]", bo, dto);
+		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
 		return dto;
 	}
 
@@ -153,7 +153,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		xo.setPeriodique(bo.isPeriodique());
 		xo.setTypeDepense(bo.getTypeDepense().getId());
 		xo.setValeur(bo.getValeur()+ "");
-		LOGGER.debug("	[{}] > Transformation en XO > [{}]", bo, xo);
+		LOGGER.debug("	[{}] \n > Transformation en XO > [{}]", bo, xo);
 		return xo;
 	}
 
@@ -179,7 +179,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		bo.setPeriodique(xo.isPeriodique());
 		bo.setTypeDepense(TypeDepenseEnum.valueOf(xo.getTypeDepense()));
 		bo.setValeur(Float.valueOf(xo.getValeur()));
-		LOGGER.debug("	[{}] > Transformation en BO > [{}]", xo, bo);
+		LOGGER.debug("	[{}] \n > Transformation en BO > [{}]", xo, bo);
 		return bo;
 	}
 

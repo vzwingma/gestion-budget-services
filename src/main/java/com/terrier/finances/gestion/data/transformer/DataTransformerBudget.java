@@ -114,7 +114,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		}
 		bo.setId(dto.getId());
 		
-		LOGGER.debug("	[{}] > Transformation en BO > [{}]", dto, bo);
+		LOGGER.debug("	[{}] \n > Transformation en BO > [{}]", dto, bo);
 		return bo;
 	}
 
@@ -125,9 +125,9 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	 */
 	@Override
 	public BudgetMensuelXO transformBOtoXO(BudgetMensuel bo) {
-		//		bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses(), decryptor));
 		BudgetMensuelXO xo = new BudgetMensuelXO();
 		xo.setCompteBancaire(bo.getCompteBancaire());
+		xo.setActif(bo.isActif());
 		xo.setMois(bo.getMois());
 		xo.setAnnee(bo.getAnnee());
 		xo.setId(bo.getId());
@@ -169,7 +169,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 			}
 		}
 		xo.setTotalParSSCategories(totalSsCategorieXO);
-		LOGGER.debug("	[{}] > Transformation en XO > [{}]", bo, xo);
+		LOGGER.debug("	[{}] \n > Transformation en XO > [{}]", bo, xo);
 		return xo;
 	}
 
@@ -220,7 +220,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		dto.setTotalParSSCategories(totalSsCategorieDTO);
 
 		dto.setId(bo.getId());
-		LOGGER.debug("	[{}] > Transformation en DTO > [{}]", bo, dto);
+		LOGGER.debug("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
 		return dto;
 	}
 }
