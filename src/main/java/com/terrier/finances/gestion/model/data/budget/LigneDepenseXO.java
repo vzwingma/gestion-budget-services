@@ -22,18 +22,18 @@ public class LigneDepenseXO extends LigneDepenseDTO {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("LigneDepenseXO [getId()=").append(getId())
-				.append(", getLibelle()=").append(getLibelle())
-				.append(", getTypeDepense()=").append(getTypeDepense())
-				.append(", getValeur()=").append(getValeur())
-				.append(", getDateOperation()=").append(getDateOperation())
-				.append(", getAuteur()=").append(getAuteur())
-				.append(", getEtat()=").append(getEtat())
-				.append(", isPeriodique()=").append(isPeriodique())
-				.append(", getNotes()=").append(getNotes())
-				.append(", getIdSSCategorie()=").append(getIdSSCategorie())
-				.append(", getIdCategorie()=").append(getIdCategorie())
-				.append(", isDerniereOperation()=")
+		builder.append("LigneDepenseXO [Id=").append(getId())
+				.append(", Libelle=").append(getLibelle())
+				.append(", TypeDepense=").append(getTypeDepense())
+				.append(", Valeur=").append(getValeur())
+				.append(", DateOperation=").append(getDateOperation())
+				.append(", Auteur=").append(getAuteur())
+				.append(", Etat=").append(getEtat())
+				.append(", isPeriodique=").append(isPeriodique())
+				.append(", Notes=").append(getNotes())
+				.append(", IdSSCategorie=").append(getIdSSCategorie())
+				.append(", IdCategorie=").append(getIdCategorie())
+				.append(", isDerniereOperation=")
 				.append(isDerniereOperation()).append("]");
 		return builder.toString();
 	}

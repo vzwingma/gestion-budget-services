@@ -56,11 +56,11 @@ public class BudgetMensuelXO extends BudgetMensuelDTO {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("BudgetMensuelXO [getMois()=").append(getMois())
-				.append(", getAnnee()=").append(getAnnee())
-				.append(", getDateMiseAJour()=").append(getDateMiseAJour() != null ? getDateMiseAJour() : "")
-				.append(", getCompteBancaire()=").append(getCompteBancaire())
-				.append(", isActif()=").append(isActif()).append("]");
+		builder.append("BudgetMensuelXO [Mois=").append(getMois())
+				.append(", Annee=").append(getAnnee())
+				.append(", DateMiseAJour=").append(getDateMiseAJour() != null ? getDateMiseAJour() : "")
+				.append(", CompteBancaire=").append(getCompteBancaire())
+				.append(", actif=").append(isActif()).append("]");
 		return builder.toString();
 	}
 	

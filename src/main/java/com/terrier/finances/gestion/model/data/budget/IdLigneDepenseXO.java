@@ -39,7 +39,7 @@ public class IdLigneDepenseXO implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("LigneDepenseXO [getId()=").append(getId())
+		builder.append("LigneDepenseXO [id=").append(getId())
 				.append("]");
 		return builder.toString();
 	}
