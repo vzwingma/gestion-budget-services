@@ -81,6 +81,44 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.vaadin</groupId>
+										<artifactId>
+											vaadin-maven-plugin
+										</artifactId>
+										<versionRange>
+											[7.5.5,)
+										</versionRange>
+										<goals>
+											<goal>compile-theme</goal>
+											<goal>resources</goal>
+											<goal>update-theme</goal>
+											<goal>
+												update-widgetset
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<profiles>
 		<profile>
@@ -129,9 +167,9 @@
 										<!-- Place any Ant task here. You can add anything you can add 
 											between <target> and </target> in a build.xml. -->
 										<copy file="target/gestion-budget-${project.version}.war"
-											tofile="D:\\Users\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" />
+											tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" />
 										<copy file="src/main/resources/config/dev/context.xml"
-											tofile="D:\\Users\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" />
+											tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" />
 									</tasks>
 								</configuration>
 								<goals>
