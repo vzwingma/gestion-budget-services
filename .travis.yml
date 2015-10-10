@@ -7,6 +7,7 @@ env:
   - secure: VGenXEkuJJQth5WjUpLxXHqDZu6e8Qg2edsNIgKvohkGRbmUufrUeetfFBiagMen9VaMvDOculOOqvy/qi5/SLVmxeCRRg5UsCkgDidXbQJav73hGII10p5nak9zif8AQEAw3/F7irBCh/bzYt5Lusse/npkqr+0xQlM7EkP+X1MDlO4ipwwflHHdcE3Ngomdq+qGDr+/MUkutckmE6VCLx+WJDDNZasliCBm7hMOTpqD3nE/b/6yi3+Pt/rFjUZPV9AUZkygacL7iPdZM9evYeru1Y/f+/1Sptunov0JlJQR+GnKHKpVBBEK4s4wuL1A3h56GHDe/KPA0ucWFVNbg/iK1/TluWGpw9s9LiJGqsMUoEEUJ+beTy+PYjA/CQNnXlMzNTm/LS/9oJdOy0g2cNewUtNe7pWnIk0Y6AnpO0Fm/sk5yo/+J/jl7WsZInY/QsKtikVmkRsGv7uQDvLXXS/MlpxuOmJxbVZ3nupqnyLUF+l3aPXumauCuOgnmdouKsyDQdbOCvC1v6FlE+YVyHkCHb3tnJPYMomHuaFvxWchLRegMZ527TR0B/cQkQeuN0zb1638V7VZ0H9slOCpZYSVmy201+VKgE2MWG5h61CIKMcXhiB4VFBSeBGfOYW5NR5a0pjrBbIPAr+R8SAgsjbqSnGV77gmVb7vc/rJu0=
 install: mvn clean install -DskipTests=true -B -P openshift
 before_script:
+  - rvm reinstall ruby-head --binary
   - "gem install travis-artifacts"
 after_script:
   - "travis-artifacts upload --path target/*.tar.gz --target-path artifacts/$TRAVIS_BUILD_NUMBER"
