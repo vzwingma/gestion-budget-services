@@ -40,8 +40,7 @@ public class AuthenticationService {
 	 */
 	@Autowired
 	private ParametragesDatabaseService dataDBParams;
-	@Autowired
-	private ParametragesService serviceParametrages;
+
 
 	/**
 	 * @param password mot de passe

@@ -21,10 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.business.ParametragesService;
-import com.terrier.finances.gestion.business.auth.UserAuthProvider;
 import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.data.transformer.DataTransformerCategoriesDepense;
 import com.terrier.finances.gestion.data.transformer.DataTransformerLigneDepense;
@@ -69,11 +67,7 @@ public class BudgetRestController2 {
 	 */
 	@Autowired
 	private ParametragesService businessParams;
-	/**
-	 * Lien vers les services métier
-	 */
-	@Autowired
-	private AuthenticationService businessAuthentication;
+
 
 	@Autowired @Qualifier("dataTransformerCategoriesDepense")
 	private DataTransformerCategoriesDepense dataTransformerCategoriesDepense;
@@ -81,9 +75,6 @@ public class BudgetRestController2 {
 	private DataTransformerBudget dataTransformerBudget;
 	@Autowired @Qualifier("dataTransformerLigneDepense")
 	private DataTransformerLigneDepense dataTransformerLigneDepense;
-
-	@Autowired
-	private UserAuthProvider manager;
 
 	/**
 	 * @return contexte catégories

@@ -46,11 +46,7 @@ public class BusinessDepensesService {
 	 */
 	@Autowired
 	private ParametragesService serviceParams;
-	/**
-	 * Auth
-	 */
-	@Autowired
-	private AuthenticationService serviceAuth;
+
 
 	public static final String ID_SS_CAT_TRANSFERT_INTERCOMPTE = "ed3f6100-5dbd-4b68-860e-0c97ae1bbc63";
 

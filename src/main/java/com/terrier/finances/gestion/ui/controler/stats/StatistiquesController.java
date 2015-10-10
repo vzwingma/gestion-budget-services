@@ -3,9 +3,6 @@ package com.terrier.finances.gestion.ui.controler.stats;
 import java.io.Serializable;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
@@ -31,10 +28,7 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 	 * 
 	 */
 	private static final long serialVersionUID = -6410285178655721867L;
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(StatistiquesController.class);
+
 	
 	private ComboBox compte;
 	
@@ -92,14 +86,6 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 
 	}
 
-
-    
-    
-    
-    
-    
-    
-    
     
     
     

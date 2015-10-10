@@ -6,10 +6,8 @@ package com.terrier.finances.gestion.data.transformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.IDataTransformer;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseDTO;
@@ -23,8 +21,6 @@ import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseXO;
 @Component("dataTransformerCategoriesDepense")
 public class DataTransformerCategoriesDepense extends IDataTransformer<CategorieDepense, CategorieDepenseDTO, CategorieDepenseXO> {
 
-	@Autowired
-	private ParametragesDatabaseService parametrageService;
 	/**
 	 * Constructeur pour Spring
 	 */
