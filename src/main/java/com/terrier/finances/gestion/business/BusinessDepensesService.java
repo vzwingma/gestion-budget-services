@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.business;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -109,6 +110,24 @@ public class BusinessDepensesService {
 		return this.dataDepenses.getDatePremierDernierBudgets(compte);
 	}
 
+	/**
+	 * Charge la date de mise à jour du budget
+	 * @param idBudget identifiant du budget
+	 * @return la date de mise à jour du  budget
+	 */
+	public boolean isBudgetUpToDate(String idBudget, Calendar dateToCompare) {
+		
+		Date dateEnBDD = this.dataDepenses.getDateMiseAJourBudget(idBudget);
+		if(dateEnBDD != null){
+			return dateToCompare.getTime().before(dateEnBDD);
+		}
+		else{
+			LOGGER.error("[REFRESH] Impossible de trouver la date de mise à jour du budget. Annulation du traitement de rafraichissement");
+			return false;
+		}
+	}
+	
+	
 	/**
 	 * Chargement du budget du mois courant
 	 * @param compte compte 

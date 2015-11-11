@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.data;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -58,6 +59,25 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		return budgetMensuel;
 	}
 
+	
+	
+	/**
+	 * Lecture de la date de mise à jour du budget
+	 * @return date de mise à jour
+	 */
+	public Date getDateMiseAJourBudget(String idBudget) {
+		
+		Query queryBudget = new Query();
+		queryBudget.addCriteria(Criteria.where("id").is(idBudget));
+		queryBudget.limit(1);
+		
+		BudgetMensuelDTO budgetMensuelDTO = mongoTemplate.findOne(queryBudget, BudgetMensuelDTO.class);
+		LOGGER.info("{}", budgetMensuelDTO);
+		if(budgetMensuelDTO != null){
+			return budgetMensuelDTO.getDateMiseAJour();
+		}
+		return null;
+	}
 	
 	/**
 	 * @param mois mois 

@@ -37,7 +37,7 @@ public class UISession {
 	 * @param idSession idSessions
 	 */
 	public UISession(String idSession){
-		LOGGER.debug("[INIT][{}] Session UI ", idSession);
+		LOGGER.trace("[INIT][{}] Session UI ", idSession);
 		this.idSession = idSession;
 	}
 

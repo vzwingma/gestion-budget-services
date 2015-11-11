@@ -31,18 +31,21 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionCr
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.UIEvents;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 
 /**
  * Controleur du budget mensuel
+ * Le controleur est poolé régulièrement par l'IHM pour vérifier s'il faut mettre à jour le modèle du à des modifs en BDD
  * @author vzwingma
  *
  */
-public class BudgetMensuelController extends AbstractUIController<BudgetMensuelPage> implements ValueChangeListener, Serializable{
+public class BudgetMensuelController extends AbstractUIController<BudgetMensuelPage> implements ValueChangeListener, UIEvents.PollListener, Serializable{
 
 	/**
 	 * 
@@ -72,9 +75,32 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 */
 	public BudgetMensuelController(BudgetMensuelPage composant) {
 		super(composant);
+		// Ajout du pooling listener de l'UI sur ce controleur
+		UI.getCurrent().addPollListener(this);
 	}
 
+	/**
+	 * Pool de l'IHM pour vérifier la mise à jour vis à vis de la BDD
+	 * @param event
+	 */
+	@Override
+	public void poll(UIEvents.PollEvent event) {
 
+		String idSession = UISessionManager.getSession().getIdSession();
+		BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
+		if(UISessionManager.getSession().getIdSession() != null &&  budgetCourant != null){
+			LOGGER.debug("[REFRESH][{}] Dernière mise à jour reçue pour le budget {} : {}", idSession, 
+					budgetCourant.getId(), budgetCourant.getDateMiseAJour() != null ? budgetCourant.getDateMiseAJour().getTime() : "null");
+
+			if(getServiceDepense().isBudgetUpToDate(budgetCourant.getId(), budgetCourant.getDateMiseAJour())){
+				LOGGER.info("[REFRESH][{}] Le budget a été mis à jour en base de données.  Mise à jour de l'IHM", idSession);
+				miseAJourVueDonnees();
+			}
+			else{
+				LOGGER.debug("[REFRESH][{}] Le budget est à jour par rapport à la  base de données. ", idSession);
+			}
+		}
+	}
 
 	/**
 	 * Init du suivi

@@ -10,6 +10,7 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.event.UIEvents;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
@@ -56,6 +57,10 @@ public class FinancesVaadinUI extends UI
         setSizeFull();
         UISessionManager.getSession().setMainLayout(layout);
         UI.setCurrent(this);
+        
+        // Refresh
+        UI.getCurrent().setPollInterval(10000);
+        
         setImmediate(true);
         // Page de login au démarrage
         layout.addComponent(new Login());
