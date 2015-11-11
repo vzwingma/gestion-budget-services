@@ -4,7 +4,6 @@ import javax.servlet.annotation.WebServlet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.terrier.finances.gestion.ui.components.auth.Login;
 import com.terrier.finances.gestion.ui.controler.FacadeServices;
@@ -12,7 +11,6 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.event.UIEvents;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;

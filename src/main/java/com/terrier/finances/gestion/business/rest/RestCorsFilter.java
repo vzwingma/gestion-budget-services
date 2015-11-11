@@ -59,7 +59,7 @@ public class RestCorsFilter implements Filter {
 	 */
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
+		// Rien a faire lors du destroy
 
 	}
 
