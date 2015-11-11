@@ -195,7 +195,7 @@ public class BusinessDepensesService {
 		budget.setMois(mois);
 
 		budget.setCompteBancaire(serviceParams.getCompteById(compte, utilisateur));
-
+		budget.setDateMiseAJour(Calendar.getInstance());
 		// Init si dans le futur par rapport au démarrage
 		Calendar datePremierBudget = getDatePremierDernierBudgets(compte)[0];
 		datePremierBudget.set(Calendar.DAY_OF_MONTH, 1);
@@ -257,6 +257,7 @@ public class BusinessDepensesService {
 		budget.setCompteBancaire(budgetPrecedent.getCompteBancaire());
 		budget.setMargeSecurite(budgetPrecedent.getMargeSecurite());
 		budget.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
+		budget.setDateMiseAJour(Calendar.getInstance());
 		for (LigneDepense depenseMoisPrecedent : budgetPrecedent.getListeDepenses()) {
 			if(depenseMoisPrecedent.isPeriodique() || depenseMoisPrecedent.getEtat().equals(EtatLigneDepenseEnum.REPORTEE)){
 				budget.getListeDepenses().add(depenseMoisPrecedent.cloneDepenseToMoisSuivant());	
@@ -305,6 +306,7 @@ public class BusinessDepensesService {
 		ligneDepense.setAuteur(auteur);
 		ligneDepense.setDateMaj(Calendar.getInstance().getTime());
 		budget.getListeDepenses().add(ligneDepense);
+		budget.setDateMiseAJour(Calendar.getInstance());
 	}
 
 
@@ -583,6 +585,7 @@ public class BusinessDepensesService {
 	public void setBudgetActif(BudgetMensuel budgetMensuel, boolean budgetActif){
 		LOGGER.info("{} du budget {}/{} de {}", budgetActif ? "Réouverture" : "Fermeture", budgetMensuel.getMois(), budgetMensuel.getAnnee(), budgetMensuel.getCompteBancaire().getLibelle());
 		budgetMensuel.setActif(budgetActif);
+		budgetMensuel.setDateMiseAJour(Calendar.getInstance());
 		calculBudgetEtSauvegarde(budgetMensuel);
 	}
 }

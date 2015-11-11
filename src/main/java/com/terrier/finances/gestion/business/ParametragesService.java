@@ -33,7 +33,7 @@ public class ParametragesService {
 	 */
 	private String version;
 	private String buildTime;
-	
+	private String uiRefreshPeriod;
 	/**
 	 * Logger
 	 */
@@ -92,6 +92,23 @@ public class ParametragesService {
 
 	
 	
+	/**
+	 * @return période de rafraichissement des IHM
+	 */
+	public String getUiRefreshPeriod() {
+		return uiRefreshPeriod;
+	}
+	
+	
+	/**
+	 * période de rafraichissement des IHM
+	 * @param uiRefreshPeriod
+	 */
+	@Value("${budget.ui.refresh.period}")
+	public void setUiRefreshPeriod(String uiRefreshPeriod) {
+		this.uiRefreshPeriod = uiRefreshPeriod;
+	}
+
 	/**
 	 * @return liste des catégories
 	 */

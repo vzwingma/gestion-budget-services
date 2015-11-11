@@ -4,8 +4,10 @@ import javax.servlet.annotation.WebServlet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.terrier.finances.gestion.ui.components.auth.Login;
+import com.terrier.finances.gestion.ui.controler.FacadeServices;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -59,7 +61,10 @@ public class FinancesVaadinUI extends UI
         UI.setCurrent(this);
         
         // Refresh
-        UI.getCurrent().setPollInterval(10000);
+        int pollInterval = Integer.parseInt(FacadeServices.get().getServiceParams().getUiRefreshPeriod());
+        UI.getCurrent().setPollInterval(pollInterval);
+        LOGGER.debug("[INIT] FinancesVaadinUI : {} ms", pollInterval);
+        
         
         setImmediate(true);
         // Page de login au démarrage
