@@ -116,7 +116,7 @@ public class BusinessDepensesService {
 	 * @return la date de mise à jour du  budget
 	 */
 	public boolean isBudgetUpToDate(String idBudget, Calendar dateToCompare) {
-		
+
 		Date dateEnBDD = this.dataDepenses.getDateMiseAJourBudget(idBudget);
 		if(dateEnBDD != null){
 			return dateToCompare.getTime().before(dateEnBDD);
@@ -126,8 +126,8 @@ public class BusinessDepensesService {
 			return false;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Chargement du budget du mois courant
 	 * @param compte compte 
@@ -150,20 +150,22 @@ public class BusinessDepensesService {
 
 
 	/**
-	 * Chargement du budget du mois courant en consultation
+	 * Chargement de l'état du budget du mois courant en consultation
 	 * @param compte compte 
 	 * @param mois mois 
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	@Deprecated
-	public BudgetMensuelDTO chargerBudgetMensuelConsultation(String compte, int mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
+	public boolean isBudgetMensuelActif(String compte, int mois, int annee){
 		LOGGER.debug("Chargement du budget {} de {}/{}", compte, mois, annee);
-		BudgetMensuelDTO budgetMensuel = this.dataDepenses.chargeBudgetMensuelDTO(compte, mois, annee);
-		// Résultat mensuel
-		LOGGER.debug("(Calcul budget chargé) : " );
-		// calculBudget(budgetMensuel);
-		return budgetMensuel;
+		BudgetMensuelDTO budgetMensuel;
+		try {
+			budgetMensuel = this.dataDepenses.chargeBudgetMensuelDTO(compte, mois, annee);
+			return budgetMensuel != null ? budgetMensuel.isActif() : false;
+		} catch (BudgetNotFoundException e) {
+			return false;
+		}
+
 	}
 
 	/**

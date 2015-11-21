@@ -211,7 +211,7 @@ public class BudgetRestController2 {
 	 * @throws UserNotAuthorizedException erreur d'authentification
 	 * @throws DataNotFoundException  erreur de connexion à la BDD
 	 */
-	@RequestMapping(value="/budget/{idbudget}/depenses", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
+	@RequestMapping(value="/budget/{idbudget}/depense", method=RequestMethod.GET, produces = "application/json",headers="Accept=application/json")
 	public List<LigneDepenseXO> getLignesDepenses(@PathVariable String idbudget) 
 			throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

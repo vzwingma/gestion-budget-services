@@ -7,9 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
-import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
@@ -31,7 +28,7 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 	private static final long serialVersionUID = -1823872638217135776L;
 
 	private BudgetMensuelPage page;
-	
+
 	/* (non-Javadoc)
 	 * @see com.vaadin.ui.Button.ClickListener#buttonClick(com.vaadin.ui.Button.ClickEvent)
 	 */
@@ -39,11 +36,11 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 	public void buttonClick(ClickEvent event) {
 		Button refreshMont = event.getButton();
 		page  = (BudgetMensuelPage)refreshMont.getParent().getParent().getParent().getParent().getParent();
-		
+
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.MONTH, UISessionManager.getSession().getBudgetMensuelCourant().getMois());
 		SimpleDateFormat sfd = new SimpleDateFormat("MMMM YYYY", Locale.FRENCH);
-		
+
 		/** Alerte **/
 		String warnMoisActif = "";
 		int moisPrecedent = 0;
@@ -55,14 +52,12 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 		else{
 			moisPrecedent = UISessionManager.getSession().getBudgetMensuelCourant().getMois() - 1;
 		}
-		try {
-			BudgetMensuelDTO budgetPrecedent = page.getControleur().getServiceDepense().chargerBudgetMensuelConsultation(
-					UISessionManager.getSession().getBudgetMensuelCourant().getCompteBancaire().getId(), 
-					moisPrecedent, anneePrecedente);
-			if(budgetPrecedent.isActif()){
-				warnMoisActif = "<span style=\"color: red;\"><br> Attention : Le mois précédent n'est pas clos !</span>";
-			}
-		} catch (BudgetNotFoundException | DataNotFoundException e) { }
+		Boolean budgetPrecedentActif = page.getControleur().getServiceDepense().isBudgetMensuelActif(
+				UISessionManager.getSession().getBudgetMensuelCourant().getCompteBancaire().getId(), 
+				moisPrecedent, anneePrecedente);
+		if(budgetPrecedentActif){
+			warnMoisActif = "<span style=\"color: red;\"><br> Attention : Le mois précédent n'est pas clos !</span>";
+		}
 
 
 		// Confirmation
@@ -85,7 +80,7 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 			page.getControleur().reinitialiserBudgetCourant();
 		}
 	}
-	
-	
+
+
 }
 

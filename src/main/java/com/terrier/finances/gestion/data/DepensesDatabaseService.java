@@ -102,11 +102,11 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		return budgetMensuel;
 	}
 	/**
+	 * Chargement du compte
 	 * @param mois mois 
 	 * @param annee année
-	 * @return budget mensuel
+	 * @return budget mensuel du compte pour le mois et l'année
 	 */
-	@Deprecated
 	public BudgetMensuelDTO chargeBudgetMensuelDTO(String idCompte, int mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", idCompte, mois, annee);
 		Query queryBudget = new Query();
