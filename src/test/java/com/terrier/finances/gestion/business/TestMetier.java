@@ -11,6 +11,6 @@ public class TestMetier {
 	@Test
 	public void testDate(){
 		SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm:ss", Locale.FRENCH);
-		System.out.println(sdf.format(Calendar.getInstance().getTime()));
+		LOGGER.info(sdf.format(Calendar.getInstance().getTime()));
 	}
 }
