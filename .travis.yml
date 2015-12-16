@@ -5,3 +5,7 @@ deploy:
   provider: releases
   api_key: "bd2ed1f65450517d8ec3426a2b1b2310e10c92a7"
   file: target/Budget-v4.0.0.tar.gz
+  skip_cleanup: true	
+  on:
+    repo: vzwingma/gestion-budget
+    tags: true  
