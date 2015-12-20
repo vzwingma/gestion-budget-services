@@ -8,4 +8,4 @@ deploy:
   skip_cleanup: true	
   on:
     repo: vzwingma/gestion-budget
-    tags: true  
+    tags: true

@@ -1,0 +1,12 @@
+<project>
+    <target name="debug">
+        <echo message="Application de gestion de budget"/>
+    </target>
+    <target name="install">
+        <echo message="Application de gestion de budget"/>
+    </target>
+    <target name="test">
+        <echo message="Application de gestion de budget"/>
+    </target>
+	
+</project>
