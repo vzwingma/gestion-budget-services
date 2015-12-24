@@ -7,20 +7,16 @@ env:
 
 addons:
   coverity_scan:
-
     # GitHub project metadata
     # ** specific to your project **
     project:
       name: vzwingma/gestion-budget
-      version: 4.0
-      description: Build
-
     # Where email notification of build analysis results will be sent
     notification_email: vincent.zwingmann@gmail.com
 
     # Commands to prepare for build_command
     # ** likely specific to your build **
-    ""build_command_prepend: ./configure
+    #build_command_prepend: ./configure
 
     # The command that will be added as an argument to "cov-build" to compile your project for analysis,
     # ** likely specific to your build **
