@@ -1,4 +1,35 @@
 language: java
+env:
+  global:
+    # COVERITY_SCAN_TOKEN
+    # ** specific to your project **
+    - secure: "gZ0q51VAeefHduFZPL2B0A"
+
+addons:
+  coverity_scan:
+
+    # GitHub project metadata
+    # ** specific to your project **
+    project:
+      name: vzwingma/gestion-budget
+      version: 4.0
+      description: Build
+
+    # Where email notification of build analysis results will be sent
+    notification_email: vincent.zwingmann@gmail.com
+
+    # Commands to prepare for build_command
+    # ** likely specific to your build **
+    ""build_command_prepend: ./configure
+
+    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
+    # ** likely specific to your build **
+    build_command: mvn clean install
+
+    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
+    # Take care in resource usage, and consider the build frequency allowances per
+    #   https://scan.coverity.com/faq#frequency
+    branch_pattern: coverity_scan
 install: 
   - mvn clean install -DskipTests=true -B -P openshift
 deploy:
