@@ -17,3 +17,4 @@ addons:
     # Take care in resource usage, and consider the build frequency allowances per
     #   https://scan.coverity.com/faq#frequency
     branch_pattern: coverity_scan
+after_script: less /home/travis/build/vzwingma/gestion-budget/cov-int/scm_log.txt
