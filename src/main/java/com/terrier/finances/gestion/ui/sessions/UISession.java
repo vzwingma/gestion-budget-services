@@ -77,8 +77,9 @@ public class UISession {
 		//Invalidate HttpSession
 		httpSession.invalidate();
 		//Redirect the user to the login/default Page
-		if(Page.getCurrent() != null){
-			Page.getCurrent().setLocation(VaadinServlet.getCurrent().getServletConfig().getServletContext().getContextPath()+"/ihm");
+		Page currentPage = Page.getCurrent();
+		if(currentPage != null){
+			currentPage.setLocation(VaadinServlet.getCurrent().getServletConfig().getServletContext().getContextPath()+"/ihm");
 		}
 		else{
 			LOGGER.error("Erreur : Impossible de trouver la page courante. Pb de framework Vaadin");
