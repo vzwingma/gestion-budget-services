@@ -473,7 +473,7 @@ public class BusinessDepensesService {
 			// Mise à jour de la ligne
 			ligneDepense.setDateMaj(Calendar.getInstance().getTime());
 			ligneDepense.setAuteur(auteur);
-			budget = majLigneDepense(budget.getId(), ligneDepense, auteur);
+			majLigneDepense(budget.getId(), ligneDepense, auteur);
 		}
 	}	
 

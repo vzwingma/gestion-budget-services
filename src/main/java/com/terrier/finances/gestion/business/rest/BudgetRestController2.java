@@ -124,23 +124,25 @@ public class BudgetRestController2 {
 				for (CompteBancaire compteBancaire : comptes) {
 					List<BudgetMensuelDTO> listeBudget = businessDepenses.chargerBudgetsMensuelsConsultation(user, compteBancaire.getId());
 					LOGGER.debug(" {} budget chargé pour {}", listeBudget != null ? listeBudget.size() : 0, compteBancaire.getLibelle());
-					Calendar minBudget = null;
-					Calendar maxBudget = null;
+					Calendar datePlusAncienBudget = null;
+					Calendar datePlusRecentBudget = null;
 					// Calcul des min/max pour le compte
-					for (BudgetMensuelDTO budgetDTO : listeBudget) {
-						Calendar dateBudget = Calendar.getInstance();
-						dateBudget.set(Calendar.DAY_OF_MONTH, 1);
-						dateBudget.set(Calendar.MONTH, budgetDTO.getMois());
-						dateBudget.set(Calendar.YEAR, budgetDTO.getAnnee());
+					if(listeBudget != null && !listeBudget.isEmpty()){
+						for (BudgetMensuelDTO budgetDTO : listeBudget) {
+							Calendar dateBudget = Calendar.getInstance();
+							dateBudget.set(Calendar.DAY_OF_MONTH, 1);
+							dateBudget.set(Calendar.MONTH, budgetDTO.getMois());
+							dateBudget.set(Calendar.YEAR, budgetDTO.getAnnee());
 
-						if(minBudget == null || dateBudget.before(minBudget)){
-							minBudget = dateBudget;
-						}
-						if(maxBudget == null || dateBudget.after(maxBudget)){
-							maxBudget = dateBudget;
+							if(datePlusAncienBudget == null || dateBudget.before(datePlusAncienBudget)){
+								datePlusAncienBudget = dateBudget;
+							}
+							if(datePlusRecentBudget == null || dateBudget.after(datePlusRecentBudget)){
+								datePlusRecentBudget = dateBudget;
+							}
 						}
 					}
-					contexteUtilisateur.setIntervalleCompte(compteBancaire, minBudget, maxBudget);
+					contexteUtilisateur.setIntervalleCompte(compteBancaire, datePlusAncienBudget, datePlusRecentBudget);
 				}
 				return contexteUtilisateur;
 			}
@@ -223,8 +225,8 @@ public class BudgetRestController2 {
 		throw new UserNotAuthorizedException();
 	}
 
-	
-	
+
+
 	/**
 	 * Mise à jour d'une dépense
 	 * @param idbudget identifiant du budget
@@ -239,9 +241,9 @@ public class BudgetRestController2 {
 
 		Object userSpringSec = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(userSpringSec != null && userSpringSec instanceof Utilisateur){
-			
+
 			LOGGER.debug("[REST][{}] Appel REST majLigneDepense : idbudget={} et idDepense={} : [{}]", userSpringSec, idBudget, idDepense, depense);
-			
+
 			BudgetMensuel b = businessDepenses.majLigneDepense(idBudget, dataTransformerLigneDepense.transformXOtoBO(depense), ((Utilisateur)userSpringSec).getLibelle());
 			if(b == null) {
 				throw new NotModifiedException();
@@ -253,7 +255,7 @@ public class BudgetRestController2 {
 		else{
 			throw new UserNotAuthorizedException();	
 		}
-		
+
 	}
 
 
@@ -276,7 +278,7 @@ public class BudgetRestController2 {
 			String newId = UUID.randomUUID().toString();
 			nelledepense.setId(newId);
 			LOGGER.debug("[REST][{}] Appel REST création dépense : idbudget={} : [{}]", userSpringSec, idBudget, nelledepense);
-			
+
 			BudgetMensuel b = businessDepenses.ajoutLigneDepenseEtCalcul(idBudget, dataTransformerLigneDepense.transformXOtoBO(nelledepense), ((Utilisateur)userSpringSec).getLibelle());
 			if(b == null) {
 				throw new NotModifiedException();
