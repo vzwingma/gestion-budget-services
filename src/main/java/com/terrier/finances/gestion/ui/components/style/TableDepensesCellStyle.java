@@ -47,7 +47,7 @@ public class TableDepensesCellStyle implements CellStyleGenerator {
 	@Override
 	public String getStyle(Table source, Object idDepense, Object propertyId) {
 
-		String style = null;
+		StringBuilder style = new StringBuilder();
 		BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
 		if(controleur.getServiceDepense() != null && budgetCourant != null && idDepense != null){
 			List<LigneDepense> listeDepenses = budgetCourant.getListeDepenses();
@@ -73,7 +73,7 @@ public class TableDepensesCellStyle implements CellStyleGenerator {
 			}
 
 			// Style de la ligne
-			if(listeDepenses != null){				
+			if(listeDepenses != null){
 				/*
 				 * 
 				 *  Style pour les autres lignes
@@ -84,7 +84,7 @@ public class TableDepensesCellStyle implements CellStyleGenerator {
 					if(idDepense.equals(depense.getId()) 
 							&& !BusinessDepensesService.ID_SS_CAT_RESERVE.equals(depense.getSsCategorie().getId())
 							){
-						style = depense.getEtat().getId();
+						style = new StringBuilder(depense.getEtat().getId());
 						break;
 					}
 					rang ++;
@@ -92,20 +92,21 @@ public class TableDepensesCellStyle implements CellStyleGenerator {
 
 				// Gestion du style par préférence utilisateur
 				boolean oddStyle = controleur.getServiceAuthentification().getPreferenceUtilisateurCourant(Utilisateur.PREFERENCE_TABLE_ODD_STYLE, Boolean.class);
-				if(style != null && oddStyle){
-					style += rang%2 == 0 ? "" : "-odd";
+				if(oddStyle){
+					style.append(rang%2 == 0 ? "" : "-odd");
 				}
-			}
 
-			// Style de la dernière opération
-			for (LigneDepense depense : listeDepenses) {
-				if(idDepense.equals(depense.getId()) && depense.isDerniereOperation()){
-					style += " last-depense";
-					break;
+
+				// Style de la dernière opération
+				for (LigneDepense depense : listeDepenses) {
+					if(idDepense.equals(depense.getId()) && depense.isDerniereOperation()){
+						style.append(" last-depense");
+						break;
+					}
 				}
 			}
 		}
-		return style;
+		return style.toString();
 	}
 
 }

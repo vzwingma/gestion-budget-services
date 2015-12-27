@@ -65,8 +65,6 @@ public class UISession {
 	public void deconnexion(){
 		// Suppression de l'utilisateur
 		this.utilisateurCourant = null;
-		// Suppression des données de référence
-	//	getServiceParams().resetData();
 		// Suppression de l'IHM
 		getMainLayout().removeAllComponents();
 		// Suppression de tous les controleurs
@@ -79,7 +77,12 @@ public class UISession {
 		//Invalidate HttpSession
 		httpSession.invalidate();
 		//Redirect the user to the login/default Page
-		Page.getCurrent().setLocation(VaadinServlet.getCurrent().getServletConfig().getServletContext().getContextPath()+"/ihm");
+		if(Page.getCurrent() != null){
+			Page.getCurrent().setLocation(VaadinServlet.getCurrent().getServletConfig().getServletContext().getContextPath()+"/ihm");
+		}
+		else{
+			LOGGER.error("Erreur : Impossible de trouver la page courante. Pb de framework Vaadin");
+		}
 	}
 
 

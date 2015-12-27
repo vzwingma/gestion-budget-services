@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.model.business.parametrage;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -7,7 +8,12 @@ import java.util.Comparator;
  * @author vzwingma
  *
  */
-public class CategorieDepenseComparator implements Comparator<CategorieDepense> {
+public class CategorieDepenseComparator implements Comparator<CategorieDepense>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3725080243715272280L;
 
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)

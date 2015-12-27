@@ -86,12 +86,16 @@ public class ContexteUtilisateurXO {
 
 	/**
 	 * @param compte
-	 * @param minDate
-	 * @param maxDate
+	 * @param datePlusAncien
+	 * @param datePlusRecent
 	 */
-	public void setIntervalleCompte(CompteBancaire compte, Calendar minDate,
-			Calendar maxDate) {
-		this.mapMinDateCompte.put(compte.getId(), minDate.getTime());
-		this.mapMaxDateCompte.put(compte.getId(), maxDate.getTime());
+	public void setIntervalleCompte(CompteBancaire compte, Calendar datePlusAncien,
+			Calendar datePlusRecent) {
+		if(datePlusAncien != null){
+			this.mapMinDateCompte.put(compte.getId(), datePlusAncien.getTime());
+		}
+		if(datePlusRecent != null){
+			this.mapMaxDateCompte.put(compte.getId(), datePlusRecent.getTime());
+		}
 	}
 }

@@ -56,7 +56,9 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		bo.setEtat(EtatLigneDepenseEnum.valueOf(decryptor.decrypt(dto.getEtat())));
 		try {
 			bo.setSsCategorie(parametrageService.chargeCategorieParId(decryptor.decrypt(dto.getIdSSCategorie())));
-		} catch (DataNotFoundException e) {	}
+		} catch (DataNotFoundException e) {
+			LOGGER.error("Erreur lors de la recherche en BDD de la sous catégorie {} -> {}", dto.getIdSSCategorie(), decryptor.decrypt(dto.getIdSSCategorie()));
+		}
 		bo.setLibelle(decryptor.decrypt(dto.getLibelle()));
 		if(dto.getNotes() != null){
 			bo.setNotes(decryptor.decrypt(dto.getNotes()));

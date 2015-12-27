@@ -3,6 +3,7 @@
  */
 package com.terrier.finances.gestion.model.business.parametrage;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -16,7 +17,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @Document(collection = "comptesbancaires")
-public class CompteBancaire {
+public class CompteBancaire implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -846392155444814540L;
 
 	@Id
 	private String id;
