@@ -51,23 +51,23 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 		EtatLigneDepenseEnum etat = EtatLigneDepenseEnum.PREVUE;
 		actions = (ActionsLigneBudget)event.getButton().getParent().getParent().getParent();
 		if(event.getButton().getId().equals("buttonReel")){
-			LOGGER.info("Activation");
+			LOGGER.trace("Action : Activation");
 			etat = EtatLigneDepenseEnum.REALISEE;
 		}
 		else if(event.getButton().getId().equals("buttonAnnuler")){
-			LOGGER.info("Annulation");
+			LOGGER.trace("Action : Annulation");
 			etat = EtatLigneDepenseEnum.ANNULEE;
 		}
 		else if(event.getButton().getId().equals("buttonReporter")){
-			LOGGER.info("Reporter");
+			LOGGER.trace("Action : Reporter");
 			etat = EtatLigneDepenseEnum.REPORTEE;
 		}
 		else if(event.getButton().getId().equals("buttonPrevue")){
-			LOGGER.info("Prevue");
+			LOGGER.trace("Action : Prevue");
 			etat = EtatLigneDepenseEnum.PREVUE;
 		}
 		else if(event.getButton().getId().equals("buttonSupprimer")){
-			LOGGER.info("Supprimé");
+			LOGGER.trace("Action : Supprimé");
 			etat = null;
 			// Confirmation
 			ConfirmDialog confirm = new ConfirmDialog("Suppression de la dépense", 
@@ -105,7 +105,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 		actions.getControleur().miseAJourEtatLigne(etat);
 		
 		TableSuiviDepense tableauDepense = (TableSuiviDepense)actions.getParent();
-		LOGGER.info("Mode Edition ? {}", tableauDepense.isEditable());
+		LOGGER.trace("Mode Edition ? {}", tableauDepense.isEditable());
 		// Si en mode éditable. Pas de mise à jour. Seulement lors de la validation
 		if(!tableauDepense.isEditable()){
 			/**
@@ -137,7 +137,6 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 	public void response(boolean ok) {
 		if(ok){
 			updateLigne(null, UISessionManager.getSession().getUtilisateurCourant().getLibelle());
-			
 		}
 	}
 }

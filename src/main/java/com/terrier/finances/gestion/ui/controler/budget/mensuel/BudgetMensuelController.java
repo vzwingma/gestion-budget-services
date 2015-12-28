@@ -87,18 +87,23 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	public void poll(UIEvents.PollEvent event) {
 
 		String idSession = UISessionManager.getSession().getIdSession();
-		BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
-		if(UISessionManager.getSession().getIdSession() != null &&  budgetCourant != null){
-			LOGGER.debug("[REFRESH][{}] Dernière mise à jour reçue pour le budget {} : {}", idSession, 
-					budgetCourant.getId(), budgetCourant.getDateMiseAJour() != null ? budgetCourant.getDateMiseAJour().getTime() : "null");
+		if(UISessionManager.getNombreSessionsActives() > 1){
+			BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
+			if(UISessionManager.getSession().getIdSession() != null &&  budgetCourant != null){
+				LOGGER.debug("[REFRESH][{}] Dernière mise à jour reçue pour le budget {} : {}", idSession, 
+						budgetCourant.getId(), budgetCourant.getDateMiseAJour() != null ? budgetCourant.getDateMiseAJour().getTime() : "null");
 
-			if(getServiceDepense().isBudgetUpToDate(budgetCourant.getId(), budgetCourant.getDateMiseAJour())){
-				LOGGER.info("[REFRESH][{}] Le budget a été mis à jour en base de données.  Mise à jour de l'IHM", idSession);
-				miseAJourVueDonnees();
+				if(getServiceDepense().isBudgetUpToDate(budgetCourant.getId(), budgetCourant.getDateMiseAJour())){
+					LOGGER.info("[REFRESH][{}] Le budget a été mis à jour en base de données.  Mise à jour de l'IHM", idSession);
+					miseAJourVueDonnees();
+				}
+				else{
+					LOGGER.debug("[REFRESH][{}] Le budget est à jour par rapport à la  base de données. ", idSession);
+				}
 			}
-			else{
-				LOGGER.debug("[REFRESH][{}] Le budget est à jour par rapport à la  base de données. ", idSession);
-			}
+		}
+		else{
+			LOGGER.debug("{} session active. Pas de refresh automatique en cours", UISessionManager.getNombreSessionsActives());
 		}
 	}
 

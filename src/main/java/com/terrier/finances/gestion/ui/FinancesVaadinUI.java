@@ -49,7 +49,7 @@ public class FinancesVaadinUI extends UI
 
     @Override
     protected void init(VaadinRequest request) {
-    	LOGGER.debug("[INIT] FinancesVaadinUI : {}", this.getSession().getCsrfToken());
+    	LOGGER.debug("[INIT] FinancesVaadinUI - IdSession : {}", this.getSession().getCsrfToken());
         final VerticalLayout layout = new VerticalLayout();
         layout.setMargin(false);
         layout.setSizeFull();
@@ -61,7 +61,7 @@ public class FinancesVaadinUI extends UI
         // Refresh
         int pollInterval = Integer.parseInt(FacadeServices.get().getServiceParams().getUiRefreshPeriod());
         UI.getCurrent().setPollInterval(pollInterval);
-        LOGGER.debug("[INIT] FinancesVaadinUI : {} ms", pollInterval);
+        LOGGER.debug("[INIT] FinancesVaadinUI - PoolInterval de {} ms", pollInterval);
         
         
         setImmediate(true);

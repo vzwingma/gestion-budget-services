@@ -97,13 +97,13 @@ public class AuthenticationService {
 				BasicTextEncryptor encryptorCle = new BasicTextEncryptor();
 				encryptorCle.setPassword(motPasseBasicAuth);
 				String cleChiffrementDonneesChiffree = encryptorCle.encrypt(motPasseBasicAuth);
-				LOGGER.warn("Clé de chiffrement chiffrée avec le mot de passe : {}", cleChiffrementDonneesChiffree);
+				//LOGGER.warn("Clé de chiffrement chiffrée avec le mot de passe : {}", cleChiffrementDonneesChiffree);
 				utilisateur.setCleChiffrementDonnees(cleChiffrementDonneesChiffree);
 				dataDBParams.majUtilisateur(utilisateur);
 				utilisateur.initEncryptor(motPasseBasicAuth);
 			}
 			else{
-				LOGGER.debug("> Clé chiffrée de chiffrement des données : {}", utilisateur.getCleChiffrementDonnees());
+				//LOGGER.debug("> Clé chiffrée de chiffrement des données : {}", utilisateur.getCleChiffrementDonnees());
 				BasicTextEncryptor decryptorCle = new BasicTextEncryptor();
 				decryptorCle.setPassword(motPasseBasicAuth);
 				String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getCleChiffrementDonnees());

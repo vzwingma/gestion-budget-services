@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.ui.sessions;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ public class UISession {
 
 	private String idSession;
 	
+	private Calendar lastAccessTime;
+	
 	/**
 	 * Session Manager
 	 * @param idSession idSessions
@@ -39,12 +42,13 @@ public class UISession {
 	public UISession(String idSession){
 		LOGGER.trace("[INIT][{}] Session UI ", idSession);
 		this.idSession = idSession;
+		this.lastAccessTime = Calendar.getInstance();
 	}
 
 	/**
 	 * Utilisateur courant
 	 */
-	private Utilisateur utilisateurCourant = new Utilisateur();
+	private Utilisateur utilisateurCourant = null;
 
 	/**
 	 * Budget courant
@@ -60,11 +64,28 @@ public class UISession {
 
 
 	/**
-	 * Déconnexion de l'utilisateur
+	 * Déconnexion de l'utilisateur manuellement
 	 */
 	public void deconnexion(){
+		// Déco auto
+		autoDeconnexion();
+		//Redirect the user to the login/default Page
+		Page currentPage = Page.getCurrent();
+		if(currentPage != null){
+			currentPage.setLocation(VaadinServlet.getCurrent().getServletConfig().getServletContext().getContextPath()+"/ihm");
+		}
+		else{
+			LOGGER.error("Erreur : Impossible de trouver la page courante. Pb de framework Vaadin");
+		}
+	}
+
+	/**
+	 * Auto déconnexion, sans redirection
+	 */
+	public void autoDeconnexion(){
 		// Suppression de l'utilisateur
 		this.utilisateurCourant = null;
+		this.lastAccessTime = null;
 		// Suppression de l'IHM
 		getMainLayout().removeAllComponents();
 		// Suppression de tous les controleurs
@@ -76,17 +97,9 @@ public class UISession {
 		WrappedSession httpSession = vSession.getSession();
 		//Invalidate HttpSession
 		httpSession.invalidate();
-		//Redirect the user to the login/default Page
-		Page currentPage = Page.getCurrent();
-		if(currentPage != null){
-			currentPage.setLocation(VaadinServlet.getCurrent().getServletConfig().getServletContext().getContextPath()+"/ihm");
-		}
-		else{
-			LOGGER.error("Erreur : Impossible de trouver la page courante. Pb de framework Vaadin");
-		}
 	}
-
-
+	
+	
 	/**
 	 * Enregistrement des controleurs
 	 * @param controleur controleur à enregistrer
@@ -129,6 +142,29 @@ public class UISession {
 	}
 	
 	
+	
+	/**
+	 * @param lastAccessTime the lastAccessTime to set
+	 */
+	public void setLastAccessTime(Calendar lastAccessTime) {
+		this.lastAccessTime = lastAccessTime;
+	}
+
+
+	/**
+	 * @return the lastAccessTime
+	 */
+	public Calendar getLastAccessTime() {
+		return lastAccessTime;
+	}
+
+
+	/**
+	 * @return session active
+	 */
+	public boolean isActive(){
+		return utilisateurCourant != null;
+	}
 	
 	/**
 	 * @return the idSession
