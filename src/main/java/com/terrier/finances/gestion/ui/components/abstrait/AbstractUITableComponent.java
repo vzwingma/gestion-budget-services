@@ -6,7 +6,9 @@ package com.terrier.finances.gestion.ui.components.abstrait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
+import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Table;
 
 /**
@@ -63,6 +65,13 @@ public abstract class AbstractUITableComponent<CONTROL extends AbstractUIControl
 		super.sort(propertyId, ascending);
 	}
 
+
+	/**
+	 * @return le budget mensuel courant
+	 */
+	public BudgetMensuel getBudgetMensuelCourant(){
+		return UISessionManager.get().getSession().getBudgetMensuelCourant();
+	}
 
 
 	/* (non-Javadoc)

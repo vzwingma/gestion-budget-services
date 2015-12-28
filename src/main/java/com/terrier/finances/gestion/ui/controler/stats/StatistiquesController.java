@@ -59,7 +59,7 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 		this.compte.setNewItemsAllowed(false);
 		this.compte.setNullSelectionAllowed(false);
 		try{
-			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(UISessionManager.getSession().getUtilisateurCourant());
+			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
 			for (CompteBancaire compte : comptes) {
 				this.compte.addItem(compte.getId());
 				this.compte.setItemCaption(compte.getId(), compte.getLibelle());
@@ -74,7 +74,7 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 			this.compte.setTextInputAllowed(false);
 			this.compte.addValueChangeListener(this);
 		} catch (DataNotFoundException e) {
-			Notification.show("Impossible de charger les comptes de "+ UISessionManager.getSession().getUtilisateurCourant(), Notification.Type.ERROR_MESSAGE);
+			Notification.show("Impossible de charger les comptes de "+ getUtilisateurCourant(), Notification.Type.ERROR_MESSAGE);
 		}
 		
 	}

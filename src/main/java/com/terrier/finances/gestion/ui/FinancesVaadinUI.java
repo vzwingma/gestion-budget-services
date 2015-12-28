@@ -55,7 +55,7 @@ public class FinancesVaadinUI extends UI
         layout.setSizeFull();
         setContent(layout);
         setSizeFull();
-        UISessionManager.getSession().setMainLayout(layout);
+        UISessionManager.get().getSession().setMainLayout(layout);
         UI.setCurrent(this);
         
         // Refresh

@@ -125,7 +125,7 @@ public class AuthenticationService {
 	 * @param typeValeurPreference type de la préférence
 	 * @return la valeur
 	 */
-	public <T> T getPreferenceUtilisateurCourant(String clePreference, Class<T> typeValeurPreference){
-		return UISessionManager.getSession().getUtilisateurCourant().getPreference(clePreference, typeValeurPreference);
+	public <T> T getPreferenceUtilisateurCourant(Utilisateur utilisateur, String clePreference, Class<T> typeValeurPreference){
+		return utilisateur.getPreference(clePreference, typeValeurPreference);
 	}
 }

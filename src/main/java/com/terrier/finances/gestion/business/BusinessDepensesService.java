@@ -20,7 +20,7 @@ import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
+import com.terrier.finances.gestion.ui.sessions.UISession;
 
 /**
  * Service Métier : Dépenses
@@ -445,12 +445,12 @@ public class BusinessDepensesService {
 	 * @throws DataNotFoundException données introuvable
 	 * @throws BudgetNotFoundException erreur budget non trouvé
 	 */
-	public void majNotesLignesDepenses(String idBudget, String ligneId, String note, String auteur) throws DataNotFoundException, BudgetNotFoundException{
+	public void majNotesLignesDepenses(String idBudget, String ligneId, String note, String auteur, UISession sessionUI) throws DataNotFoundException, BudgetNotFoundException{
 		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
 		majLigneDepense(budget, ligneId, "Notes", String.class, note, auteur);
 		// Mise à jour du budget
 		dataDepenses.sauvegardeBudgetMensuel(budget);
-		UISessionManager.getSession().setBudgetMensuelCourant(budget);
+		sessionUI.setBudgetMensuelCourant(budget);
 	}
 
 

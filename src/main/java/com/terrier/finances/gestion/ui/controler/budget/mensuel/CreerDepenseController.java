@@ -189,7 +189,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		descriptionField.setSuggestionPickedListener(new AutocompleteDescriptionSuggestionPickedListener(descriptionField, this));
 
 		AutocompleteQueryListener<String> listener = new AutocompleteDescriptionQueryListener(
-				UISessionManager.getSession().getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete(), this) ;
+				getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete(), this) ;
 		getComponent().getTextFieldDescription().setQueryListener(listener);
 		// Description
 		getComponent().getTextFieldDescription().setText("");
@@ -203,7 +203,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getListSelectComptes().setNullSelectionAllowed(true);
 		getComponent().getListSelectComptes().removeAllItems();
 		try{
-			for (CompteBancaire compte : getServiceParams().getComptesUtilisateur(UISessionManager.getSession().getUtilisateurCourant())) {
+			for (CompteBancaire compte : getServiceParams().getComptesUtilisateur(getUtilisateurCourant())) {
 				getComponent().getListSelectComptes().addItem(compte.getId());
 				getComponent().getListSelectComptes().setItemCaption(compte.getId(), compte.getLibelle());
 			}

@@ -66,8 +66,8 @@ public class TableSuiviDepense extends AbstractUITableComponent<TableSuiviDepens
 		else if(EntetesTableSuiviDepenseEnum.VALEUR.getId().equals(colonneId)){
 			TypeDepenseEnum typeOperation = null;
 			boolean depenseNulle = false;
-			if(UISessionManager.getSession().getBudgetMensuelCourant().getListeDepenses() != null){
-				for (LigneDepense depense : UISessionManager.getSession().getBudgetMensuelCourant().getListeDepenses()) {
+			if(getBudgetMensuelCourant().getListeDepenses() != null){
+				for (LigneDepense depense : getBudgetMensuelCourant().getListeDepenses()) {
 					if(depense.getId().equals((String)rowId)){
 						typeOperation = depense.getTypeDepense();
 						if(depense.getValeur() == 0){

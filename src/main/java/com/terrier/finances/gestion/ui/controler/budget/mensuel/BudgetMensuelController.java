@@ -86,10 +86,10 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	@Override
 	public void poll(UIEvents.PollEvent event) {
 
-		String idSession = UISessionManager.getSession().getIdSession();
-		if(UISessionManager.getNombreSessionsActives() > 1){
-			BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
-			if(UISessionManager.getSession().getIdSession() != null &&  budgetCourant != null){
+		String idSession = getIdSession();
+		if(UISessionManager.get().getNombreSessionsActives() > 1){
+			BudgetMensuel budgetCourant = getBudgetMensuelCourant();
+			if(idSession != null &&  budgetCourant != null){
 				LOGGER.debug("[REFRESH][{}] Dernière mise à jour reçue pour le budget {} : {}", idSession, 
 						budgetCourant.getId(), budgetCourant.getDateMiseAJour() != null ? budgetCourant.getDateMiseAJour().getTime() : "null");
 
@@ -103,7 +103,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			}
 		}
 		else{
-			LOGGER.debug("{} session active. Pas de refresh automatique en cours", UISessionManager.getNombreSessionsActives());
+			LOGGER.debug("{} session active. Pas de refresh automatique en cours", UISessionManager.get().getNombreSessionsActives());
 		}
 	}
 
@@ -146,10 +146,11 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			LOGGER.debug("[INIT] Init du mois géré : {}", dateBudget.getTime());
 		}
 		// Label last connexion
-		if(UISessionManager.getSession().getUtilisateurCourant().getDateDernierAcces() != null){
+		Calendar dateDernierAcces = getUtilisateurCourant().getDateDernierAcces();
+		if(dateDernierAcces != null){
 			SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm", Locale.FRENCH);
 			sdf.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
-			String date = sdf.format(UISessionManager.getSession().getUtilisateurCourant().getDateDernierAcces().getTime());
+			String date = sdf.format(dateDernierAcces.getTime());
 			this.getComponent().getLabelLastConnected().setValue("Dernière connexion : \n" + date);
 		}
 
@@ -165,7 +166,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		this.compte.setNullSelectionAllowed(false);
 		String libelleCompte =null;
 		try{
-			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(UISessionManager.getSession().getUtilisateurCourant());
+			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
 			for (CompteBancaire compte : comptes) {
 				this.compte.addItem(compte.getId());
 				this.compte.setItemCaption(compte.getId(), "  " + compte.getLibelle());
@@ -206,7 +207,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * Déconnexion de l'utilisateur
 	 */
 	public void deconnexion(){
-		UISessionManager.deconnexion();
+		UISessionManager.get().deconnexion();
 	}
 
 
@@ -215,7 +216,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 */
 	public void lockBudget(boolean setBudgetActif){
 		LOGGER.info("[IHM] {} du budget mensuel", setBudgetActif ? "Ouverture" : "Clôture");
-		getServiceDepense().setBudgetActif(UISessionManager.getSession().getBudgetMensuelCourant(), setBudgetActif);
+		getServiceDepense().setBudgetActif(getBudgetMensuelCourant(), setBudgetActif);
 		miseAJourVueDonnees();
 	}
 
@@ -226,16 +227,16 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		LOGGER.info("Réinitialisation du budget mensuel courant");
 		try {
 			getServiceDepense().reinitialiserBudgetMensuel(
-					UISessionManager.getSession().getBudgetMensuelCourant(), 
-					UISessionManager.getSession().getUtilisateurCourant());
+					getBudgetMensuelCourant(), 
+					getUtilisateurCourant());
 			// Ack pour forcer le "refreshAllTable"
 			oldMois = -1;
 			miseAJourVueDonnees();
 		} catch (BudgetNotFoundException | DataNotFoundException e) {
 			LOGGER.error("[BUDGET] Erreur lors de la réinitialisation du compte", e);
 			Notification.show("Impossible de réinitialiser le mois courant "+
-					( UISessionManager.getSession().getBudgetMensuelCourant().getMois() + 1)+"/"+UISessionManager.getSession().getBudgetMensuelCourant().getAnnee()
-					+" du compte "+ UISessionManager.getSession().getBudgetMensuelCourant().getCompteBancaire().getLibelle(), 
+					( getBudgetMensuelCourant().getMois() + 1)+"/"+ getBudgetMensuelCourant().getAnnee()
+					+" du compte "+ getBudgetMensuelCourant().getCompteBancaire().getLibelle(), 
 					Notification.Type.ERROR_MESSAGE);
 		}
 	}
@@ -331,13 +332,13 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		try {
 			// Budget
 			BudgetMensuel budget = getServiceDepense().chargerBudgetMensuel(
-					UISessionManager.getSession().getUtilisateurCourant(),
+					getUtilisateurCourant(),
 					idCompte,
 					c.get(Calendar.MONTH), 
 					c.get(Calendar.YEAR));
 
 			// Maj du budget
-			UISessionManager.getSession().setBudgetMensuelCourant(budget);
+			getUISession().setBudgetMensuelCourant(budget);
 			if(c.get(Calendar.MONTH) == oldMois && idCompte.equals(oldIdCompte)){
 				refreshAllTable = false;
 				LOGGER.info("[BUDGET] Pas de changement de mois ou de compte : Pas de refresh total des tableaux");

@@ -62,7 +62,7 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 			/**
 			 * Recalcul du budget
 			 */
-			getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(UISessionManager.getSession().getBudgetMensuelCourant());
+			getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(getBudgetMensuelCourant());
 			/**
 			 * MAJ des tableaux
 			 */
@@ -89,8 +89,8 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 	@SuppressWarnings("rawtypes")
 	private void refreshModele(TableSuiviDepense table){
 		
-		BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
-		String auteur = UISessionManager.getSession().getUtilisateurCourant().getLibelle();
+		BudgetMensuel budgetCourant = getBudgetMensuelCourant();
+		String auteur = getUtilisateurCourant().getLibelle();
 		for (Iterator iterator = table.getItemIds().iterator(); iterator.hasNext();) {
 			String itemId = (String) iterator.next();
 

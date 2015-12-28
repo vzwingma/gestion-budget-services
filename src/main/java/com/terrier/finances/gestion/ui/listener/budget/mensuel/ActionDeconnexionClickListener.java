@@ -39,8 +39,7 @@ public class ActionDeconnexionClickListener extends AbstractComponentListener im
 				"Voulez vous vous déconnecter ?", "Oui", "Non", this);
 		confirm.setWidth("400px");
 		confirm.setHeight("150px");
-		UISessionManager.getSession().setPopupModale(confirm);
-		
+		setPopupModale(confirm);
 	}
 
 

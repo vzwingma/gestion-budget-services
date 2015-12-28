@@ -74,8 +74,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 					"Voulez-vous supprimer la dépense ?", "Oui", "Non", this);
 			confirm.setWidth("400px");
 			confirm.setHeight("150px");
-			UISessionManager.getSession().setPopupModale(confirm);			
-
+			setPopupModale(confirm);			
 		}		
 		
 
@@ -90,7 +89,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 				
 			};
 			event.getButton().setVisible(false);	
-			updateLigne(etat, UISessionManager.getSession().getUtilisateurCourant().getLibelle());
+			updateLigne(etat, getUtilisateurCourant().getLibelle());
 		}
 	}
 
@@ -111,7 +110,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 			/**
 			 * Recalcul du budget
 			 */
-			BudgetMensuel budget = UISessionManager.getSession().getBudgetMensuelCourant();
+			BudgetMensuel budget = getBudgetMensuelCourant();
 			
 			try{
 				getControleur(BudgetMensuelController.class).getServiceDepense().majEtatLigneDepense(budget, actions.getControleur().getIdDepense(), etat, auteur);
@@ -136,7 +135,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 	@Override
 	public void response(boolean ok) {
 		if(ok){
-			updateLigne(null, UISessionManager.getSession().getUtilisateurCourant().getLibelle());
+			updateLigne(null, getUtilisateurCourant().getLibelle());
 		}
 	}
 }

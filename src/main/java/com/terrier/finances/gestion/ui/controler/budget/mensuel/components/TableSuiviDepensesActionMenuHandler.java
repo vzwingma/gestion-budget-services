@@ -47,7 +47,7 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 			return null;
 
 		} else {
-			if(UISessionManager.getSession().getBudgetMensuelCourant().isActif()){
+			if(getBudgetMensuelCourant().isActif()){
 				return new Action[]{ SET_LAST_DEPENSE };
 			}
 			else{
@@ -85,7 +85,7 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 	 */
 	private void putIdAsLastDepense(TableSuiviDepense tableSuivi, String idDepense){
 		LOGGER.info("Marquage de la dépense {} comme dernière action relevée", idDepense);
-		tableSuivi.getControleur().getServiceDepense().setLigneDepenseAsDerniereOperation(UISessionManager.getSession().getBudgetMensuelCourant(), idDepense);
+		tableSuivi.getControleur().getServiceDepense().setLigneDepenseAsDerniereOperation(getBudgetMensuelCourant(), idDepense);
 		getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
 	}
 }

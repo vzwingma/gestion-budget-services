@@ -33,7 +33,7 @@ public class ActionCreerDepenseClickListener extends AbstractComponentListener i
 		sub.setHeight("350px");
 		sub.setContent(new CreerDepenseForm());
 		sub.setModal(true);
-		UISessionManager.getSession().setPopupModale(sub);
+		setPopupModale(sub);
 	}
 }
 

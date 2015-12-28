@@ -12,7 +12,6 @@ import com.terrier.finances.gestion.ui.components.auth.Login;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.auth.LoginConnexionClickListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Notification;
 
@@ -79,11 +78,11 @@ public class LoginController extends AbstractUIController<Login>{
 		Utilisateur utilisateur = getServiceAuthentification().authenticate(
 				login, passwordEnClair);
 		if(utilisateur != null){
-			UISessionManager.getSession().registerUtilisateur(utilisateur);
+			getUISession().registerUtilisateur(utilisateur);
 			LOGGER.info("Accès autorisé pour {}", login);
 			// MAJ
-			UISessionManager.getSession().getMainLayout().removeAllComponents();
-			UISessionManager.getSession().getMainLayout().addComponent(new BudgetMensuelPage());
+			getUISession().getMainLayout().removeAllComponents();
+			getUISession().getMainLayout().addComponent(new BudgetMensuelPage());
 
 		}
 		else{

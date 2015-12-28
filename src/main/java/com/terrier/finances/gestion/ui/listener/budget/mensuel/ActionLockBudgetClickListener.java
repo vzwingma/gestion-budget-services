@@ -34,7 +34,7 @@ public class ActionLockBudgetClickListener extends AbstractComponentListener imp
 		Button editer = event.getButton();
 		page  = (BudgetMensuelPage)editer.getParent().getParent().getParent().getParent().getParent();
 		
-		boolean budgetActif = UISessionManager.getSession().getBudgetMensuelCourant().isActif();
+		boolean budgetActif = getBudgetMensuelCourant().isActif();
 		
 		// Confirmation
 		ConfirmDialog confirm = new ConfirmDialog((budgetActif ? "Clôture" : "Ouverture") + " du budget mensuel", 
@@ -42,9 +42,7 @@ public class ActionLockBudgetClickListener extends AbstractComponentListener imp
 		confirm.setWidth("400px");
 		confirm.setHeight("150px");
 		setBudgetActif = !budgetActif;
-		UISessionManager.getSession().setPopupModale(confirm);
-		
-		
+		setPopupModale(confirm);
 	}
 
 
@@ -58,7 +56,5 @@ public class ActionLockBudgetClickListener extends AbstractComponentListener imp
 			page.getControleur().lockBudget(setBudgetActif);
 		}
 	}
-	
-	
 }
 
