@@ -140,7 +140,7 @@
 							</packagingExcludes>
 						</configuration>
 					</plugin>
-					<!-- Copy vers le répertoire partagé avec le conteneur Ansible 
+					<!-- Copy vers le répertoire partagé avec le conteneur Ansible
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<executions>
@@ -161,7 +161,7 @@
 							</execution>
 						</executions>
 					</plugin>
-					-->
+					 -->
 				</plugins>
 
 			</build>
