@@ -37,7 +37,10 @@ public class UISessionManager {
 			LOGGER.warn("[TEST] ***** id session de test  ***** ");
 			idSession = "TEST";
 		}
-		UISession session = componentsManager.putIfAbsent(idSession, new UISession(idSession));
+		if(componentsManager.get(idSession) == null){
+			componentsManager.put(idSession, new UISession(idSession));
+		}
+		UISession session = componentsManager.get(idSession);
 		session.setLastAccessTime(Calendar.getInstance());
 		return session;
 	}
@@ -74,9 +77,11 @@ public class UISessionManager {
 					LOGGER.warn("La session {} n'a pas été utilisé depuis {}. Déconnexion automatique", session.getIdSession(), validiteSession.getTime());
 					iterator.remove();
 				}
-				LOGGER.debug(" > {} : active : {}. Dernière activité : {}", session.getIdSession(), session.isActive(), session.getLastAccessTime().getTime());
-				if(session.isActive()){
-					nbSessionsActives ++;
+				else{
+					LOGGER.debug(" > {} : active : {}. Dernière activité : {}", session.getIdSession(), session.isActive(), session.getLastAccessTime().getTime());
+					if(session.isActive()){
+						nbSessionsActives ++;
+					}
 				}
 			}
 		}
