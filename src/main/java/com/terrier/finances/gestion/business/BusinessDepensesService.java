@@ -353,25 +353,28 @@ public class BusinessDepensesService {
 	 * @param value nouvelle valeur
 	 * @throws DataNotFoundException données introuvable
 	 */
-	public void majLigneDepense(BudgetMensuel budget, String ligneId, String propertyId, @SuppressWarnings("rawtypes") Class propClass, Object value, String auteur) throws DataNotFoundException{
+	public void majLigneDepense(BudgetMensuel budgetEnCours, String ligneId, String propertyId, @SuppressWarnings("rawtypes") Class propClass, Object value, String auteur) throws DataNotFoundException{
+		
 		// Recherche de la ligne
-		LigneDepense ligneDepense = getLigneDepense(budget, ligneId);
+		LigneDepense ligneDepense = getLigneDepense(budgetEnCours, ligneId);
 		boolean ligneUpdated = false;
 		// Maj du modele (sauf pour Etat=null car cela signifie suppression de la ligne)
 		if(ligneDepense != null){
 			if(propertyId.equals("Etat") && value == null){
-				ligneUpdated = budget.getListeDepenses().remove(ligneDepense);
+				ligneUpdated = budgetEnCours.getListeDepenses().remove(ligneDepense);
 			}
-			// Maj du modele (sauf pour CATEGORIE)
-			else if(!propertyId.equals(EntetesTableSuiviDepenseEnum.CATEGORIE.getId())){
+			// Maj du modele (sauf pour CATEGORIE, DATE MAJ et AUTEUR)
+			else if(!propertyId.equals(EntetesTableSuiviDepenseEnum.CATEGORIE.getId())
+					&& !propertyId.equals(EntetesTableSuiviDepenseEnum.AUTEUR.getId())
+					&& !propertyId.equals(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId())){
 				ligneUpdated = ligneDepense.updateProperty(ligneId, propertyId, propClass, value);
 			}
-
-			if(ligneUpdated){
+			// LibelleView n'est que pour l'IHM au même titre que les actions. donc pas de mise à jour des dates fonctionnelles
+			if(ligneUpdated && !"LibelleView".equals(propertyId)){
 				ligneDepense.setDateMaj(Calendar.getInstance().getTime());
-				ligneDepense.setAuteur(auteur);
+				ligneDepense.setAuteur(auteur != null ? auteur : "");
 				// Mise à jour du budget
-				budget.setDateMiseAJour(Calendar.getInstance());
+				budgetEnCours.setDateMiseAJour(Calendar.getInstance());
 			}
 		}
 		else{
