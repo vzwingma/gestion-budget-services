@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
+import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
@@ -51,33 +52,35 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 		boolean state = editer.getCaption().contains("Valider");
 
 		BudgetMensuelPage page  = AbstractUIComponent.getParentComponent(editer, BudgetMensuelPage.class);
-		// Activation du tableau
-		page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.TYPE.getId(), true);
-		page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), true);
-		page.getTableSuiviDepense().setEditable(false);
-		page.getTableSuiviDepense().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), TableSuiviDepenseController.TAILLE_COLONNE_DATE);
-		if(state){
-			refreshModele(page.getTableSuiviDepense());
+		if(page != null){
+			// Activation du tableau
+			page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.TYPE.getId(), true);
+			page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), true);
+			page.getTableSuiviDepense().setEditable(false);
+			page.getTableSuiviDepense().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), TableSuiviDepenseController.TAILLE_COLONNE_DATE);
+			if(state){
+				refreshModele(page.getTableSuiviDepense());
 
-			/**
-			 * Recalcul du budget
-			 */
-			getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(UISessionManager.getSession().getBudgetMensuelCourant());
-			/**
-			 * MAJ des tableaux
-			 */
-			getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
-			Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
+				/**
+				 * Recalcul du budget
+				 */
+				getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(UISessionManager.getSession().getBudgetMensuelCourant());
+				/**
+				 * MAJ des tableaux
+				 */
+				getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
+				Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
+			}
+
+			page.getButtonValider().setVisible(false);
+			page.getButtonValider().setEnabled(false);
+			page.getButtonAnnuler().setVisible(false);
+			page.getButtonValider().setEnabled(false);
+			page.getButtonEditer().setVisible(true);
+			page.getButtonEditer().setEnabled(true);
+			page.getButtonCreate().setVisible(true);
+			page.getButtonCreate().setEnabled(true);
 		}
-
-		page.getButtonValider().setVisible(false);
-		page.getButtonValider().setEnabled(false);
-		page.getButtonAnnuler().setVisible(false);
-		page.getButtonValider().setEnabled(false);
-		page.getButtonEditer().setVisible(true);
-		page.getButtonEditer().setEnabled(true);
-		page.getButtonCreate().setVisible(true);
-		page.getButtonCreate().setEnabled(true);
 	}
 
 
@@ -88,15 +91,15 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 	 */
 	@SuppressWarnings("rawtypes")
 	private void refreshModele(TableSuiviDepense table){
-		
+
 		BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
-		String auteur = UISessionManager.getSession().getUtilisateurCourant().getLibelle();
+		Utilisateur auteur = UISessionManager.getSession().getUtilisateurCourant();
 		for (Iterator iterator = table.getItemIds().iterator(); iterator.hasNext();) {
 			String itemId = (String) iterator.next();
 
 			for (Iterator iteratorP = table.getItem(itemId).getItemPropertyIds().iterator(); iteratorP.hasNext();){
 				String propId = (String) iteratorP.next();
-				
+
 				LOGGER.trace(" Refresh modèle {} de {} : {}", propId, itemId, table.getItem(itemId).getItemProperty(propId).getValue());
 				/**
 				 * Pour les actions, on transforme ActionsLigneBudget en booléen

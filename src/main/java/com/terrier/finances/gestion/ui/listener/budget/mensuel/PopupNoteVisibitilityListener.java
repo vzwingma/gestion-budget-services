@@ -64,7 +64,7 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 						UISessionManager.getSession().getBudgetMensuelCourant().getId(), 
 						idLigneDepense, 
 						rta.getValue(), 
-						UISessionManager.getSession().getUtilisateurCourant().getLogin());
+						UISessionManager.getSession().getUtilisateurCourant());
 
 				// Mise à jour de l'étoile si nécessaire
 				String libellePPV = event.getPopupView().getContent().getMinimizedValueAsHTML();
