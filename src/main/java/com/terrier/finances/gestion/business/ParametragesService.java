@@ -113,6 +113,7 @@ public class ParametragesService {
 	
 	@Value("${budget.ui.session.validity.period}")
 	public void setUiValiditySessionPeriod(String uiValiditySessionPeriod){
+		LOGGER.info("Suivi des sessions utilisateurs. Durée de validité d'une session : {} minutes", uiValiditySessionPeriod);
 		this.uiValiditySessionPeriod = uiValiditySessionPeriod;
 	}
 	

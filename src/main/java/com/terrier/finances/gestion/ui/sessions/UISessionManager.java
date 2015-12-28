@@ -71,8 +71,6 @@ public class UISessionManager {
 		int sessionValidity = Integer.parseInt(FacadeServices.get().getServiceParams().getUiValiditySessionPeriod());
 		Calendar validiteSession = Calendar.getInstance();
 		validiteSession.add(Calendar.MINUTE, -sessionValidity);
-
-		LOGGER.debug("Suivi des sessions utilisateurs. Durée de validité d'une session : {} minutes", sessionValidity);
 		if(componentsManager != null){
 			for (Iterator<UISession> iterator = componentsManager.values().iterator(); iterator.hasNext();) {
 				UISession session = (UISession) iterator.next();
