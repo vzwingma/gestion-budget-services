@@ -140,7 +140,7 @@
 							</packagingExcludes>
 						</configuration>
 					</plugin>
-					<!-- Copy vers le répertoire partagé avec le conteneur Ansible -->
+					<!-- Copy vers le répertoire partagé avec le conteneur Ansible 
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<executions>
@@ -149,8 +149,6 @@
 								<configuration>
 									<tasks>
 										<echo>Deploy for Ansible</echo>
-										<!-- Place any Ant task here. You can add anything you can add 
-											between <target> and </target> in a build.xml. -->
 										<copy file="target/gestion-budget-${project.version}.war"
 											tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" />
 										<copy file="src/main/resources/config/dev/context.xml"
@@ -163,6 +161,7 @@
 							</execution>
 						</executions>
 					</plugin>
+					-->
 				</plugins>
 
 			</build>
