@@ -1,9 +1,8 @@
 package com.terrier.finances.gestion.ui.sessions;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,7 @@ public class UISessionManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UISessionManager.class);
 
 	// Gestionnaire des composants UI
-	private static Map<String, UISession> componentsManager = new HashMap<String, UISession>();
+	private static ConcurrentHashMap<String, UISession> componentsManager = new ConcurrentHashMap<String, UISession>();
 
 
 	/**
@@ -38,10 +37,7 @@ public class UISessionManager {
 			LOGGER.warn("[TEST] ***** id session de test  ***** ");
 			idSession = "TEST";
 		}
-		if(componentsManager.get(idSession) == null){
-			componentsManager.put(idSession, new UISession(idSession));
-		}
-		UISession session = componentsManager.get(idSession);
+		UISession session = componentsManager.putIfAbsent(idSession, new UISession(idSession));
 		session.setLastAccessTime(Calendar.getInstance());
 		return session;
 	}
