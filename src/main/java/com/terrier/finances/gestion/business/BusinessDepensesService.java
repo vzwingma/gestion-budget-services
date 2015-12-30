@@ -229,8 +229,9 @@ public class BusinessDepensesService {
 		}
 
 		LOGGER.info("[INIT] Sauvegarde du Budget {}", budget);
-		boolean save = this.dataDepenses.sauvegardeBudgetMensuel(budget);
-		if(save){
+		String idBudget = this.dataDepenses.sauvegardeBudgetMensuel(budget);
+		if(idBudget != null){
+			budget.setId(idBudget);
 			return budget;
 		}
 		else{
