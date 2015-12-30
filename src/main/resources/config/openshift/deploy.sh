@@ -9,7 +9,7 @@ fi
 
 export VERSION=$1
 
-wget https://github.com/vzwingma/gestion-budget/releases/download/$VERSION/Budget-v$VERSION.tar.gz
+wget https://github.com/vzwingma/gestion-budget/releases/download/$VERSION/Budget.tar.gz
 tar xvzf *.tar.gz
 mv $OPENSHIFT_DATA_DIR/ROOT.war $OPENSHIFT_JBOSSEWS_DIR/webapps/ROOT.war
 rm *.tar.gz
