@@ -228,7 +228,7 @@ public class BusinessDepensesService {
 			throw new BudgetNotFoundException();
 		}
 
-		LOGGER.info("[INIT] Sauvegarde du Budget {}", budget);
+		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
 		String idBudget = this.dataDepenses.sauvegardeBudgetMensuel(budget);
 		if(idBudget != null){
 			budget.setId(idBudget);
