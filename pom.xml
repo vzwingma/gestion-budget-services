@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.terrier.finances</groupId>
 	<artifactId>gestion-budget</artifactId>
-	<version>4.0.0-rc2</version>
+	<version>4.0.0-rc3-SNAPSHOT</version>
 	<name>Gestion Budget</name>
 	<description>Application Web de gestion de budget</description>
 	<packaging>war</packaging>
@@ -159,8 +159,7 @@
 					</plugin>
 					<!-- Copy vers le répertoire partagé avec le conteneur Ansible <plugin> 
 						<artifactId>maven-antrun-plugin</artifactId> <executions> <execution> <phase>install</phase> 
-						<configuration> <tasks> <echo>Deploy for Ansible</echo> <copy file="target/gestion-budget-${project.version}.war" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" 
-						 /> <copy file="src/main/resources/config/dev/context.xml" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" /> </tasks> </configuration> <goals> <goal>run</goal> </goals> </execution> 
+						<configuration> <tasks> <echo>Deploy for Ansible</echo> <copy file="target/gestion-budget-${project.version}.war" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" /> <copy file="src/main/resources/config/dev/context.xml" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" /> </tasks> </configuration> <goals> <goal>run</goal> </goals> </execution> 
 						</executions> </plugin> -->
 				</plugins>
 
@@ -238,7 +237,7 @@
 		<url>https://github.com/vzwingma/gestion-budget/tree/webapp</url>
 		<connection>scm:git:git://github.com/vzwingmagestion-budget.git</connection>
 		<developerConnection>scm:git:git@github.com:vzwingma/gestion-budget.git</developerConnection>
-		<tag>4.0.0-rc2</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<developers>
 		<developer>
