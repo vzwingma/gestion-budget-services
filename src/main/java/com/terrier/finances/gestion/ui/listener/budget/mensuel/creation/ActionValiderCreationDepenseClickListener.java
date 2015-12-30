@@ -15,7 +15,6 @@ import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.CreerDepenseForm;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Notification;

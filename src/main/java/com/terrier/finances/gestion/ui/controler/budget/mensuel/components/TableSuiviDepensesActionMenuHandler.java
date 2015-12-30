@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.event.Action;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;

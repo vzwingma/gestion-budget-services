@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 
 /**
  * Service d'authentification

@@ -20,7 +20,6 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.Autocomp
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.BlurDescriptionValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
