@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.terrier.finances</groupId>
 	<artifactId>gestion-budget</artifactId>
@@ -112,7 +113,14 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<tagNameFormat>@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<profiles>
@@ -152,7 +160,10 @@
 					</plugin>
 					<!-- Copy vers le répertoire partagé avec le conteneur Ansible <plugin> 
 						<artifactId>maven-antrun-plugin</artifactId> <executions> <execution> <phase>install</phase> 
-						<configuration> <tasks> <echo>Deploy for Ansible</echo> <copy file="target/gestion-budget-${project.version}.war" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" /> <copy file="src/main/resources/config/dev/context.xml" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" /> </tasks> </configuration> <goals> <goal>run</goal> </goals> </execution> 
+						<configuration> <tasks> <echo>Deploy for Ansible</echo> <copy file="target/gestion-budget-${project.version}.war" 
+						tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" 
+						/> <copy file="src/main/resources/config/dev/context.xml" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" 
+						/> </tasks> </configuration> <goals> <goal>run</goal> </goals> </execution> 
 						</executions> </plugin> -->
 				</plugins>
 
