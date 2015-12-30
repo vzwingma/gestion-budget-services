@@ -6,7 +6,6 @@ then
 	echo -e "- la version applicative"
     exit 1
 fi
-
 export VERSION=$1
 
 wget https://github.com/vzwingma/gestion-budget/releases/download/$VERSION/Budget.tar.gz
