@@ -71,8 +71,9 @@ public class UISession {
 		autoDeconnexion();
 		//Redirect the user to the login/default Page
 		Page currentPage = Page.getCurrent();
-		if(currentPage != null){
-			currentPage.setLocation(VaadinServlet.getCurrent().getServletConfig().getServletContext().getContextPath()+"/ihm");
+		VaadinServlet currentServlet = VaadinServlet.getCurrent();
+		if(currentPage != null && currentServlet != null && currentServlet.getServletContext() != null && currentServlet.getServletContext().getContextPath() != null){
+			currentPage.setLocation(currentServlet.getServletContext().getContextPath()+"/ihm");
 		}
 		else{
 			LOGGER.error("Erreur : Impossible de trouver la page courante. Pb de framework Vaadin");
