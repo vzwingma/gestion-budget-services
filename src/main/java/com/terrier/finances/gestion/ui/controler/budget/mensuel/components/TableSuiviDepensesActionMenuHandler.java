@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.event.Action;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -47,7 +46,7 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 			return null;
 
 		} else {
-			if(UISessionManager.getSession().getBudgetMensuelCourant().isActif()){
+			if(getBudgetMensuelCourant().isActif()){
 				return new Action[]{ SET_LAST_DEPENSE };
 			}
 			else{
@@ -85,7 +84,7 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 	 */
 	private void putIdAsLastDepense(TableSuiviDepense tableSuivi, String idDepense){
 		LOGGER.info("Marquage de la dépense {} comme dernière action relevée", idDepense);
-		tableSuivi.getControleur().getServiceDepense().setLigneDepenseAsDerniereOperation(UISessionManager.getSession().getBudgetMensuelCourant(), idDepense);
+		tableSuivi.getControleur().getServiceDepense().setLigneDepenseAsDerniereOperation(getBudgetMensuelCourant(), idDepense);
 		getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
 	}
 }

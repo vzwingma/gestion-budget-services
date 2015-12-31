@@ -34,7 +34,7 @@ public abstract class AbstractUIComponent<CONTROL extends AbstractUIController<?
 	 */
 	public void startControleur(){
 		controleur = createControleur();
-		LOGGER.trace("[{}] Démarrage du controleur {}", UISessionManager.getSession().getIdSession(), controleur);
+		LOGGER.trace("[{}] Démarrage du controleur {}", UISessionManager.get().getSession().getIdSession(), controleur);
 		controleur.start();
 		
 	}

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 
 /**
  * Service d'authentification
@@ -97,13 +96,13 @@ public class AuthenticationService {
 				BasicTextEncryptor encryptorCle = new BasicTextEncryptor();
 				encryptorCle.setPassword(motPasseBasicAuth);
 				String cleChiffrementDonneesChiffree = encryptorCle.encrypt(motPasseBasicAuth);
-				LOGGER.warn("Clé de chiffrement chiffrée avec le mot de passe : {}", cleChiffrementDonneesChiffree);
+				//LOGGER.warn("Clé de chiffrement chiffrée avec le mot de passe : {}", cleChiffrementDonneesChiffree);
 				utilisateur.setCleChiffrementDonnees(cleChiffrementDonneesChiffree);
 				dataDBParams.majUtilisateur(utilisateur);
 				utilisateur.initEncryptor(motPasseBasicAuth);
 			}
 			else{
-				LOGGER.debug("> Clé chiffrée de chiffrement des données : {}", utilisateur.getCleChiffrementDonnees());
+				//LOGGER.debug("> Clé chiffrée de chiffrement des données : {}", utilisateur.getCleChiffrementDonnees());
 				BasicTextEncryptor decryptorCle = new BasicTextEncryptor();
 				decryptorCle.setPassword(motPasseBasicAuth);
 				String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getCleChiffrementDonnees());
@@ -125,7 +124,7 @@ public class AuthenticationService {
 	 * @param typeValeurPreference type de la préférence
 	 * @return la valeur
 	 */
-	public <T> T getPreferenceUtilisateurCourant(String clePreference, Class<T> typeValeurPreference){
-		return UISessionManager.getSession().getUtilisateurCourant().getPreference(clePreference, typeValeurPreference);
+	public <T> T getPreferenceUtilisateurCourant(Utilisateur utilisateur, String clePreference, Class<T> typeValeurPreference){
+		return utilisateur.getPreference(clePreference, typeValeurPreference);
 	}
 }

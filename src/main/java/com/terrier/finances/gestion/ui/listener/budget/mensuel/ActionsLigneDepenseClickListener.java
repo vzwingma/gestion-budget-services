@@ -19,7 +19,6 @@ import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog.ConfirmationDialogCallback;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -51,31 +50,30 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 		EtatLigneDepenseEnum etat = EtatLigneDepenseEnum.PREVUE;
 		actions = (ActionsLigneBudget)event.getButton().getParent().getParent().getParent();
 		if(event.getButton().getId().equals("buttonReel")){
-			LOGGER.info("Activation");
+			LOGGER.trace("Action : Activation");
 			etat = EtatLigneDepenseEnum.REALISEE;
 		}
 		else if(event.getButton().getId().equals("buttonAnnuler")){
-			LOGGER.info("Annulation");
+			LOGGER.trace("Action : Annulation");
 			etat = EtatLigneDepenseEnum.ANNULEE;
 		}
 		else if(event.getButton().getId().equals("buttonReporter")){
-			LOGGER.info("Reporter");
+			LOGGER.trace("Action : Reporter");
 			etat = EtatLigneDepenseEnum.REPORTEE;
 		}
 		else if(event.getButton().getId().equals("buttonPrevue")){
-			LOGGER.info("Prevue");
+			LOGGER.trace("Action : Prevue");
 			etat = EtatLigneDepenseEnum.PREVUE;
 		}
 		else if(event.getButton().getId().equals("buttonSupprimer")){
-			LOGGER.info("Supprimé");
+			LOGGER.trace("Action : Supprimé");
 			etat = null;
 			// Confirmation
 			ConfirmDialog confirm = new ConfirmDialog("Suppression de la dépense", 
 					"Voulez-vous supprimer la dépense ?", "Oui", "Non", this);
 			confirm.setWidth("400px");
 			confirm.setHeight("150px");
-			UISessionManager.getSession().setPopupModale(confirm);			
-
+			setPopupModale(confirm);			
 		}		
 		
 
@@ -90,7 +88,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 				
 			};
 			event.getButton().setVisible(false);	
-			updateLigne(etat, UISessionManager.getSession().getUtilisateurCourant().getLibelle());
+			updateLigne(etat, getUtilisateurCourant().getLibelle());
 		}
 	}
 
@@ -105,13 +103,13 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 		actions.getControleur().miseAJourEtatLigne(etat);
 		
 		TableSuiviDepense tableauDepense = (TableSuiviDepense)actions.getParent();
-		LOGGER.info("Mode Edition ? {}", tableauDepense.isEditable());
+		LOGGER.trace("Mode Edition ? {}", tableauDepense.isEditable());
 		// Si en mode éditable. Pas de mise à jour. Seulement lors de la validation
 		if(!tableauDepense.isEditable()){
 			/**
 			 * Recalcul du budget
 			 */
-			BudgetMensuel budget = UISessionManager.getSession().getBudgetMensuelCourant();
+			BudgetMensuel budget = getBudgetMensuelCourant();
 			
 			try{
 				getControleur(BudgetMensuelController.class).getServiceDepense().majEtatLigneDepense(budget, actions.getControleur().getIdDepense(), etat, auteur);
@@ -136,8 +134,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 	@Override
 	public void response(boolean ok) {
 		if(ok){
-			updateLigne(null, UISessionManager.getSession().getUtilisateurCourant().getLibelle());
-			
+			updateLigne(null, getUtilisateurCourant().getLibelle());
 		}
 	}
 }

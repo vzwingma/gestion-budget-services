@@ -3,15 +3,15 @@
  */
 package com.terrier.finances.gestion.ui.controler.common;
 
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Window;
 
 /**
  * Controleur de listeners
  * @author vzwingma
  *
  */
-public abstract class AbstractComponentListener {
+public abstract class AbstractComponentListener extends AbstractUIService {
 
 	
 	
@@ -21,6 +21,15 @@ public abstract class AbstractComponentListener {
 	 * @return controleur correspondant
 	 */
 	public <CTRL extends AbstractUIController<? extends CustomComponent>> CTRL getControleur(Class<CTRL> classNameControleur) {
-		return UISessionManager.getSession().getControleur(classNameControleur);
+		return getUISession().getControleur(classNameControleur);
+	}
+	
+	
+	/**
+	 * Set popup modale
+	 * @param popupModale enregistre la popup
+	 */
+	public void setPopupModale(Window popupModale){
+		getUISession().setPopupModale(popupModale);
 	}
 }

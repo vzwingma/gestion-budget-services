@@ -12,7 +12,7 @@ import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
+import com.terrier.finances.gestion.ui.controler.common.AbstractUIService;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 
@@ -21,7 +21,7 @@ import com.vaadin.ui.Table.CellStyleGenerator;
  * @author vzwingma
  *
  */
-public class TableDepensesCellStyle implements CellStyleGenerator {
+public class TableDepensesCellStyle extends AbstractUIService implements CellStyleGenerator {
 
 
 
@@ -48,7 +48,7 @@ public class TableDepensesCellStyle implements CellStyleGenerator {
 	public String getStyle(Table source, Object idDepense, Object propertyId) {
 
 		StringBuilder style = new StringBuilder();
-		BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
+		BudgetMensuel budgetCourant = getBudgetMensuelCourant();
 		if(controleur.getServiceDepense() != null && budgetCourant != null && idDepense != null){
 			List<LigneDepense> listeDepenses = budgetCourant.getListeDepenses();
 
@@ -91,7 +91,7 @@ public class TableDepensesCellStyle implements CellStyleGenerator {
 				}
 
 				// Gestion du style par préférence utilisateur
-				boolean oddStyle = controleur.getServiceAuthentification().getPreferenceUtilisateurCourant(Utilisateur.PREFERENCE_TABLE_ODD_STYLE, Boolean.class);
+				boolean oddStyle = controleur.getServiceAuthentification().getPreferenceUtilisateurCourant(getUtilisateurCourant(), Utilisateur.PREFERENCE_TABLE_ODD_STYLE, Boolean.class);
 				if(oddStyle){
 					style.append(rang%2 == 0 ? "" : "-odd");
 				}

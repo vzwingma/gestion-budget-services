@@ -7,7 +7,6 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPa
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog.ConfirmationDialogCallback;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -39,8 +38,7 @@ public class ActionDeconnexionClickListener extends AbstractComponentListener im
 				"Voulez vous vous déconnecter ?", "Oui", "Non", this);
 		confirm.setWidth("400px");
 		confirm.setHeight("150px");
-		UISessionManager.getSession().setPopupModale(confirm);
-		
+		setPopupModale(confirm);
 	}
 
 

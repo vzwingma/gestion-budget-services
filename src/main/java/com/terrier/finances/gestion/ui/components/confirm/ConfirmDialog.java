@@ -88,7 +88,7 @@ public final class ConfirmDialog extends Window implements Button.ClickListener 
 	/** * Event handler for button clicks. * @param event the click event. */
 	public void buttonClick(final ClickEvent event) {
 		if (getParent() != null) {
-			UISessionManager.getSession().getPopupModale().close();
+			UISessionManager.get().getSession().getPopupModale().close();
 		}
 		callback.response(event.getSource() == okButton);
 	}

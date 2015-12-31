@@ -34,6 +34,7 @@ public class ParametragesService {
 	private String version;
 	private String buildTime;
 	private String uiRefreshPeriod;
+	private String uiValiditySessionPeriod;
 	/**
 	 * Logger
 	 */
@@ -107,6 +108,22 @@ public class ParametragesService {
 	@Value("${budget.ui.refresh.period}")
 	public void setUiRefreshPeriod(String uiRefreshPeriod) {
 		this.uiRefreshPeriod = uiRefreshPeriod;
+	}
+
+	
+	@Value("${budget.ui.session.validity.period}")
+	public void setUiValiditySessionPeriod(String uiValiditySessionPeriod){
+		LOGGER.info("Suivi des sessions utilisateurs. Durée de validité d'une session : {} minutes", uiValiditySessionPeriod);
+		this.uiValiditySessionPeriod = uiValiditySessionPeriod;
+	}
+	
+	
+	
+	/**
+	 * @return the uiValiditySessionPeriod
+	 */
+	public String getUiValiditySessionPeriod() {
+		return uiValiditySessionPeriod;
 	}
 
 	/**

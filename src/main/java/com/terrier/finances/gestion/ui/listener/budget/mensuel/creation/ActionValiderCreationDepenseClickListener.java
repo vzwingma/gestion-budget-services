@@ -15,7 +15,6 @@ import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.CreerDepenseForm;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Notification;
@@ -69,12 +68,12 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 					etat,
 					form.getCheckBoxPeriodique().getValue());
 			LOGGER.debug("[IHM]  >  {}", ligneDepense);
-			String auteur = UISessionManager.getSession().getUtilisateurCourant().getLibelle();
-			BudgetMensuel budget = UISessionManager.getSession().getBudgetMensuelCourant();
+			String auteur = getUtilisateurCourant().getLibelle();
+			BudgetMensuel budget = getBudgetMensuelCourant();
 			try{
 				if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ligneDepense.getSsCategorie().getId())){
 					LOGGER.info("[IHM] Ajout d'un nouveau transfert intercompte");
-					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, ((String)form.getListSelectComptes().getConvertedValue()), UISessionManager.getSession().getUtilisateurCourant());
+					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, ((String)form.getListSelectComptes().getConvertedValue()), getUtilisateurCourant());
 					Notification.show("Le transfert inter-compte a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 				}
 				else{
@@ -94,7 +93,7 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 			
 			if(event.getButton().getCaption().contains("Fermer")){
 				// Fin du formulaire
-				UISessionManager.getSession().getPopupModale().close();
+				getUISession().getPopupModale().close();
 				controleur.miseAJourVueDonnees();
 			}
 			else{

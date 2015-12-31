@@ -27,7 +27,7 @@ public abstract class IDataTransformer<BO, DTO, XO> {
 			return ((Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEncryptor();	
 		}
 		else{
-			return  UISessionManager.getSession().getUtilisateurCourant().getEncryptor();
+			return  UISessionManager.get().getSession().getUtilisateurCourant().getEncryptor();
 		}
 		
 	}

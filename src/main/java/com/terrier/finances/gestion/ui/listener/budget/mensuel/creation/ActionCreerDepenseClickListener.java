@@ -5,7 +5,6 @@ package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.CreerDepenseForm;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
@@ -33,7 +32,7 @@ public class ActionCreerDepenseClickListener extends AbstractComponentListener i
 		sub.setHeight("350px");
 		sub.setContent(new CreerDepenseForm());
 		sub.setModal(true);
-		UISessionManager.getSession().setPopupModale(sub);
+		setPopupModale(sub);
 	}
 }
 

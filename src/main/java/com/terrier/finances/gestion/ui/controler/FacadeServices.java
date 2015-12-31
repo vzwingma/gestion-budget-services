@@ -29,7 +29,9 @@ public class FacadeServices {
 
 	public FacadeServices(){
 		LOGGER.debug("[INIT] UI FacadeServices");
-		facadeServices = this;
+		synchronized (FacadeServices.class) {
+			facadeServices = this;	
+		}
 	}
 	/**
 	 * 

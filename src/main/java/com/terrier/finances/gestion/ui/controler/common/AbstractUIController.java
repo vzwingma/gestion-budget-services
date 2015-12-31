@@ -6,7 +6,6 @@ import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.business.ParametragesService;
 import com.terrier.finances.gestion.ui.controler.FacadeServices;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.AbstractComponent;
 
 /**
@@ -15,7 +14,7 @@ import com.vaadin.ui.AbstractComponent;
  * 
  * @param <COMPONENT> composant associé
  */
-public abstract class AbstractUIController<COMPONENT extends AbstractComponent> implements Serializable {
+public abstract class AbstractUIController<COMPONENT extends AbstractComponent> extends AbstractUIService implements Serializable {
 
 
 	/**
@@ -80,7 +79,7 @@ public abstract class AbstractUIController<COMPONENT extends AbstractComponent> 
 	 * Register le controleur sur la session IHM
 	 */
 	private void registerControlerToUIComponentManager(){
-		UISessionManager.getSession().registerUIControler(this);
+		getUISession().registerUIControler(this);
 	}
 	
 	/**

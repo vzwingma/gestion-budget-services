@@ -206,22 +206,22 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	 * @param budgetMensuelCourant budget à sauvegarder
 	 * @param mois mois
 	 * @param annee année
-	 * @return résultat de la sauvegarde
+	 * @return résultat de la sauvegarde: id du budget
 	 */
-	public boolean sauvegardeBudgetMensuel(BudgetMensuel budgetBO){
+	public String sauvegardeBudgetMensuel(BudgetMensuel budgetBO){
 		if(budgetBO == null){
-			return false;
+			return null;
 		}
 		BudgetMensuelDTO budgetDTO = dataTransformerBudget.transformBOtoDTO(budgetBO);
 		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budgetDTO.getCompteBancaire().getLibelle(), budgetDTO.getMois(), budgetDTO.getAnnee());
 		try{
 			getMongoOperation().save(budgetDTO);
-			LOGGER.info("Budget sauvegardé");
-			return true;
+			LOGGER.info("Budget {} sauvegardé ", budgetDTO.getId());
+			return budgetDTO.getId();
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors de la sauvegarde du compte", e);
-			return false;
+			return null;
 		}
 	}
 

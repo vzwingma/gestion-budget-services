@@ -11,7 +11,6 @@ import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITableComponent;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.data.Property;
 
 /**
@@ -66,8 +65,8 @@ public class TableSuiviDepense extends AbstractUITableComponent<TableSuiviDepens
 		else if(EntetesTableSuiviDepenseEnum.VALEUR.getId().equals(colonneId)){
 			TypeDepenseEnum typeOperation = null;
 			boolean depenseNulle = false;
-			if(UISessionManager.getSession().getBudgetMensuelCourant().getListeDepenses() != null){
-				for (LigneDepense depense : UISessionManager.getSession().getBudgetMensuelCourant().getListeDepenses()) {
+			if(getBudgetMensuelCourant().getListeDepenses() != null){
+				for (LigneDepense depense : getBudgetMensuelCourant().getListeDepenses()) {
 					if(depense.getId().equals((String)rowId)){
 						typeOperation = depense.getTypeDepense();
 						if(depense.getValeur() == 0){

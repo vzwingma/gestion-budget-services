@@ -7,7 +7,7 @@ import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
+import com.terrier.finances.gestion.ui.controler.common.AbstractUIService;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Component;
 
@@ -16,7 +16,7 @@ import com.vaadin.ui.Component;
  * @author vzwingma
  *
  */
-public class TableDepensesDescriptionGenerator implements ItemDescriptionGenerator {
+public class TableDepensesDescriptionGenerator extends AbstractUIService implements ItemDescriptionGenerator {
 
 
 
@@ -46,7 +46,7 @@ public class TableDepensesDescriptionGenerator implements ItemDescriptionGenerat
 						||
 						((String)propertyId).equals(EntetesTableSuiviDepenseEnum.LIBELLE.getId()))){
 
-			BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
+			BudgetMensuel budgetCourant = getBudgetMensuelCourant();
 			String idDepense = (String)itemId;
 			if(controleur.getServiceDepense() != null && budgetCourant != null && idDepense != null && budgetCourant.getListeDepenses() != null){
 				for (LigneDepense depense : budgetCourant.getListeDepenses()) {

@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.terrier.finances</groupId>
 	<artifactId>gestion-budget</artifactId>
-	<version>4.0.0</version>
+	<version>4.0.0-rc3-SNAPSHOT</version>
 	<name>Gestion Budget</name>
 	<description>Application Web de gestion de budget</description>
 	<packaging>war</packaging>
@@ -16,6 +15,7 @@
 		<vaadin.version>7.5.10</vaadin.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
 
 
@@ -25,6 +25,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -103,6 +104,22 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<tagNameFormat>@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<profiles>
@@ -140,28 +157,10 @@
 							</packagingExcludes>
 						</configuration>
 					</plugin>
-					<!-- Copy vers le répertoire partagé avec le conteneur Ansible 
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<configuration>
-									<tasks>
-										<echo>Deploy for Ansible</echo>
-										<copy file="target/gestion-budget-${project.version}.war"
-											tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" />
-										<copy file="src/main/resources/config/dev/context.xml"
-											tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" />
-									</tasks>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					-->
+					<!-- Copy vers le répertoire partagé avec le conteneur Ansible <plugin> 
+						<artifactId>maven-antrun-plugin</artifactId> <executions> <execution> <phase>install</phase> 
+						<configuration> <tasks> <echo>Deploy for Ansible</echo> <copy file="target/gestion-budget-${project.version}.war" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" /> <copy file="src/main/resources/config/dev/context.xml" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" /> </tasks> </configuration> <goals> <goal>run</goal> </goals> </execution> 
+						</executions> </plugin> -->
 				</plugins>
 
 			</build>
@@ -209,7 +208,7 @@
 						<artifactId>maven-assembly-plugin</artifactId>
 						<version>2.6</version>
 						<configuration>
-							<finalName>Budget-v${project.version}</finalName>
+							<finalName>Budget</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 							<descriptors>
 								<descriptor>src/main/assembly/assembly.xml</descriptor>
@@ -238,6 +237,7 @@
 		<url>https://github.com/vzwingma/gestion-budget/tree/webapp</url>
 		<connection>scm:git:git://github.com/vzwingmagestion-budget.git</connection>
 		<developerConnection>scm:git:git@github.com:vzwingma/gestion-budget.git</developerConnection>
+		<tag>HEAD</tag>
 	</scm>
 	<developers>
 		<developer>
@@ -413,11 +413,6 @@
 			<version>1.10</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.jasypt</groupId>
-			<artifactId>jasypt</artifactId>
-			<version>1.9.2</version>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
