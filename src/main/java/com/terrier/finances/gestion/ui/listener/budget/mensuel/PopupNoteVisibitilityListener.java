@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
+import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -20,7 +20,7 @@ import com.vaadin.ui.RichTextArea;
  * @author vzwingma
  *
  */
-public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
+public class PopupNoteVisibitilityListener extends AbstractComponentListener implements PopupVisibilityListener {
 
 
 	/**
@@ -61,10 +61,11 @@ public class PopupNoteVisibitilityListener implements PopupVisibilityListener {
 			this.controleur.getComponent().setImmediate(true);
 			try{
 				this.controleur.getServiceDepense().majNotesLignesDepenses(
-						UISessionManager.getSession().getBudgetMensuelCourant().getId(), 
+						getBudgetMensuelCourant().getId(), 
 						idLigneDepense, 
 						rta.getValue(), 
-						UISessionManager.getSession().getUtilisateurCourant());
+						getUtilisateurCourant().getLogin(),
+						getUISession());
 
 				// Mise à jour de l'étoile si nécessaire
 				String libellePPV = event.getPopupView().getContent().getMinimizedValueAsHTML();

@@ -20,7 +20,7 @@ import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
+import com.terrier.finances.gestion.ui.sessions.UISession;
 
 /**
  * Service Métier : Dépenses
@@ -228,9 +228,10 @@ public class BusinessDepensesService {
 			throw new BudgetNotFoundException();
 		}
 
-		LOGGER.info("[INIT] Sauvegarde du Budget {}", budget);
-		boolean save = this.dataDepenses.sauvegardeBudgetMensuel(budget);
-		if(save){
+		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
+		String idBudget = this.dataDepenses.sauvegardeBudgetMensuel(budget);
+		if(idBudget != null){
+			budget.setId(idBudget);
 			return budget;
 		}
 		else{
@@ -353,7 +354,7 @@ public class BusinessDepensesService {
 	 * @param value nouvelle valeur
 	 * @throws DataNotFoundException données introuvable
 	 */
-	public void majLigneDepense(BudgetMensuel budgetEnCours, String ligneId, String propertyId, @SuppressWarnings("rawtypes") Class propClass, Object value, Utilisateur auteur) throws DataNotFoundException{
+	public void majLigneDepense(BudgetMensuel budgetEnCours, String ligneId, String propertyId, @SuppressWarnings("rawtypes") Class propClass, Object value, String auteur) throws DataNotFoundException{
 		
 		// Recherche de la ligne
 		LigneDepense ligneDepense = getLigneDepense(budgetEnCours, ligneId);
@@ -372,7 +373,7 @@ public class BusinessDepensesService {
 			// LibelleView n'est que pour l'IHM au même titre que les actions. donc pas de mise à jour des dates fonctionnelles
 			if(ligneUpdated && !"LibelleView".equals(propertyId)){
 				ligneDepense.setDateMaj(Calendar.getInstance().getTime());
-				ligneDepense.setAuteur(auteur != null ? auteur.getLibelle() : "");
+				ligneDepense.setAuteur(auteur != null ? auteur : "");
 				// Mise à jour du budget
 				budgetEnCours.setDateMiseAJour(Calendar.getInstance());
 			}
@@ -445,12 +446,12 @@ public class BusinessDepensesService {
 	 * @throws DataNotFoundException données introuvable
 	 * @throws BudgetNotFoundException erreur budget non trouvé
 	 */
-	public void majNotesLignesDepenses(String idBudget, String ligneId, String note, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
+	public void majNotesLignesDepenses(String idBudget, String ligneId, String note, String auteur, UISession sessionUI) throws DataNotFoundException, BudgetNotFoundException{
 		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
 		majLigneDepense(budget, ligneId, "Notes", String.class, note, auteur);
 		// Mise à jour du budget
 		dataDepenses.sauvegardeBudgetMensuel(budget);
-		UISessionManager.getSession().setBudgetMensuelCourant(budget);
+		sessionUI.setBudgetMensuelCourant(budget);
 	}
 
 

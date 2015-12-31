@@ -20,11 +20,10 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.components.Tabl
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 
 /**
@@ -64,7 +63,7 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 				/**
 				 * Recalcul du budget
 				 */
-				getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(UISessionManager.getSession().getBudgetMensuelCourant());
+				getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(getBudgetMensuelCourant());
 				/**
 				 * MAJ des tableaux
 				 */
@@ -91,9 +90,9 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 	 */
 	@SuppressWarnings("rawtypes")
 	private void refreshModele(TableSuiviDepense table){
+		BudgetMensuel budgetCourant = getBudgetMensuelCourant();
+		String auteur = getUtilisateurCourant().getLibelle();
 
-		BudgetMensuel budgetCourant = UISessionManager.getSession().getBudgetMensuelCourant();
-		Utilisateur auteur = UISessionManager.getSession().getUtilisateurCourant();
 		for (Iterator iterator = table.getItemIds().iterator(); iterator.hasNext();) {
 			String itemId = (String) iterator.next();
 
