@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.terrier.finances</groupId>
 	<artifactId>gestion-budget</artifactId>
-	<version>4.1.0-rc1</version>
+	<version>4.1.0-rc2-SNAPSHOT</version>
 	<name>Gestion Budget</name>
 	<description>Application Web de gestion de budget</description>
 	<packaging>war</packaging>
@@ -214,7 +214,7 @@
 		<url>https://github.com/vzwingma/gestion-budget/tree/webapp</url>
 		<connection>scm:git:git://github.com/vzwingmagestion-budget.git</connection>
 		<developerConnection>scm:git:git@github.com:vzwingma/gestion-budget.git</developerConnection>
-		<tag>v4.1.0-rc1</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<developers>
 		<developer>
