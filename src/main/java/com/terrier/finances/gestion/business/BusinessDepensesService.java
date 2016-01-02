@@ -129,16 +129,10 @@ public class BusinessDepensesService {
 
 
 	/**
-	 * Chargement du budget du mois courant
-	 * @param compte compte 
-	 * @param mois mois 
-	 * @param annee année
-	 * @return budget mensuel chargé et initialisé à partir des données précédentes
-	 */
-	/**
+	 * Charger les budgets en consultation
 	 * @param utilisateur utilisateur
 	 * @param compte compte
-	 * @return liste des budget
+	 * @return liste des budgets
 	 * @throws DataNotFoundException erreur
 	 */
 	public List<BudgetMensuelDTO> chargerBudgetsMensuelsConsultation(Utilisateur utilisateur, String compte) throws DataNotFoundException{
