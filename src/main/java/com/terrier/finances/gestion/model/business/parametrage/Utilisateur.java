@@ -4,7 +4,8 @@
 package com.terrier.finances.gestion.model.business.parametrage;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jasypt.util.text.BasicTextEncryptor;
@@ -14,6 +15,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.terrier.finances.gestion.business.AuthenticationService;
+import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
+import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 
 /**
  * Définition d'un utilisateur
@@ -40,9 +43,9 @@ public class Utilisateur implements Serializable {
 	// Clé de chiffrement des données. Le mot de passe du user permet de la déchiffrer
 	@JsonIgnore
 	private String cleChiffrementDonnees;
-	
+
 	@JsonIgnore	
-	private Calendar dateDernierAcces;
+	private Date dernierAcces;
 	/**
 	 *  Encryptor
 	 */
@@ -52,13 +55,15 @@ public class Utilisateur implements Serializable {
 	
 	// Libellé
 	private String libelle;
-	
 	/**
 	 * Préférences
 	 */
-	private Map<String, Object> preferences;
+	private Map<UtilisateurPrefsEnum, Object> prefsUtilisateur = new HashMap<>();
+	/**
+	 * Droits
+	 */
+	private Map<UtilisateurDroitsEnum, Boolean> droits = new HashMap<>();
 	
-	public static final String PREFERENCE_TABLE_ODD_STYLE = "PREFERENCE_TABLE_ODD_STYLE";
 	
 	/**
 	 * @return the login
@@ -103,27 +108,25 @@ public class Utilisateur implements Serializable {
 	}
 
 	/**
-	 * @return the preferences
+	 * @return the prefsUtilisateur
 	 */
-	public Map<String, Object> getPreferences() {
-		return preferences;
+	public Map<UtilisateurPrefsEnum, Object> getPrefsUtilisateur() {
+		return prefsUtilisateur;
 	}
 
 	/**
-	 * @param preferences the preferences to set
+	 * @param prefsUtilisateur the prefsUtilisateur to set
 	 */
-	public void setPreferences(Map<String, Object> preferences) {
-		this.preferences = preferences;
+	public void setPrefsUtilisateur(Map<UtilisateurPrefsEnum, Object> prefsUtilisateur) {
+		this.prefsUtilisateur = prefsUtilisateur;
 	}
-	
-
 
 	/**
 	 * @return the preferences
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getPreference(String clePreference, Class<T> typeAttendu) {
-		return (T)preferences.get(clePreference);
+	public <T> T getPreference(UtilisateurPrefsEnum clePreference, Class<T> typeAttendu) {
+		return (T)prefsUtilisateur.get(clePreference);
 	}
 
 	
@@ -158,24 +161,48 @@ public class Utilisateur implements Serializable {
 		this.cleChiffrementDonnees = cleChiffrementDonnees;
 	}
 	
-	
 
 	/**
-	 * @return the dateDernierAcces
+	 * @return the dernierAcces
 	 */
-	public Calendar getDateDernierAcces() {
-		return dateDernierAcces;
+	public Date getDernierAcces() {
+		return dernierAcces;
 	}
 
 	/**
-	 * @param dateDernierAcces the dateDernierAcces to set
+	 * @param dernierAcces the dernierAcces to set
 	 */
-	public void setDateDernierAcces(Calendar dateDernierAcces) {
-		this.dateDernierAcces = dateDernierAcces;
+	public void setDernierAcces(Date dernierAcces) {
+		this.dernierAcces = dernierAcces;
+	}
+
+	/**
+	 * @return the droits
+	 */
+	public Map<UtilisateurDroitsEnum, Boolean> getDroits() {
+		return droits;
+	}
+
+	/**
+	 * @param droits the droits to set
+	 */
+	public void setDroits(Map<UtilisateurDroitsEnum, Boolean> droits) {
+		this.droits = droits;
+	}
+
+	/**
+	 * @param cleDroit
+	 * @return le résultat
+	 */
+	public boolean isEnabled(String cleDroit){
+		if(this.droits != null){
+			Boolean droit = this.droits.get(cleDroit);
+			return droit != null ? droit.booleanValue() : false;
+		}
+		return false;
 	}
 	
 	
-
 	/**
 	 * @return the id
 	 */
@@ -194,9 +221,8 @@ public class Utilisateur implements Serializable {
 	public String toFullString(){
 		StringBuilder builder = new StringBuilder();
 		builder.append("Utilisateur [login=").append(login)
-				.append(", cleChiffrementDonnees=")
-				.append(cleChiffrementDonnees).append(", dateDernierAcces=")
-				.append(dateDernierAcces != null ? dateDernierAcces.getTime() : "nulle").append(", libelle=").append(libelle)
+				.append(", dateDernierAcces=")
+				.append(dernierAcces != null ? dernierAcces.getTime() : "nulle").append(", libelle=").append(libelle)
 				.append("]");
 		return builder.toString();
 	}

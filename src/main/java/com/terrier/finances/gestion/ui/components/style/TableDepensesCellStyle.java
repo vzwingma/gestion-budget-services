@@ -8,9 +8,9 @@ import java.util.List;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
-import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
+import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIService;
 import com.vaadin.ui.Table;
@@ -91,7 +91,7 @@ public class TableDepensesCellStyle extends AbstractUIService implements CellSty
 				}
 
 				// Gestion du style par préférence utilisateur
-				boolean oddStyle = controleur.getServiceAuthentification().getPreferenceUtilisateurCourant(getUtilisateurCourant(), Utilisateur.PREFERENCE_TABLE_ODD_STYLE, Boolean.class);
+				boolean oddStyle = controleur.getServiceAuthentification().getPreferenceUtilisateurCourant(getUtilisateurCourant(), UtilisateurPrefsEnum.PREFS_ODD_STYLE, Boolean.class);
 				if(oddStyle){
 					style.append(rang%2 == 0 ? "" : "-odd");
 				}

@@ -96,23 +96,6 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	}
 
 
-	/**
-	 * @return la liste des catégories
-	 */
-	@Deprecated
-	public List<Utilisateur> chargeUtilisateurs() throws DataNotFoundException{
-		if(listeUtilisateurs.size() == 0){
-			try{
-				listeUtilisateurs = getMongoOperation().findAll(Utilisateur.class);
-			}
-			catch(Exception e){
-				LOGGER.error("Erreur lors de la recherche", e);
-				throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur");
-			}
-		}
-		return listeUtilisateurs;
-	}
-
 
 
 	/**

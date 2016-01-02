@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
+import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**
@@ -86,10 +88,10 @@ public class AuthenticationService {
 
 		if(utilisateur != null){
 			// Enregistrement de la date du dernier accès à maintenant
-			Calendar dernierAcces = utilisateur.getDateDernierAcces();
-			utilisateur.setDateDernierAcces(Calendar.getInstance());
+			Date dernierAcces = utilisateur.getDernierAcces();
 			dataDBParams.majUtilisateur(utilisateur);
-			utilisateur.setDateDernierAcces(dernierAcces);
+			dernierAcces = Calendar.getInstance().getTime();
+			utilisateur.setDernierAcces(dernierAcces);
 
 			if(utilisateur.getCleChiffrementDonnees() == null){
 				LOGGER.warn("Clé de chiffrement nulle : Initialisation");
@@ -124,7 +126,7 @@ public class AuthenticationService {
 	 * @param typeValeurPreference type de la préférence
 	 * @return la valeur
 	 */
-	public <T> T getPreferenceUtilisateurCourant(Utilisateur utilisateur, String clePreference, Class<T> typeValeurPreference){
+	public <T> T getPreferenceUtilisateurCourant(Utilisateur utilisateur, UtilisateurPrefsEnum clePreference, Class<T> typeValeurPreference){
 		return utilisateur.getPreference(clePreference, typeValeurPreference);
 	}
 }
