@@ -194,7 +194,7 @@ public class Utilisateur implements Serializable {
 	 * @param cleDroit
 	 * @return le résultat
 	 */
-	public boolean isEnabled(String cleDroit){
+	public boolean isEnabled(UtilisateurDroitsEnum cleDroit){
 		if(this.droits != null){
 			Boolean droit = this.droits.get(cleDroit);
 			return droit != null ? droit.booleanValue() : false;

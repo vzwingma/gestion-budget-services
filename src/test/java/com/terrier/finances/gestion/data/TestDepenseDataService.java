@@ -29,7 +29,6 @@ public class TestDepenseDataService {
 		String annee = service.getBudgetCollectionName("ingdirect_2016_2");
 		assertNotNull(annee);
 		assertEquals("budget_2016", annee);
-
 	}
 
 }

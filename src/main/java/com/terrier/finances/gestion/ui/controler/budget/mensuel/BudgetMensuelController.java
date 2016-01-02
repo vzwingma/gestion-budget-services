@@ -15,6 +15,7 @@ import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
+import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
@@ -190,11 +191,21 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			getComponent().getButtonDeconnexion().setCaption("");
 			getComponent().getButtonDeconnexion().addClickListener(new ActionDeconnexionClickListener());
 			getComponent().getButtonDeconnexion().setDescription("Déconnexion de l'application");
+			// Bouton refresh
+			if(getUtilisateurCourant().isEnabled(UtilisateurDroitsEnum.DROIT_RAZ_BUDGET)){
+				getComponent().getButtonRefreshMonth().addClickListener(new ActionRefreshMonthBudgetClickListener());
+			}
+			else{
+				getComponent().getButtonRefreshMonth().setEnabled(false);
+			}
 			// Bouton lock
-			getComponent().getButtonRefreshMonth().addClickListener(new ActionRefreshMonthBudgetClickListener());
-			// Bouton lock
-			getComponent().getButtonLock().setCaption("");
-			getComponent().getButtonLock().addClickListener(new ActionLockBudgetClickListener());
+			if(getUtilisateurCourant().isEnabled(UtilisateurDroitsEnum.DROIT_CLOTURE_BUDGET)){
+				getComponent().getButtonLock().setCaption("");
+				getComponent().getButtonLock().addClickListener(new ActionLockBudgetClickListener());
+			}
+			else{
+				getComponent().getButtonLock().setEnabled(false);
+			}
 		} catch (DataNotFoundException e) {
 			Notification.show("Impossible de charger le budget du compte "+ libelleCompte + " du " + dateBudget.get(Calendar.MONTH)+"/"+ dateBudget.get(Calendar.YEAR), Notification.Type.ERROR_MESSAGE);
 		}

@@ -91,7 +91,7 @@ public class TableDepensesCellStyle extends AbstractUIService implements CellSty
 				}
 
 				// Gestion du style par préférence utilisateur
-				boolean oddStyle = controleur.getServiceAuthentification().getPreferenceUtilisateurCourant(getUtilisateurCourant(), UtilisateurPrefsEnum.PREFS_ODD_STYLE, Boolean.class);
+				boolean oddStyle = controleur.getServiceAuthentification().getPreferenceUtilisateurCourant(getUtilisateurCourant(), UtilisateurPrefsEnum.PREFS_ODD_STYLE);
 				if(oddStyle){
 					style.append(rang%2 == 0 ? "" : "-odd");
 				}

@@ -126,7 +126,7 @@ public class AuthenticationService {
 	 * @param typeValeurPreference type de la préférence
 	 * @return la valeur
 	 */
-	public <T> T getPreferenceUtilisateurCourant(Utilisateur utilisateur, UtilisateurPrefsEnum clePreference, Class<T> typeValeurPreference){
-		return utilisateur.getPreference(clePreference, typeValeurPreference);
+	public Boolean getPreferenceUtilisateurCourant(Utilisateur utilisateur, UtilisateurPrefsEnum clePreference){
+		return utilisateur.getPreference(clePreference, Boolean.class);
 	}
 }
