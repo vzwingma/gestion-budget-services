@@ -65,8 +65,9 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 
 
 	/**
-	 * @param mois mois 
-	 * @param annee année
+	 * Chargement du budget mensuel
+	 * @param mois mois du budget
+	 * @param annee année du budget
 	 * @return budget mensuel
 	 */
 	public BudgetMensuel chargeBudgetMensuel(String idCompte, int mois, int annee) throws BudgetNotFoundException{
@@ -92,6 +93,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 
 	/**
 	 * Lecture de la date de mise à jour du budget
+	 * @param idBudget identifiant du budget
 	 * @return date de mise à jour
 	 */
 	public Date getDateMiseAJourBudget(String idBudget) {
