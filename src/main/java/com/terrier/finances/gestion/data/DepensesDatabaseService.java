@@ -107,8 +107,8 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	}
 
 	/**
-	 * @param mois mois 
-	 * @param annee année
+	 * Chargement du budget par id
+	 * @param idBudget identifiant du budget
 	 * @return budget mensuel
 	 */
 	public BudgetMensuel chargeBudgetMensuelById(String idBudget) throws BudgetNotFoundException{
