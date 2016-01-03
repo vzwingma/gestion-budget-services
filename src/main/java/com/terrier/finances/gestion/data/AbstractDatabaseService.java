@@ -23,7 +23,7 @@ public abstract class AbstractDatabaseService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDatabaseService.class);
 
 	@Autowired
-	MongoTemplate mongoTemplate;
+	private MongoTemplate mongoTemplate;
 	
 
 	/**
