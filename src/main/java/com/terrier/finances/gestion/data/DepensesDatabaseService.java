@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -37,15 +36,6 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 
 	@Autowired @Qualifier("dataTransformerBudget")
 	private DataTransformerBudget dataTransformerBudget;
-
-
-	public List<String> migrationBDD(){
-		List<String> res = new ArrayList<>();
-		res.add("Migration de la BDD - Séparation des budgets");
-		res.addAll(migrateBudgets(getMongoOperation()));
-		res.add("Fin de la migration BDD");
-		return res;
-	}
 
 
 	/**
@@ -281,22 +271,6 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 			return null;
 		}
 	}
-
-	/**
-	 * Migration des budgets dans des collections distinctes
-	 * @param mongo mongo
-	 */
-	public List<String> migrateBudgets(MongoOperations mongo){
-		List<String> ress = new ArrayList<>();
-		List<BudgetMensuelDTO> listeBudgets = mongo.findAll(BudgetMensuelDTO.class);
-		for (BudgetMensuelDTO budgetMensuelDTO : listeBudgets) {
-			ress.add("Migration de " + budgetMensuelDTO.getId());
-			System.err.println("> Copie vers " + getBudgetCollectionName(budgetMensuelDTO.getAnnee()));
-			mongo.save(budgetMensuelDTO, "budget_" + budgetMensuelDTO.getAnnee());
-		}
-		return ress;
-	}
-
 
 
 	/**
