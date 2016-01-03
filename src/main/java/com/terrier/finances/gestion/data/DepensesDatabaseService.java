@@ -160,9 +160,9 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public List<BudgetMensuelDTO> chargeBudgetsMensuelsDTO(String idCompte) throws DataNotFoundException{
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(idCompte));
-		
+
 		List<BudgetMensuelDTO> budgets = new ArrayList<BudgetMensuelDTO>();
-		
+
 		// Année courante
 		Calendar annee = Calendar.getInstance();
 		for (int a = 2014; a <= annee.get(Calendar.YEAR); a++) {
@@ -180,7 +180,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		else{
 			return budgets;
 		}
-		
+
 	}
 
 
@@ -203,20 +203,30 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		querydernierBudget.limit(1);
 		try{
 			BudgetMensuelDTO premierbudget = null;
-			for (int a = 0; a <= Calendar.getInstance().get(Calendar.YEAR); a++) {
-				 premierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a));
-				 if(premierbudget != null){
-					 break;
-				 }				
+			for (int a = 2014; a <= Calendar.getInstance().get(Calendar.YEAR); a++) {
+				premierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a));
+				if(premierbudget != null){
+					break;
+				}				
 			}
 			Calendar premier = Calendar.getInstance();
-			premier.set(Calendar.MONTH, premierbudget.getMois());
-			premier.set(Calendar.YEAR, premierbudget.getAnnee());
+			if(premierbudget != null){
+				premier.set(Calendar.MONTH, premierbudget.getMois());
+				premier.set(Calendar.YEAR, premierbudget.getAnnee());
+			}
+			BudgetMensuelDTO dernierbudget = null;
 
-			BudgetMensuelDTO dernierbudget = getMongoOperation().findOne(querydernierBudget, BudgetMensuelDTO.class, getBudgetCollectionName(Calendar.getInstance().get(Calendar.YEAR)));
+			for (int a = Calendar.getInstance().get(Calendar.YEAR); a >= 2014; a--) {
+				dernierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a));
+				if(dernierbudget != null){
+					break;
+				}				
+			}
 			Calendar dernier = Calendar.getInstance();
-			dernier.set(Calendar.MONTH, dernierbudget.getMois());
-			dernier.set(Calendar.YEAR, dernierbudget.getAnnee());
+			if(dernierbudget != null){
+				dernier.set(Calendar.MONTH, dernierbudget.getMois());
+				dernier.set(Calendar.YEAR, dernierbudget.getAnnee());
+			}
 			dernier.add(Calendar.MONTH, 1);
 			return new Calendar[]{premier, dernier};
 		}
