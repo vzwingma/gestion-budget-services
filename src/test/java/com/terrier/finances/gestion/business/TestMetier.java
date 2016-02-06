@@ -50,11 +50,7 @@ public class TestMetier {
 		queryBudget.addCriteria(Criteria.where("id").is("ingdirectS"));
 		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
 		assertNotNull(compte);
-		
-		BasicTextEncryptor encrytor = new BasicTextEncryptor();
-		encrytor.setPassword("tushkan82");
-
-		
+				
 		BudgetMensuelDTO budget = new BudgetMensuelDTO();
 		budget.setActif(true);
 		budget.setAnnee(2016);
