@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.google.gwt.editor.client.Editor.Ignore;
 import com.terrier.finances.gestion.data.DepensesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
@@ -42,7 +43,7 @@ public class TestMetier {
 		LOGGER.info(sdf.format(Calendar.getInstance().getTime()));
 	}
 	
-	@Test
+	@Ignore
 	public void test() throws Exception{
 		assertNotNull(service);
 		
