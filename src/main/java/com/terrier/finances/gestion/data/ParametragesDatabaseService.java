@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.data;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.terrier.finances.gestion.data.transformer.CompteBancaireSortByNo;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
@@ -145,7 +145,15 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 			.addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(utilisateur.getId())));
 			try{
 				listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class);
-				listeComptes.sort(new CompteBancaireSortByNo());
+				listeComptes.sort(new Comparator<CompteBancaire>() {
+					/* (non-Javadoc)
+					 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+					 */
+					@Override
+					public int compare(CompteBancaire compte1, CompteBancaire compte2) {
+						return Integer.compare(compte1.getOrdre(), compte2.getOrdre());
+					}
+				});
 				LOGGER.info(" {} comptes chargés : {} ", listeComptes.size(), listeComptes.toString());
 			}
 			catch(Exception e){
