@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -145,7 +146,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 			.addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(utilisateur.getId())));
 			try{
 				listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class);
-				listeComptes.sort(new Comparator<CompteBancaire>() {
+				Collections.sort(listeComptes, new Comparator<CompteBancaire>() {
 					/* (non-Javadoc)
 					 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 					 */
