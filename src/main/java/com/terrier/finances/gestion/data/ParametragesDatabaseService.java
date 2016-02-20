@@ -11,8 +11,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
+import com.terrier.finances.gestion.data.transformer.CompteBancaireSortByNo;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
@@ -140,10 +141,12 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 		try{
 			LOGGER.info("Chargement des comptes de {} [_id={}]", utilisateur, utilisateur.getId());
 			Query queryBudget = new Query();
-			queryBudget.addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(utilisateur.getId())));
+			queryBudget
+			.addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(utilisateur.getId())));
 			try{
 				listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class);
-				LOGGER.info(" {} comptes chargés ", listeComptes.size());
+				listeComptes.sort(new CompteBancaireSortByNo());
+				LOGGER.info(" {} comptes chargés : {} ", listeComptes.size(), listeComptes.toString());
 			}
 			catch(Exception e){
 				LOGGER.error("Erreur lors du chargement", e);
