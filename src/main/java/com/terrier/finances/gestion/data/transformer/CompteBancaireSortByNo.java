@@ -16,10 +16,6 @@ public class CompteBancaireSortByNo implements Comparator<CompteBancaire>{
 	 */
 	@Override
 	public int compare(CompteBancaire compte1, CompteBancaire compte2) {
-		// TODO Auto-generated method stub
 		return Integer.compare(compte1.getOrdre(), compte2.getOrdre());
 	}
-	
-	
-
 }
