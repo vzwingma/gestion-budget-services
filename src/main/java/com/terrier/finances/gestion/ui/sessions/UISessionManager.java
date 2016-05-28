@@ -71,9 +71,10 @@ public class UISessionManager implements Runnable {
 			LOGGER.warn("[TEST] ***** id session de test  ***** ");
 			idSession = "TEST";
 		}
-
-		if(componentsManager.get(idSession) == null){
-			componentsManager.put(idSession, new UISession(idSession));
+		synchronized (idSession) {
+			if(componentsManager.get(idSession) == null){
+				componentsManager.put(idSession, new UISession(idSession));
+			}
 		}
 		UISession session = componentsManager.get(idSession);
 		session.setLastAccessTime(Calendar.getInstance());
