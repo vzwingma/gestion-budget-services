@@ -21,9 +21,9 @@ public class TestBudgetConfig {
 	
 
 	private MongoTemplate getMongoOperationDev() throws Exception{
-		ServerAddress serveur = new ServerAddress("192.168.99.100", 32768);
+		ServerAddress serveur = new ServerAddress("192.168.56.101", 27017);
 		LOGGER.info("*** Configuration de la connexion vers MongDB : {} ***", serveur);
-		MongoTemplate mongoTemplate = new MongoTemplate(new SimpleMongoDbFactory(new MongoClient(serveur), "budget"));
+		MongoTemplate mongoTemplate = new MongoTemplate(new SimpleMongoDbFactory(new MongoClient(serveur), "local"));
 		return mongoTemplate;
 	}
 	

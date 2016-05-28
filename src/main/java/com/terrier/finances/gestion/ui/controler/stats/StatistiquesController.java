@@ -57,13 +57,15 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 		this.compte.setDescription("Choix du compte");
 		this.compte.setNewItemsAllowed(false);
 		this.compte.setNullSelectionAllowed(false);
+		int ordreCompte = 100;
 		try{
 			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
 			for (CompteBancaire compte : comptes) {
 				this.compte.addItem(compte.getId());
 				this.compte.setItemCaption(compte.getId(), compte.getLibelle());
-				if(compte.isDefaut()){
+				if(compte.getOrdre() <= ordreCompte){
 					this.compte.select(compte.getId());
+					ordreCompte = compte.getOrdre();
 				}
 				if(getComponent().getIdCompteSelectionne() != null && compte.getId().equals(getComponent().getIdCompteSelectionne())){
 					this.compte.select(compte.getId());				

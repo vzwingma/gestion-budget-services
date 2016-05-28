@@ -34,8 +34,9 @@ public class CompteBancaire implements Serializable {
 	private List<Utilisateur> listeProprietaires;
 	// Icone
 	private String itemIcon;
+	// N° d'ordre
+	private int ordre;
 	
-	private boolean defaut = false;
 
 	/**
 	 * @return the id
@@ -96,18 +97,19 @@ public class CompteBancaire implements Serializable {
 	
 
 	/**
-	 * @return the defaut
+	 * @return the ordre
 	 */
-	public boolean isDefaut() {
-		return defaut;
+	public int getOrdre() {
+		return ordre;
 	}
 
 	/**
-	 * @param defaut the defaut to set
+	 * @param ordre the ordre to set
 	 */
-	public void setDefaut(boolean defaut) {
-		this.defaut = defaut;
+	public void setOrdre(int ordre) {
+		this.ordre = ordre;
 	}
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -115,8 +117,10 @@ public class CompteBancaire implements Serializable {
 	@Override
 	public String toString() {
 		return "CompteBancaire [id=" + id + ", libelle=" + libelle
-				+ ", listeProprietaires=" + listeProprietaires + ", itemIcon="
-				+ itemIcon + "]";
+				// + ", listeProprietaires=" + listeProprietaires 
+				// + ", itemIcon=" + itemIcon
+				 + ", ordre=" + ordre
+				+ "] \n";
 	}
 	
 	

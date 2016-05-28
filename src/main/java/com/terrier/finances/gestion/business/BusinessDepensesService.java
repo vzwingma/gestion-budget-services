@@ -73,7 +73,7 @@ public class BusinessDepensesService {
 		catch(BudgetNotFoundException e){
 			budgetMensuel = initNewBudget(compte, utilisateur, mois, annee);
 		}
-		// Maj du budget ssi budhet actif
+		// Maj du budget ssi budget actif
 		if(budgetMensuel != null && budgetMensuel.isActif()){
 			// Recalcul du résultat du mois précédent
 			try{

@@ -166,14 +166,16 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		this.compte.setNewItemsAllowed(false);
 		this.compte.setNullSelectionAllowed(false);
 		String libelleCompte =null;
+		int ordreCompte = 100;
 		try{
 			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
 			for (CompteBancaire compte : comptes) {
 				this.compte.addItem(compte.getId());
 				this.compte.setItemCaption(compte.getId(), "  " + compte.getLibelle());
-				if(compte.isDefaut()){
+				if(compte.getOrdre() <= ordreCompte){
 					this.compte.select(compte.getId());
 					libelleCompte = compte.getLibelle();
+					ordreCompte = compte.getOrdre();
 				}
 				if(getComponent().getIdCompteSelectionne() != null && compte.getId().equals(getComponent().getIdCompteSelectionne())){
 					this.compte.select(compte.getId());
