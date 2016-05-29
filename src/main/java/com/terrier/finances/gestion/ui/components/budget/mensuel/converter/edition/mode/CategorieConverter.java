@@ -21,10 +21,17 @@ public class CategorieConverter implements Converter<String, CategorieDepense> {
 	private Collection<CategorieDepense> categories;
 	
 	
+	/**
+	 * Init de catégories
+	 * @param categories liste des catégories
+	 */
 	public CategorieConverter(Collection<CategorieDepense> categories){
 		this.categories = categories;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
+	 */
 	@Override
 	public CategorieDepense convertToModel(String value,
 			Class<? extends CategorieDepense> targetType, Locale locale)

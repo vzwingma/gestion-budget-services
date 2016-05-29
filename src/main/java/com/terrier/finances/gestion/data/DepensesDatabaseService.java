@@ -251,7 +251,12 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		BudgetMensuelDTO budgetDTO = null;
 		try{
 			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(idBudget));
-			return budgetDTO.getListeDepenses();
+			if(budgetDTO != null){
+				return budgetDTO.getListeDepenses();
+			}
+			else{
+				throw new DataNotFoundException("Aucune données trouvées");	
+			}
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement", e);
