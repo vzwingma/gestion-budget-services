@@ -35,6 +35,8 @@ public class UISessionManager implements Runnable {
 
 	private static UISessionManager sessionManager;
 
+	private final Object lockSession = new Object();
+
 	/**
 	 * @return l'instance de sessions Manager
 	 */
@@ -71,14 +73,16 @@ public class UISessionManager implements Runnable {
 			LOGGER.warn("[TEST] ***** id session de test  ***** ");
 			idSession = "TEST";
 		}
-		synchronized (idSession) {
+		synchronized (lockSession) {
 			if(componentsManager.get(idSession) == null){
 				componentsManager.put(idSession, new UISession(idSession));
 			}
+
+			UISession session = componentsManager.get(idSession);
+			session.setLastAccessTime(Calendar.getInstance());
+
+			return session;
 		}
-		UISession session = componentsManager.get(idSession);
-		session.setLastAccessTime(Calendar.getInstance());
-		return session;
 	}
 
 	/**
@@ -93,8 +97,10 @@ public class UISessionManager implements Runnable {
 			LOGGER.warn("[TEST] ***** id session de test  ***** ");
 			idSession = "TEST";
 		}
-		componentsManager.get(idSession).deconnexion();
-		componentsManager.remove(idSession);
+		synchronized (lockSession) {
+			componentsManager.get(idSession).deconnexion();
+			componentsManager.remove(idSession);
+		}
 	}
 
 
