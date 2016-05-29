@@ -10,11 +10,3 @@ deploy:
     on:
       repo: vzwingma/gestion-budget
       tags: true
-  - provider: openshift
-    user: vincent.zwingmann@gmail.com
-    password:
-      secure: BzIe6tblw7mExxITI+WMVD2g2ptsYtxZ/Qa8SvV82a7T6NoRInkf5MRKGtC6C8iucfofRo0pDV8frtG8Y5qhNVIVdUNix73mU0r/sWajKTaCZmDcqf2iHvngualZf7cxL+2T8Mx5o0zq7OzM4aTbNVxPZPOcU9YWuL7fJv/iLZe3H013dCp8NQh+eDWK/2Uzfkw9X46d2iQ5lvej9kIEEn2T9pY54vhd3xezJzc4d/6+HM/wSeKmbJfS8fgGwljdftrZwm6frXzXKw3jSKUiakmuG5OC0ssSQgjK4TcS0SERn/EWOf97Vu04gdDATz42KYooS0WWggw6CTyNj+DLUzMahUDaRKKtCb3fNdETp01Rl/J/RTvyDE0Szq5enoPZ6eKsQ19JfxDxLylW7BCq2PGaA7MocNTQ7PP/vY12c6josIOTE5dXayE+OL0tlcHZaQ+5962VNG546mSWVe68y7+d7LSiy4mTR9RG8JXMiZIQPLmp5OQdYLi63mcJV2mpHOPPc8EUrC6zZKfoVR7U3i6AQ+PlqWCfN94UuPfVHpjpcz/sAusU2af6omeRefwyInRXye51SNcK9cueY6ucznyd2vFetcuHVvHru+nBcl2gKcuGaw9+D0ENFUfJc3iPUBVqzv7/I36cabmKrVJY69UzUiRnjhSsCg7f85fpmn4=
-    app: budgetdev
-    domain: tushkanyogik
-    on:
-      repo: vzwingma/gestion-budget	
