@@ -180,7 +180,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 		try{
 			LOGGER.info("Chargement du compte {} de {}", idCompte, utilisateur);
 			Query queryBudget = new Query();
-			queryBudget.addCriteria(Criteria.where("listeProprietaires").in(utilisateur).and("id").is(idCompte));
+			queryBudget.addCriteria(Criteria.where("listeProprietaires.login").in(utilisateur.getLogin()).and("id").is(idCompte));
 			return getMongoOperation().findOne(queryBudget, CompteBancaire.class);
 		}
 		catch(Exception e){

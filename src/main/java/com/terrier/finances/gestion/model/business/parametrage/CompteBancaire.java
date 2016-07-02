@@ -36,6 +36,8 @@ public class CompteBancaire implements Serializable {
 	private String itemIcon;
 	// N° d'ordre
 	private int ordre;
+	// closed
+	private Boolean actif;
 	
 
 	/**
@@ -96,6 +98,23 @@ public class CompteBancaire implements Serializable {
 	
 	
 
+	
+
+	/**
+	 * @return the actif
+	 */
+	public Boolean isActif() {
+		// Vrai par défaut
+		return actif != null ? actif : Boolean.TRUE;
+	}
+
+	/**
+	 * @param actif the actif to set
+	 */
+	public void setActif(Boolean actif) {
+		this.actif = actif;
+	}
+
 	/**
 	 * @return the ordre
 	 */
@@ -116,11 +135,10 @@ public class CompteBancaire implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "CompteBancaire [id=" + id + ", libelle=" + libelle
-				// + ", listeProprietaires=" + listeProprietaires 
-				// + ", itemIcon=" + itemIcon
-				 + ", ordre=" + ordre
-				+ "] \n";
+		StringBuilder builder = new StringBuilder();
+		builder.append("CompteBancaire [id=").append(id).append(", libelle=").append(libelle).append(", itemIcon=")
+				.append(itemIcon).append(", ordre=").append(ordre).append("]");
+		return builder.toString();
 	}
 	
 	

@@ -13,8 +13,9 @@ import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
  * Contexte d'un utilisateur
  * 
  * @author vzwingma
- * 
+ * @deprecated : Suppression des services REST
  */
+@Deprecated
 public class ContexteUtilisateurXO {
 
 	private Utilisateur utilisateur;

@@ -16,9 +16,10 @@ import com.terrier.finances.gestion.model.data.parametrage.CategorieDepenseXO;
 /**
  * DataTransformer
  * @author vzwingma
- *
+ * @deprecated : Cette classe n'est utilisée que pour les services REST
  */
 @Component("dataTransformerCategoriesDepense")
+@Deprecated
 public class DataTransformerCategoriesDepense extends IDataTransformer<CategorieDepense, CategorieDepenseDTO, CategorieDepenseXO> {
 
 	/**

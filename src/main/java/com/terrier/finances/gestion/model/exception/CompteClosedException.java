@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * @author vzwingma
  *
  */
-public class BudgetNotFoundException extends Exception {
+public class CompteClosedException extends Exception {
 
 	/**
 	 * 
@@ -22,10 +22,11 @@ public class BudgetNotFoundException extends Exception {
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BudgetNotFoundException.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CompteClosedException.class);
 	
 	
-	public BudgetNotFoundException(StringBuilder libelleErreur){
+	public CompteClosedException(StringBuilder libelleErreur){
+		super(libelleErreur.toString());
 		LOGGER.error(libelleErreur.toString());
 	}
 }

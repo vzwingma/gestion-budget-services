@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.business;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,11 +44,11 @@ public class TestMetier {
 	}
 	
 	@Ignore
-	public void test() throws Exception{
+	public void createNewBudget() throws Exception{
 		assertNotNull(service);
 		
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("id").is("ingdirectS"));
+		queryBudget.addCriteria(Criteria.where("id").is("ingdirectV"));
 		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
 		assertNotNull(compte);
 				
@@ -61,4 +62,29 @@ public class TestMetier {
 		
 		
 	}
+	
+
+	@Test
+	public void getCompte() throws Exception{
+		assertNotNull(service);
+		
+		Query queryBudget = new Query();
+		queryBudget.addCriteria(Criteria.where("id").is("ingdirectV"));
+		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
+		assertNotNull(compte);
+		assertNotNull(compte.isActif());
+		assertTrue(compte.isActif());
+	}
+	
+	
+	@Test
+	public void getCompte2() throws Exception{
+		Query queryBudget = new Query();
+		queryBudget.addCriteria(Criteria.where("listeProprietaires.login").in("vzwingmann").and("id").is("ingdirectV"));
+		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
+		assertNotNull(compte);
+		assertNotNull(compte.isActif());
+		assertTrue(compte.isActif());
+	}
+	 
 }

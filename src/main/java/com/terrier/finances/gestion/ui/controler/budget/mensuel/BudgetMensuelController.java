@@ -16,6 +16,7 @@ import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
+import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
@@ -236,7 +237,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	/**
 	 * Réinitialiser le budhet Mensuel Courant
 	 */
-	public void reinitialiserBudgetCourant(){
+	public void reinitialiserBudgetCourant() {
 		LOGGER.info("Réinitialisation du budget mensuel courant");
 		try {
 			getServiceDepense().reinitialiserBudgetMensuel(
@@ -245,7 +246,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			// Ack pour forcer le "refreshAllTable"
 			oldMois = -1;
 			miseAJourVueDonnees();
-		} catch (BudgetNotFoundException | DataNotFoundException e) {
+		} catch (BudgetNotFoundException | DataNotFoundException | CompteClosedException e) {
 			LOGGER.error("[BUDGET] Erreur lors de la réinitialisation du compte", e);
 			Notification.show("Impossible de réinitialiser le mois courant "+
 					( getBudgetMensuelCourant().getMois() + 1)+"/"+ getBudgetMensuelCourant().getAnnee()
@@ -352,7 +353,9 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 			// Maj du budget
 			getUISession().setBudgetMensuelCourant(budget);
-			if(c.get(Calendar.MONTH) == oldMois && idCompte.equals(oldIdCompte)){
+			// Mise à jour du mois suivant le résultat de la requête
+			// (gère les comptes cloturés, on récupère que le dernier accessible)
+			if(budget.getMois() == oldMois && idCompte.equals(oldIdCompte)){
 				refreshAllTable = false;
 				LOGGER.info("[BUDGET] Pas de changement de mois ou de compte : Pas de refresh total des tableaux");
 			}
@@ -360,8 +363,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 				LOGGER.debug("[BUDGET] Changement de mois ou de compte : Refresh total des tableaux");
 				refreshAllTable = true;
 			}
-			oldMois = c.get(Calendar.MONTH);
-			oldAnnee = c.get(Calendar.YEAR);
+			oldMois = budget.getMois();
+			oldAnnee = budget.getAnnee();
 			oldIdCompte = idCompte;
 			return budget;
 		} catch (BudgetNotFoundException e) {
@@ -369,7 +372,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 					append("Impossible de charger le budget du compte ").
 					append(idCompte).append(" du ").
 					append(c.get(Calendar.MONTH)).append("/").append(c.get(Calendar.YEAR)).toString();
-			LOGGER.error(messageerreur);
 			throw new DataNotFoundException(messageerreur);
 		}
 	}

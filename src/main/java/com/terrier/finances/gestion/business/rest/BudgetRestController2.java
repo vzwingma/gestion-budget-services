@@ -48,6 +48,7 @@ import com.terrier.finances.gestion.model.exception.UserNotAuthorizedException;
  */
 @RestController
 @RequestMapping(value="/rest/v2")
+@Deprecated
 public class BudgetRestController2 {
 
 
