@@ -3,7 +3,6 @@ package com.terrier.finances.gestion.business;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,19 +200,6 @@ public class BusinessDepensesService {
 	}
 
 
-	/**
-	 * Charger les budgets en consultation
-	 * @param utilisateur utilisateur
-	 * @param compte compte
-	 * @return liste des budgets
-	 * @throws DataNotFoundException erreur
-	 */
-	@Deprecated
-	public List<BudgetMensuelDTO> chargerBudgetsMensuelsConsultation(Utilisateur utilisateur, String compte) throws DataNotFoundException{
-		LOGGER.debug("Chargement des budgets {} de {}", compte, utilisateur);
-		return this.dataDepenses.chargeBudgetsMensuelsDTO(compte);
-	}
-
 
 	/**
 	 * @param idCompte id du compte
@@ -249,18 +235,6 @@ public class BusinessDepensesService {
 
 	}
 
-	/**
-	 * Chargement des lignes de dépenses 
-	 * @param idBudget idBudget
-	 * @return lignes de dépenses du budget
-	 * @throws DataNotFoundException erreur
-	 */
-	@Deprecated
-	public List<LigneDepense> chargerLignesDepenses(String idBudget) throws BudgetNotFoundException{
-		LOGGER.debug("Chargement des dépenses de {}", idBudget);
-		BudgetMensuel budgetMensuel = this.dataDepenses.chargeBudgetMensuelById(idBudget);
-		return budgetMensuel.getListeDepenses();
-	}
 
 	/**
 	 * Init new budget

@@ -15,7 +15,7 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
  * @author vzwingma
  *
  */
-public abstract class IDataTransformer<BO, DTO, XO> {
+public abstract class IDataTransformer<BO, DTO> {
 
 
 	
@@ -44,10 +44,4 @@ public abstract class IDataTransformer<BO, DTO, XO> {
 	 */
 	public abstract DTO transformBOtoDTO(BO bo);
 	
-	/**
-	 * Transformation d'un BO en XO
-	 * @return xo xml data object (REST)
-	 * @param bo business object
-	 */
-	public abstract XO transformBOtoXO(BO bo);
 }

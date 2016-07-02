@@ -16,7 +16,6 @@ import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.IDataTransformer;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
-import com.terrier.finances.gestion.model.data.budget.LigneDepenseXO;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
@@ -27,7 +26,7 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
  *
  */
 @Component("dataTransformerLigneDepense")
-public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, LigneDepenseDTO, LigneDepenseXO> {
+public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, LigneDepenseDTO> {
 
 	/**
 	 * Logger
@@ -127,75 +126,5 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 			}
 		}
 		return listeDepensesBO;
-	}
-	
-	
-
-
-	
-	
-	/* (non-Javadoc)
-	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoXO(java.lang.Object)
-	 */
-	@Override
-	public LigneDepenseXO transformBOtoXO(LigneDepense bo) {
-		LigneDepenseXO xo = new LigneDepenseXO();
-		if(bo.getAuteur() !=null){
-			xo.setAuteur(bo.getAuteur());
-		}
-		xo.setDateMaj(bo.getDateMaj());
-		xo.setDateOperation(bo.getDateOperation());
-		xo.setDerniereOperation(bo.isDerniereOperation());
-		xo.setEtat(bo.getEtat().getId());
-		xo.setId(bo.getId());
-		xo.setIdCategorie(bo.getCategorie().getId());
-		xo.setIdSSCategorie(bo.getSsCategorie().getId());
-		xo.setLibelle(bo.getLibelle());
-		xo.setNotes(bo.getNotes());
-		xo.setPeriodique(bo.isPeriodique());
-		xo.setTypeDepense(bo.getTypeDepense().getId());
-		xo.setValeur(bo.getValeur()+ "");
-		LOGGER.debug("	[{}] \n > Transformation en XO > [{}]", bo, xo);
-		return xo;
-	}
-
-
-	/**
-	 * @param xo
-	 * @return bo
-	 * @throws DataNotFoundException erreur sur la catégorie
-	 */
-	public LigneDepense transformXOtoBO(LigneDepenseXO xo) throws DataNotFoundException {
-		LigneDepense bo = new LigneDepense();
-		if(xo.getAuteur() !=null){
-			bo.setAuteur(xo.getAuteur());
-		}
-		bo.setDateMaj(xo.getDateMaj());
-		bo.setDateOperation(xo.getDateOperation());
-		bo.setDerniereOperation(xo.isDerniereOperation());
-		bo.setEtat(xo.getEtat() != null && !xo.getEtat().equals("SUPPRIMER") ? EtatLigneDepenseEnum.valueOf(xo.getEtat().toUpperCase()) : null);
-		bo.setId(xo.getId());
-		bo.setSsCategorie(parametrageService.chargeCategorieParId(xo.getIdSSCategorie()));
-		bo.setLibelle(xo.getLibelle());
-		bo.setNotes(xo.getNotes());
-		bo.setPeriodique(xo.isPeriodique());
-		bo.setTypeDepense(TypeDepenseEnum.valueOf(xo.getTypeDepense()));
-		bo.setValeur(Float.valueOf(xo.getValeur()));
-		LOGGER.debug("	[{}] \n > Transformation en BO > [{}]", xo, bo);
-		return bo;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object)
-	 */
-	public List<LigneDepenseXO> transformBOtoXO(List<LigneDepense> listeBO) {
-		List<LigneDepenseXO> listeDepensesXO = new ArrayList<>();
-		if(listeBO != null){
-			for (LigneDepense bo : listeBO) {
-				listeDepensesXO.add(transformBOtoXO(bo));
-			}
-		}
-		return listeDepensesXO;
 	}
 }

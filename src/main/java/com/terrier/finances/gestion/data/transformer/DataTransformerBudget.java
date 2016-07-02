@@ -19,7 +19,6 @@ import com.terrier.finances.gestion.model.IDataTransformer;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
-import com.terrier.finances.gestion.model.data.budget.BudgetMensuelXO;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**
@@ -28,7 +27,7 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
  *
  */
 @Component("dataTransformerBudget")
-public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, BudgetMensuelDTO, BudgetMensuelXO> {
+public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
 
 	@Autowired @Qualifier("dataTransformerLigneDepense")
 	private DataTransformerLigneDepense dataTransformerLigneDepense = new DataTransformerLigneDepense();
@@ -118,60 +117,6 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		return bo;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoXO(java.lang.Object)
-	 */
-	@Override
-	public BudgetMensuelXO transformBOtoXO(BudgetMensuel bo) {
-		BudgetMensuelXO xo = new BudgetMensuelXO();
-		xo.setCompteBancaire(bo.getCompteBancaire());
-		xo.setActif(bo.isActif());
-		xo.setMois(bo.getMois());
-		xo.setAnnee(bo.getAnnee());
-		xo.setId(bo.getId());
-		xo.setMargeSecurite("" + bo.getMargeSecurite());
-		xo.setMargeSecuriteFinMois("" + bo.getMargeSecuriteFinMois());
-		xo.setResultatMoisPrecedent("" + bo.getResultatMoisPrecedent());
-
-		/*
-		 * Budget clos : utilisation des valeurs calculées
-		 */
-		xo.setNowArgentAvance(bo.getNowArgentAvance() + "");
-		xo.setNowCompteReel(bo.getNowCompteReel() + "");
-		xo.setFinArgentAvance(bo.getFinArgentAvance() + "");
-		xo.setFinCompteReel(bo.getFinCompteReel() + "");
-
-		// Complétion des totaux
-		Map<String, String[]> totalCategorieXO = new HashMap<String, String[]>();
-		if(bo.getTotalParCategories() != null){
-			for (CategorieDepense catKey : bo.getTotalParCategories().keySet()) {
-				Double[] totaux = bo.getTotalParCategories().get(catKey);
-				String[] totauxXO = new String[totaux.length];
-				for (int i = 0; i < totaux.length; i++) {
-					totauxXO[i] = totaux[i] + "";
-				}
-				totalCategorieXO.put(catKey.getId(), totauxXO);
-			}
-		}
-		xo.setTotalParCategories(totalCategorieXO);
-		// Complétion des totaux ss catégorie
-		Map<String, String[]> totalSsCategorieXO = new HashMap<String, String[]>();
-		if(bo.getTotalParSSCategories() != null){
-			for (CategorieDepense ssCatKey : bo.getTotalParSSCategories().keySet()) {
-				Double[] totaux = bo.getTotalParSSCategories().get(ssCatKey);
-				String[] totauxXO = new String[totaux.length];
-				for (int i = 0; i < totaux.length; i++) {
-					totauxXO[i] = totaux[i] + "";
-				}
-				totalSsCategorieXO.put(ssCatKey.getId(), totauxXO);
-			}
-		}
-		xo.setTotalParSSCategories(totalSsCategorieXO);
-		LOGGER.debug("	[{}] \n > Transformation en XO > [{}]", bo, xo);
-		return xo;
-	}
 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.AbstractTransformer#transformBOtoDTO(java.lang.Object)
