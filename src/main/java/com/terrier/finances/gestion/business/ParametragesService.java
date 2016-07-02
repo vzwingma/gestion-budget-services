@@ -166,8 +166,8 @@ public class ParametragesService {
 	 * @return compteBancaire
 	 * @throws DataNotFoundException
 	 */
-	public CompteBancaire getCompteById(String idCompte, Utilisateur utilisateur) throws DataNotFoundException{
-		return dataParams.chargeCompteParId(idCompte, utilisateur);
+	public CompteBancaire getCompteById(String idCompte) throws DataNotFoundException{
+		return dataParams.chargeCompteParId(idCompte);
 	}
 	
 

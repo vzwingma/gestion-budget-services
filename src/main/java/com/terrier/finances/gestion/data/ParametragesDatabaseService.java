@@ -176,11 +176,11 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	 * @return compte
 	 * @throws DataNotFoundException
 	 */
-	public CompteBancaire chargeCompteParId(String idCompte, Utilisateur utilisateur) throws DataNotFoundException{
+	public CompteBancaire chargeCompteParId(String idCompte) throws DataNotFoundException{
 		try{
-			LOGGER.info("Chargement du compte {} de {}", idCompte, utilisateur);
+			LOGGER.info("Chargement du compte {}", idCompte);
 			Query queryBudget = new Query();
-			queryBudget.addCriteria(Criteria.where("listeProprietaires.login").in(utilisateur.getLogin()).and("id").is(idCompte));
+			queryBudget.addCriteria(Criteria.where("id").is(idCompte));
 			return getMongoOperation().findOne(queryBudget, CompteBancaire.class);
 		}
 		catch(Exception e){

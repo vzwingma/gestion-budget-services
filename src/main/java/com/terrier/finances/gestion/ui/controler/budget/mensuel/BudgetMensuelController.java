@@ -264,11 +264,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	public void valueChange(ValueChangeEvent event) {
 		// Modification de la date
 		boolean miseAJour = false;
+		String idCompte = (String)this.compte.getConvertedValue();
 		if(event.getProperty().getType().equals(Date.class)){
 			Calendar d = Calendar.getInstance();
 			d.setTime((Date)event.getProperty().getValue());
 			d.set(Calendar.DAY_OF_MONTH, 1);
-			setRangeFinMois(d);
+			setRangeFinMois(d, idCompte);
 			if(d.get(Calendar.MONTH) != this.oldMois || d.get(Calendar.YEAR) != this.oldAnnee){
 				miseAJourVueDonnees();			
 			}
@@ -276,7 +277,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		else{
 			// Modification du compte
 			miseAJour = true;
-			String idCompte = (String)this.compte.getConvertedValue();
 			initRangeDebutFinMois(idCompte);
 		}
 		// Si oui : refresh
@@ -313,12 +313,14 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * Mise à jour du range fin
 	 * @param dateFin
 	 */
-	private void setRangeFinMois(Calendar dateFin){
+	private void setRangeFinMois(Calendar dateFin, String idCompte){
 		if(dateFin != null){
-			// Bouton Mois suivant limité au mois prochain.
+			// Bouton Mois suivant limité au mois prochain si le compte n'est pas clos
 			Calendar dateRangeBudget = Calendar.getInstance();
 			dateRangeBudget.setTime(dateFin.getTime());
-			dateRangeBudget.add(Calendar.MONTH, 1);
+			if(getServiceDepense().isCompteActif(idCompte)){
+				dateRangeBudget.add(Calendar.MONTH, 1);
+			}
 			if(dateRangeBudget.getTime().after(getComponent().getMois().getRangeEnd())){
 				getComponent().getMois().setRangeEnd(dateRangeBudget.getTime());
 			}
