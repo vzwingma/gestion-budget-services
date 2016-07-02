@@ -64,23 +64,12 @@ public class TestMetier {
 	}
 	
 
-	@Test
+	@Ignore
 	public void getCompte() throws Exception{
 		assertNotNull(service);
 		
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where("id").is("ingdirectV"));
-		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
-		assertNotNull(compte);
-		assertNotNull(compte.isActif());
-		assertTrue(compte.isActif());
-	}
-	
-	
-	@Test
-	public void getCompte2() throws Exception{
-		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("listeProprietaires.login").in("vzwingmann").and("id").is("ingdirectV"));
 		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
 		assertNotNull(compte);
 		assertNotNull(compte.isActif());

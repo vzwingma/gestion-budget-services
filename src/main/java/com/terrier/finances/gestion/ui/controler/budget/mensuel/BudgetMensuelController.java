@@ -116,7 +116,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	@Override
 	public void initDynamicComponentsOnPage(){
 
-		// Démarrage
+		// Init des boutons
 		getComponent().getButtonEditer().addClickListener(new ActionEditerDepensesClickListener());
 		getComponent().getButtonEditer().setDescription("Editer le tableau des opérations");
 		getComponent().getButtonCreate().addClickListener(new ActionCreerDepenseClickListener());
@@ -166,8 +166,10 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		this.compte.setDescription("Choix du compte");
 		this.compte.setNewItemsAllowed(false);
 		this.compte.setNullSelectionAllowed(false);
-		String libelleCompte =null;
+
 		int ordreCompte = 100;
+		CompteBancaire compteCourant = null;
+
 		try{
 			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
 			for (CompteBancaire compte : comptes) {
@@ -175,19 +177,20 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 				this.compte.setItemCaption(compte.getId(), "  " + compte.getLibelle());
 				if(compte.getOrdre() <= ordreCompte){
 					this.compte.select(compte.getId());
-					libelleCompte = compte.getLibelle();
+					compteCourant = compte;
 					ordreCompte = compte.getOrdre();
 				}
 				if(getComponent().getIdCompteSelectionne() != null && compte.getId().equals(getComponent().getIdCompteSelectionne())){
 					this.compte.select(compte.getId());
-					libelleCompte = compte.getLibelle();
+					compteCourant = compte;
 				}
 				this.compte.setItemIcon(compte.getId(), new ThemeResource(compte.getItemIcon()));
 			}
-			String idCompte = (String)this.compte.getConvertedValue();
-			initRangeDebutFinMois(idCompte);
+			initRangeDebutFinMois(compteCourant.getId());
 			this.compte.setTextInputAllowed(false);
 			this.compte.addValueChangeListener(this);
+
+
 			// Bouton stat
 			//getComponent().getButtonStatistique().addClickListener(new ChangePageListener(StatistiquesPage.class));
 			// Bouton déconnexion
@@ -195,13 +198,15 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			getComponent().getButtonDeconnexion().addClickListener(new ActionDeconnexionClickListener());
 			getComponent().getButtonDeconnexion().setDescription("Déconnexion de l'application");
 			// Bouton refresh
-			if(getUtilisateurCourant().isEnabled(UtilisateurDroitsEnum.DROIT_RAZ_BUDGET)){
+			getComponent().getButtonRefreshMonth().setVisible(compteCourant.isActif());
+			if(getUtilisateurCourant().isEnabled(UtilisateurDroitsEnum.DROIT_RAZ_BUDGET) && compteCourant.isActif() ){
 				getComponent().getButtonRefreshMonth().addClickListener(new ActionRefreshMonthBudgetClickListener());
 			}
 			else{
 				getComponent().getButtonRefreshMonth().setEnabled(false);
 			}
 			// Bouton lock
+			getComponent().getButtonLock().setVisible(compteCourant.isActif());
 			if(getUtilisateurCourant().isEnabled(UtilisateurDroitsEnum.DROIT_CLOTURE_BUDGET)){
 				getComponent().getButtonLock().setCaption("");
 				getComponent().getButtonLock().addClickListener(new ActionLockBudgetClickListener());
@@ -209,8 +214,9 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			else{
 				getComponent().getButtonLock().setEnabled(false);
 			}
-		} catch (DataNotFoundException e) {
-			Notification.show("Impossible de charger le budget du compte "+ libelleCompte + " du " + dateBudget.get(Calendar.MONTH)+"/"+ dateBudget.get(Calendar.YEAR), Notification.Type.ERROR_MESSAGE);
+
+		}catch (DataNotFoundException e) {
+			Notification.show("Impossible de charger le budget du compte " + (compteCourant != null ? compteCourant.getLibelle() : "" ) + " du " + dateBudget.get(Calendar.MONTH)+"/"+ dateBudget.get(Calendar.YEAR), Notification.Type.ERROR_MESSAGE);
 		}
 
 
@@ -426,14 +432,16 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			getComponent().getButtonEditer().setVisible(false);
 			getComponent().getButtonCreate().setVisible(false);
 			getComponent().getButtonRefreshMonth().setVisible(false);
+			getComponent().getButtonLock().setVisible(budgetCourant.getCompteBancaire().isActif());
 			getComponent().getButtonLock().setDescription("Réouvrir le budget mensuel");
 			getComponent().getButtonLock().setStyleName("locked");
 		}
 		// Boutons actions sur Budget actif :
 		else{
-			getComponent().getButtonCreate().setVisible(true);
-			getComponent().getButtonEditer().setVisible(true);
-			getComponent().getButtonRefreshMonth().setVisible(true);
+			getComponent().getButtonCreate().setVisible(budgetCourant.getCompteBancaire().isActif());
+			getComponent().getButtonEditer().setVisible(budgetCourant.getCompteBancaire().isActif());
+			getComponent().getButtonRefreshMonth().setVisible(budgetCourant.getCompteBancaire().isActif());
+			getComponent().getButtonLock().setVisible(budgetCourant.getCompteBancaire().isActif());
 			getComponent().getButtonLock().setDescription("Finaliser le budget mensuel");
 			getComponent().getButtonLock().setStyleName("unlocked");
 		}
