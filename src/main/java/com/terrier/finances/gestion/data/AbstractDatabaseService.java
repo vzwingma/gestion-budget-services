@@ -3,11 +3,15 @@
  */
 package com.terrier.finances.gestion.data;
 
+import java.util.Map.Entry;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+
+import com.terrier.finances.gestion.business.statut.StatusApplicationService;
 
 /**
  * DataServices
@@ -25,6 +29,9 @@ public abstract class AbstractDatabaseService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
+	@Autowired
+	private StatusApplicationService statutApplicationService;
+	
 
 	/**
 	 * Constructeur permettant de définir les composants utilisés en DATA
@@ -38,6 +45,19 @@ public abstract class AbstractDatabaseService {
 	 * @return opérations MongoDB
 	 */
 	public MongoOperations getMongoOperation(){
+		updateMongoStatus();
 		return (MongoOperations) mongoTemplate;
+	}
+	
+	
+	/**
+	 * 
+	 */
+	private void updateMongoStatus(){
+		LOGGER.info("{} : Update Mongo Statut : {}", this.getClass(), mongoTemplate.getDb().getStats().ok());
+		for (Entry<String, Object> stat : mongoTemplate.getDb().getStats().entrySet()) {
+			LOGGER.info("   {} : {}", stat.getKey(), stat.getValue());
+		}
+		statutApplicationService.updateMongoStatut(mongoTemplate.getDb().getStats());
 	}
 }
