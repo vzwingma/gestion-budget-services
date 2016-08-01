@@ -5,21 +5,29 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 
  * Statut d'une dépendance
  * @author vzwingma
  *
  */
+@JsonInclude(Include.NON_EMPTY)
 public class StatutDependencyObject {
 
 	// Nom 
 	private DependencyName nom;
 	
 	// Status du module
+	@JsonIgnore
 	private StatutStateEnum statusObject;
 
 	// Statut calculée avec les status des dépendances
+	@JsonProperty("statut")
 	private StatutStateEnum statusCompile;
 	
 	// Liste des dépendances
@@ -55,9 +63,13 @@ public class StatutDependencyObject {
 		else if(dependances != null && !dependances.isEmpty()){
 			for (StatutDependencyObject statutDependencyObject : dependances) {
 				dependencyFound = statutDependencyObject.updateStatusModule(nom, statut);
+				if(dependencyFound){
+					break;
+				}
 			}
 		}
 		if(dependencyFound){
+			this.date = Calendar.getInstance();
 			updateStatusCompile();
 		}
 		return dependencyFound;

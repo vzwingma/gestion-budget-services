@@ -10,11 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.mongodb.CommandResult;
 import com.terrier.finances.gestion.business.statut.objects.DependencyName;
 import com.terrier.finances.gestion.business.statut.objects.StatutDependencyObject;
 import com.terrier.finances.gestion.business.statut.objects.StatutStateEnum;
-import com.terrier.finances.gestion.data.AbstractDatabaseService;
 
 /**
  * Retourne le statut de l'application
@@ -39,15 +37,16 @@ public class StatusApplicationService {
 		this.statutApplication = new StatutDependencyObject(DependencyName.APPLICATION);
 		this.statutApplication.updateStatusModule(DependencyName.APPLICATION, StatutStateEnum.OK);
 		this.statutApplication.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION);
+		this.statutApplication.addDependency(DependencyName.REST_SERVICE, DependencyName.APPLICATION);
 	}
 
-	
-	public void updateMongoStatut( CommandResult statsDatabase){
-		StatutStateEnum statutDB = statsDatabase != null ?
-				statsDatabase.ok() ? StatutStateEnum.OK : StatutStateEnum.FATAL
-						: StatutStateEnum.INCONNU;
-		LOGGER.debug("Statut DB : {} -> {}", statsDatabase, statutDB);		
-		this.statutApplication.updateStatusModule(DependencyName.DATABASE, statutDB);
+	/**
+	 * Mise à jour de la dépendance
+	 * @param nomDependance nom de la dépendance
+	 * @param statut statut de la dépendance
+	 */
+	public void updateDependencyStatut(DependencyName nomDependance, StatutStateEnum statut){
+		this.statutApplication.updateStatusModule(nomDependance, statut);
 	}
 
 	/**
