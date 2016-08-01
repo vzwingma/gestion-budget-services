@@ -172,9 +172,10 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 		try{
 			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
+			// Ajout de la liste des comptes dans la combobox
 			for (CompteBancaire compte : comptes) {
 				this.compte.addItem(compte.getId());
-				this.compte.setItemCaption(compte.getId(), "  " + compte.getLibelle());
+
 				if(compte.getOrdre() <= ordreCompte){
 					this.compte.select(compte.getId());
 					compteCourant = compte;
@@ -184,8 +185,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 					this.compte.select(compte.getId());
 					compteCourant = compte;
 				}
+				// mise à jour du style
+				this.compte.setItemCaption(compte.getId(), "  " + compte.getLibelle());
 				this.compte.setItemIcon(compte.getId(), new ThemeResource(compte.getItemIcon()));
 			}
+			this.compte.setItemStyleGenerator(new ComptesComboboxItemStyle(comptes));
+			
 			initRangeDebutFinMois(compteCourant.getId());
 			this.compte.setTextInputAllowed(false);
 			this.compte.addValueChangeListener(this);

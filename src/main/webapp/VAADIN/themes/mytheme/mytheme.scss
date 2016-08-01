@@ -80,6 +80,12 @@ $v-layout-padding-bottom: 10px;
   	font-weight: bold;
   }
   
+ /* Style de la combobox de liste des comptes */
+ .v-filterselect-item-barre{
+ 	text-decoration: line-through;
+	font-style: italic;
+ }
+  
   
  /* Couleurs du tableau des dépenses */
  .v-table-row-realisee{
