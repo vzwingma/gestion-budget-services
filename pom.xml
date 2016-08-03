@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.terrier.finances</groupId>
 	<artifactId>gestion-budget</artifactId>
-	<version>4.3.0</version>
+	<version>4.3.1-SNAPSHOT</version>
 	<name>Gestion Budget</name>
 	<description>Application Web de gestion de budget</description>
 	<packaging>war</packaging>
