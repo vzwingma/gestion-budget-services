@@ -1,6 +1,9 @@
 language: java
 install: 
   - mvn clean install -DskipTests=true -B -P openshift
+cache:
+    directories:
+      - $HOME/.m2
 deploy:
   - provider: releases
     api-key:
