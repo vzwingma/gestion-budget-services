@@ -13,5 +13,5 @@ tar xvzf *.tar.gz
 # Déplacement du war
 mv $OPENSHIFT_DATA_DIR/ROOT.war $OPENSHIFT_JBOSSEWS_DIR/webapps/ROOT.war
 # Déplacement de la cron task
-mv $OPENSHIFT_DATA_DIR/last-version-deploy.sh $OPENSHIFT_REPO_DIR/.openshift/cron/minutely
+cp $OPENSHIFT_DATA_DIR/last-version-deploy.sh $OPENSHIFT_REPO_DIR/.openshift/cron/minutely
 rm *.tar.gz
