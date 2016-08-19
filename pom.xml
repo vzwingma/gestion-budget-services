@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.terrier.finances</groupId>
 	<artifactId>gestion-budget</artifactId>
-	<version>4.3.0-RC2</version>
+	<version>4.3.0-RC3</version>
 	<name>Gestion Budget</name>
 	<description>Application Web de gestion de budget</description>
 	<packaging>war</packaging>
@@ -13,7 +13,8 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<spring.version>4.3.2.RELEASE</spring.version>
-		<spring.security.version>4.1.1.RELEASE</spring.security.version>
+		<mongo.data.version>3.3.0</mongo.data.version>
+		<spring.security.version>4.1.2.RELEASE</spring.security.version>
 		<vaadin.version>7.6.8</vaadin.version>
 		<jackson.version>2.8.1</jackson.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
@@ -370,7 +371,7 @@
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
-			<version>3.2.2</version>
+			<version>${mongo.data.version}</version>
 		</dependency>
 
 		<dependency>
