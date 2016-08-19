@@ -8,15 +8,27 @@ VERSION_PREC=`cat ~/app-root/data/.lastversion.file`
 
 LOG=~/app-root/data/cron.log
 echo "`date -u`" > $LOG;
-echo "Version précédente : $VERSION_PREC" >> $LOG;
-echo "Version GitHub     : $VERSION" >> $LOG;
-
+echo "***********************************" >> $LOG;
+echo "  Version précédente : $VERSION_PREC" >> $LOG;
+echo "  Version GitHub     : $VERSION" >> $LOG;
+echo "***********************************" >> $LOG;
 if [ "$VERSION_PREC" == "$VERSION" ]
 then
         echo "Pas de nouvelle version détectée" >> $LOG;
 else
         echo "Déploiement de la version $VERSION" >> $LOG;
+		echo "" >> $LOG;
         cd ~/app-root/data
         ./deploy.sh $VERSION >> $LOG;
-        echo $VERSION > .lastversion.file
+        RESULTAT=$?;
+		echo "" >> $LOG;
+        echo "> Résultat du déploiement " $RESULTAT >> $LOG;
+        if [ "$RESULTAT" == "0" ]
+        then
+        	echo "   La version s'est bien déployée. Mise à jour du flag" >> $LOG;
+        	echo $VERSION > .lastversion.file
+        else
+        	echo "   La version ne s'est pas bien déployée. Tentative dans 1 minute" >> $LOG;
+        fi
 fi
+echo "***********************************" >> $LOG;
