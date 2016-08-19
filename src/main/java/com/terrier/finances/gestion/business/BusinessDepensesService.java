@@ -302,8 +302,13 @@ public class BusinessDepensesService {
 	public void reinitialiserBudgetMensuel(BudgetMensuel budgetMensuel, Utilisateur utilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 		
 		CompteBancaire compteBancaire = serviceParams.getCompteById(budgetMensuel.getCompteBancaire().getId());
+		if(compteBancaire != null){
 		// S'il y a eu cloture, on ne fait rien
 		initNewBudget(compteBancaire, utilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
+		}
+		else{
+			throw new DataNotFoundException("Le compte bancaire " + budgetMensuel.getCompteBancaire().getId() + " est introuvable");
+		}
 	}
 	/**
 	 * Initialisation du budget à partir du budget du mois précédent
