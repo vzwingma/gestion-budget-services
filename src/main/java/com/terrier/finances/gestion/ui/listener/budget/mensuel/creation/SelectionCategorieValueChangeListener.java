@@ -30,18 +30,26 @@ public class SelectionCategorieValueChangeListener extends AbstractComponentList
 	 */
 	private static final long serialVersionUID = 7460353635366793837L;
 
+	/**
+	 * Sélection d'une catégorie
+	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
+	 */
 	@Override
 	public void valueChange(ValueChangeEvent event) {
 		CategorieDepense categorie = (CategorieDepense)event.getProperty().getValue();
 		controleur.getComponent().getComboBoxSsCategorie().removeAllItems();
-		
+		// Sélection d'une catégorie
 		if(categorie != null){
+			// Alimentation de la liste des sous catégories
 			if(categorie.getListeSSCategories() != null){
 				List<CategorieDepense> listeSSCategories =  new ArrayList<>(categorie.getListeSSCategories());
 				Collections.sort(listeSSCategories);
 				for (CategorieDepense ssCategorie : listeSSCategories) {
 					if(ssCategorie.isActif()){
 						controleur.getComponent().getComboBoxSsCategorie().addItem(ssCategorie);
+					}
+					if(listeSSCategories.size() == 1){
+						controleur.getComponent().getComboBoxSsCategorie().select(ssCategorie);
 					}
 				};
 				controleur.getComponent().getComboBoxSsCategorie().setEnabled(true);
