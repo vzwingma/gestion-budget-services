@@ -48,10 +48,12 @@ public class SelectionCategorieValueChangeListener extends AbstractComponentList
 					if(ssCategorie.isActif()){
 						controleur.getComponent().getComboBoxSsCategorie().addItem(ssCategorie);
 					}
-					if(listeSSCategories.size() == 1){
-						controleur.getComponent().getComboBoxSsCategorie().select(ssCategorie);
-					}
 				};
+				// #51 : S'il n'y a qu'un seul élément : sélection automatique de celui ci
+				if(controleur.getComponent().getComboBoxSsCategorie().getItemIds().size() == 1){
+					controleur.getComponent().getComboBoxSsCategorie().select(controleur.getComponent().getComboBoxSsCategorie().getItemIds().iterator().next());
+				}
+				
 				controleur.getComponent().getComboBoxSsCategorie().setEnabled(true);
 			}
 		}
