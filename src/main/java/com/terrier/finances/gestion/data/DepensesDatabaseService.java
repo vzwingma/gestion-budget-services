@@ -3,7 +3,9 @@ package com.terrier.finances.gestion.data;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
+import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
@@ -64,6 +67,35 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	}
 
 
+	/**
+	 * Chargement des libellés des dépenses
+	 * @param annee année du budget
+	 * @param idCompte id du compte
+	 * @return liste des libellés
+	 */
+	public Set<String> chargeLibellesDepenses(String idCompte, int annee) throws BudgetNotFoundException{
+		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
+		Query queryBudget = new Query();
+		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(idCompte).and("annee").is(annee));
+		Set<String> libellesDepenses = new HashSet<String>();
+		try{
+			List<BudgetMensuelDTO> budgetDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
+			if(budgetDTO != null){
+				for (BudgetMensuelDTO budgetMensuelDTO : budgetDTO) {
+					for (LigneDepense depense : getDataTransformerBudget().transformDTOtoBO(budgetMensuelDTO).getListeDepenses()) {
+						libellesDepenses.add(depense.getLibelle());
+					}
+				}
+			}
+		}
+		catch(Exception e){
+			LOGGER.error("Erreur lors du chargement", e);
+		}
+		return libellesDepenses;
+	}
+
+	
+	
 	/**
 	 * Chargement du budget mensuel
 	 * @param mois mois du budget

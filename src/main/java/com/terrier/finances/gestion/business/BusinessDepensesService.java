@@ -133,6 +133,8 @@ public class BusinessDepensesService {
 			catch(BudgetNotFoundException e){ }
 			// Résultat mensuel mis à jour
 			calculBudgetEtSauvegarde(budgetMensuel);
+			// Ajout de l'autocomplete
+			budgetMensuel.getSetLibellesDepensesForAutocomplete().addAll(this.dataDepenses.chargeLibellesDepenses(compteBancaire.getId(), annee));
 		}
 		return budgetMensuel;
 	}
@@ -326,7 +328,6 @@ public class BusinessDepensesService {
 			for (LigneDepense depenseMoisPrecedent : budgetPrecedent.getListeDepenses()) {
 				if(depenseMoisPrecedent.isPeriodique() || depenseMoisPrecedent.getEtat().equals(EtatLigneDepenseEnum.REPORTEE)){
 					budget.getListeDepenses().add(depenseMoisPrecedent.cloneDepenseToMoisSuivant());	
-					budget.getSetLibellesDepensesForAutocomplete().add(depenseMoisPrecedent.getLibelle());
 				}
 
 			}
