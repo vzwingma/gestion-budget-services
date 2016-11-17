@@ -48,7 +48,7 @@ public enum EtatLigneDepenseEnum {
 	}
 	
 	
-	public EtatLigneDepenseEnum getEnum(String idEnum){
+	public static EtatLigneDepenseEnum getEnum(String idEnum){
 		for (EtatLigneDepenseEnum enums : values()) {
 			if(enums.getId().equals(idEnum)){
 				return enums;

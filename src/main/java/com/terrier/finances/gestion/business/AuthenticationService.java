@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
-import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**
@@ -119,14 +118,4 @@ public class AuthenticationService {
 		return null;
 	}
 
-
-	/**
-	 * Retourne la valeur d'une préférence pour l'utilisateur cournat
-	 * @param clePreference clé
-	 * @param typeValeurPreference type de la préférence
-	 * @return la valeur
-	 */
-	public Boolean getPreferenceUtilisateurCourant(Utilisateur utilisateur, UtilisateurPrefsEnum clePreference){
-		return utilisateur.getPreference(clePreference, Boolean.class);
-	}
 }

@@ -10,6 +10,7 @@ import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
+import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.CreerDepenseForm;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
@@ -230,7 +231,13 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		for(EtatLigneDepenseEnum etat : EtatLigneDepenseEnum.values()){
 			getComponent().getListSelectEtat().addItem(etat);
 			getComponent().getListSelectEtat().setItemCaption(etat, etat.getLibelle());
+			// #50 : Gestion du style par préférence utilisateur
+			String etatNlleDepense = getUtilisateurCourant().getPreference(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE, String.class);
+			if(etatNlleDepense != null){
+				getComponent().getListSelectEtat().select(EtatLigneDepenseEnum.getEnum(etatNlleDepense));
+			}
 		}
+
 		// Périodique
 		getComponent().getCheckBoxPeriodique().setValue(Boolean.FALSE);
 	}
