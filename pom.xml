@@ -88,7 +88,7 @@
 			<plugin>
 				<groupId>com.versioneye</groupId>
 				<artifactId>versioneye-maven-plugin</artifactId>
-				<version>3.10.0</version>
+				<version>3.10.2</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -243,7 +243,7 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-server</artifactId>
-			<version>${vaadin.version}</version>
+			<version>7.7.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
