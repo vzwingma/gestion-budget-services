@@ -12,3 +12,4 @@ deploy:
     file: target/Budget.tar.gz
     on:
       repo: vzwingma/gestion-budget
+      tags: true
