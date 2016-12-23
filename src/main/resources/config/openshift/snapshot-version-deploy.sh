@@ -17,13 +17,13 @@ then
         echo "Pas de nouvelle version détectée" >> $LOG;
 else
         echo "Déploiement de la version Snapshot du $VERSION" >> $LOG;
-		echo "" >> $LOG;
+	echo "" >> $LOG;
         cd ~/app-root/data
-        ./deploy.sh snapshot >> $LOG;
-		# Déplacement de la cron task
-		cp $OPENSHIFT_DATA_DIR/snapshot-version-deploy.sh $OPENSHIFT_REPO_DIR/.openshift/cron/minutely
-        RESULTAT=$?;
-		echo "" >> $LOG;
+	./deploy.sh snapshot >> $LOG;
+	RESULTAT=$?;
+	#Déplacement de la cron task
+	cp $OPENSHIFT_DATA_DIR/snapshot-version-deploy.sh $OPENSHIFT_REPO_DIR/.openshift/cron/minutely
+	echo "" >> $LOG;
         echo "> Résultat du déploiement " $RESULTAT >> $LOG;
         if [ "$RESULTAT" == "0" ]
         then
