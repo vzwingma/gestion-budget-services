@@ -5,10 +5,10 @@ cache:
     directories:
       - $HOME/.m2
 script:
-#  - git tag -d snapshot
-#  - git push origin :refs/tags/snapshot
-#  - git tag snapshot
-#  - git push origin snapshot  
+  - git tag -d snapshot
+  - git push origin :refs/tags/snapshot
+  - git tag snapshot
+  - git push origin snapshot  
 deploy:
   - provider: releases
     api-key:
