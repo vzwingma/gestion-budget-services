@@ -12,6 +12,4 @@ wget https://github.com/vzwingma/gestion-budget/releases/download/$VERSION/Budge
 tar xvzf *.tar.gz
 # Déplacement du war
 mv $OPENSHIFT_DATA_DIR/ROOT.war $OPENSHIFT_JBOSSEWS_DIR/webapps/ROOT.war
-# Déplacement de la cron task
-cp $OPENSHIFT_DATA_DIR/last-version-deploy.sh $OPENSHIFT_REPO_DIR/.openshift/cron/minutely
 rm *.tar.gz
