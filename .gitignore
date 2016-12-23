@@ -1,10 +1,7 @@
-<<<<<<< HEAD
-/target
 /.settings
 /.classpath
 /.project
 /RemoteSystemsTempFiles/
 /.metadata/
-=======
 /bin/
->>>>>>> master
+/target/
