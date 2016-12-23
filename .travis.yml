@@ -6,9 +6,9 @@ cache:
       - $HOME/.m2
 script:
   - git tag -d snapshot
-  - git push origin :refs/tags/snapshot -q https://vzwingma:$GITHUB_API_KEY@github.com/vzwingma/gestion-budget
+  - git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget :refs/tags/snapshot
   - git tag snapshot
-  - git push origin snapshot -q https://vzwingma:$GITHUB_API_KEY@github.com/vzwingma/gestion-budget
+  - git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget --tags
 deploy:
   - provider: releases
     api-key:
