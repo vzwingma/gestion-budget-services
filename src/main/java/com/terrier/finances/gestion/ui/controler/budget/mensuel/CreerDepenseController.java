@@ -238,7 +238,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 			}
 		}
 
-		// Périodique
+		// Périodique	
 		getComponent().getCheckBoxPeriodique().setValue(Boolean.FALSE);
 	}
 	
