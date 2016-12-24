@@ -50,7 +50,7 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 
 		} else {
 			if(getBudgetMensuelCourant().isActif()){
-				return new Action[]{ SET_LAST_DEPENSE, EDIT_DEPENSE };
+				return new Action[]{ EDIT_DEPENSE, SET_LAST_DEPENSE };
 			}
 			else{
 				return null;
