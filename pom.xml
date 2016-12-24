@@ -12,12 +12,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<spring.version>4.3.2.RELEASE</spring.version>
-		<mongo.data.version>3.3.0</mongo.data.version>
+		<spring.version>4.3.4.RELEASE</spring.version>
+		<mongo.data.version>3.4.0</mongo.data.version>
 		<spring.security.version>4.1.2.RELEASE</spring.security.version>
-		<vaadin.version>7.6.8</vaadin.version>
-		<vaadin.server.version>7.6.8</vaadin.server.version>
-		<jackson.version>2.8.1</jackson.version>
+		<vaadin.version>7.7.6</vaadin.version>
+		<jackson.version>2.8.5</jackson.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
@@ -366,7 +365,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
-			<version>1.9.2.RELEASE</version>
+			<version>1.9.5.RELEASE</version>
 		</dependency>
 
 		<dependency>
@@ -378,7 +377,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
+			<version>3.5</version>
 		</dependency>
 		<!-- LOG -->
 
@@ -396,7 +395,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.7</version>
+			<version>1.1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>

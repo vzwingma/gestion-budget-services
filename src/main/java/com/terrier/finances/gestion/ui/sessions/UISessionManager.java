@@ -101,7 +101,7 @@ public class UISessionManager implements Runnable {
 	public int getNombreSessionsActives(){
 		int nbSessionsActives = 0;
 		for (UISession session : componentsManager.values()) {
-			LOGGER.debug(" > {} : active : {}. Dernière activité : {}", session.getIdSession(), session.isActive(), session.getLastAccessTime().getTime());
+			LOGGER.trace(" > {} : active : {}. Dernière activité : {}", session.getIdSession(), session.isActive(), session.getLastAccessTime().getTime());
 			if(session.isActive()){
 				nbSessionsActives ++;
 			}
