@@ -32,9 +32,9 @@ public class UISession {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UISession.class);
 
 	private String idSession;
-	
+
 	private Calendar lastAccessTime;
-	
+
 	/**
 	 * Session Manager
 	 * @param idSession idSessions
@@ -91,16 +91,19 @@ public class UISession {
 		getMainLayout().removeAllComponents();
 		// Suppression de tous les controleurs
 		mapControleurs.clear();
-		
+
 		// Invalidate Sessions
 		VaadinSession vSession = VaadinSession.getCurrent();
-		vSession.close();
-		WrappedSession httpSession = vSession.getSession();
-		//Invalidate HttpSession
-		httpSession.invalidate();
+		if(vSession != null){
+			vSession.close();
+			WrappedSession httpSession = vSession.getSession();
+			//Invalidate HttpSession
+			httpSession.invalidate();
+		}
+		
 	}
-	
-	
+
+
 	/**
 	 * Enregistrement des controleurs
 	 * @param controleur controleur à enregistrer
@@ -132,8 +135,8 @@ public class UISession {
 		this.utilisateurCourant = utilisateur;
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * @return the utilisateurCourant
 	 */
@@ -141,9 +144,9 @@ public class UISession {
 		// LOGGER.trace("[{}] Utilisateur courant > {}", this.idSession, this.utilisateurCourant);
 		return utilisateurCourant;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @param lastAccessTime the lastAccessTime to set
 	 */
@@ -166,7 +169,7 @@ public class UISession {
 	public boolean isActive(){
 		return utilisateurCourant != null;
 	}
-	
+
 	/**
 	 * @return the idSession
 	 */
