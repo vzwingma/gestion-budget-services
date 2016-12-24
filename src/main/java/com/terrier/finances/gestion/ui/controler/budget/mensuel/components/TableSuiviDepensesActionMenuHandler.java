@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode.TableSuiviDepenseEditedFieldFactory;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.event.Action;
@@ -35,6 +36,8 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 
 	private static final Action SET_LAST_DEPENSE = new Action("Marque comme dernière opération relevée sur le compte");
 
+	private static final Action EDIT_DEPENSE = new Action("Editer la dépense");
+	
 	/**
 	 * Liste des actions du menu
 	 * @see com.vaadin.event.Action.Handler#getActions(java.lang.Object, java.lang.Object)
@@ -47,7 +50,7 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 
 		} else {
 			if(getBudgetMensuelCourant().isActif()){
-				return new Action[]{ SET_LAST_DEPENSE };
+				return new Action[]{ SET_LAST_DEPENSE, EDIT_DEPENSE };
 			}
 			else{
 				return null;
@@ -63,7 +66,10 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 		TableSuiviDepense tableSuivi = (TableSuiviDepense)sender;
 		if(SET_LAST_DEPENSE.equals(action) && target != null){
 			putIdAsLastDepense(tableSuivi, (String)target);
-		}		
+		}	
+		else if(EDIT_DEPENSE.equals(action) && target != null){
+			editDepense(tableSuivi, (String)target);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -86,5 +92,19 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 		LOGGER.info("Marquage de la dépense {} comme dernière action relevée", idDepense);
 		tableSuivi.getControleur().getServiceDepense().setLigneDepenseAsDerniereOperation(getBudgetMensuelCourant(), idDepense);
 		getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
+	}
+	
+	/**
+	 * Set as last depense 
+	 * @param tableSuivi table
+	 * @param idDepense id
+	 */
+	private void editDepense(TableSuiviDepense tableSuivi, String idDepense){
+		LOGGER.info("Edition de la dépense {} : {}", idDepense, tableSuivi.getItem(idDepense));
+		
+		TableSuiviDepenseEditedFieldFactory factory = (TableSuiviDepenseEditedFieldFactory)tableSuivi.getTableFieldFactory();
+		factory.setIdLigneEditable(idDepense);
+		getControleur(BudgetMensuelController.class).setTableOnEditableMode(true);
+		// getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
 	}
 }

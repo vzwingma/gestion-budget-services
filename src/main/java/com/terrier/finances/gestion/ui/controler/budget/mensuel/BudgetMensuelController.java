@@ -190,7 +190,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 				this.compte.setItemIcon(compte.getId(), new ThemeResource(compte.getItemIcon()));
 			}
 			this.compte.setItemStyleGenerator(new ComptesComboboxItemStyle(comptes));
-			
+
 			initRangeDebutFinMois(compteCourant.getId());
 			this.compte.setTextInputAllowed(false);
 			this.compte.addValueChangeListener(this);
@@ -264,6 +264,33 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 					+" du compte "+ getBudgetMensuelCourant().getCompteBancaire().getLibelle(), 
 					Notification.Type.ERROR_MESSAGE);
 		}
+	}
+
+
+
+
+	/**
+	 * Sette la table en mode édition
+	 */
+	public void setTableOnEditableMode(boolean editableMode){
+		// Activation du tableau
+		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.TYPE.getId(), !editableMode);
+		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), !editableMode);
+		// Inversion du champ Libelle
+		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), !editableMode);
+		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), editableMode);
+		getComponent().getTableSuiviDepense().setEditable(editableMode);
+		getComponent().getTableSuiviDepense().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), editableMode ? TableSuiviDepenseController.TAILLE_COLONNE_DATE_EDITEE : TableSuiviDepenseController.TAILLE_COLONNE_DATE);
+
+
+		getComponent().getButtonValider().setVisible(editableMode);
+		getComponent().getButtonValider().setEnabled(editableMode);
+		getComponent().getButtonAnnuler().setVisible(editableMode);
+		getComponent().getButtonAnnuler().setEnabled(editableMode);
+		getComponent().getButtonEditer().setVisible(!editableMode);
+		getComponent().getButtonEditer().setEnabled(!editableMode);
+		getComponent().getButtonCreate().setVisible(!editableMode);
+		getComponent().getButtonCreate().setEnabled(!editableMode);		
 	}
 
 

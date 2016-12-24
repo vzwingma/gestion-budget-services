@@ -18,6 +18,7 @@ import com.vaadin.ui.TextField;
 
 /**
  * Field Factory pour le mode edition
+ * Si la liste des id est remplie, ce sont les seuls lignes qui seront modifiées
  * @author vzwingma
  *
  */
@@ -28,8 +29,11 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 	 */
 	private static final long serialVersionUID = -8561840459023324017L;
 
+	// Catégories
 	private Collection<CategorieDepense> categories;
 
+	private String idLigneEditable;
+	
 	/**
 	 * Logger
 	 */
@@ -44,10 +48,19 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 
 
 
+	/* (non-Javadoc)
+	 * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Field createField(Container container, Object itemId,
 			Object propertyId, Component uiContext) {
+		
+		
+		if(this.idLigneEditable != null && !this.idLigneEditable.equals(itemId)){
+			return null;
+		}
+		
 		
 		// Create fields by their class
 		Class<?> cls = container.getType(propertyId);
@@ -126,4 +139,15 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 		editorField.setWidth("100%");
 		return editorField;
 	}
+
+
+
+	/**
+	 * @param idLigneEditable the idLigneEditable to set
+	 */
+	public void setIdLigneEditable(String idLigneEditable) {
+		this.idLigneEditable = idLigneEditable;
+	}
+	
+	
 }

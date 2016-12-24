@@ -17,7 +17,6 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBud
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -51,11 +50,7 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 
 		BudgetMensuelPage page  = AbstractUIComponent.getParentComponent(editer, BudgetMensuelPage.class);
 		if(page != null){
-			// Activation du tableau
-			page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.TYPE.getId(), true);
-			page.getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), true);
-			page.getTableSuiviDepense().setEditable(false);
-			page.getTableSuiviDepense().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), TableSuiviDepenseController.TAILLE_COLONNE_DATE);
+			getControleur(BudgetMensuelController.class).setTableOnEditableMode(false);
 			if(state){
 				refreshModele(page.getTableSuiviDepense());
 
@@ -69,15 +64,6 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 				getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
 				Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
 			}
-
-			page.getButtonValider().setVisible(false);
-			page.getButtonValider().setEnabled(false);
-			page.getButtonAnnuler().setVisible(false);
-			page.getButtonValider().setEnabled(false);
-			page.getButtonEditer().setVisible(true);
-			page.getButtonEditer().setEnabled(true);
-			page.getButtonCreate().setVisible(true);
-			page.getButtonCreate().setEnabled(true);
 		}
 	}
 
