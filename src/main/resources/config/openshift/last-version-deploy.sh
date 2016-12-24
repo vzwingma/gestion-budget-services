@@ -7,12 +7,12 @@ VERSION=`curl -Ls -o /dev/null -w %{url_effective} $PROJET_GITHUB/releases/lates
 VERSION_PREC=`cat ~/app-root/data/.lastversion.file`
 
 LOG=~/app-root/data/cron.log
-echo "`date -u`" > $LOG;
+echo "`date -u`" >> $LOG;
 echo "***********************************" >> $LOG;
 echo "  Version précédente : $VERSION_PREC" >> $LOG;
 echo "  Version GitHub     : $VERSION" >> $LOG;
 echo "***********************************" >> $LOG;
-if [ "$VERSION_PREC" == "$VERSION" ]
+if [ "$VERSION_PREC" == "$VERSION" ] || [ "snapshot" == "$VERSION" ]
 then
         echo "Pas de nouvelle version détectée" >> $LOG;
 else
@@ -21,11 +21,13 @@ else
         cd ~/app-root/data
         ./deploy.sh $VERSION >> $LOG;
         RESULTAT=$?;
+		#Déplacement de la cron task
+		cp $OPENSHIFT_DATA_DIR/last-version-deploy.sh $OPENSHIFT_REPO_DIR/.openshift/cron/minutely
 		echo "" >> $LOG;
         echo "> Résultat du déploiement " $RESULTAT >> $LOG;
         if [ "$RESULTAT" == "0" ]
         then
-        	echo "   La version s'est bien déployée. Mise à jour du flag" >> $LOG;
+        	echo "   La version s'est bien déployée" >> $LOG;
         	echo $VERSION > .lastversion.file
         else
         	echo "   La version ne s'est pas bien déployée. Tentative dans 1 minute" >> $LOG;
