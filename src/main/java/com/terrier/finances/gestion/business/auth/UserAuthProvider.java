@@ -44,9 +44,8 @@ public class UserAuthProvider implements AuthenticationProvider {
 		if (utilisateur == null) {
 			throw new BadCredentialsException("Erreur d'authentification.");
 		}
-		Authentication token = new UsernamePasswordAuthenticationToken(utilisateur, password, AuthorityUtils.createAuthorityList("ROLE_REST_USER"));
-		LOGGER.info("[SEC] AuthToken : [{}]", token);
-		return token;
+		LOGGER.info("[SEC] AuthToken : [{}]", username);
+		return new UsernamePasswordAuthenticationToken(utilisateur, password, AuthorityUtils.createAuthorityList("ROLE_REST_USER"));
 	}
 
 	/* (non-Javadoc)
