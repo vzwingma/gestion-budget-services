@@ -14,7 +14,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.terrier.finances.gestion.business.AuthenticationService;
+import com.terrier.finances.gestion.business.auth.PasswordEncoder;
 import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 
@@ -143,7 +143,7 @@ public class Utilisateur implements Serializable {
 	 */
 	public void initEncryptor(String motDePasse) {
 		this.encryptor = new BasicTextEncryptor();
-		this.encryptor.setPassword(AuthenticationService.hashPassWord("#"+motDePasse+"#"));
+		this.encryptor.setPassword(PasswordEncoder.generateStrongPasswordHash(motDePasse));
 	}
 
 	

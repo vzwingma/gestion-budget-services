@@ -23,16 +23,23 @@ public class PasswordEncoder {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
-	public static String generateStrongPasswordHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException
+	public static String generateStrongPasswordHash(String password)
 	{
-		int iterations = 1000;
-		char[] chars = password.toCharArray();
-		byte[] salt = getSalt();
+		try{
+			int iterations = 1000;
+			char[] chars = password.toCharArray();
+			byte[] salt = getSalt();
 
-		PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
-		SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-		byte[] hash = skf.generateSecret(spec).getEncoded();
-		return iterations + ":" + toHex(salt) + ":" + toHex(hash);
+			PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
+			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+			byte[] hash;
+
+			hash = skf.generateSecret(spec).getEncoded();
+
+			return iterations + ":" + toHex(salt) + ":" + toHex(hash);
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+			return null;
+		}
 	}
 
 	/**
