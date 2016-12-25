@@ -1,7 +1,7 @@
 #/bin/bash
 
 echo ${TRAVIS_BRANCH}
-# Tag de snapshot
+# Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB.
 if [ ${TRAVIS_BRANCH} = "snapshot" ]; then
 	echo "Pas de reTag de snapshot";
 else

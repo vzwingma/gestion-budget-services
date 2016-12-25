@@ -1,6 +1,6 @@
 #/bin/bash
 echo ${TRAVIS_BRANCH}
-# Tag de snapshot
+# Merge vers la branche coverity_scan
 if [ ${TRAVIS_BRANCH} = "snapshot" ]; then
 	echo "Merge vers la branche Coverity";
 else
