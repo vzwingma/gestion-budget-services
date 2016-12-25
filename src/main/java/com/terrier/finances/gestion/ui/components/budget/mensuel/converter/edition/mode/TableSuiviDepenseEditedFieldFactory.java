@@ -8,7 +8,6 @@ import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
-import com.terrier.finances.gestion.ui.controler.validators.ValeurDepenseValidator;
 import com.vaadin.data.Container;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
@@ -114,7 +113,6 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 					}
 				}
 			}
-
 			editorField = comboField;
 		}		
 		else if(propertyId.equals(EntetesTableSuiviDepenseEnum.TYPE.getId())){
