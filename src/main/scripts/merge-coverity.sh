@@ -9,7 +9,8 @@ if [ ${TRAVIS_BRANCH} = "snapshot" ]; then
 	cp src/main/assembly/template/coverity.travis.yml .travis.yml
 	git add .travis.yml
 	git commit -m "Application du .travis.yml Coverity"
-	git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget
+	git config --global push.default simple
+	git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget --set-upstream origin coverity_scan 
 else
 	echo "Pas de merge vers la branche Coverity";
 fi
