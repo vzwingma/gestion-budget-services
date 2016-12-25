@@ -104,7 +104,9 @@ public class AuthenticationService {
 	 * @return password hashé en 256
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnsupportedEncodingException
+	 * @see PasswordEncoder
 	 */
+	@Deprecated
 	public static String hashPassWord(String password){
 
 		try {
