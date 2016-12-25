@@ -50,19 +50,23 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 
 		BudgetMensuelPage page  = AbstractUIComponent.getParentComponent(editer, BudgetMensuelPage.class);
 		if(page != null){
-			getControleur(BudgetMensuelController.class).setTableOnEditableMode(false);
 			if(state){
-				refreshModele(page.getTableSuiviDepense());
-
-				/**
-				 * Recalcul du budget
-				 */
-				getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(getBudgetMensuelCourant());
-				/**
-				 * MAJ des tableaux
-				 */
-				getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
-				Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
+				boolean validateForm = page.getTableSuiviDepense().getControleur().validateEditableForm();
+				if(validateForm){
+					refreshModele(page.getTableSuiviDepense());
+					// Recalcul du budget
+					getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(getBudgetMensuelCourant());
+					getControleur(BudgetMensuelController.class).setTableOnEditableMode(false);
+					// MAJ des tableaux
+					getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
+					Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
+				}
+				else{
+					LOGGER.warn("Les données sont incorrectes pas de mise à jour");
+				}
+			}
+			else{
+				getControleur(BudgetMensuelController.class).setTableOnEditableMode(false);
 			}
 		}
 	}

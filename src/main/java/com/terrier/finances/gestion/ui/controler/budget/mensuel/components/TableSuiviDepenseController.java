@@ -3,6 +3,7 @@
  */
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.components;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,9 +20,12 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.editi
 import com.terrier.finances.gestion.ui.components.style.TableDepensesCellStyle;
 import com.terrier.finances.gestion.ui.components.style.TableDepensesDescriptionGenerator;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
+import com.terrier.finances.gestion.ui.controler.validators.TypeDepenseValidator;
+import com.terrier.finances.gestion.ui.controler.validators.ValeurDepenseValidator;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.PopupNoteVisibitilityListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.RichTextArea;
@@ -223,5 +227,59 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			}
 		}
 		getComponent().refreshRowCache();
+	}
+
+
+	/**
+	 * Validation du formulaire
+	 */
+	public boolean validateEditableForm(){
+
+		List<String> messagesErreurs = new ArrayList<String>();
+		String idLigneEditable = ((TableSuiviDepenseEditedFieldFactory)getComponent().getTableFieldFactory()).getIdLigneEditable();
+		if(getComponent().isEditable() && idLigneEditable != null){
+			for (Object itemID : getComponent().getItemIds()) {
+				Item itemLigneDepense = getComponent().getItem(itemID);
+				
+				String description = itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId()).getValue().toString();
+				
+				if(itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.CATEGORIE.getId()).getValue() == null){
+					messagesErreurs.add(description + " : La catégorie est obligatoire");
+				}
+				if(itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId()).getValue() == null){
+					messagesErreurs.add(description + " : La sous-catégorie est obligatoire");
+				}
+				if(description == null || description.isEmpty()){
+					messagesErreurs.add(description + " : La description est obligatoire");
+				}
+				ValeurDepenseValidator validator = new ValeurDepenseValidator("La valeur est incorrecte");
+				try{
+					validator.validate(itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.VALEUR.getId()).getValue());
+				}
+				catch(InvalidValueException e){
+					messagesErreurs.add(description + " : La valeur est obligatoire");
+				}
+				// Vérification de la cohérence des données :
+				CategorieDepense ssCategorie = (CategorieDepense)itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId()).getValue();
+				TypeDepenseEnum type = (TypeDepenseEnum)itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.TYPE.getId()).getValue();
+
+				TypeDepenseValidator typeValidator = new TypeDepenseValidator(ssCategorie);
+				try{
+					typeValidator.validate(type);
+				}
+				catch(InvalidValueException e){
+					messagesErreurs.add(description + " : " + e.getMessage());
+				}
+			}
+		}
+
+		StringBuilder b = new StringBuilder();
+		for (String string : messagesErreurs) {
+			b.append(string).append("\n");
+		}
+		if(!messagesErreurs.isEmpty()){
+			Notification.show(b.toString(), Notification.Type.WARNING_MESSAGE);
+		}
+		return messagesErreurs.isEmpty();
 	}
 }

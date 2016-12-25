@@ -113,6 +113,7 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 					}
 				}
 			}
+
 			editorField = comboField;
 		}		
 		else if(propertyId.equals(EntetesTableSuiviDepenseEnum.TYPE.getId())){
@@ -148,6 +149,15 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 	 */
 	public void setIdLigneEditable(String idLigneEditable) {
 		this.idLigneEditable = idLigneEditable;
+	}
+
+
+
+	/**
+	 * @return the idLigneEditable
+	 */
+	public String getIdLigneEditable() {
+		return idLigneEditable;
 	}
 
 

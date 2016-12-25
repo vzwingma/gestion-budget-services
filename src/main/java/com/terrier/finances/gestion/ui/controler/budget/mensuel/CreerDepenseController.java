@@ -14,6 +14,7 @@ import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.CreerDepenseForm;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
+import com.terrier.finances.gestion.ui.controler.validators.TypeDepenseValidator;
 import com.terrier.finances.gestion.ui.controler.validators.ValeurDepenseValidator;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionValiderCreationDepenseClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.AutocompleteDescriptionQueryListener;
@@ -136,19 +137,13 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 			return false;
 		}
 
-		LOGGER.trace("Vérification de la cohérence de la saisie");
 		// Vérification de la cohérence des données :
-		CategorieDepense ssCategorie = (CategorieDepense)getComponent().getComboBoxSsCategorie().getConvertedValue();
-		CategorieDepense categorie = (CategorieDepense)getComponent().getComboBoxCategorie().getConvertedValue();
-		TypeDepenseEnum type = (TypeDepenseEnum)getComponent().getListSelectType().getConvertedValue();
-
-		TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
-		if(BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(ssCategorie.getId()) || BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(ssCategorie.getId())){
-			typeAttendu = TypeDepenseEnum.CREDIT;
+		TypeDepenseValidator typeValidator = new TypeDepenseValidator((CategorieDepense)getComponent().getComboBoxSsCategorie().getConvertedValue());
+		try{
+			typeValidator.validate((TypeDepenseEnum)getComponent().getListSelectType().getConvertedValue());
 		}
-		// Cohérence type
-		if(!typeAttendu.equals(type)){
-			Notification.show("Le type de la dépense doit être ["+ typeAttendu.getId()+ " ("+typeAttendu.getLibelle()+")] pour une dépense de la catégorie {" + categorie.getLibelle() +"/"+ ssCategorie.getLibelle()+"}", Notification.Type.WARNING_MESSAGE);
+		catch(InvalidValueException e){
+			Notification.show(e.getMessage(), Notification.Type.WARNING_MESSAGE);
 			return false;
 		}
 		return true;
