@@ -5,16 +5,7 @@ cache:
     directories:
       - $HOME/.m2
 script:
-  - echo ${TRAVIS_BRANCH}
-  - 'if [ ${TRAVIS_BRANCH} = "snapshot" ]; then
-          echo "Pas de reTag de snapshot";
-      else
-          echo "ReTag de snapshot";
-		  git tag -d snapshot;
-          git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget :refs/tags/snapshot;
-          git tag snapshot;
-          git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget --tags;
-      fi'
+  - ./src/main/scripts/tag-snapshot.sh
 deploy:
   - provider: releases
     api-key:
