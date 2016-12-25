@@ -103,11 +103,11 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	/**
 	 * @return la liste des catégories
 	 */
-	public Utilisateur chargeUtilisateur(String login, String mdpHashed) throws DataNotFoundException{
+	public Utilisateur chargeUtilisateur(String login) throws DataNotFoundException{
 		try{
-			LOGGER.info("Recherche de l'utilisateur {}/{}", login, mdpHashed);
+			LOGGER.info("Recherche de l'utilisateur {}", login);
 			Query queryUser = new Query();
-			queryUser.addCriteria(Criteria.where("login").is(login).and("hashMotDePasse").is(mdpHashed));
+			queryUser.addCriteria(Criteria.where("login").is(login));
 			return getMongoOperation().findOne(queryUser, Utilisateur.class);
 		}
 		catch(Exception e){
