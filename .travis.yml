@@ -5,6 +5,7 @@ cache:
     directories:
       - $HOME/.m2
 script:
+  - chmod a+x ./src/main/scripts/*.sh
   - ./src/main/scripts/tag-snapshot.sh
   - ./src/main/scripts/merge-coverity.sh
 deploy:
