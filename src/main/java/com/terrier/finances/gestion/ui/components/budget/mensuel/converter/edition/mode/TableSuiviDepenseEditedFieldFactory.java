@@ -3,10 +3,12 @@ package com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edit
 import java.util.Collection;
 import java.util.Date;
 
+import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
+import com.terrier.finances.gestion.ui.controler.validators.ValeurDepenseValidator;
 import com.vaadin.data.Container;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
@@ -33,7 +35,7 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 	private Collection<CategorieDepense> categories;
 
 	private String idLigneEditable;
-	
+
 	/**
 	 * Logger
 	 */
@@ -55,13 +57,13 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 	@Override
 	public Field createField(Container container, Object itemId,
 			Object propertyId, Component uiContext) {
-		
-		
+
+
 		if(this.idLigneEditable != null && !this.idLigneEditable.equals(itemId)){
 			return null;
 		}
-		
-		
+
+
 		// Create fields by their class
 		Class<?> cls = container.getType(propertyId);
 		Field editorField;
@@ -102,14 +104,17 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 			CategorieDepense categorieLigneLibelle = (CategorieDepense)container.getContainerProperty(itemId, propertyId).getValue();
 			for (CategorieDepense categorie : categories) {
 				for (CategorieDepense ssCategorie : categorie.getListeSSCategories()) {
-					comboField.addItem(ssCategorie);
-					comboField.setItemCaption(ssCategorie, ssCategorie.getLibelle());
-					// Sélection par défaut
-					if(ssCategorie.equals(categorieLigneLibelle)){
-						comboField.select(ssCategorie);
-					}				
+					if(!BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ssCategorie.getId())){
+						comboField.addItem(ssCategorie);
+						comboField.setItemCaption(ssCategorie, ssCategorie.getLibelle());
+						// Sélection par défaut
+						if(ssCategorie.equals(categorieLigneLibelle)){
+							comboField.select(ssCategorie);
+						}				
+					}
 				}
 			}
+
 			editorField = comboField;
 		}		
 		else if(propertyId.equals(EntetesTableSuiviDepenseEnum.TYPE.getId())){
@@ -127,15 +132,13 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 					comboField.select(type);
 				}				
 			}
-			
+
 			editorField = comboField;
 		}				
 		else{
 			// Otherwise use the default field factory 
 			editorField =  super.createField(container, itemId, propertyId, uiContext);
 		}
-
-
 		editorField.setWidth("100%");
 		return editorField;
 	}
@@ -148,6 +151,6 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 	public void setIdLigneEditable(String idLigneEditable) {
 		this.idLigneEditable = idLigneEditable;
 	}
-	
-	
+
+
 }
