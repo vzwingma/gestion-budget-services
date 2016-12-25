@@ -9,7 +9,7 @@ script:
 # Tag de snapshot pour autodeploy sur rec  
   - ./src/main/scripts/tag-snapshot.sh
 # Merge sur la branche coverity
-  - ./src/main/scripts/merge-coverity.sh
+#  - ./src/main/scripts/merge-coverity.sh
 deploy:
 # Déploiement des releaes sur tag : snapshot ou version 
   - provider: releases
