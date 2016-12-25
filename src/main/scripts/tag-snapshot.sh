@@ -1,4 +1,5 @@
 #/bin/bash
+
 echo ${TRAVIS_BRANCH}
 # Tag de snapshot
 if [ ${TRAVIS_BRANCH} = "snapshot" ]; then
