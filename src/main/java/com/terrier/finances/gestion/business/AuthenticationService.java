@@ -1,5 +1,8 @@
 package com.terrier.finances.gestion.business;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -94,4 +97,32 @@ public class AuthenticationService {
 		}
 		return null;
 	}
+	
+
+	/**
+	 * @param password mot de passe
+	 * @return password hashé en 256
+	 * @throws NoSuchAlgorithmException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String hashPassWord(String password){
+
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			byte[] hash = digest.digest(password.getBytes("UTF-8"));
+			StringBuffer hexString = new StringBuffer();
+
+			for (int i = 0; i < hash.length; i++) {
+				String hex = Integer.toHexString(0xff & hash[i]);
+				if(hex.length() == 1) hexString.append('0');
+				hexString.append(hex);
+			}
+
+			return hexString.toString();
+		} catch (NullPointerException | NoSuchAlgorithmException | UnsupportedEncodingException e){
+			return null;
+		}
+	}
+
+
 }
