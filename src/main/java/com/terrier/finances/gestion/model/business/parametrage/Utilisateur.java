@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.terrier.finances.gestion.business.AuthenticationService;
-import com.terrier.finances.gestion.business.auth.PasswordEncoder;
 import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 
@@ -149,15 +148,15 @@ public class Utilisateur implements Serializable {
 		this.encryptor.setPassword(AuthenticationService.hashPassWord("#"+motDePasse+"#"));
 	}
 
+
 	/**
-	 * InitEncryptor with new hash
-	 * @param motDePasse
+	 * @param cleChiffrementDonneesChiffree the encryptor to set
 	 */
-	public void initPBKDF2WithHmacSHA1Encryptor(String motDePasse){
+	public void initDataEncryptor(String cleChiffrementDonneesChiffree) {
 		this.encryptor = new BasicTextEncryptor();
-		this.encryptor.setPassword(PasswordEncoder.generateStrongPasswordHash(motDePasse));
+		this.encryptor.setPassword(cleChiffrementDonneesChiffree);
 	}
-	
+
 	/**
 	 * @return the cleChiffrementDonnees
 	 */

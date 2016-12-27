@@ -72,11 +72,11 @@ public class AuthenticationService {
 					LOGGER.warn("Clé de chiffrement nulle : Initialisation");
 					BasicTextEncryptor encryptorCle = new BasicTextEncryptor();
 					encryptorCle.setPassword(motPasseEnClair);
-					String cleChiffrementDonneesChiffree = encryptorCle.encrypt(motPasseEnClair);
+					String cleChiffrementDonneesChiffree = encryptorCle.encrypt(PasswordEncoder.generateStrongPasswordHash(motPasseEnClair));
 					//LOGGER.warn("Clé de chiffrement chiffrée avec le mot de passe : {}", cleChiffrementDonneesChiffree);
 					utilisateur.setCleChiffrementDonnees(cleChiffrementDonneesChiffree);
 					dataDBParams.majUtilisateur(utilisateur);
-					utilisateur.initEncryptor(motPasseEnClair);
+					utilisateur.initDataEncryptor(cleChiffrementDonneesChiffree);
 				}
 				else{
 					//LOGGER.debug("> Clé chiffrée de chiffrement des données : {}", utilisateur.getCleChiffrementDonnees());
