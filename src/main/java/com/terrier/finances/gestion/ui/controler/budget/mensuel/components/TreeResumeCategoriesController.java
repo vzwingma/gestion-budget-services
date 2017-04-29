@@ -110,7 +110,6 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 				EntetesTreeResumeDepenseEnum.VALEUR_NOW.getLibelle()+ auDateFormat.format(dateBudget.getTime()));
 		getComponent().setColumnHeader(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), 
 				EntetesTreeResumeDepenseEnum.VALEUR_FIN.getLibelle() +finDateFormat.format(dateBudget.getTime()));
-
 		// Mise à jour
 		int i=1;
 		int j=1;
@@ -132,6 +131,7 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 
 			// LOGGER.trace("[{}]  >  Categorie : {} : {}" , i * 100, categorie, budget.getTotalParCategories().get(categorie));
 			if(categorie != null && budget.getTotalParCategories().get(categorie) != null){
+				
 				getComponent().addItem(new Object[]{
 						categorie.getLibelle(), 
 						budget.getTotalParCategories().get(categorie)[0], 
@@ -160,6 +160,11 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 			}
 			else{
 				LOGGER.warn("Attention : Catégorie vide");
+			}
+			
+			for (Object objItemId : getComponent().getItemIds()) {
+				Integer itemId = (Integer)objItemId;
+				getComponent().setCollapsed(itemId, false);
 			}
 		}
 	}
