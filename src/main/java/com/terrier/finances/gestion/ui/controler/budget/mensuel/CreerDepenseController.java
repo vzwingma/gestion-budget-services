@@ -193,13 +193,19 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 
 		
 		
-		// Compte
+		// Comptes pour virement intercomptes
 		getComponent().getListSelectComptes().setNullSelectionAllowed(true);
 		getComponent().getListSelectComptes().removeAllItems();
 		try{
 			for (CompteBancaire compte : getServiceParams().getComptesUtilisateur(getUtilisateurCourant())) {
-				getComponent().getListSelectComptes().addItem(compte.getId());
-				getComponent().getListSelectComptes().setItemCaption(compte.getId(), compte.getLibelle());
+				// # 58 Pas le compte courant
+				if(!compte.getId().equals(getBudgetMensuelCourant().getCompteBancaire().getId())
+						&& 
+						// #57 Compte actif
+						compte.isActif()){
+					getComponent().getListSelectComptes().addItem(compte.getId());
+					getComponent().getListSelectComptes().setItemCaption(compte.getId(), compte.getLibelle());
+				}
 			}
 		} catch (DataNotFoundException e) {
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
