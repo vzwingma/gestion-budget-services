@@ -97,24 +97,37 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 		}
 
 		else if(propertyId.equals(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId())){
+
+
 			ListSelect  comboField = new ListSelect();
 			comboField.setNullSelectionAllowed(false);
 			comboField.setRows(1);
 			CategorieDepense categorieLigneLibelle = (CategorieDepense)container.getContainerProperty(itemId, propertyId).getValue();
-			for (CategorieDepense categorie : categories) {
-				for (CategorieDepense ssCategorie : categorie.getListeSSCategories()) {
-					if(!BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ssCategorie.getId())){
-						comboField.addItem(ssCategorie);
-						comboField.setItemCaption(ssCategorie, ssCategorie.getLibelle());
-						// Sélection par défaut
-						if(ssCategorie.equals(categorieLigneLibelle)){
-							comboField.select(ssCategorie);
-						}				
+
+			if(!BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(categorieLigneLibelle.getId())){
+				for (CategorieDepense categorie : categories) {
+					for (CategorieDepense ssCategorie : categorie.getListeSSCategories()) {
+						if(!BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ssCategorie.getId())){
+							comboField.addItem(ssCategorie);
+							comboField.setItemCaption(ssCategorie, ssCategorie.getLibelle());
+							// Sélection par défaut
+							if(ssCategorie.equals(categorieLigneLibelle)){
+								comboField.select(ssCategorie);
+							}				
+						}
 					}
 				}
+				editorField = comboField;
 			}
+			else{
+				// #56
+				TextField tf = new TextField();
+				tf.setConverter(new CategorieConverter(categories));
+				tf.setEnabled(false);
+				editorField = tf;
+			}
+			
 
-			editorField = comboField;
 		}		
 		else if(propertyId.equals(EntetesTableSuiviDepenseEnum.TYPE.getId())){
 			ListSelect comboField = new ListSelect();
