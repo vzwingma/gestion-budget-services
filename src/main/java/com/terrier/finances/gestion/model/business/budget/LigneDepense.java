@@ -52,7 +52,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	private boolean periodique; 
 	// tag comme dernière opération
 	private boolean derniereOperation;
-
 	/**
 	 * Logger
 	 */
