@@ -6,8 +6,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +58,7 @@ public class BudgetMensuel implements Serializable {
 	 * Liste des dépenses
 	 */
 	private List<LigneDepense> listeDepenses = new ArrayList<LigneDepense>();
-	/** 
-	 * Liste des libellés pour l'autocomplétion
-	 */
-	private Set<String> setLibellesDepensesForAutocomplete= new TreeSet<String>();
+
 
 	private Map<CategorieDepense, Double[]> totalParCategories = new HashMap<CategorieDepense, Double[]>();
 	private Map<CategorieDepense, Double[]> totalParSSCategories = new HashMap<CategorieDepense, Double[]>();
@@ -396,27 +391,6 @@ public class BudgetMensuel implements Serializable {
 	public void setActif(boolean actif) {
 		this.actif = actif;
 	}
-
-	
-
-
-	/**
-	 * @return the listeLibellesDepenses
-	 */
-	public Set<String> getSetLibellesDepensesForAutocomplete() {
-		return setLibellesDepensesForAutocomplete;
-	}
-
-
-
-
-	/**
-	 * @param setLibellesDepensesForAutocomplete the listeLibellesDepenses to set
-	 */
-	public void setListeLibellesDepensesForAutocomplete(Set<String> setLibellesDepensesForAutocomplete) {
-		this.setLibellesDepensesForAutocomplete = setLibellesDepensesForAutocomplete;
-	}
-
 
 
 
