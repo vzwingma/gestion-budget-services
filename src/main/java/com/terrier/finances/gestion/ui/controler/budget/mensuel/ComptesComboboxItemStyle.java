@@ -6,8 +6,8 @@ package com.terrier.finances.gestion.ui.controler.budget.mensuel;
 import java.util.List;
 
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.ComboBox.ItemStyleGenerator;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.ComboBox.ItemStyleGenerator;
 
 /**
  * @author vzwingma

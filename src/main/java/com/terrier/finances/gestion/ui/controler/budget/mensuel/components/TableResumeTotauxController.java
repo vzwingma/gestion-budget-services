@@ -12,9 +12,9 @@ import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableResumeTotaux;
 import com.terrier.finances.gestion.ui.components.style.TableTotalCellStyle;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.ui.Table.Align;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.ui.Table.Align;
 
 /**
  * Controleur du tableau des résumés

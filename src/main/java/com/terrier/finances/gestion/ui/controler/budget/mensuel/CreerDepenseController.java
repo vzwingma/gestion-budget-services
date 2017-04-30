@@ -21,7 +21,7 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.Autocomp
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.BlurDescriptionValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
-import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.v7.data.Validator.InvalidValueException;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.ui.Notification;
@@ -83,10 +83,11 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 
 		// Description
 		getComponent().getTextFieldDescription().setTrimQuery(true);
-		getComponent().getTextFieldDescription().setRequired(true);
-		getComponent().getTextFieldDescription().setBuffered(false);
-		getComponent().getTextFieldDescription().setInvalidAllowed(true);
-		getComponent().getTextFieldDescription().setInvalidCommitted(true);
+		getComponent().getTextFieldDescription().setRequiredIndicatorVisible(true);
+		// TODO  :maj de l'autocomplete
+//		getComponent().getTextFieldDescription().setBuffered(false);
+//		getComponent().getTextFieldDescription().setInvalidAllowed(true);
+//		getComponent().getTextFieldDescription().setInvalidCommitted(true);
 		getComponent().getTextFieldDescription().setDelay(0);
 		
 		// Valeur
@@ -112,7 +113,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getComboBoxSsCategorie().setRequiredError("La sous catégorie est obligatoire");
 		getComponent().getListSelectEtat().setRequiredError("L'état de la dépense est obligatoire");
 		getComponent().getListSelectType().setRequiredError("Le type de dépense est obligatoire");
-		getComponent().getTextFieldDescription().setRequiredError("La description est obligatoire");
+		// getComponent().getTextFieldDescription().setRequiredError("La description est obligatoire");
 
 		getComponent().getTextFieldValeur().addValidator(new ValeurDepenseValidator("La valeur est incorrecte"));
 	}

@@ -6,7 +6,7 @@ package com.terrier.finances.gestion.ui.controler.validators;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
-import com.vaadin.data.Validator;
+import com.vaadin.v7.data.Validator;
 
 /**
  * @author vzwingma

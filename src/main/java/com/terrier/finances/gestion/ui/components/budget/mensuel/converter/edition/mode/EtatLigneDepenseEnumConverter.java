@@ -3,7 +3,7 @@ package com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edit
 import java.util.Locale;
 
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 
 /**
  * Convertisseur Modèle <==> Présentation de l'énum etat dépense
@@ -20,14 +20,14 @@ public class EtatLigneDepenseEnumConverter implements Converter<String, EtatLign
 	@Override
 	public EtatLigneDepenseEnum convertToModel(String value,
 			Class<? extends EtatLigneDepenseEnum> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
+			throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 		return EtatLigneDepenseEnum.valueOf(value);
 	}
 
 	@Override
 	public String convertToPresentation(EtatLigneDepenseEnum value,
 			Class<? extends String> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
+			throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 		return value.getLibelle();
 	}
 

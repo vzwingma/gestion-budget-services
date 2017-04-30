@@ -23,13 +23,13 @@ import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.controler.validators.TypeDepenseValidator;
 import com.terrier.finances.gestion.ui.controler.validators.ValeurDepenseValidator;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.PopupNoteVisibitilityListener;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.data.Validator.InvalidValueException;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupView;
-import com.vaadin.ui.RichTextArea;
-import com.vaadin.ui.Table.Align;
+import com.vaadin.v7.ui.RichTextArea;
+import com.vaadin.v7.ui.Table.Align;
 
 /**
  * @author vzwingma
