@@ -53,7 +53,8 @@
 				<artifactId>vaadin-maven-plugin</artifactId>
 				<version>${vaadin.version}</version>
 				<configuration>
-					<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+					<extraJvmArgs>-Xmx1G -Xss1024k</extraJvmArgs>
+					
 					<!-- <runTarget>mobilemail</runTarget> -->
 					<!-- We are doing "inplace" but into subdir VAADIN/widgetsets. This 
 						way compatible with Vaadin eclipse plugin. -->
@@ -143,14 +144,6 @@
 							</packagingExcludes>
 						</configuration>
 					</plugin>
-					<!-- Copy vers le répertoire partagé avec le conteneur Ansible <plugin> 
-						<artifactId>maven-antrun-plugin</artifactId> <executions> <execution> <phase>install</phase> 
-						<configuration> <tasks> <echo>Deploy for Ansible</echo> <copy file="target/gestion-budget-${project.version}.war" 
-						tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" 
-						/> <copy file="src/main/resources/config/dev/context.xml" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" 
-						/> </tasks> </configuration> <goals> <goal>run</goal> </goals> </execution> 
-
-						</executions> </plugin> -->
 				</plugins>
 
 			</build>
@@ -258,13 +251,13 @@
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client</artifactId>
+			<artifactId>vaadin-compatibility-client</artifactId>
 			<version>${vaadin.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-themes</artifactId>
+			<artifactId>vaadin-compatibility-themes</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>

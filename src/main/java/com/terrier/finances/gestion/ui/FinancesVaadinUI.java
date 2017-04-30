@@ -11,6 +11,7 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
@@ -23,6 +24,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 @Theme("mytheme")
 @Title("Gestion de budget")
+@Widgetset("com.vaadin.v7.Vaadin7WidgetSet")
 public class FinancesVaadinUI extends UI
 {
 
