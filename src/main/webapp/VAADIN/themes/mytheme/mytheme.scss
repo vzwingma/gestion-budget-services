@@ -38,12 +38,12 @@ $v-layout-padding-right: 10px;
 $v-layout-padding-bottom: 10px;
 
 
-/* @import "../valo/valo.scss"; */
+@import "../valo/valo.scss";
 
 /* Mon theme */
 @mixin mytheme {
   /* Include all the styles from the Valo theme */
-  /* @include valo; */
+  @include valo;
 
 /* http://flatuicolors.com/ */
 
