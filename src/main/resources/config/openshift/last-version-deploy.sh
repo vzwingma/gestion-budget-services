@@ -7,7 +7,7 @@ VERSION=`curl -Ls -o /dev/null -w %{url_effective} $PROJET_GITHUB/releases/lates
 VERSION_PREC=`cat ~/app-root/data/.lastversion.file`
 
 LOG=~/app-root/data/cron.log
-echo "`date -u`" >> $LOG;
+echo "`date -u`" > $LOG;
 echo "***********************************" >> $LOG;
 echo "  Version précédente : $VERSION_PREC" >> $LOG;
 echo "  Version GitHub     : $VERSION" >> $LOG;

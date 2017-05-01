@@ -4,8 +4,6 @@
 	<!-- This file is automatically updated based on new dependencies by the 
 		goal "vaadin:update-widgetset". -->
 
-	<!-- Inherit DefaultWidgetSet -->
-	<inherits name="com.vaadin.DefaultWidgetSet" />
 
 	<!-- Uncomment the following to compile the widgetset for one browser only. 
 		Multiple browsers can be specified as a comma separated list. The supported 
@@ -25,5 +23,9 @@
 
     
 
-    <inherits name="com.zybnet.autocomplete.AutocompleteWidgetSet" />
+    <inherits name="com.vaadin.v7.Vaadin7WidgetSet" />
+
+    <inherits name="com.vaadin.DefaultWidgetSet" />
+
+    <inherits name="org.vaadin.addons.autocomplete.Widgetset" />
 </module>

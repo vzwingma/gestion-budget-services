@@ -13,7 +13,7 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.PopupView.PopupVisibilityEvent;
 import com.vaadin.ui.PopupView.PopupVisibilityListener;
-import com.vaadin.ui.RichTextArea;
+import com.vaadin.v7.ui.RichTextArea;
 
 /**
  * Listener de visibilité de la popup de notes sur une dépense

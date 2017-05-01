@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.addons.autocomplete.AutocompleteExtension;
 
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
@@ -14,19 +15,13 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.CreerDepenseForm;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.controler.validators.TypeDepenseValidator;
-import com.terrier.finances.gestion.ui.controler.validators.ValeurDepenseValidator;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionValiderCreationDepenseClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.AutocompleteDescriptionQueryListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.AutocompleteDescriptionSuggestionPickedListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.BlurDescriptionValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
-import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.ui.Notification;
-import com.zybnet.autocomplete.server.AutocompleteField;
-import com.zybnet.autocomplete.server.AutocompleteQueryListener;
+import com.vaadin.v7.data.Validator.InvalidValueException;
 
 /**
  * Controleur de créer des dépenses
@@ -65,33 +60,15 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		// Sélection d'une catégorie
 		getComponent().getComboBoxCategorie().setImmediate(true);
 		getComponent().getComboBoxCategorie().addValueChangeListener(new SelectionCategorieValueChangeListener(this));
-		getComponent().getComboBoxCategorie().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
-		
 		// Sélection d'une sous catégorie
 		getComponent().getComboBoxSsCategorie().addValueChangeListener(new SelectionSousCategorieValueChangeListener(this));
-		getComponent().getComboBoxSsCategorie().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		
 		getComponent().getListSelectComptes().setVisible(false);
-		getComponent().getListSelectComptes().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		getComponent().getLayoutCompte().setVisible(false);
 		getComponent().getLabelCompte().setVisible(false);
-		getComponent().getLabelCompte().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		// Périodique
 		getComponent().getCheckBoxPeriodique().setCaption(null);
 		getComponent().getCheckBoxPeriodique().setDescription("Cocher pour une dépense mensuelle");
-		getComponent().getCheckBoxPeriodique().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
-
-		// Description
-		getComponent().getTextFieldDescription().setTrimQuery(true);
-		getComponent().getTextFieldDescription().setRequired(true);
-		getComponent().getTextFieldDescription().setBuffered(false);
-		getComponent().getTextFieldDescription().setInvalidAllowed(true);
-		getComponent().getTextFieldDescription().setInvalidCommitted(true);
-		getComponent().getTextFieldDescription().setDelay(0);
-		
-		// Valeur
-		getComponent().getListSelectType().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
-		getComponent().getTextFieldValeur().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		
 		// Bouton
 		getComponent().getButtonValider().addClickListener(new ActionValiderCreationDepenseClickListener());
@@ -112,9 +89,9 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getComboBoxSsCategorie().setRequiredError("La sous catégorie est obligatoire");
 		getComponent().getListSelectEtat().setRequiredError("L'état de la dépense est obligatoire");
 		getComponent().getListSelectType().setRequiredError("Le type de dépense est obligatoire");
-		getComponent().getTextFieldDescription().setRequiredError("La description est obligatoire");
+		// getComponent().getTextFieldDescription().setRequiredError("La description est obligatoire");
 
-		getComponent().getTextFieldValeur().addValidator(new ValeurDepenseValidator("La valeur est incorrecte"));
+	//	getComponent().getTextFieldValeur().addValidator(new ValeurDepenseValidator("La valeur est incorrecte"));
 	}
 
 
@@ -125,7 +102,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		try{
 			getComponent().getComboBoxCategorie().validate();
 			getComponent().getComboBoxSsCategorie().validate();
-			getComponent().getTextFieldValeur().validate();
+	//		getComponent().getTextFieldValeur().validate();
 			if(getComponent().getListSelectComptes().isVisible()){
 				getComponent().getListSelectComptes().validate();
 			}
@@ -179,19 +156,18 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		/**
 		 *  Query
 		 */
-		AutocompleteField<String> descriptionField = getComponent().getTextFieldDescription();
-		descriptionField.setSuggestionPickedListener(new AutocompleteDescriptionSuggestionPickedListener(descriptionField, this));
+		 // Apply extension and set suggestion generator
+	    AutocompleteExtension<String> suggestDescription = new AutocompleteExtension<String>( getComponent().getTextFieldDescription());
+	    suggestDescription.setSuggestionListSize(10);
+	    suggestDescription.setSuggestionGenerator(getServiceDepense()::suggestDescription);
 
-		AutocompleteQueryListener<String> listener = new AutocompleteDescriptionQueryListener(
-				getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete(), this) ;
-		getComponent().getTextFieldDescription().setQueryListener(listener);
-		// Description
-		getComponent().getTextFieldDescription().setText("");
-		getComponent().getTextFieldDescription().setData("");
-		getComponent().getTextFieldDescription().clearChoices();
-		getComponent().getTextFieldDescription().clear();
-
+	    // Notify when suggestion is selected
+	    suggestDescription.addSuggestionSelectListener(event -> {
+	    	System.err.println(event.getSelectedItem());
+	        event.getSelectedItem().ifPresent(Notification::show);
+	    });
 		
+
 		
 		// Comptes pour virement intercomptes
 		getComponent().getListSelectComptes().setNullSelectionAllowed(true);

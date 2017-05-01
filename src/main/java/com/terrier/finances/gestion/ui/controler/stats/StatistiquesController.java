@@ -10,10 +10,10 @@ import com.terrier.finances.gestion.ui.components.stats.StatistiquesPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.ChangePageListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionDeconnexionClickListener;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.ui.ComboBox;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Notification;
 
 /**

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITreeTableComponent;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TreeResumeCategoriesController;
-import com.vaadin.data.Property;
+import com.vaadin.v7.data.Property;
 
 /**
  * Tableau de suivi des dépenses

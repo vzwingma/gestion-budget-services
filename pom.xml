@@ -4,19 +4,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.terrier.finances</groupId>
 	<artifactId>gestion-budget</artifactId>
-	<version>4.5.0</version>
+	<version>5.0.0-SNAPSHOT</version>
 	<name>Gestion Budget</name>
 	<description>Application Web de gestion de budget</description>
 	<packaging>war</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<spring.version>4.3.4.RELEASE</spring.version>
-		<mongo.data.version>3.4.0</mongo.data.version>
-		<spring.security.version>4.2.0.RELEASE</spring.security.version>
-		<vaadin.version>7.7.6</vaadin.version>
-		<jackson.version>2.8.5</jackson.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<spring.version>4.3.8.RELEASE</spring.version>
+		<mongo.data.version>3.4.2</mongo.data.version>
+		<spring.security.version>4.2.2.RELEASE</spring.security.version>
+		<vaadin.version>8.0.5</vaadin.version>
+		<jackson.version>2.9.0.pr2</jackson.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
@@ -29,10 +29,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.6.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
 			<!-- As we are doing "inplace" GWT compilation, ensure the widgetset -->
@@ -53,7 +53,8 @@
 				<artifactId>vaadin-maven-plugin</artifactId>
 				<version>${vaadin.version}</version>
 				<configuration>
-					<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+					<extraJvmArgs>-Xmx1G -Xss1024k</extraJvmArgs>
+
 					<!-- <runTarget>mobilemail</runTarget> -->
 					<!-- We are doing "inplace" but into subdir VAADIN/widgetsets. This 
 						way compatible with Vaadin eclipse plugin. -->
@@ -88,12 +89,12 @@
 			<plugin>
 				<groupId>com.versioneye</groupId>
 				<artifactId>versioneye-maven-plugin</artifactId>
-				<version>3.11.0</version>
+				<version>3.11.2</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.8.2</version>
+				<version>3.1.0</version>
 				<configuration>
 					<skip>true</skip>
 				</configuration>
@@ -131,7 +132,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-war-plugin</artifactId>
-						<version>2.6</version>
+						<version>3.1.0</version>
 						<configuration>
 							<failOnMissingWebXml>false</failOnMissingWebXml>
 							<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
@@ -143,14 +144,6 @@
 							</packagingExcludes>
 						</configuration>
 					</plugin>
-					<!-- Copy vers le répertoire partagé avec le conteneur Ansible <plugin> 
-						<artifactId>maven-antrun-plugin</artifactId> <executions> <execution> <phase>install</phase> 
-						<configuration> <tasks> <echo>Deploy for Ansible</echo> <copy file="target/gestion-budget-${project.version}.war" 
-						tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\gestion-budget.war" 
-						/> <copy file="src/main/resources/config/dev/context.xml" tofile="D:\\Utilisateurs\\vzwingma\\.docker\\dockerDirectory\\ContainerVolumes\\ansible\\data\\context.xml" 
-						/> </tasks> </configuration> <goals> <goal>run</goal> </goals> </execution> 
-
-						</executions> </plugin> -->
 				</plugins>
 
 			</build>
@@ -179,7 +172,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-war-plugin</artifactId>
-						<version>2.6</version>
+						<version>3.1.0</version>
 						<configuration>
 							<failOnMissingWebXml>false</failOnMissingWebXml>
 							<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
@@ -196,7 +189,7 @@
 					<!-- Assembly en tar.gz -->
 					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.6</version>
+						<version>3.0.0</version>
 						<configuration>
 							<finalName>Budget</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
@@ -242,12 +235,12 @@
 		<!-- VAADIN -->
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-server</artifactId>
+			<artifactId>vaadin-compatibility-server</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client-compiled</artifactId>
+			<artifactId>vaadin-compatibility-client-compiled</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
@@ -258,7 +251,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client</artifactId>
+			<artifactId>vaadin-compatibility-client</artifactId>
 			<version>${vaadin.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -268,16 +261,11 @@
 			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.zybnet</groupId>
-			<artifactId>vaadin-autocomplete</artifactId>
-			<version>1.1.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vaadin.external.atmosphere</groupId>
-					<artifactId>atmosphere-runtime</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>autocomplete</artifactId>
+			<version>0.2.1</version>
 		</dependency>
+
 
 
 		<!-- SPRING -->
@@ -365,7 +353,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
-			<version>1.9.5.RELEASE</version>
+			<version>1.10.3.RELEASE</version>
 		</dependency>
 
 		<dependency>
@@ -385,17 +373,17 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.21</version>
+			<version>1.7.25</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.7.21</version>
+			<version>1.7.25</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.8</version>
+			<version>1.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>

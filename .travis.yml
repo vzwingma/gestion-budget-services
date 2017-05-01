@@ -1,6 +1,8 @@
 language: java
+jdk:
+  - oraclejdk8
 install: 
-  - mvn clean install -DskipTests=true -B -P openshift
+  - mvn clean install -B -P openshift
 cache:
     directories:
       - $HOME/.m2

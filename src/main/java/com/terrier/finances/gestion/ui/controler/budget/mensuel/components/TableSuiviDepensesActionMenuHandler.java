@@ -11,8 +11,8 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.editi
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.event.Action;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.v7.event.ItemClickEvent;
+import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
 
 /**
  * Controleur du menu du tableau des résumés

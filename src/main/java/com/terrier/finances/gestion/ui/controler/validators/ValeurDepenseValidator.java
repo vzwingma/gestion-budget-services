@@ -3,7 +3,7 @@
  */
 package com.terrier.finances.gestion.ui.controler.validators;
 
-import com.vaadin.data.Validator;
+import com.vaadin.v7.data.Validator;
 
 /**
  * @author vzwingma

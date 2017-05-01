@@ -13,8 +13,8 @@ import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIService;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.CellStyleGenerator;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Table.CellStyleGenerator;
 
 /**
  * Style des cellules du tableau de dépense

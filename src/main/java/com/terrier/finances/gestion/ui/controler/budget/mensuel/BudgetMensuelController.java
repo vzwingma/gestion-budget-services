@@ -31,13 +31,13 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionRefreshMont
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionValiderAnnulerEditionDepenseListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionCreerDepenseClickListener;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.event.UIEvents;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.ui.ComboBox;
+import com.vaadin.v7.shared.ui.datefield.Resolution;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 

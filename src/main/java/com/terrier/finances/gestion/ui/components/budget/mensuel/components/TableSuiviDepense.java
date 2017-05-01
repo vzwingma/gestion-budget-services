@@ -11,7 +11,7 @@ import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITableComponent;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
-import com.vaadin.data.Property;
+import com.vaadin.v7.data.Property;
 
 /**
  * Tableau de suivi des dépenses

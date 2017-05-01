@@ -28,8 +28,8 @@ public class OptimizedConnectorBundleLoaderFactory extends ConnectorBundleLoader
 		eagerConnectors.add(com.vaadin.client.ui.button.ButtonConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.combobox.ComboBoxConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.datefield.InlineDateFieldConnector.class.getName());
-		eagerConnectors.add(com.vaadin.client.ui.table.TableConnector.class.getName());
-		eagerConnectors.add(com.vaadin.client.ui.treetable.TreeTableConnector.class.getName());
+//		eagerConnectors.add(com.vaadin.client.ui.table.TableConnector.class.getName());
+//		eagerConnectors.add(com.vaadin.client.ui.treetable.TreeTableConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.orderedlayout.HorizontalLayoutConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.csslayout.CssLayoutConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.datefield.PopupDateFieldConnector.class.getName());

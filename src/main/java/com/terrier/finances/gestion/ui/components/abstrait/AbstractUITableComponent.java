@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
-import com.vaadin.ui.Table;
+import com.vaadin.v7.ui.Table;
 
 /**
  * @author vzwingma

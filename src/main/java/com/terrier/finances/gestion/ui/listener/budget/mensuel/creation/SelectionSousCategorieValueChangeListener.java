@@ -8,8 +8,8 @@ import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.CreerDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
 
 /**
  * Changement d'une ss catégorie dans le formulaire de création

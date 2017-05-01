@@ -3,7 +3,7 @@ package com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edit
 import java.util.Locale;
 
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 
 /**
  * Convertisseur Modèle <==> Présentation de l'énum type TypeDepenseEnum
@@ -20,7 +20,7 @@ public class TypeOperationEnumConverter implements Converter<Object, TypeDepense
 	@Override
 	public TypeDepenseEnum convertToModel(Object value,
 			Class<? extends TypeDepenseEnum> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
+			throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 		for (TypeDepenseEnum type : TypeDepenseEnum.values()) {
 			if(type.getLibelle().equals((String)value)){
 				return type;
@@ -32,7 +32,7 @@ public class TypeOperationEnumConverter implements Converter<Object, TypeDepense
 	@Override
 	public Object convertToPresentation(TypeDepenseEnum value,
 			Class<? extends Object> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
+			throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 		return value != null ? value.getLibelle() : null;
 	}
 

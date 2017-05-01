@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Locale;
 
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 
 /**
  * Convertisseur Modèle <==> Présentation de la catégorie de dépense
@@ -35,7 +35,7 @@ public class CategorieConverter implements Converter<String, CategorieDepense> {
 	@Override
 	public CategorieDepense convertToModel(String value,
 			Class<? extends CategorieDepense> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
+			throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 		for (CategorieDepense categorie : this.categories) {
 			if(categorie.getLibelle().equals(value)){
 				return categorie;
@@ -52,7 +52,7 @@ public class CategorieConverter implements Converter<String, CategorieDepense> {
 	@Override
 	public String convertToPresentation(CategorieDepense value,
 			Class<? extends String> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
+			throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 		return value != null ? value.getLibelle() : "INCONNU";
 	}
 
