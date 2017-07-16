@@ -21,7 +21,7 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.components.Tree
 import com.terrier.finances.gestion.ui.components.style.TreeResumeCellStyle;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.vaadin.ui.Notification;
-import com.vaadin.v7.ui.Table.Align;
+import com.vaadin.ui.Table.Align;
 
 /**
  * Controleur du tableau des résumés

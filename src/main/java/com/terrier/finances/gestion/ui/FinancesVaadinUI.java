@@ -63,6 +63,8 @@ public class FinancesVaadinUI extends UI
         UI.getCurrent().setPollInterval(pollInterval);
         LOGGER.debug("[INIT] FinancesVaadinUI - PoolInterval de {} ms", pollInterval);
         
+        
+        setImmediate(true);
         // Page de login au démarrage
         layout.addComponent(new Login());
     }

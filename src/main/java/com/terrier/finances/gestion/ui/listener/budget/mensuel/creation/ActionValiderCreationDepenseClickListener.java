@@ -62,7 +62,7 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 
 			LigneDepense ligneDepense = new LigneDepense(
 					(CategorieDepense)form.getComboBoxSsCategorie().getValue(), 
-					(String)form.getTextFieldDescription().getValue(), 
+					(String)form.getTextFieldDescription().getText(), 
 					type,
 					Float.valueOf(form.getTextFieldValeur().getValue()),
 					etat,
