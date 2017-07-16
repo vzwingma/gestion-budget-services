@@ -14,7 +14,6 @@ import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
-import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -226,15 +225,7 @@ public class BusinessDepensesService {
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
 	public boolean isBudgetMensuelActif(String compte, int mois, int annee){
-		LOGGER.debug("Chargement du budget {} de {}/{}", compte, mois, annee);
-		BudgetMensuelDTO budgetMensuel;
-		try {
-			budgetMensuel = this.dataDepenses.chargeBudgetMensuelDTO(compte, mois, annee);
-			return budgetMensuel != null ? budgetMensuel.isActif() : false;
-		} catch (BudgetNotFoundException e) {
-			return false;
-		}
-
+		return this.dataDepenses.isBudgetActif(compte, mois, annee);
 	}
 
 
@@ -302,11 +293,11 @@ public class BusinessDepensesService {
 	 * @throws BudgetNotFoundException budget introuvable
 	 */
 	public void reinitialiserBudgetMensuel(BudgetMensuel budgetMensuel, Utilisateur utilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
-		
+
 		CompteBancaire compteBancaire = serviceParams.getCompteById(budgetMensuel.getCompteBancaire().getId());
 		if(compteBancaire != null){
-		// S'il y a eu cloture, on ne fait rien
-		initNewBudget(compteBancaire, utilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
+			// S'il y a eu cloture, on ne fait rien
+			initNewBudget(compteBancaire, utilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
 		}
 		else{
 			throw new DataNotFoundException("Le compte bancaire " + budgetMensuel.getCompteBancaire().getId() + " est introuvable");
@@ -373,7 +364,7 @@ public class BusinessDepensesService {
 				etatDepenseTransfert = EtatLigneDepenseEnum.PREVUE;
 				break;
 			}
-			
+
 			LigneDepense ligneTransfert = new LigneDepense(ligneDepense.getSsCategorie(), "[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle(), TypeDepenseEnum.CREDIT, ligneDepense.getValeur(), etatDepenseTransfert, ligneDepense.isPeriodique());
 			ajoutLigneDepense(budgetTransfert, ligneTransfert, utilisateur.getLibelle());
 			calculBudgetEtSauvegarde(budgetTransfert);

@@ -94,8 +94,8 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		return libellesDepenses;
 	}
 
-	
-	
+
+
 	/**
 	 * Chargement du budget mensuel
 	 * @param mois mois du budget
@@ -121,6 +121,26 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		return budgetMensuel;
 	}
 
+
+	/**
+	 * Activité Budget
+	 * @param compte
+	 * @param mois
+	 * @param annee
+	 * @return budget actif
+	 */
+	public boolean isBudgetActif(String compte, int mois, int annee){
+		
+		boolean actif = false;
+		try {
+			BudgetMensuelDTO budgetMensuel = chargeBudgetMensuelDTO(compte, mois, annee);
+			actif = budgetMensuel != null ? budgetMensuel.isActif() : false;
+		} catch (BudgetNotFoundException e) {
+			actif = false;
+		}
+		LOGGER.debug("Activité du budget {} de {}/{} : {}", compte, mois, annee, actif);
+		return false;
+	}
 
 
 	/**

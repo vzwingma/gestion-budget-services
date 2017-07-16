@@ -5,10 +5,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -22,8 +22,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.google.gwt.editor.client.Editor.Ignore;
 import com.terrier.finances.gestion.data.DepensesDatabaseService;
 import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
-import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
+import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -51,8 +51,6 @@ public class TestMetier {
 	}
 
 
-
-
 	@Ignore
 	public void createNewBudget() throws Exception{
 		assertNotNull(service);
@@ -69,8 +67,6 @@ public class TestMetier {
 		budget.setCompteBancaire(compte);
 		budget.setId(null);
 		config.mongoTemplate().save(budget, "budget_2016");
-
-
 	}
 
 
