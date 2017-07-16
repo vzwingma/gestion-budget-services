@@ -5,8 +5,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -19,6 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.gwt.editor.client.Editor.Ignore;
 import com.terrier.finances.gestion.data.DepensesDatabaseService;
+import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
+import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 
@@ -31,27 +35,33 @@ public class TestMetier {
 
 	@Autowired
 	private TestBudgetConfig config;
+
+	@Autowired
+	DataTransformerBudget dataTransformerBudget = new DataTransformerBudget();
 	
 	/**
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestMetier.class);
-	
+
 	@Test
 	public void testDate(){
 		SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm:ss", Locale.FRENCH);
 		LOGGER.info(sdf.format(Calendar.getInstance().getTime()));
 	}
-	
+
+
+
+
 	@Ignore
 	public void createNewBudget() throws Exception{
 		assertNotNull(service);
-		
+
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where("id").is("ingdirectV"));
 		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
 		assertNotNull(compte);
-				
+
 		BudgetMensuelDTO budget = new BudgetMensuelDTO();
 		budget.setActif(true);
 		budget.setAnnee(2016);
@@ -59,15 +69,15 @@ public class TestMetier {
 		budget.setCompteBancaire(compte);
 		budget.setId(null);
 		config.mongoTemplate().save(budget, "budget_2016");
-		
-		
+
+
 	}
-	
+
 
 	@Ignore
 	public void getCompte() throws Exception{
 		assertNotNull(service);
-		
+
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where("id").is("ingdirectV"));
 		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
@@ -75,5 +85,5 @@ public class TestMetier {
 		assertNotNull(compte.isActif());
 		assertTrue(compte.isActif());
 	}
-	 
+
 }
