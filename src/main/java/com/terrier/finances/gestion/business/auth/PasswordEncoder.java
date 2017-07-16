@@ -8,6 +8,9 @@ import java.security.spec.InvalidKeySpecException;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Password Encoder
  * @author vzwingma
@@ -15,6 +18,14 @@ import javax.crypto.spec.PBEKeySpec;
  */
 public class PasswordEncoder {
 
+	
+
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(PasswordEncoder.class);
+
+	
 	private PasswordEncoder() {  }
 
 	/**
@@ -63,7 +74,7 @@ public class PasswordEncoder {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
-	public static boolean validatePassword(String originalPassword, String storedPassword) 
+	public static boolean validatePassword(String originalPassword, String storedPassword)
 	{
 		try{
 			String[] parts = storedPassword.split(":");
@@ -82,9 +93,11 @@ public class PasswordEncoder {
 			}
 			return diff == 0;
 		}
-		catch(Exception e){
+		catch(NoSuchAlgorithmException | InvalidKeySpecException e){
+			LOGGER.error("Erreur lors du calcul du chiffrement", e);
 			return false;
 		}
+		
 	}
 
 

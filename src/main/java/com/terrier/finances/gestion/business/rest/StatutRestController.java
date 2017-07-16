@@ -25,13 +25,13 @@ import com.terrier.finances.gestion.business.statut.objects.StatutStateEnum;
  */
 @RestController
 @RequestMapping(value="/rest")
-public class BudgetRestController {
+public class StatutRestController {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BudgetRestController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatutRestController.class);
 
 	
 	@Autowired

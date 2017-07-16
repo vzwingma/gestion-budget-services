@@ -88,4 +88,30 @@ public class AuthenticationService {
 		}
 		return null;
 	}
+	
+	/**
+	 * @param utilisateur utlisateur à modifier
+	 * @param oldPassword ancien mot de passe
+	 * @param newPassword nouveau mot de passe
+	 * @return résultat de l'opération
+	 */
+	public void changePassword(Utilisateur utilisateur, String oldPassword, String newPassword){
+		
+		LOGGER.info("Changement du mot de passe pour {}, [id={}]", utilisateur.getLogin(), utilisateur.getId());
+		BasicTextEncryptor decryptorForMasterKey = new BasicTextEncryptor();
+		decryptorForMasterKey.setPassword(oldPassword);
+		String masterKeyClear = decryptorForMasterKey.decrypt(utilisateur.getMasterCleChiffrementDonnees());
+		// LOGGER.debug("Déchiffrement MasterKey : {}" , masterKeyClear);
+		BasicTextEncryptor encryptorForMasterKey = new BasicTextEncryptor();
+		encryptorForMasterKey.setPassword(newPassword);
+		String masterKeyEncr = encryptorForMasterKey.encrypt(masterKeyClear);
+		LOGGER.debug("Rechiffrement MasterKey : {}" , masterKeyEncr);
+		utilisateur.setMasterCleChiffrementDonnees(masterKeyEncr);
+		
+		String newHashPassword = PasswordEncoder.generateStrongPasswordHash(newPassword);
+		LOGGER.info("Nouveau hash du mot de passe : {}", newHashPassword);
+		utilisateur.setHashMotDePasse(PasswordEncoder.generateStrongPasswordHash(newPassword));
+		utilisateur.getEncryptor().setPassword(masterKeyClear);
+		dataDBParams.majUtilisateur(utilisateur);
+	}
 }
