@@ -19,7 +19,7 @@ import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
  * @author vzwingma
  *
  */
-@Component("userAuthProvider")
+@Component
 public class UserAuthProvider implements AuthenticationProvider {
 	/**
 	 * Logger
