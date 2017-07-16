@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableScheduling
 @EnableWebMvc
 @EnableAsync
-@ComponentScan(basePackages = "com.terrier.finances.gestion.business.rest")
+@ComponentScan(basePackages = {"com.terrier.finances.gestion.business.rest",  "com.terrier.finances.gestion.business.rest.config"})
 public class BudgetConfig  extends WebMvcConfigurerAdapter{
 
 

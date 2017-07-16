@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.business.rest;
+package com.terrier.finances.gestion.business.rest.config;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

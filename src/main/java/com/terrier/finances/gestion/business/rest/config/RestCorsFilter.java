@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.business.rest;
+package com.terrier.finances.gestion.business.rest.config;
 
 import java.io.IOException;
 
