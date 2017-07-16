@@ -1,8 +1,5 @@
 package com.terrier.finances.gestion.business;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -68,63 +65,27 @@ public class AuthenticationService {
 				dernierAcces = Calendar.getInstance().getTime();
 				utilisateur.setDernierAcces(dernierAcces);
 
-				if(utilisateur.getCleChiffrementDonnees() == null){
-					LOGGER.warn("Clé de chiffrement nulle : Initialisation");
-					BasicTextEncryptor encryptorCle = new BasicTextEncryptor();
-					encryptorCle.setPassword(motPasseEnClair);
-					String cleChiffrementDonneesChiffree = encryptorCle.encrypt(PasswordEncoder.generateStrongPasswordHash(motPasseEnClair));
-					//LOGGER.warn("Clé de chiffrement chiffrée avec le mot de passe : {}", cleChiffrementDonneesChiffree);
-					utilisateur.setCleChiffrementDonnees(cleChiffrementDonneesChiffree);
-					dataDBParams.majUtilisateur(utilisateur);
-					utilisateur.initDataEncryptor(cleChiffrementDonneesChiffree);
+				if(utilisateur.getMasterCleChiffrementDonnees() == null){
+					LOGGER.error("Erreur 3 lors de l'authentification. Master key introuvable");
+					return null;
 				}
 				else{
-					//LOGGER.debug("> Clé chiffrée de chiffrement des données : {}", utilisateur.getCleChiffrementDonnees());
+					LOGGER.debug("> MasterKey chiffrée des données : {}", utilisateur.getMasterCleChiffrementDonnees());
 					BasicTextEncryptor decryptorCle = new BasicTextEncryptor();
 					decryptorCle.setPassword(motPasseEnClair);
-					String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getCleChiffrementDonnees());
-					utilisateur.initEncryptor(cleChiffrementDonnees);
+					String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getMasterCleChiffrementDonnees());
+					// LOGGER.debug("> MasterKey déchiffrée des données : {}", cleChiffrementDonnees);
+					utilisateur.getEncryptor().setPassword(cleChiffrementDonnees);
 				}
-
 				return utilisateur;
 			}
 			else{
-				LOGGER.error("Erreur 1 lors de l'authentification");
+				LOGGER.error("Erreur 1 lors de l'authentification. Mot de passe incorrect");
 			}
 		}
 		else{
-			LOGGER.error("Erreur 2 lors de l'authentification");
+			LOGGER.error("Erreur 2 lors de l'authentification. Utilisateur inconnu");
 		}
 		return null;
 	}
-	
-
-	/**
-	 * @param password mot de passe
-	 * @return password hashé en 256
-	 * @throws NoSuchAlgorithmException
-	 * @throws UnsupportedEncodingException
-	 * @see PasswordEncoder
-	 */
-	@Deprecated
-	public static String hashPassWord(String password){
-
-		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			byte[] hash = digest.digest(password.getBytes("UTF-8"));
-			StringBuffer hexString = new StringBuffer();
-
-			for (int i = 0; i < hash.length; i++) {
-				String hex = Integer.toHexString(0xff & hash[i]);
-				if(hex.length() == 1) hexString.append('0');
-				hexString.append(hex);
-			}
-
-			return hexString.toString();
-		} catch (NullPointerException | NoSuchAlgorithmException | UnsupportedEncodingException e){
-			return null;
-		}
-	}
-
-
 }
