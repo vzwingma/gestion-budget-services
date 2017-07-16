@@ -357,7 +357,24 @@ public class BusinessDepensesService {
 		if(budget.getCompteBancaire().isActif() && budgetTransfert.getCompteBancaire().isActif() && budget.isActif() && budgetTransfert.isActif()){
 			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneDepense);
 
-			LigneDepense ligneTransfert = new LigneDepense(ligneDepense.getSsCategorie(), "[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle(), TypeDepenseEnum.CREDIT, ligneDepense.getValeur(), EtatLigneDepenseEnum.PREVUE, ligneDepense.isPeriodique());
+			// #59 : Cohérence des états
+			EtatLigneDepenseEnum etatDepenseCourant = ligneDepense.getEtat();
+			EtatLigneDepenseEnum etatDepenseTransfert = EtatLigneDepenseEnum.PREVUE;
+			switch (etatDepenseCourant) {
+			case ANNULEE:
+				etatDepenseTransfert = EtatLigneDepenseEnum.ANNULEE;
+				break;
+			case REPORTEE:
+				etatDepenseTransfert = EtatLigneDepenseEnum.REPORTEE;
+				break;
+			case PREVUE:
+			case REALISEE:
+			default:				
+				etatDepenseTransfert = EtatLigneDepenseEnum.PREVUE;
+				break;
+			}
+			
+			LigneDepense ligneTransfert = new LigneDepense(ligneDepense.getSsCategorie(), "[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle(), TypeDepenseEnum.CREDIT, ligneDepense.getValeur(), etatDepenseTransfert, ligneDepense.isPeriodique());
 			ajoutLigneDepense(budgetTransfert, ligneTransfert, utilisateur.getLibelle());
 			calculBudgetEtSauvegarde(budgetTransfert);
 			/**
