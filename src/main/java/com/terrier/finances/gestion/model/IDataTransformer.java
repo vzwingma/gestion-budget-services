@@ -18,19 +18,30 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 public abstract class IDataTransformer<BO, DTO> {
 
 
-	
+	private BasicTextEncryptor encryptor; 
+
 	/**
 	 * @return l'encryptor de l'utilisateur courant
 	 */
 	public BasicTextEncryptor getEncryptor(){
-		if(SecurityContextHolder.getContext().getAuthentication() != null){
-			return ((Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEncryptor();	
+		if(this.encryptor == null){
+			if(SecurityContextHolder.getContext().getAuthentication() != null){
+				this.encryptor = ((Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEncryptor();	
+			}
+			else{
+				this.encryptor =  UISessionManager.get().getSession().getUtilisateurCourant().getEncryptor();
+			}
 		}
-		else{
-			return  UISessionManager.get().getSession().getUtilisateurCourant().getEncryptor();
-		}
-		
+		return this.encryptor;
 	}
+	
+	/**
+	 * @param encryptor the encryptor to set
+	 */
+	public void setEncryptor(BasicTextEncryptor encryptor) {
+		this.encryptor = encryptor;
+	}
+
 	/**
 	 * Transformation d'un DTO en BO
 	 * @param dto data object (Mongo)
@@ -44,4 +55,5 @@ public abstract class IDataTransformer<BO, DTO> {
 	 */
 	public abstract DTO transformBOtoDTO(BO bo);
 	
+
 }

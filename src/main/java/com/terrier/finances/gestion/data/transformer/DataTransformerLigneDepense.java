@@ -94,9 +94,11 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		dto.setPeriodique(bo.isPeriodique());
 		dto.setTypeDepense(encryptor.encrypt(bo.getTypeDepense().name()));
 		dto.setValeur(encryptor.encrypt(String.valueOf(bo.getValeur())));
+		
 		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
 		return dto;
 	}
+
 
 
 	
@@ -127,4 +129,5 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		}
 		return listeDepensesBO;
 	}
+
 }
