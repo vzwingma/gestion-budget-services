@@ -3,7 +3,6 @@
  */
 package com.terrier.finances.gestion.data.mongodb;
 
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -20,7 +19,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
+import com.mongodb.MongoClientURI;
 import com.mongodb.ServerAddress;
 
 /**
@@ -93,11 +92,14 @@ public class SpringMongoDBConfig implements ObjectFactory {
 	private MongoTemplate createMondoDBConfig(String host, int port, String username, String password, String db) throws Exception{
 		  //create mongo template
 	    ServerAddress serveur = new ServerAddress(host, port);
-		LOGGER.info("[INIT] Configuration de la connexion vers MongDB : [{}]", serveur);
+	    
+	    String mongoURI = new StringBuilder("mongodb://").append(username).append(":").append(password).append("@").append(host).append(":").append(port).append("/").append(db).toString();
+	    String mongoURILog = new StringBuilder("mongodb://").append(username).append("@").append(host).append(":").append(port).append("/").append(db).toString();
+	    
+	    
+		LOGGER.info("[INIT] Configuration de la connexion vers MongDB : [{}]", mongoURILog);
 		if(username != null && username.length() > 0  && password != null){
-			LOGGER.debug(" User : [{}]", username);
-			MongoCredential credential = MongoCredential.createMongoCRCredential(username, "admin", password.toCharArray());
-			return new MongoTemplate(new SimpleMongoDbFactory(new MongoClient(serveur, Arrays.asList(credential)), db));
+			return new MongoTemplate(new SimpleMongoDbFactory(new MongoClientURI(mongoURI)));
 		}
 		else{
 			LOGGER.warn("[INIT] Configuration de dévelopement");
