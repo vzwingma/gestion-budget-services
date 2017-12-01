@@ -1,0 +1,190 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Les services utilisés par l'application de gestion de budget 'gestion-budget'",
+    "version": "1.0.0",
+    "title": "Gestion de budgets",
+    "contact": {
+      "email": "vincent.zwingmann@gmail.com"
+    }
+  },
+  "host": "rhl",
+  "basePath": "/gestion-budget/",
+  "tags": [
+    {
+      "name": "IHM",
+      "description": "IHM de l'application de budget"
+    },
+    {
+      "name": "statut",
+      "description": "Services Statut"
+    },
+    {
+      "name": "administration",
+      "description": "Services d'administration"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/ihm": {
+      "get": {
+        "tags": [
+          "IHM"
+        ],
+        "summary": "IHM de l'application",
+        "description": "",
+        "operationId": "gui",
+        "consumes": [
+          "application/html"
+        ],
+        "produces": [
+          "application/html"
+        ],
+        "responses": {
+          "404": {
+            "description": "Introuvable"
+          }
+        }
+      }
+    },
+    "/rest/statut": {
+      "get": {
+        "tags": [
+          "statut"
+        ],
+        "summary": "Retourne le statut de l'application",
+        "description": "",
+        "operationId": "statut",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Retourne le statut de l'application",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Statut"
+              }
+            }
+          },
+          "404": {
+            "description": "Service introuvable"
+          }
+        }
+      }
+    },
+    "/rest/admin/v1/password/{login}/{oldpassword}/{newpassword}": {
+      "get": {
+        "tags": [
+          "administration"
+        ],
+        "summary": "Changement de mot de passe",
+        "description": "Multiple status values can be provided with comma separated strings",
+        "operationId": "changePassword",
+        "parameters": [
+          {
+            "name": "login",
+            "in": "path",
+            "description": "Login de l'utilisateur",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "oldpassword",
+            "in": "path",
+            "description": "Ancien mot de passe",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "newpassword",
+            "in": "path",
+            "description": "Nouveau mot de passe",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Service non trouvé"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Statut": {
+      "type": "object",
+      "properties": {
+        "nom": {
+          "type": "string",
+          "description": "Nom de l'application"
+        },
+        "dependances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Dependances"
+          }
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Date du statut",
+          "format": "int32"
+        },
+        "date": {
+          "type": "string",
+          "description": "Date du statut",
+          "format": "date-time"
+        },
+        "statut": {
+          "type": "string",
+          "description": "Statut global de l'application",
+          "enum": [
+            "OK",
+            "DEGRADE",
+            "FATAL",
+            "INCONNU"
+          ]
+        }
+      }
+    },
+    "Dependances": {
+      "type": "object",
+      "properties": {
+        "nom": {
+          "type": "string",
+          "description": "Nom de la dépendance"
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Date du statut",
+          "format": "int32"
+        },
+        "date": {
+          "type": "string",
+          "description": "Date du statut",
+          "format": "date-time"
+        },
+        "statut": {
+          "type": "string",
+          "description": "Statut de la dépendance",
+          "enum": [
+            "OK",
+            "DEGRADE",
+            "FATAL",
+            "INCONNU"
+          ]
+        }
+      }
+    }
+  }
+}
