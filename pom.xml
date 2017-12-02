@@ -22,8 +22,6 @@
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
 
-
-
 	<build>
 		<plugins>
 			<plugin>
