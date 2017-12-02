@@ -16,11 +16,7 @@
       "description": "IHM de l'application de budget"
     },
     {
-      "name": "statut",
-      "description": "Services Statut"
-    },
-    {
-      "name": "administration",
+      "name": "services",
       "description": "Services d'administration"
     }
   ],
@@ -52,7 +48,7 @@
     "/rest/statut": {
       "get": {
         "tags": [
-          "statut"
+          "services"
         ],
         "summary": "Retourne le statut de l'application",
         "description": "",
@@ -79,7 +75,7 @@
     "/rest/admin/v1/password/{login}/{oldpassword}/{newpassword}": {
       "get": {
         "tags": [
-          "administration"
+          "services"
         ],
         "summary": "Changement de mot de passe",
         "description": "Multiple status values can be provided with comma separated strings",
