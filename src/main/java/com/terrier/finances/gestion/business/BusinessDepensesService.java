@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.business;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -271,7 +272,17 @@ public class BusinessDepensesService {
 			initBudgetFromBudgetPrecedent(budget, chargerBudgetMensuel(utilisateur, compteBancaire.getId(), moisPrecedent, anneePrecedente));
 		}
 		else{
-			throw new BudgetNotFoundException(new StringBuilder().append("Le budget ").append(mois).append("/").append(annee).append(" n'a jamais existé"));
+			StringBuilder err = new StringBuilder().append("Le budget ").append(mois).append("/").append(annee).append(" n'a jamais existé");
+			LOGGER.warn(err.toString());
+			budget.setFinArgentAvance(0D);
+			budget.setFinCompteReel(0D);
+			budget.setNowArgentAvance(0D);
+			budget.setNowCompteReel(0D);
+			budget.setResultatMoisPrecedent(0D);
+			budget.setListeDepenses(new ArrayList<>());
+			budget.setMargeSecurite(0D);
+			budget.setMargeSecuriteFinMois(0D);
+			// throw new BudgetNotFoundException();
 		}
 
 		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
