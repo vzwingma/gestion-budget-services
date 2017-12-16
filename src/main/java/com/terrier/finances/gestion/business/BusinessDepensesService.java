@@ -279,7 +279,7 @@ public class BusinessDepensesService {
 			budget.setNowArgentAvance(0D);
 			budget.setNowCompteReel(0D);
 			budget.setResultatMoisPrecedent(0D);
-			budget.setListeDepenses(new ArrayList<>());
+			budget.setListeDepenses(new ArrayList<LigneDepense>());
 			budget.setMargeSecurite(0D);
 			budget.setMargeSecuriteFinMois(0D);
 			// throw new BudgetNotFoundException();
