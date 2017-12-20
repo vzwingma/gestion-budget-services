@@ -17,4 +17,4 @@ RUN cd /usr/local/tomcat/webapps; \
 	rm -f *.tar.gz; \
 	mv ROOT.war budget.war
 
-COPY context.xml /usr/local/tomcat/conf/context.xml
+COPY src/main/docker/context.xml /usr/local/tomcat/conf/context.xml
