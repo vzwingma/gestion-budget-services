@@ -13,11 +13,12 @@ install:
 
 script:
   - chmod a+x ./src/main/scripts/*.sh
-# Tag git de snapshot pour autodeploy sur rec  
+# Tag git de master --> snapshot pour autodeploy sur rec  
   - ./src/main/scripts/tag-snapshot.sh
 # Merge sur la branche coverity
 #  - ./src/main/scripts/merge-coverity.sh
 
+# Déploiement des releaes sur tag : snapshot ou version 
 before_deploy:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - docker build -t vzwingmann/gestion_budget:snapshot src/main/docker/.
