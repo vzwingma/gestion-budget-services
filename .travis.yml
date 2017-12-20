@@ -1,12 +1,24 @@
+sudo: required
+
 language: java
-install: 
-  - mvn clean install -DskipTests=true -B -P openshift
+
+services:
+  - docker
 cache:
     directories:
       - $HOME/.m2
+
+install: 
+  - mvn clean install -DskipTests=true -B -P openshift
+
+after-install:
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+  - docker build -t vzwingmann/gestion_budget:snapshot src/main/docker/.
+  - docker push vzwingmann/gestion_budget:snapshot;  
+  
 script:
   - chmod a+x ./src/main/scripts/*.sh
-# Tag de snapshot pour autodeploy sur rec  
+# Tag git de snapshot pour autodeploy sur rec  
   - ./src/main/scripts/tag-snapshot.sh
 # Merge sur la branche coverity
 #  - ./src/main/scripts/merge-coverity.sh
