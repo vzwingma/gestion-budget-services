@@ -19,7 +19,8 @@ script:
 #  - ./src/main/scripts/merge-coverity.sh
 
 # Déploiement des releaes sur tag : snapshot ou version 
-before_deploy:
+# before_deploy:
+after_sucess:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
   - docker build -t vzwingmann/gestion_budget:snapshot src/main/docker/.
