@@ -23,8 +23,8 @@ before_deploy:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - export TAG=`if [ "$TRAVIS_BRANCH" == "snapshot" ]; then echo "snapshot"; else echo latest ; fi`
   - pwd
-  - cp ~/target/Budget.tar.gz ~/src/main/docker/Budget.tar.gz
-  - cd ~/src/main/docker
+  - cp ~/build/vzwingma/gestion-budget/target/Budget.tar.gz ~/build/vzwingma/gestion-budget/src/main/docker/Budget.tar.gz
+  - cd ~/build/vzwingma/gestion-budget/src/main/docker
   - docker build -t vzwingmann/gestion_budget:$TAG .
   - docker push vzwingmann/gestion_budget:$TAG
 
