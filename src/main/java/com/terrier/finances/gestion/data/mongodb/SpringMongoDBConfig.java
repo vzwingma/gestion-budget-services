@@ -72,7 +72,7 @@ public class SpringMongoDBConfig implements ObjectFactory {
 	 * @return valeur de la clé
 	 */
 	private String getStringEnvVar(MongoDBCOnfigEnum cle){
-		return System.getenv(cle.getKey());
+		return System.getenv(cle.name());
 	}
 	
 	/**
@@ -81,12 +81,12 @@ public class SpringMongoDBConfig implements ObjectFactory {
 	 * @return valeur de la clé
 	 */
 	private Integer getIntgerEnvVar(MongoDBCOnfigEnum cle){
-		String env = System.getenv(cle.getKey());
+		String env = System.getenv(cle.name());
 		try{
 			return Integer.parseInt(env);
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("La clé {} n'est pas un nombre. La valeur devient nulle ", cle.getKey(), e);
+			LOGGER.error("La clé {} n'est pas un nombre. La valeur devient nulle ", cle.name(), e);
 			return null;
 		}
 	}
