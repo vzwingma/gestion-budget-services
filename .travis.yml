@@ -21,11 +21,14 @@ script:
 # Déploiement des releaes sur tag : snapshot ou version 
 before_deploy:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "snapshot" ]; then echo "snapshot"; else if [ "$TRAVIS_BRANCH" == v ]; then echo "master"; else echo $TRAVIS_BRANCH ; fi ; fi`
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "snapshot" ]; then echo "snapshot"; else if [ "$TRAVIS_BRANCH" == v ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi ; fi`
   - pwd
   - cp ~/build/vzwingma/gestion-budget/target/Budget.tar.gz ~/build/vzwingma/gestion-budget/src/main/docker/Budget.tar.gz
   - cd ~/build/vzwingma/gestion-budget/src/main/docker
-  - docker build -t vzwingmann/gestion_budget:$TAG .
+  - docker build -t vzwingmann/gestion_budget:travis .
+  - docker tag vzwingmann/gestion_budget:travis vzwingmann/gestion_budget:$TRAVIS_BRANCH  
+  - docker tag vzwingmann/gestion_budget:travis vzwingmann/gestion_budget:$TAG
+  - docker push vzwingmann/gestion_budget:$TRAVIS_BRANCH
   - docker push vzwingmann/gestion_budget:$TAG
 
 deploy:
