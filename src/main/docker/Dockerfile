@@ -9,12 +9,15 @@ RUN apk update && apk add ca-certificates && update-ca-certificates && apk add o
 RUN chmod a+r -R /usr/local/tomcat; \
 	chmod 777 -R /usr/local/tomcat;
 
-COPY ../../../../../home/travis/build/vzwingma/gestion-budget/target/Budget.tar.gz /usr/local/tomcat/webapps/Budget.tar.gz
+RUN echo pwd \
+	cp target/Budget.tar.gz ~/. \ 
+	cp src/main/docker/context.xml ~/.
+
+COPY Budget.tar.gz /usr/local/tomcat/webapps/Budget.tar.gz
+COPY context.xml /usr/local/tomcat/conf/context.xml
 	
 RUN cd /usr/local/tomcat/webapps; \
 	tar xvzf Budget.tar.gz -C  /usr/local/tomcat/webapps; \
 	rm -f *.sh; \
 	rm -f *.tar.gz; \
 	mv ROOT.war budget.war
-
-COPY ../../../../../home/travis/build/vzwingma/gestion-budget/src/main/docker/context.xml /usr/local/tomcat/conf/context.xml
