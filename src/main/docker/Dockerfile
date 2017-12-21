@@ -6,9 +6,6 @@ MAINTAINER vincent.zwingmann@gmail.com
 COPY context.xml /usr/local/tomcat/conf/context.xml
 COPY Budget.tar.gz /usr/local/tomcat/webapps/Budget.tar.gz
 
-# Ajout des packages manquants pour wget
-# RUN apk update && apk add ca-certificates && update-ca-certificates && apk add openssl;
-
 # Droit pour tous les users de Tomcat
 RUN chmod a+r -R /usr/local/tomcat; \
 	chmod 777 -R /usr/local/tomcat;
