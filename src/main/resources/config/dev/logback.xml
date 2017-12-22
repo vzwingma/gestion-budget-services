@@ -18,17 +18,18 @@
 		</encoder>
 	</appender>
 
-
-
 	<logger name="root" level="INFO" />
 	<logger name="org.hibernate" level="INFO" />
 	<logger name="org.mongodb.driver" level="INFO" />
 	<!-- interrogation -->
-	<logger name="com.terrier.finances" level="DEBUG" />
+	<logger name="com.terrier.finances" level="DEBUG" additivity="false">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
 
 	<logger name="org.springframework" level="INFO" />
 	<logger name="org.quartz" level="INFO" />
-	<root level="DEBUG">
+	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />
 	</root>
