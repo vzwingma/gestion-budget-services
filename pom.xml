@@ -178,7 +178,7 @@
 							<warSourceExcludes>VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css</warSourceExcludes>
 							<packagingExcludes>VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css</packagingExcludes>
 							<outputDirectory>target/webapps</outputDirectory>
-							<warName>ROOT</warName>
+							<warName>budget</warName>
 						</configuration>
 					</plugin>
 				</plugins>
