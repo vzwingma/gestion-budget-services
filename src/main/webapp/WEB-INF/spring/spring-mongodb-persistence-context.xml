@@ -6,8 +6,6 @@
         http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.2.xsd
         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
 
-    <jee:jndi-lookup id="mongoTemplate" jndi-name="java:/comp/env/jndi/MongoDB" expected-type="org.springframework.data.mongodb.core.MongoTemplate" />
-
     <mongo:repositories base-package="com.terrier.finances.gestion.data.mongodb" />
 
 </beans>
