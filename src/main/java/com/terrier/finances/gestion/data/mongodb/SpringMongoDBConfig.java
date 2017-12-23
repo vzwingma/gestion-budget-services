@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
-import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 /**
@@ -42,11 +40,11 @@ public class SpringMongoDBConfig {
 	@Bean
 	public MongoTemplate mongoTemplate() throws Exception {
 
-		String db = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_DB);
-		String host = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_HOST);
-		String username = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_USERNAME);
-		String password = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_PWD);
-		int port =  getIntgerEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_PORT);
+		String db = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_DB, "budget-app-dev");
+		String host = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_HOST, "ds113936.mlab.com");
+		String username = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_USERNAME, "budget");
+		String password = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_PWD, "budgetdev");
+		int port =  getIntgerEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_PORT, 13936);
 
 		//create mongo template
 		String mongoURI = new StringBuilder("mongodb://").append(username).append(":").append(password).append("@").append(host).append(":").append(port).append("/").append(db).toString();
@@ -62,8 +60,9 @@ public class SpringMongoDBConfig {
 	 * @param cle
 	 * @return valeur de la clé
 	 */
-	private String getStringEnvVar(MongoDBCOnfigEnum cle){
-		return System.getenv(cle.name());
+	private String getStringEnvVar(MongoDBCOnfigEnum cle, String defaultVar){
+		String envVar = System.getenv(cle.name());
+		return envVar != null ? envVar : defaultVar;
 	}
 
 	/**
@@ -71,14 +70,14 @@ public class SpringMongoDBConfig {
 	 * @param cle
 	 * @return valeur de la clé
 	 */
-	private Integer getIntgerEnvVar(MongoDBCOnfigEnum cle){
+	private Integer getIntgerEnvVar(MongoDBCOnfigEnum cle, Integer defaultVar){
 		String env = System.getenv(cle.name());
 		try{
 			return Integer.parseInt(env);
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("La clé {} n'est pas un nombre. La valeur devient nulle ", cle.name(), e);
-			return null;
+			LOGGER.error("La clé {}={} n'est pas un nombre. La valeur par défaut : {} ", cle.name(), env, defaultVar, e);
+			return defaultVar;
 		}
 	}
 }
