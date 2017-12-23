@@ -5,4 +5,4 @@
 /.metadata/
 /bin/
 /target/
-src/main/resources/config/openshift/services/endpoint-rec.yml
+src/main/external-ressources/openshift-services/
