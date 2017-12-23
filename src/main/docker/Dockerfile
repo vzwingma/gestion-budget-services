@@ -2,8 +2,7 @@
 FROM tomcat:8.5.24-alpine
 MAINTAINER vincent.zwingmann@gmail.com
 
-# Copy des fichiers 
-COPY context.xml /usr/local/tomcat/conf/context.xml
+# Copy de l'archive
 COPY Budget.tar.gz /usr/local/tomcat/webapps/Budget.tar.gz
 
 # Droit pour tous les users de Tomcat
