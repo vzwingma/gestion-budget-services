@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @Configuration
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableWebMvc
 @EnableAsync
 @ComponentScan(basePackages = {"com.terrier.finances.gestion.business.rest",  "com.terrier.finances.gestion.business.rest.config"})
-public class BudgetConfig  extends WebMvcConfigurerAdapter{
+public class BudgetConfig implements WebMvcConfigurer{
 
 
 	/*
