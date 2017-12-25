@@ -121,8 +121,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		getComponent().getButtonEditer().setDescription("Editer le tableau des opérations");
 		getComponent().getButtonCreate().addClickListener(new ActionCreerDepenseClickListener());
 		getComponent().getButtonCreate().setDescription("Ajouter une nouvelle opération");
-		getComponent().getComboBoxComptes().setNullSelectionAllowed(false);
-		getComponent().getComboBoxComptes().setImmediate(true);
+		getComponent().getComboBoxComptes().setEmptySelectionAllowed(false);
 
 		getComponent().getButtonValider().setVisible(false);
 		getComponent().getButtonValider().setEnabled(false);
@@ -158,14 +157,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 		// Maj des composants MOIS/COMPTES
 		getComponent().getMois().setResolution(Resolution.MONTH);
-		getComponent().getMois().setImmediate(true);
 		getComponent().getMois().addValueChangeListener(this);
 
 		this.compte = getComponent().getComboBoxComptes();
-		this.compte.setImmediate(true);
 		this.compte.setDescription("Choix du compte");
 		this.compte.setNewItemsAllowed(false);
-		this.compte.setNullSelectionAllowed(false);
+		this.compte.setEmptySelectionAllowed(false);
 
 		int ordreCompte = 100;
 		CompteBancaire compteCourant = null;
