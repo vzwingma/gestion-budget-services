@@ -52,18 +52,14 @@
 				<version>${vaadin.version}</version>
 				<configuration>
 					<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-					<!-- <runTarget>mobilemail</runTarget> -->
 					<!-- We are doing "inplace" but into subdir VAADIN/widgetsets. This 
 						way compatible with Vaadin eclipse plugin. -->
 					<webappDirectory>${basedir}/src/main/webapp/VAADIN/widgetsets</webappDirectory>
 					<hostedWebapp>${basedir}/src/main/webapp/VAADIN/widgetsets</hostedWebapp>
 					<noServer>true</noServer>
-					<!-- Remove draftCompile when project is ready -->
-					<draftCompile>false</draftCompile>
 					<compileReport>true</compileReport>
 					<style>OBF</style>
 					<strict>true</strict>
-					<runTarget>http://localhost:8080/</runTarget>
 				</configuration>
 				<executions>
 					<execution>
@@ -167,7 +163,6 @@
 						<filtering>true</filtering>
 						<excludes>
 							<exclude>*.xml</exclude>
-							<exclude>*.sh</exclude>
 						</excludes>
 					</resource>
 				</resources>
@@ -180,36 +175,11 @@
 						<configuration>
 							<failOnMissingWebXml>false</failOnMissingWebXml>
 							<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-							<warSourceExcludes>
-								VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
-							</warSourceExcludes>
-							<packagingExcludes>
-								VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css
-							</packagingExcludes>
+							<warSourceExcludes>VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css</warSourceExcludes>
+							<packagingExcludes>VAADIN/widgetsets/com.terrier.finances.gestion.AppWidgetSet/gwt/standard/*.css</packagingExcludes>
 							<outputDirectory>target/webapps</outputDirectory>
-							<warName>ROOT</warName>
+							<warName>budget</warName>
 						</configuration>
-					</plugin>
-					<!-- Assembly en tar.gz -->
-					<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.6</version>
-						<configuration>
-							<finalName>Budget</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-							<descriptors>
-								<descriptor>src/main/assembly/assembly.xml</descriptor>
-							</descriptors>
-						</configuration>
-						<executions>
-							<execution>
-								<id>make-assembly</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-							</execution>
-						</executions>
 					</plugin>
 				</plugins>
 			</build>

@@ -6,7 +6,7 @@ if [ ${TRAVIS_BRANCH} = "snapshot" ]; then
 	git branch coverity_scan
 	git checkout coverity_scan
 	git merge master
-	cp src/main/assembly/template/coverity.travis.yml .travis.yml
+	cp src/main/external-ressources/template/coverity.travis.yml .travis.yml
 	git add .travis.yml
 	git commit -m "Application du .travis.yml Coverity"
 	git config --global push.default simple
