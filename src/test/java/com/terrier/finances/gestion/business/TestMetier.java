@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 import org.junit.Test;
@@ -23,7 +21,6 @@ import com.google.gwt.editor.client.Editor.Ignore;
 import com.terrier.finances.gestion.data.DepensesDatabaseService;
 import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
