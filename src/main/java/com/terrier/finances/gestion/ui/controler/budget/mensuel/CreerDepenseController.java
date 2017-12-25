@@ -63,7 +63,6 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 	 */
 	public void initDynamicComponentsOnPage(){
 		// Sélection d'une catégorie
-		getComponent().getComboBoxCategorie().setImmediate(true);
 		getComponent().getComboBoxCategorie().addValueChangeListener(new SelectionCategorieValueChangeListener(this));
 		getComponent().getComboBoxCategorie().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		

@@ -112,7 +112,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// common part: create layout
 		mainLayout = new GridLayout();
 		mainLayout.setStyleName("fondbleu");
-		mainLayout.setImmediate(false);
 		mainLayout.setWidth("100%");
 		mainLayout.setHeight("100%");
 		mainLayout.setMargin(false);
@@ -130,7 +129,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 
 		// verticalLayout_2
 		verticalLayout_2 = new VerticalLayout();
-		verticalLayout_2.setImmediate(false);
 		verticalLayout_2.setWidth("150px");
 		verticalLayout_2.setHeight("-1px");
 		verticalLayout_2.setMargin(false);
@@ -150,7 +148,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// common part: create layout
 		AuthlLayout = new VerticalLayout();
 		AuthlLayout.setStyleName("loginLayout");
-		AuthlLayout.setImmediate(false);
 		AuthlLayout.setWidth("-1px");
 		AuthlLayout.setHeight("-1px");
 		AuthlLayout.setMargin(false);
@@ -159,7 +156,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// label_1
 		label_1 = new Label();
 		label_1.setStyleName("login-header");
-		label_1.setImmediate(false);
 		label_1.setWidth("200px");
 		label_1.setHeight("-1px");
 		label_1.setValue("  Authentification");
@@ -178,7 +174,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 	private VerticalLayout buildVerticalLayout_1() {
 		// common part: create layout
 		verticalLayout_1 = new VerticalLayout();
-		verticalLayout_1.setImmediate(false);
 		verticalLayout_1.setWidth("-1px");
 		verticalLayout_1.setHeight("200px");
 		verticalLayout_1.setMargin(false);
@@ -186,7 +181,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// textLogin
 		textLogin = new TextField();
 		textLogin.setCaption("Login");
-		textLogin.setImmediate(true);
 		textLogin.setDescription("Entrer le login");
 		textLogin.setWidth("100.0%");
 		textLogin.setHeight("-1px");
@@ -196,7 +190,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// passwordField
 		passwordField = new PasswordField();
 		passwordField.setCaption("Mot de passe");
-		passwordField.setImmediate(true);
 		passwordField.setDescription("Entrer le mot de passe");
 		passwordField.setWidth("100.0%");
 		passwordField.setHeight("-1px");
@@ -208,7 +201,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 		buttonConnexion.setClickShortcut(KeyCode.ENTER);
 		buttonConnexion.setStyleName("primary");
 		buttonConnexion.setCaption("Connexion");
-		buttonConnexion.setImmediate(true);
 		buttonConnexion.setWidth("145px");
 		buttonConnexion.setHeight("-1px");
 		verticalLayout_1.addComponent(buttonConnexion);
@@ -222,7 +214,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 	private VerticalLayout buildVersionLayout() {
 		// common part: create layout
 		VersionLayout = new VerticalLayout();
-		VersionLayout.setImmediate(false);
 		VersionLayout.setWidth("150px");
 		VersionLayout.setHeight("-1px");
 		VersionLayout.setMargin(false);
@@ -230,7 +221,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// labelVersion
 		labelVersion = new Label();
 		labelVersion.setStyleName("versionLabel");
-		labelVersion.setImmediate(false);
 		labelVersion.setWidth("-1px");
 		labelVersion.setHeight("-1px");
 		labelVersion.setValue("Version : ");
@@ -239,7 +229,6 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// labelBuildTime
 		labelBuildTime = new Label();
 		labelBuildTime.setStyleName("versionLabel");
-		labelBuildTime.setImmediate(false);
 		labelBuildTime.setWidth("-1px");
 		labelBuildTime.setHeight("-1px");
 		labelBuildTime.setValue("Build : ");

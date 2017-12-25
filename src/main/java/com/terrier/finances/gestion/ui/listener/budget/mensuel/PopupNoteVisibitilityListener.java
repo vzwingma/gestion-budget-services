@@ -58,7 +58,6 @@ public class PopupNoteVisibitilityListener extends AbstractComponentListener imp
 			// Mise à jour de la ligne de dépense
 			final RichTextArea rta = (RichTextArea)event.getPopupView().getContent().getPopupComponent();
 			LOGGER.debug("[IHM] Dépense [{}] Mise à jour de la note [{}]", idLigneDepense, rta.getValue());
-			this.controleur.getComponent().setImmediate(true);
 			try{
 				this.controleur.getServiceDepense().majNotesLignesDepenses(
 						getBudgetMensuelCourant().getId(), 

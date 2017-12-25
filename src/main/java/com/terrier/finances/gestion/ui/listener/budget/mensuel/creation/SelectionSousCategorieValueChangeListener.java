@@ -44,8 +44,6 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 		if(ssCategorie != null){
 			interCompte = BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ssCategorie.getId());
 		}
-		controleur.getComponent().getListSelectComptes().setImmediate(true);
-		controleur.getComponent().getLabelCompte().setImmediate(true);
 		controleur.getComponent().getListSelectComptes().setVisible(interCompte);
 		controleur.getComponent().getLayoutCompte().setVisible(interCompte);
 		controleur.getComponent().getLabelCompte().setVisible(interCompte);

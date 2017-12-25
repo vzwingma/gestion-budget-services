@@ -44,8 +44,7 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 	public void initDynamicComponentsOnPage() {
 
 		// Démarrage
-		getComponent().getComboBoxComptes().setNullSelectionAllowed(false);
-		getComponent().getComboBoxComptes().setImmediate(true);
+		getComponent().getComboBoxComptes().setEmptySelectionAllowed(false);
 		
 		getComponent().getButtonDeconnexion().setCaption("");
 		getComponent().getButtonDeconnexion().addClickListener(new ActionDeconnexionClickListener());
@@ -53,10 +52,9 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 		getComponent().getButtonBudget().addClickListener(new ChangePageListener(BudgetMensuelPage.class));
 	
 		this.compte = getComponent().getComboBoxComptes();
-		this.compte.setImmediate(true);
 		this.compte.setDescription("Choix du compte");
-		this.compte.setNewItemsAllowed(false);
-		this.compte.setNullSelectionAllowed(false);
+		this.compte.setTextInputAllowed(false);
+		this.compte.setEmptySelectionAllowed(false);
 		int ordreCompte = 100;
 		try{
 			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());

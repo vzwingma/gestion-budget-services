@@ -80,8 +80,7 @@ public class StatistiquesPage  extends AbstractUIComponent<StatistiquesControlle
 		setCompositionRoot(mainLayout);
 
 		// Démarrage
-		comboBoxComptes.setNullSelectionAllowed(false);
-		comboBoxComptes.setImmediate(true);
+		comboBoxComptes.setEmptySelectionAllowed(false);
 		this.idCompteSelectionne = idCompteSelectionne;
 		// Démarrage
 		startControleur();
@@ -142,7 +141,6 @@ public class StatistiquesPage  extends AbstractUIComponent<StatistiquesControlle
 	private VerticalLayout buildMainLayout() {
 		// common part: create layout
 		mainLayout = new VerticalLayout();
-		mainLayout.setImmediate(true);
 		mainLayout.setWidth("100%");
 		mainLayout.setHeight("100%");
 		mainLayout.setMargin(true);
@@ -158,7 +156,6 @@ public class StatistiquesPage  extends AbstractUIComponent<StatistiquesControlle
 		
 		// chartLayout
 		chartLayout = new VerticalLayout();
-		chartLayout.setImmediate(false);
 		chartLayout.setWidth("100.0%");
 		chartLayout.setHeight("100.0%");
 		chartLayout.setMargin(false);
@@ -173,14 +170,12 @@ public class StatistiquesPage  extends AbstractUIComponent<StatistiquesControlle
 	private HorizontalLayout buildMenu() {
 		// common part: create layout
 		menu = new HorizontalLayout();
-		menu.setImmediate(false);
 		menu.setWidth("100.0%");
 		menu.setHeight("40px");
 		menu.setMargin(false);
 		
 		// comboBoxComptes
 		comboBoxComptes = new ComboBox();
-		comboBoxComptes.setImmediate(true);
 		comboBoxComptes.setWidth("300px");
 		comboBoxComptes.setHeight("26px");
 		menu.addComponent(comboBoxComptes);
@@ -199,7 +194,6 @@ public class StatistiquesPage  extends AbstractUIComponent<StatistiquesControlle
 	private HorizontalLayout buildHorizontalLayout_1() {
 		// common part: create layout
 		horizontalLayout_1 = new HorizontalLayout();
-		horizontalLayout_1.setImmediate(false);
 		horizontalLayout_1.setWidth("-1px");
 		horizontalLayout_1.setHeight("-1px");
 		horizontalLayout_1.setMargin(false);
@@ -207,7 +201,6 @@ public class StatistiquesPage  extends AbstractUIComponent<StatistiquesControlle
 		// buttonBudget
 		buttonBudget = new Button();
 		buttonBudget.setCaption("Retour au budget");
-		buttonBudget.setImmediate(true);
 		buttonBudget.setWidth("-1px");
 		buttonBudget.setHeight("-1px");
 		horizontalLayout_1.addComponent(buttonBudget);
@@ -218,7 +211,6 @@ public class StatistiquesPage  extends AbstractUIComponent<StatistiquesControlle
 		buttonDeconnexion = new Button();
 		buttonDeconnexion.setStyleName("logout");
 		buttonDeconnexion.setCaption("Button");
-		buttonDeconnexion.setImmediate(true);
 		buttonDeconnexion.setWidth("30px");
 		buttonDeconnexion.setHeight("30px");
 		horizontalLayout_1.addComponent(buttonDeconnexion);

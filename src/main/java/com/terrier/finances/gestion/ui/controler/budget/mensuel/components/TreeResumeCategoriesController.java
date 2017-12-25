@@ -69,10 +69,7 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 		getComponent().setColumnWidth(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), TAILLE_COLONNE_VALEUR);
 		getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), Align.RIGHT);
 		
-		getComponent().setColumnHeader(EntetesTreeResumeDepenseEnum.CATEGORIE.getId(), EntetesTreeResumeDepenseEnum.CATEGORIE.getLibelle());
-		getComponent().setImmediate(true);
-		
-		
+		getComponent().setColumnHeader(EntetesTreeResumeDepenseEnum.CATEGORIE.getId(), EntetesTreeResumeDepenseEnum.CATEGORIE.getLibelle());		
 	}
 	
 	
@@ -82,7 +79,6 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 	public void miseAJourVueDonnees() { 
 		// Style
 		getComponent().setCellStyleGenerator(new TreeResumeCellStyle());
-		
 		getComponent().addActionHandler(new TreeResumeCategoriesActionMenuHandler());
 	}
 	

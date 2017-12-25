@@ -253,7 +253,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private HorizontalLayout buildMainLayout() {
 		// common part: create layout
 		mainLayout = new HorizontalLayout();
-		mainLayout.setImmediate(false);
 		mainLayout.setWidth("100%");
 		mainLayout.setHeight("100%");
 		mainLayout.setMargin(false);
@@ -278,7 +277,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private GridLayout buildGridLayout() {
 		// common part: create layout
 		gridLayout = new GridLayout();
-		gridLayout.setImmediate(false);
 		gridLayout.setWidth("500px");
 		gridLayout.setHeight("270px");
 		gridLayout.setMargin(false);
@@ -287,7 +285,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// label_1
 		label_1 = new Label();
-		label_1.setImmediate(false);
 		label_1.setWidth("-1px");
 		label_1.setHeight("-1px");
 		label_1.setValue("Catégorie");
@@ -301,7 +298,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// label_5
 		label_5 = new Label();
-		label_5.setImmediate(false);
 		label_5.setWidth("-1px");
 		label_5.setHeight("-1px");
 		label_5.setValue("Compte");
@@ -315,7 +311,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// label_2
 		label_2 = new Label();
-		label_2.setImmediate(false);
 		label_2.setWidth("100px");
 		label_2.setHeight("-1px");
 		label_2.setValue("Description");
@@ -329,7 +324,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// label_4
 		label_4 = new Label();
-		label_4.setImmediate(false);
 		label_4.setWidth("-1px");
 		label_4.setHeight("-1px");
 		label_4.setValue("Valeur");
@@ -343,7 +337,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// labelEtat
 		labelEtat = new Label();
-		labelEtat.setImmediate(false);
 		labelEtat.setWidth("-1px");
 		labelEtat.setHeight("-1px");
 		labelEtat.setValue("Etat");
@@ -357,7 +350,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// labelPeriode
 		labelPeriode = new Label();
-		labelPeriode.setImmediate(false);
 		labelPeriode.setWidth("120px");
 		labelPeriode.setHeight("-1px");
 		labelPeriode.setValue("Dépense mensuelle");
@@ -384,17 +376,15 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private HorizontalLayout buildHorizontalLayout_2() {
 		// common part: create layout
 		horizontalLayout_2 = new HorizontalLayout();
-		horizontalLayout_2.setImmediate(false);
 		horizontalLayout_2.setWidth("100.0%");
 		horizontalLayout_2.setHeight("40px");
 		horizontalLayout_2.setMargin(false);
 		
 		// comboBoxCategorie
 		comboBoxCategorie = new ListSelect();
-		comboBoxCategorie.setImmediate(false);
 		comboBoxCategorie.setWidth("100.0%");
 		comboBoxCategorie.setHeight("26px");
-		comboBoxCategorie.setRequired(true);
+		comboBoxCategorie.setRequiredIndicatorVisible(true);
 		horizontalLayout_2.addComponent(comboBoxCategorie);
 		horizontalLayout_2.setExpandRatio(comboBoxCategorie, 1.0f);
 		horizontalLayout_2.setComponentAlignment(comboBoxCategorie,
@@ -403,10 +393,9 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		// comboBoxSsCategorie
 		comboBoxSsCategorie = new ListSelect();
 		comboBoxSsCategorie.setEnabled(false);
-		comboBoxSsCategorie.setImmediate(true);
 		comboBoxSsCategorie.setWidth("100.0%");
 		comboBoxSsCategorie.setHeight("26px");
-		comboBoxSsCategorie.setRequired(true);
+		comboBoxSsCategorie.setRequiredIndicatorVisible(true);
 		horizontalLayout_2.addComponent(comboBoxSsCategorie);
 		horizontalLayout_2.setExpandRatio(comboBoxSsCategorie, 1.0f);
 		horizontalLayout_2.setComponentAlignment(comboBoxSsCategorie,
@@ -422,17 +411,15 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private HorizontalLayout buildHorizontalLayout_8() {
 		// common part: create layout
 		horizontalLayout_8 = new HorizontalLayout();
-		horizontalLayout_8.setImmediate(false);
 		horizontalLayout_8.setWidth("100.0%");
 		horizontalLayout_8.setHeight("40px");
 		horizontalLayout_8.setMargin(false);
 		
 		// listSelectComptes
 		listSelectComptes = new ListSelect();
-		listSelectComptes.setImmediate(true);
 		listSelectComptes.setWidth("183px");
 		listSelectComptes.setHeight("-1px");
-		listSelectComptes.setRequired(true);
+		listSelectComptes.setRequiredIndicatorVisible(true);
 		horizontalLayout_8.addComponent(listSelectComptes);
 		horizontalLayout_8.setComponentAlignment(listSelectComptes,
 				new Alignment(34));
@@ -447,7 +434,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private HorizontalLayout buildHorizontalLayout_3() {
 		// common part: create layout
 		horizontalLayout_3 = new HorizontalLayout();
-		horizontalLayout_3.setImmediate(false);
 		horizontalLayout_3.setWidth("-1px");
 		horizontalLayout_3.setHeight("40px");
 		horizontalLayout_3.setMargin(false);
@@ -455,7 +441,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		// textFieldDescription
 		textFieldDescription = new AutocompleteField<String>();
 		textFieldDescription.setMinimumQueryCharacters(1);
-		textFieldDescription.setImmediate(true);
 		textFieldDescription.setWidth("370px");
 		textFieldDescription.setRequired(true);
 		textFieldDescription.setStyleName("v-textfield");
@@ -472,14 +457,12 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private HorizontalLayout buildHorizontalLayout_4() {
 		// common part: create layout
 		horizontalLayout_4 = new HorizontalLayout();
-		horizontalLayout_4.setImmediate(false);
 		horizontalLayout_4.setWidth("100.0%");
 		horizontalLayout_4.setHeight("40px");
 		horizontalLayout_4.setMargin(false);
 		
 		// comboBoxType
 		comboBoxType = new ListSelect();
-		comboBoxType.setImmediate(true);
 		comboBoxType.setWidth("-1px");
 		comboBoxType.setHeight("30px");
 		comboBoxType.setRequired(true);
@@ -489,7 +472,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// textFieldValeur
 		textFieldValeur = new TextField();
-		textFieldValeur.setImmediate(true);
 		textFieldValeur.setWidth("270px");
 		textFieldValeur.setHeight("-1px");
 		textFieldValeur.setRequired(true);
@@ -500,7 +482,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// label_3
 		label_3 = new Label();
-		label_3.setImmediate(false);
 		label_3.setWidth("-1px");
 		label_3.setHeight("-1px");
 		label_3.setValue("€");
@@ -517,17 +498,15 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private HorizontalLayout buildHorizontalLayout_5() {
 		// common part: create layout
 		horizontalLayout_5 = new HorizontalLayout();
-		horizontalLayout_5.setImmediate(false);
 		horizontalLayout_5.setWidth("-1px");
 		horizontalLayout_5.setHeight("40px");
 		horizontalLayout_5.setMargin(false);
 		
 		// listSelectEtat
 		listSelectEtat = new ListSelect();
-		listSelectEtat.setImmediate(true);
 		listSelectEtat.setWidth("370px");
 		listSelectEtat.setHeight("30px");
-		listSelectEtat.setRequired(true);
+		listSelectEtat.setRequiredIndicatorVisible(true);
 		horizontalLayout_5.addComponent(listSelectEtat);
 		horizontalLayout_5.setComponentAlignment(listSelectEtat, new Alignment(
 				33));
@@ -542,7 +521,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private HorizontalLayout buildHorizontalLayout_6() {
 		// common part: create layout
 		horizontalLayout_6 = new HorizontalLayout();
-		horizontalLayout_6.setImmediate(false);
 		horizontalLayout_6.setWidth("-1px");
 		horizontalLayout_6.setHeight("40px");
 		horizontalLayout_6.setMargin(false);
@@ -551,7 +529,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		checkBoxPeriodique = new CheckBox();
 		checkBoxPeriodique.setStyleName("color2");
 		checkBoxPeriodique.setCaption("CheckBox");
-		checkBoxPeriodique.setImmediate(true);
 		checkBoxPeriodique.setWidth("-1px");
 		checkBoxPeriodique.setHeight("-1px");
 		horizontalLayout_6.addComponent(checkBoxPeriodique);
@@ -568,7 +545,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private HorizontalLayout buildHorizontalLayout_7() {
 		// common part: create layout
 		horizontalLayout_7 = new HorizontalLayout();
-		horizontalLayout_7.setImmediate(false);
 		horizontalLayout_7.setWidth("-1px");
 		horizontalLayout_7.setHeight("40px");
 		horizontalLayout_7.setMargin(false);
@@ -577,7 +553,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		buttonValider = new Button();
 		buttonValider.setStyleName("primary");
 		buttonValider.setCaption("Valider et Fermer");
-		buttonValider.setImmediate(true);
 		buttonValider.setWidth("-1px");
 		buttonValider.setHeight("-1px");
 		horizontalLayout_7.addComponent(buttonValider);
@@ -588,7 +563,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		buttonValiderContinuer = new Button();
 		buttonValiderContinuer.setStyleName("friendly");
 		buttonValiderContinuer.setCaption("Valider et Continuer");
-		buttonValiderContinuer.setImmediate(true);
 		buttonValiderContinuer.setWidth("-1px");
 		buttonValiderContinuer.setHeight("-1px");
 		horizontalLayout_7.addComponent(buttonValiderContinuer);

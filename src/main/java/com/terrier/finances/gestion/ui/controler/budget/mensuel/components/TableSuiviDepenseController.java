@@ -70,7 +70,6 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 		/**
 		 * Table de suivi des dépenses
 		 */
-		getComponent().setImmediate(true);
 		getComponent().setWidth("100.0%");
 		getComponent().setHeight("100.0%");
 		getComponent().setColumnCollapsingAllowed(true);
@@ -186,7 +185,6 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			Property<PopupView> property5 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId());
 
 			final RichTextArea rta = new RichTextArea();
-			rta.setImmediate(true);
 			rta.setValue(ligneDepense.getNotes() != null ? ligneDepense.getNotes() : "");
 			String noteStar = ligneDepense.getNotes() != null ? "  *" : "";
 			final PopupView ppv = new PopupView(ligneDepense.getLibelle() + noteStar, rta);
