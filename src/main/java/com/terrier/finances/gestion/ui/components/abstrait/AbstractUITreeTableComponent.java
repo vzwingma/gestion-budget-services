@@ -7,14 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.TreeGrid;
 
 /**
  * @author vzwingma
  *
  * @param <CONTROL> controleur
  */
-public abstract class AbstractUITreeTableComponent<CONTROL extends AbstractUIController<?>> extends TreeTable {
+public abstract class AbstractUITreeTableComponent<CONTROL extends AbstractUIController<?>> extends TreeGrid<String> {
 
 	/**
 	 * 

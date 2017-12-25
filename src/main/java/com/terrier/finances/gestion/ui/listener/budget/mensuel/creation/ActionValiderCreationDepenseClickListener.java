@@ -51,11 +51,11 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 		// Validation
 		if(form.getControleur().validateForm()){
 			// Si oui création
-			TypeDepenseEnum type = (TypeDepenseEnum)form.getListSelectType().getConvertedValue();
+			TypeDepenseEnum type = form.getListSelectType().getSelectedItems().isEmpty() ? TypeDepenseEnum.DEPENSE : form.getListSelectType().getSelectedItems().iterator().next();
 			if(type == null){
 				type = TypeDepenseEnum.DEPENSE;
 			}
-			EtatLigneDepenseEnum etat = (EtatLigneDepenseEnum)form.getListSelectEtat().getConvertedValue();
+			EtatLigneDepenseEnum etat = form.getListSelectEtat().getSelectedItems().isEmpty() ? EtatLigneDepenseEnum.PREVUE : form.getListSelectEtat().getSelectedItems().iterator().next();
 			if(etat == null){
 				etat = EtatLigneDepenseEnum.PREVUE;
 			}
@@ -73,7 +73,7 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 			try{
 				if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ligneDepense.getSsCategorie().getId())){
 					LOGGER.info("[IHM] Ajout d'un nouveau transfert intercompte");
-					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, ((String)form.getListSelectComptes().getConvertedValue()), getUtilisateurCourant());
+					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, ((String)form.getListSelectComptes().getSelectedItems().iterator().next()), getUtilisateurCourant());
 					Notification.show("Le transfert inter-compte a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 				}
 				else{

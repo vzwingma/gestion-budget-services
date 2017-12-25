@@ -5,8 +5,8 @@ package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.CreerDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 
 /**
  * Changement d'un champ == Blur sur le champ description

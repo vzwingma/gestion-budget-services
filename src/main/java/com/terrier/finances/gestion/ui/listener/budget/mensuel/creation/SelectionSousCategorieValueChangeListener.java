@@ -8,8 +8,8 @@ import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.CreerDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 
 /**
  * Changement d'une ss catégorie dans le formulaire de création
@@ -17,7 +17,7 @@ import com.vaadin.data.Property.ValueChangeListener;
  * @author vzwingma
  *
  */
-public class SelectionSousCategorieValueChangeListener extends AbstractComponentListener implements ValueChangeListener{
+public class SelectionSousCategorieValueChangeListener extends AbstractComponentListener implements ValueChangeListener<CategorieDepense>{
 
 	private CreerDepenseController controleur;
 
@@ -34,8 +34,8 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
 	 */
 	@Override
-	public void valueChange(ValueChangeEvent event) {
-		CategorieDepense ssCategorie = (CategorieDepense)event.getProperty().getValue();
+	public void valueChange(ValueChangeEvent<CategorieDepense> event) {
+		CategorieDepense ssCategorie = event.getValue();
 		
 		/**
 		 * Sélection d'un virement intercompte

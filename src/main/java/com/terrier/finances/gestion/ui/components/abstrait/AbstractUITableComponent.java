@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.Table;
 
 /**
@@ -16,7 +17,7 @@ import com.vaadin.ui.Table;
  *
  * @param <CONTROL> controleur
  */
-public abstract class AbstractUITableComponent<CONTROL extends AbstractUIController<?>> extends Table {
+public abstract class AbstractUITableComponent<CONTROL extends AbstractUIController<?>> extends Grid<String> {
 
 	/**
 	 * 

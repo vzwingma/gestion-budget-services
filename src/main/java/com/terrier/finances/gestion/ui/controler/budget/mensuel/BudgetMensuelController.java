@@ -2,6 +2,7 @@ package com.terrier.finances.gestion.ui.controler.budget.mensuel;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,27 +17,29 @@ import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
-import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
+import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TreeResumeCategoriesController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionDeconnexionClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionEditerDepensesClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionLockBudgetClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionRefreshMonthBudgetClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionValiderAnnulerEditionDepenseListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionDeconnexionClickListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionEditerDepensesClickListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionLockBudgetClickListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionRefreshMonthBudgetClickListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionValiderAnnulerEditionDepenseListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionCreerDepenseClickListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.values.CompteValueChangeListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.values.DateBudgetValueChangeListener;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.event.UIEvents;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.UIEvents;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.shared.ui.datefield.Resolution;
+import com.vaadin.shared.ui.datefield.DateResolution;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -47,7 +50,7 @@ import com.vaadin.ui.UI;
  * @author vzwingma
  *
  */
-public class BudgetMensuelController extends AbstractUIController<BudgetMensuelPage> implements ValueChangeListener, UIEvents.PollListener, Serializable{
+public class BudgetMensuelController extends AbstractUIController<BudgetMensuelPage> implements UIEvents.PollListener, Serializable{
 
 	/**
 	 * 
@@ -64,7 +67,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private TableSuiviDepenseController tableSuiviDepenseControleur;
 	private TableResumeTotauxController tableTotalResumeControleur;
 	private TreeResumeCategoriesController treeResumeControleur;
-	private ComboBox compte;
+	private ComboBox<String> compte;
 
 	// Calcul de mise à jour du compte courant
 	private int oldMois;
@@ -156,12 +159,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		}
 
 		// Maj des composants MOIS/COMPTES
-		getComponent().getMois().setResolution(Resolution.MONTH);
-		getComponent().getMois().addValueChangeListener(this);
+        getComponent().getMois().setResolution(DateResolution.MONTH);
+		getComponent().getMois().addValueChangeListener(new DateBudgetValueChangeListener(this));
 
 		this.compte = getComponent().getComboBoxComptes();
 		this.compte.setDescription("Choix du compte");
-		this.compte.setNewItemsAllowed(false);
+		this.compte.setTextInputAllowed(false);
 		this.compte.setEmptySelectionAllowed(false);
 
 		int ordreCompte = 100;
@@ -190,7 +193,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 			initRangeDebutFinMois(compteCourant.getId());
 			this.compte.setTextInputAllowed(false);
-			this.compte.addValueChangeListener(this);
+			this.compte.addValueChangeListener(new CompteValueChangeListener(this));
 
 
 			// Bouton stat
@@ -292,43 +295,10 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 
 	/**
-	 * Modif du compte ou bien de la date
-	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
-	 */
-	@Override
-	public void valueChange(ValueChangeEvent event) {
-		// Modification de la date
-		boolean miseAJour = false;
-		String idCompte = (String)this.compte.getConvertedValue();
-		if(event.getProperty().getType().equals(Date.class)){
-			Calendar d = Calendar.getInstance();
-			d.setTime((Date)event.getProperty().getValue());
-			d.set(Calendar.DAY_OF_MONTH, 1);
-			setRangeFinMois(d, idCompte);
-			if(d.get(Calendar.MONTH) != this.oldMois || d.get(Calendar.YEAR) != this.oldAnnee){
-				miseAJourVueDonnees();			
-			}
-		}
-		else{
-			// Modification du compte
-			miseAJour = true;
-			initRangeDebutFinMois(idCompte);
-		}
-		// Si oui : refresh
-		if(miseAJour){
-			miseAJourVueDonnees();
-		}
-	}
-
-
-
-
-
-	/**
 	 * Mise à jour du range fin
 	 * @param dateFin
 	 */
-	private void initRangeDebutFinMois(String idCompte){
+	public void initRangeDebutFinMois(String idCompte){
 		if(idCompte != null){
 			// Bouton Mois précédent limité au mois du
 			// Premier budget du compte de cet utilisateur
@@ -348,7 +318,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * Mise à jour du range fin
 	 * @param dateFin
 	 */
-	private void setRangeFinMois(Calendar dateFin, String idCompte){
+	public void setRangeFinMois(Calendar dateFin, String idCompte){
 		if(dateFin != null){
 			// Bouton Mois suivant limité au mois prochain si le compte n'est pas clos
 			Calendar dateRangeBudget = Calendar.getInstance();
@@ -370,8 +340,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private BudgetMensuel chargeDonnees() throws DataNotFoundException {
 		LOGGER.debug("[BUDGET] Chargement du budget pour le tableau de suivi des dépenses");
 
-		String idCompte = (String)this.compte.getConvertedValue();
-		Date dateMois = (Date)getComponent().getMois().getConvertedValue();
+		String idCompte = )this.compte.getValue();
+		Date dateMois = (Date)getComponent().getMois().getValue();
 
 		Calendar c = Calendar.getInstance();
 		if(dateMois != null){
@@ -508,5 +478,35 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		}
 		return c;
 	}
+
+	/**
+	 * @return the compte
+	 */
+	public ComboBox<String> getCompte() {
+		return compte;
+	}
+
+	/**
+	 * @return the oldMois
+	 */
+	public int getOldMois() {
+		return oldMois;
+	}
+
+	/**
+	 * @return the oldAnnee
+	 */
+	public int getOldAnnee() {
+		return oldAnnee;
+	}
+
+	/**
+	 * @return the oldIdCompte
+	 */
+	public String getOldIdCompte() {
+		return oldIdCompte;
+	}
+	
+	
 }
 

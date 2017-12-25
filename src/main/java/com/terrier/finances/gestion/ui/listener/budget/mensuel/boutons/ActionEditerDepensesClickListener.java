@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.ui.listener.budget.mensuel;
+package com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons;
 
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIComponent;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;

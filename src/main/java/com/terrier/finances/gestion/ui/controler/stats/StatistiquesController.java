@@ -9,7 +9,7 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPa
 import com.terrier.finances.gestion.ui.components.stats.StatistiquesPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.ChangePageListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.ActionDeconnexionClickListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionDeconnexionClickListener;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.ThemeResource;

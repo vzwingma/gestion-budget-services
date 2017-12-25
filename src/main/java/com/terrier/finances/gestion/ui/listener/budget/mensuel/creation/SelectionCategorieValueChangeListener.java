@@ -10,15 +10,15 @@ import java.util.List;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.CreerDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 
 /**
  * Changement d'une catégorie dans le formulaire de création
  * @author vzwingma
  *
  */
-public class SelectionCategorieValueChangeListener extends AbstractComponentListener implements ValueChangeListener{
+public class SelectionCategorieValueChangeListener extends AbstractComponentListener implements ValueChangeListener<CategorieDepense>{
 
 	private CreerDepenseController controleur;
 
@@ -35,8 +35,8 @@ public class SelectionCategorieValueChangeListener extends AbstractComponentList
 	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
 	 */
 	@Override
-	public void valueChange(ValueChangeEvent event) {
-		CategorieDepense categorie = (CategorieDepense)event.getProperty().getValue();
+	public void valueChange(ValueChangeEvent<CategorieDepense> event) {
+		CategorieDepense categorie = event.getValue();
 		controleur.getComponent().getComboBoxSsCategorie().removeAllItems();
 		// Sélection d'une catégorie
 		if(categorie != null){

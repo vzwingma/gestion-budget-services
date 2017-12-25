@@ -41,12 +41,12 @@ public class ChangePageListener extends AbstractComponentListener implements Cli
 		if(this.pageDestination.equals(StatistiquesPage.class)){
 			
 			BudgetMensuelPage page = (BudgetMensuelPage)event.getButton().getParent().getParent().getParent().getParent();
-			mainLayout.addComponent(new StatistiquesPage((String)page.getComboBoxComptes().getConvertedValue()));			
+			mainLayout.addComponent(new StatistiquesPage(page.getComboBoxComptes().getValue()));			
 		}
 		else if(this.pageDestination.equals(BudgetMensuelPage.class)){
 			
 			StatistiquesPage page = (StatistiquesPage)event.getButton().getParent().getParent().getParent().getParent();
-			mainLayout.addComponent(new BudgetMensuelPage((String)page.getComboBoxComptes().getConvertedValue()));			
+			mainLayout.addComponent(new BudgetMensuelPage(page.getComboBoxComptes().getValue()));			
 		}
 	}
 }
