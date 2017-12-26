@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.ui.components.style.operations;
+package com.terrier.finances.gestion.ui.styles.operations;
 
 import java.math.BigDecimal;
 

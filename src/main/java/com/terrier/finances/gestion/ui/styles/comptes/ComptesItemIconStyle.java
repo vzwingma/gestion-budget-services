@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.ui.components.style.comptes.combobox;
+package com.terrier.finances.gestion.ui.styles.comptes;
 
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.vaadin.server.Resource;

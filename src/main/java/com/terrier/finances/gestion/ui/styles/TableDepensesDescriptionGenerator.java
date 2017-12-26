@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.ui.components.style;
+package com.terrier.finances.gestion.ui.styles;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
@@ -15,6 +15,7 @@ import com.vaadin.ui.Component;
  * @author vzwingma
  *
  */
+@Deprecated
 public class TableDepensesDescriptionGenerator extends AbstractUIService { // implements ItemDescriptionGenerator {
 
 

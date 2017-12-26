@@ -3,8 +3,8 @@ package com.terrier.finances.gestion.ui.components.budget.mensuel.components;
 import com.terrier.finances.gestion.model.business.budget.TotalBudgetMensuel;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent;
-import com.terrier.finances.gestion.ui.components.style.GridTotalCellStyle;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
+import com.terrier.finances.gestion.ui.styles.total.GridTotalCellStyle;
 
 /**
  * Tableau de suivi des dépenses

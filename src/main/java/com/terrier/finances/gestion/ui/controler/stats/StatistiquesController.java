@@ -39,7 +39,7 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 	}
 
 
-	@Override
+	@Deprecated
 	public void initDynamicComponentsOnPage() {
 
 		// Démarrage

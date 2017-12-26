@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.ui.components.style;
+package com.terrier.finances.gestion.ui.styles;
 
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.vaadin.client.widget.grid.CellReference;
@@ -13,6 +13,7 @@ import com.vaadin.client.widget.grid.CellStyleGenerator;
  * @author vzwingma
  *
  */
+@Deprecated
 public class TreeResumeCellStyle implements CellStyleGenerator<String> {
 
 	/**

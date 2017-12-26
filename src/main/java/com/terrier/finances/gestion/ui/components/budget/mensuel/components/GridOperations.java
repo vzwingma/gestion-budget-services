@@ -11,8 +11,8 @@ import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
-import com.terrier.finances.gestion.ui.components.style.operations.OperationBudgetTypeRenderer;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
+import com.terrier.finances.gestion.ui.styles.operations.OperationBudgetTypeRenderer;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.TextRenderer;
 

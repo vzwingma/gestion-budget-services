@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.ui.components.style;
+package com.terrier.finances.gestion.ui.styles.total;
 
 
 import java.math.BigDecimal;
