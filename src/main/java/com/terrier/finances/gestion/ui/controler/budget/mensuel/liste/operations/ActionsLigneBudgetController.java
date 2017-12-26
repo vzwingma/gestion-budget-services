@@ -1,10 +1,14 @@
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations;
 
+import java.util.Iterator;
+
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionsLigneDepenseClickListener;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 
 /**
  * Controleur du budget mensuel
@@ -14,17 +18,9 @@ import com.vaadin.ui.Button;
 public class ActionsLigneBudgetController extends AbstractUIController<ActionsLigneBudget> {
 
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3969804553001678780L;
 
-	/**
-	 * Identifiant de la dépense
-	 */
-	private String idDepense;
-
-	
+	private String idOperation;
 	/**
 	 * Contructeur
 	 * @param composant
@@ -32,47 +28,41 @@ public class ActionsLigneBudgetController extends AbstractUIController<ActionsLi
 	public ActionsLigneBudgetController(ActionsLigneBudget composant) {
 		super(composant);
 	}
-	
-	/**
-	 * @see com.terrier.finances.gestion.ui.controler.common.AbstractUIController#initDynamicComponentsOnPage()
+
+
+	/* (non-Javadoc)
+	 * @see com.terrier.finances.gestion.ui.controler.AbstractUIController#miseAJourVueDonnees()
 	 */
-	public void initDynamicComponentsOnPage(){
+	@Override
+	public void miseAJourVueDonnees() {
 		getComponent().getButtonReel().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonReel().setId("buttonReel");
 		getComponent().getButtonReel().setStyleName("v-button-actions v-button-reel");
 		getComponent().getButtonReel().setDescription("Enregistrement de la dépense");
-		
+
 		getComponent().getButtonAnnuler().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonAnnuler().setId("buttonAnnuler");
 		getComponent().getButtonAnnuler().setStyleName("v-button-actions v-button-annuler");
 		getComponent().getButtonAnnuler().setDescription("Annulation de la dépense");
-		
-		
+
+
 		getComponent().getButtonReporter().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonReporter().setId("buttonReporter");
 		getComponent().getButtonReporter().setStyleName("v-button-actions v-button-reporter");
 		getComponent().getButtonReporter().setDescription("Report de la dépense au mois prochain");
-		
+
 		getComponent().getButtonPrevue().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonPrevue().setId("buttonPrevue");
 		getComponent().getButtonPrevue().setStyleName("v-button-actions v-button-prevue");
 		getComponent().getButtonPrevue().setDescription("Mise en prévision de la dépense");
-		
+
 		getComponent().getButtonSupprimer().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonSupprimer().setId("buttonSupprimer");
 		getComponent().getButtonSupprimer().setStyleName("v-button-actions v-button-supprimer");
 		getComponent().getButtonSupprimer().setDescription("Suppression de la dépense");		
 	}
 
-	/**
-	 * set id dépense
-	 * @param idDepense
-	 */
-	public void setidDepense(String idDepense){
-		this.idDepense = idDepense;
-	}
-	
-	
+
 	/**
 	 * mise à jour de l'état de la ligne
 	 * @param etat
@@ -98,21 +88,23 @@ public class ActionsLigneBudgetController extends AbstractUIController<ActionsLi
 		}
 		boutonInactif.setVisible(false);
 	}
-	
-		
 
 
 	/**
 	 * @return the idDepense
 	 */
-	public String getIdDepense() {
-		return idDepense;
+	public String getIdOperation() {
+		return idOperation;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.terrier.finances.gestion.ui.controler.AbstractUIController#miseAJourVueDonnees()
+
+	/**
+	 * @param idOperation the idOperation to set
 	 */
-	@Override
-	public void miseAJourVueDonnees() { }
+	public void setIdOperation(String idOperation) {
+		this.idOperation = idOperation;
+	}
+
+
 }
 

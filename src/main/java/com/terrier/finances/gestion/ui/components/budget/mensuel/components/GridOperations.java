@@ -13,6 +13,7 @@ import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridCompone
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.terrier.finances.gestion.ui.styles.operations.OperationBudgetTypeRenderer;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.TextRenderer;
 
@@ -136,7 +137,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setWidth(TAILLE_COLONNE_ACTIONS)
 			.setHidable(true)
 			.setResizable(false);
-		c9.setRenderer(new TextRenderer(""));
+		c9.setRenderer(new ComponentRenderer());
 		
 		Column<LigneDepense, Date> c10 = addColumn(LigneDepense::getDateMaj);
 		c10.setId(EntetesTableSuiviDepenseEnum.DATE_MAJ.name())

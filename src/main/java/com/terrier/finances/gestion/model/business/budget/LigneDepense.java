@@ -338,7 +338,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 				&& !BusinessDepensesService.ID_SS_CAT_PREVISION_SANTE.equals(getSsCategorie().getId())
 				&& budgetIsActif){
 			actionsOperation = new ActionsLigneBudget();
-			actionsOperation.getControleur().setidDepense(getId());
+			actionsOperation.getControleur().setIdOperation(getId());
 			actionsOperation.getControleur().miseAJourEtatLigne(getEtat());
 		}
 		else{
