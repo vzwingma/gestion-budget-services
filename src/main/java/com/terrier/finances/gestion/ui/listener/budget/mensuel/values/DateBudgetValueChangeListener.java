@@ -1,6 +1,5 @@
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.values;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
@@ -33,10 +32,10 @@ public class DateBudgetValueChangeListener implements ValueChangeListener<LocalD
 
 		// Modification de la date
 		String idCompte = (String)this.controleur.getCompte().getValue().getId();
-		Instant dateBudget = event.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant();
+		LocalDate dateBudget = event.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		dateBudget.with(ChronoField.DAY_OF_MONTH, 1);
-		this.controleur.setRangeFinMois(dateBudget.atZone(ZoneId.systemDefault()).toLocalDate(), idCompte);
-		if(dateBudget.get(ChronoField.MONTH_OF_YEAR) != this.controleur.getOldMois() || dateBudget.get(ChronoField.YEAR) != this.controleur.getOldAnnee()){
+		this.controleur.setRangeFinMois(dateBudget, idCompte);
+		if(dateBudget.getMonthValue() != this.controleur.getOldMois() || dateBudget.getYear() != this.controleur.getOldAnnee()){
 			this.controleur.miseAJourVueDonnees();			
 		}
 	}

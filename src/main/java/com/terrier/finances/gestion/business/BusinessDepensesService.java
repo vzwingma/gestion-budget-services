@@ -1,5 +1,7 @@
 package com.terrier.finances.gestion.business;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.data.DepensesDatabaseService;
@@ -180,7 +183,7 @@ public class BusinessDepensesService {
 	 * @param compte id du compte
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
-	public Calendar[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
+	public LocalDate[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
 		return this.dataDepenses.getDatePremierDernierBudgets(compte);
 	}
 
@@ -248,8 +251,8 @@ public class BusinessDepensesService {
 		budget.setCompteBancaire(compteBancaire);
 		budget.setDateMiseAJour(Calendar.getInstance());
 		// Init si dans le futur par rapport au démarrage
-		Calendar datePremierBudget = getDatePremierDernierBudgets(compteBancaire.getId())[0];
-		datePremierBudget.set(Calendar.DAY_OF_MONTH, 1);
+		LocalDate datePremierBudget = getDatePremierDernierBudgets(compteBancaire.getId())[0];
+		datePremierBudget.with(ChronoField.DAY_OF_MONTH, 1);
 
 		Calendar dateCourante = Calendar.getInstance();
 		dateCourante.set(Calendar.MONTH, mois);

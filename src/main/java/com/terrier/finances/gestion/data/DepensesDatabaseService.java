@@ -1,5 +1,7 @@
 package com.terrier.finances.gestion.data;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
@@ -105,7 +108,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public BudgetMensuel chargeBudgetMensuel(String idCompte, int mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", idCompte, mois, annee);
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(idCompte).and("mois").is(mois).and("annee").is(annee));
+		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(idCompte).and("mois").is(mois -1).and("annee").is(annee));
 		BudgetMensuelDTO budgetDTO = null;
 		try{
 			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
@@ -191,7 +194,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public BudgetMensuelDTO chargeBudgetMensuelDTO(String idCompte, int mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", idCompte, mois, annee);
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(idCompte).and("mois").is(mois).and("annee").is(annee));
+		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(idCompte).and("mois").is(mois-1).and("annee").is(annee));
 		BudgetMensuelDTO budgetDTO = null;
 		try{
 			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
@@ -245,7 +248,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	 * @param compte id du compte
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
-	public Calendar[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
+	public LocalDate[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
 		Query query1erBudget = new Query();
 		query1erBudget.addCriteria(Criteria.where("compteBancaire.id").is(compte));
 		query1erBudget.with(new Sort(Sort.Direction.ASC, "annee")).with(new Sort(Sort.Direction.ASC, "mois"));
@@ -263,10 +266,10 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 					break;
 				}				
 			}
-			Calendar premier = Calendar.getInstance();
+			LocalDate premier = DataUtils.localDateFirstDayOfMonth();
 			if(premierbudget != null){
-				premier.set(Calendar.MONTH, premierbudget.getMois());
-				premier.set(Calendar.YEAR, premierbudget.getAnnee());
+				premier.with(ChronoField.MONTH_OF_YEAR, premierbudget.getMois() + 1);
+				premier.with(ChronoField.YEAR, premierbudget.getAnnee());
 			}
 			BudgetMensuelDTO dernierbudget = null;
 
@@ -276,13 +279,13 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 					break;
 				}				
 			}
-			Calendar dernier = Calendar.getInstance();
+			LocalDate dernier = DataUtils.localDateFirstDayOfMonth();
 			if(dernierbudget != null){
-				dernier.set(Calendar.MONTH, dernierbudget.getMois());
-				dernier.set(Calendar.YEAR, dernierbudget.getAnnee());
+				dernier.with(ChronoField.MONTH_OF_YEAR, dernierbudget.getMois() + 1);
+				dernier.with(ChronoField.YEAR, dernierbudget.getAnnee());
 			}
-			dernier.add(Calendar.MONTH, 1);
-			return new Calendar[]{premier, dernier};
+			dernier.plusMonths(1);
+			return new LocalDate[]{premier, dernier};
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement", e);

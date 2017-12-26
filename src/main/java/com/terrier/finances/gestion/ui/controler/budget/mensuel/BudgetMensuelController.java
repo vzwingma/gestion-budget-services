@@ -2,9 +2,7 @@ package com.terrier.finances.gestion.ui.controler.budget.mensuel;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.CompteClosedException;
@@ -145,10 +144,9 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		this.tableTotalResumeControleur = getComponent().getTableTotalResume().getControleur();
 
 		// Init premiere fois
-		Instant dateBudget = Instant.now();
-		//dateBudget.with(ChronoField.DAY_OF_MONTH, 1);
+		LocalDate dateBudget = DataUtils.localDateFirstDayOfMonth();
 		if(getComponent().getMois().getValue() == null){
-			getComponent().getMois().setValue(dateBudget.atZone(ZoneId.systemDefault()).toLocalDate());
+			getComponent().getMois().setValue(dateBudget);
 			LOGGER.debug("[INIT] Init du mois géré : {}", dateBudget.toString());
 		}
 		// Label last connexion
@@ -307,10 +305,9 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			// Bouton Mois précédent limité au mois du
 			// Premier budget du compte de cet utilisateur
 			try {
-				Calendar[] datePremierDernierBudgets = getServiceDepense().getDatePremierDernierBudgets(idCompte);
-	/*			getComponent().getMois().setRangeStart(datePremierDernierBudgets[0].getTime());
-				getComponent().getMois().setRangeEnd(datePremierDernierBudgets[1].getTime());
-				*/
+				LocalDate[] datePremierDernierBudgets = getServiceDepense().getDatePremierDernierBudgets(idCompte);
+				getComponent().getMois().setRangeStart(datePremierDernierBudgets[0]);
+				getComponent().getMois().setRangeEnd(datePremierDernierBudgets[1]);
 			} catch (DataNotFoundException e) {
 				LOGGER.error("[IHM] Erreur lors du chargement du premier budget");
 			}
@@ -326,15 +323,13 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	public void setRangeFinMois(LocalDate dateFin, String idCompte){
 		if(dateFin != null){
 			// Bouton Mois suivant limité au mois prochain si le compte n'est pas clos
-			Calendar dateRangeBudget = Calendar.getInstance();
-/*			dateRangeBudget.setTime(dateFin.getTime());
+			LocalDate dateRangeBudget = DataUtils.localDateFirstDayOfMonth();
 			if(getServiceDepense().isCompteActif(idCompte)){
-				dateRangeBudget.add(Calendar.MONTH, 1);
+				dateRangeBudget.plusMonths(1);
 			}
-			if(dateRangeBudget.getTime().after(getComponent().getMois().getRangeEnd())){
-				getComponent().getMois().setRangeEnd(dateRangeBudget.getTime());
+			if(dateRangeBudget.isAfter(getComponent().getMois().getRangeEnd())){
+				getComponent().getMois().setRangeEnd(dateRangeBudget);
 			}
-			*/
 		}
 		LOGGER.debug("[IHM] < Affichage limité à [{}/{}] <", getComponent().getMois().getRangeStart(), getComponent().getMois().getRangeEnd());
 
@@ -347,22 +342,16 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		LOGGER.debug("[BUDGET] Chargement du budget pour le tableau de suivi des dépenses");
 
 		String idCompte = this.compte.getValue().getId();
-		LocalDate dateMois = getComponent().getMois().getValue();
-
-		Calendar c = Calendar.getInstance();
-		if(dateMois != null){
-			 //c.setTime(dateMois);
-		}
-
-		LOGGER.debug("[BUDGET] Gestion du Compte : {} du mois {}",idCompte, c.getTime());
+		LocalDate dateMoisSelectionne = getComponent().getMois().getValue();
+		LOGGER.debug("[BUDGET] Gestion du Compte : {} du mois {}/{}",idCompte, dateMoisSelectionne.getMonth(), dateMoisSelectionne.getYear());
 
 		try {
 			// Budget
 			BudgetMensuel budget = getServiceDepense().chargerBudgetMensuel(
 					getUtilisateurCourant(),
 					idCompte,
-					c.get(Calendar.MONTH), 
-					c.get(Calendar.YEAR));
+					dateMoisSelectionne.getMonthValue(), 
+					dateMoisSelectionne.getYear());
 
 			// Maj du budget
 			getUISession().setBudgetMensuelCourant(budget);
@@ -384,7 +373,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			String messageerreur = new StringBuilder().
 					append("Impossible de charger le budget du compte ").
 					append(idCompte).append(" du ").
-					append(c.get(Calendar.MONTH)).append("/").append(c.get(Calendar.YEAR)).toString();
+					append(dateMoisSelectionne.getMonth()).append("/").append(dateMoisSelectionne.getYear()).
+					toString();
 			throw new DataNotFoundException(messageerreur);
 		}
 	}
