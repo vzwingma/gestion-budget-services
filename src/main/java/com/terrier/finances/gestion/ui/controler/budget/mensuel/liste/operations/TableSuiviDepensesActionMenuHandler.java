@@ -1,14 +1,13 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.ui.controler.budget.mensuel.components;
+package com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode.TableSuiviDepenseEditedFieldFactory;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.event.Action;
 import com.vaadin.ui.Grid.ItemClick;

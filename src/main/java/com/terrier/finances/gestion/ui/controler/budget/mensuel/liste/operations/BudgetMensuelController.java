@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.ui.controler.budget.mensuel;
+package com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -25,9 +25,8 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPa
 import com.terrier.finances.gestion.ui.components.style.comptes.combobox.ComptesItemCaptionStyle;
 import com.terrier.finances.gestion.ui.components.style.comptes.combobox.ComptesItemIconStyle;
 import com.terrier.finances.gestion.ui.components.style.comptes.combobox.ComptesItemStyle;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableResumeTotauxController;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TreeResumeCategoriesController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.resume.TreeResumeCategoriesController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionDeconnexionClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionEditerDepensesClickListener;
@@ -66,7 +65,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 	// Table de suivi
 	private TableSuiviDepenseController tableSuiviDepenseControleur;
-	private TableResumeTotauxController tableTotalResumeControleur;
+	private GridResumeTotauxController tableTotalResumeControleur;
 	private TreeResumeCategoriesController treeResumeControleur;
 
 	// Calcul de mise à jour du compte courant

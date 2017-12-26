@@ -2,14 +2,14 @@ package com.terrier.finances.gestion.ui.components.budget.mensuel.components;
 
 import com.terrier.finances.gestion.model.business.budget.TotalBudgetMensuel;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableResumeTotauxController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
 
 /**
  * Tableau de suivi des dépenses
  * @author vzwingma
  *
  */
-public class TableResumeTotaux extends AbstractUIGridComponent<TableResumeTotauxController, TotalBudgetMensuel> {
+public class GridResumeTotaux extends AbstractUIGridComponent<GridResumeTotauxController, TotalBudgetMensuel> {
 
 	/**
 	 * 
@@ -17,7 +17,7 @@ public class TableResumeTotaux extends AbstractUIGridComponent<TableResumeTotaux
 	private static final long serialVersionUID = -7187184070043964584L;
 
 
-	public TableResumeTotaux(){
+	public GridResumeTotaux(){
 		// Start controleur
 		startControleur();
 	}
@@ -26,7 +26,7 @@ public class TableResumeTotaux extends AbstractUIGridComponent<TableResumeTotaux
 	 * @see com.terrier.finances.gestion.ui.components.AbstractUITableComponent#createControleur()
 	 */
 	@Override
-	public TableResumeTotauxController createControleur() {
-		return new TableResumeTotauxController(this);
+	public GridResumeTotauxController createControleur() {
+		return new GridResumeTotauxController(this);
 	}
 }

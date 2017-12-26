@@ -6,7 +6,7 @@ package com.terrier.finances.gestion.ui.components.style;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIService;
 import com.vaadin.ui.Component;
 

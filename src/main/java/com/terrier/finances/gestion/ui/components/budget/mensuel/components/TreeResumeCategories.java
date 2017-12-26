@@ -1,7 +1,7 @@
 package com.terrier.finances.gestion.ui.components.budget.mensuel.components;
 
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITreeTableComponent;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TreeResumeCategoriesController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.resume.TreeResumeCategoriesController;
 
 /**
  * Tableau de suivi des dépenses

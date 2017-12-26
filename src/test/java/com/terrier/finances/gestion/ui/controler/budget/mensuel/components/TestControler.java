@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
+
 /**
  * Tests des controleurs
  * @author vzwingma
@@ -20,7 +22,7 @@ public class TestControler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestControler.class);
 	@Test
 	public void testAffichageDate(){
-		TableResumeTotauxController t = new TableResumeTotauxController(null);
+		GridResumeTotauxController t = new GridResumeTotauxController(null);
 		LOGGER.info("du {} à fin {}", 
 				t.auDateFormat.format(Calendar.getInstance().getTime()), 
 				t.finDateFormat.format(Calendar.getInstance().getTime()));

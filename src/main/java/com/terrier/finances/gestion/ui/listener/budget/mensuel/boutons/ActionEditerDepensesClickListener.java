@@ -6,7 +6,7 @@ package com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIComponent;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode.TableSuiviDepenseEditedFieldFactory;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;

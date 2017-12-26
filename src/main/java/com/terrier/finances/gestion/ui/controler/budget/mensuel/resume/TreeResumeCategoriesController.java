@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.ui.controler.budget.mensuel.components;
+package com.terrier.finances.gestion.ui.controler.budget.mensuel.resume;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

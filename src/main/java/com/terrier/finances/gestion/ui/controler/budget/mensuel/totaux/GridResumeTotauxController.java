@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.ui.controler.budget.mensuel.components;
+package com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.Locale;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.TotalBudgetMensuel;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableResumeTotaux;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridResumeTotaux;
 import com.terrier.finances.gestion.ui.components.style.TableTotalCellStyle;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.vaadin.ui.Grid.Column;
@@ -23,7 +23,7 @@ import com.vaadin.ui.Grid.SelectionMode;
  * @author vzwingma
  *
  */
-public class TableResumeTotauxController extends AbstractUIController<TableResumeTotaux>{
+public class GridResumeTotauxController extends AbstractUIController<GridResumeTotaux>{
 
 
 	private static final long serialVersionUID = 5190668755144306669L;
@@ -35,7 +35,7 @@ public class TableResumeTotauxController extends AbstractUIController<TableResum
 	/**
 	 * @param composant
 	 */
-	public TableResumeTotauxController(TableResumeTotaux composant) {
+	public GridResumeTotauxController(GridResumeTotaux composant) {
 		super(composant);
 	}
 

@@ -6,7 +6,7 @@ import java.util.TimeZone;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.TableSuiviDepenseController;
 
 /**
  * Tableau de suivi des dépenses

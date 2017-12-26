@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.ui.controler.budget.mensuel;
+package com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations;
 
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
