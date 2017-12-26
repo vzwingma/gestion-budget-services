@@ -4,7 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITableComponent;
+import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
+import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 
 /**
@@ -12,7 +13,7 @@ import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.Table
  * @author vzwingma
  *
  */
-public class TableSuiviDepense extends AbstractUITableComponent<TableSuiviDepenseController> {
+public class TableSuiviDepense extends AbstractUIGridComponent<TableSuiviDepenseController, BudgetMensuel> {
 
 	/**
 	 * 

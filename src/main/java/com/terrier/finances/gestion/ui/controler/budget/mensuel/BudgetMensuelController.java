@@ -68,7 +68,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private TableSuiviDepenseController tableSuiviDepenseControleur;
 	private TableResumeTotauxController tableTotalResumeControleur;
 	private TreeResumeCategoriesController treeResumeControleur;
-	private ComboBox<CompteBancaire> compte;
 
 	// Calcul de mise à jour du compte courant
 	private int oldMois;
@@ -162,10 +161,10 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
         getComponent().getMois().setResolution(DateResolution.MONTH);
 		getComponent().getMois().addValueChangeListener(new DateBudgetValueChangeListener(this));
 
-		this.compte = getComponent().getComboBoxComptes();
-		this.compte.setDescription("Choix du compte");
-		this.compte.setTextInputAllowed(false);
-		this.compte.setEmptySelectionAllowed(false);
+
+		getComponent().getComboBoxComptes().setDescription("Choix du compte");
+		getComponent().getComboBoxComptes().setTextInputAllowed(false);
+		getComponent().getComboBoxComptes().setEmptySelectionAllowed(false);
 
 		int ordreCompte = 100;
 		CompteBancaire compteCourant = null;
@@ -173,27 +172,27 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		try{
 			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
 			// Ajout de la liste des comptes dans la combobox
-			this.compte.setItems(comptes);
+			getComponent().getComboBoxComptes().setItems(comptes);
 			// Sélection du premier du groupe
 			for (CompteBancaire compte : comptes) {
 				if(compte.getOrdre() <= ordreCompte){
-					this.compte.setSelectedItem(compte);
+					getComponent().getComboBoxComptes().setSelectedItem(compte);
 					compteCourant = compte;
 					ordreCompte = compte.getOrdre();
 				}
 				if(getComponent().getCompteSelectionne() != null && compte.getId().equals(getComponent().getCompteSelectionne().getId())){
-					this.compte.setSelectedItem(getComponent().getCompteSelectionne());
+					getComponent().getComboBoxComptes().setSelectedItem(getComponent().getCompteSelectionne());
 					compteCourant = compte;
 				}
 			}
 			// mise à jour du style
-			this.compte.setItemCaptionGenerator(new ComptesItemCaptionStyle());
-			this.compte.setItemIconGenerator(new ComptesItemIconStyle());
-			this.compte.setStyleGenerator(new ComptesItemStyle());
+			getComponent().getComboBoxComptes().setItemCaptionGenerator(new ComptesItemCaptionStyle());
+			getComponent().getComboBoxComptes().setItemIconGenerator(new ComptesItemIconStyle());
+			getComponent().getComboBoxComptes().setStyleGenerator(new ComptesItemStyle());
 
 			initRangeDebutFinMois(compteCourant.getId());
-			this.compte.setTextInputAllowed(false);
-			this.compte.addValueChangeListener(new CompteValueChangeListener(this));
+			getComponent().getComboBoxComptes().setTextInputAllowed(false);
+			getComponent().getComboBoxComptes().addValueChangeListener(new CompteValueChangeListener(this));
 
 
 			// Bouton stat
@@ -341,7 +340,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private BudgetMensuel chargeDonnees() throws DataNotFoundException {
 		LOGGER.debug("[BUDGET] Chargement du budget pour le tableau de suivi des dépenses");
 
-		String idCompte = this.compte.getValue().getId();
+		String idCompte = getComponent().getComboBoxComptes().getValue().getId();
 		LocalDate dateMoisSelectionne = getComponent().getMois().getValue();
 		LOGGER.debug("[BUDGET] Gestion du Compte : {} du mois {}/{}",idCompte, dateMoisSelectionne.getMonth(), dateMoisSelectionne.getYear());
 
@@ -479,7 +478,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * @return the compte
 	 */
 	public ComboBox<CompteBancaire> getCompte() {
-		return compte;
+		return getComponent().getComboBoxComptes();
 	}
 
 	/**

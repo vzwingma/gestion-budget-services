@@ -11,12 +11,13 @@ import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Grid;
 
+
 /**
  * @author vzwingma
  *
  * @param <CONTROL> controleur
  */
-public abstract class AbstractUITableComponent<CONTROL extends AbstractUIController<?>> extends Grid {
+public abstract class AbstractUIGridComponent<CONTROL extends AbstractUIController<?>, DONNEEMETIER> extends Grid<DONNEEMETIER> {
 
 	/**
 	 * 
@@ -25,7 +26,7 @@ public abstract class AbstractUITableComponent<CONTROL extends AbstractUIControl
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUITableComponent.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUIGridComponent.class);
 	
 	private CONTROL controleur;
 	
@@ -54,7 +55,7 @@ public abstract class AbstractUITableComponent<CONTROL extends AbstractUIControl
 	 */
 	public abstract CONTROL createControleur();
 
-
+	
 	/**
 	 * @return le budget mensuel courant
 	 */
