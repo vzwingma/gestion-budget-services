@@ -378,7 +378,15 @@ public class BusinessDepensesService {
 				break;
 			}
 
-			LigneDepense ligneTransfert = new LigneDepense(ligneDepense.getSsCategorie(), "[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle(), TypeDepenseEnum.CREDIT, ligneDepense.getValeur(), etatDepenseTransfert, ligneDepense.isPeriodique());
+			LigneDepense ligneTransfert = new LigneDepense(
+					ligneDepense.getSsCategorie(), 
+					"[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle(), 
+					TypeDepenseEnum.CREDIT, 
+					Math.abs(ligneDepense.getValeur()), 
+					etatDepenseTransfert, 
+					ligneDepense.isPeriodique(), 
+					budgetTransfert.isActif());
+			
 			ajoutLigneDepense(budgetTransfert, ligneTransfert, utilisateur.getLibelle());
 			calculBudgetEtSauvegarde(budgetTransfert);
 			/**
@@ -621,7 +629,7 @@ public class BusinessDepensesService {
 
 		for (LigneDepense depense : budget.getListeDepenses()) {
 			LOGGER.trace("     > {}", depense);
-			int sens = depense.getTypeDepense().equals(TypeDepenseEnum.CREDIT) ? 1 : -1;
+			Float depenseVal = depense.getValeur();
 			budget.getSetLibellesDepensesForAutocomplete().add(depense.getLibelle());
 			/**
 			 *  Calcul par catégorie
@@ -631,11 +639,11 @@ public class BusinessDepensesService {
 				valeursCat = budget.getTotalParCategories().get(depense.getCategorie());
 			}
 			if(depense.getEtat().equals(EtatLigneDepenseEnum.REALISEE)){
-				valeursCat[0] = valeursCat[0] + sens * depense.getValeur();
-				valeursCat[1] = valeursCat[1] + sens * depense.getValeur();
+				valeursCat[0] = valeursCat[0] + depenseVal;
+				valeursCat[1] = valeursCat[1] + depenseVal;
 			}
 			else if(depense.getEtat().equals(EtatLigneDepenseEnum.PREVUE)){
-				valeursCat[1] = valeursCat[1] + sens * depense.getValeur();
+				valeursCat[1] = valeursCat[1] + depenseVal;
 			}
 			budget.getTotalParCategories().put(depense.getCategorie(), valeursCat);
 
@@ -647,11 +655,11 @@ public class BusinessDepensesService {
 				valeurSsCat = budget.getTotalParSSCategories().get(depense.getSsCategorie());
 			}
 			if(depense.getEtat().equals(EtatLigneDepenseEnum.REALISEE)){
-				valeurSsCat[0] = valeurSsCat[0] + sens * depense.getValeur();
-				valeurSsCat[1] = valeurSsCat[1] + sens * depense.getValeur();
+				valeurSsCat[0] = valeurSsCat[0] + depenseVal;
+				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
 			}
 			if(depense.getEtat().equals(EtatLigneDepenseEnum.PREVUE)){
-				valeurSsCat[1] = valeurSsCat[1] + sens * depense.getValeur();
+				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
 			}
 			budget.getTotalParSSCategories().put(depense.getSsCategorie(), valeurSsCat);
 
@@ -659,10 +667,10 @@ public class BusinessDepensesService {
 
 			// Si réserve : ajout dans le calcul fin de mois
 			// Pour taper dans la réserve : inverser le type de dépense
-
+			int sens = 1;
 			if(ID_SS_CAT_RESERVE.equals(depense.getSsCategorie().getId())){
 				budget.setMargeSecuriteFinMois(budget.getMargeSecurite() + Double.valueOf(depense.getValeur()));
-				sens = - sens;
+				sens = -1;
 			}
 
 			/**
@@ -670,14 +678,14 @@ public class BusinessDepensesService {
 			 */
 
 			if(depense.getEtat().equals(EtatLigneDepenseEnum.REALISEE)){
-				budget.ajouteANowArgentAvance(sens * depense.getValeur());
-				budget.ajouteANowCompteReel(sens * depense.getValeur());
-				budget.ajouteAFinArgentAvance(sens * depense.getValeur());
-				budget.ajouteAFinCompteReel(sens * depense.getValeur());				
+				budget.ajouteANowArgentAvance(sens * depenseVal);
+				budget.ajouteANowCompteReel(sens * depenseVal);
+				budget.ajouteAFinArgentAvance(sens * depenseVal);
+				budget.ajouteAFinCompteReel(sens * depenseVal);				
 			}
 			else if(depense.getEtat().equals(EtatLigneDepenseEnum.PREVUE)){
-				budget.ajouteAFinArgentAvance(sens * depense.getValeur());
-				budget.ajouteAFinCompteReel(sens * depense.getValeur());
+				budget.ajouteAFinArgentAvance(sens * depenseVal);
+				budget.ajouteAFinCompteReel(sens * depenseVal);
 			}
 		}
 		LOGGER.debug("Argent avancé : {}  :   {}", budget.getNowArgentAvance(), budget.getFinArgentAvance());

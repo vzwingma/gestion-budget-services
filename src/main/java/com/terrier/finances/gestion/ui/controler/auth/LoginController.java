@@ -39,12 +39,14 @@ public class LoginController extends AbstractUIController<Login>{
 	 */
 	public LoginController(Login composant) {
 		super(composant);
+		
+		initDynamicComponentsOnPage();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.ui.controler.common.AbstractUIController#initDynamicComponentsOnPage()
 	 */
-	@Override
+	@Deprecated
 	public void initDynamicComponentsOnPage() {
 		// Ajout controle
 		getComponent().getButtonConnexion().addClickListener(new LoginConnexionClickListener(this.getComponent()));

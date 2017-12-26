@@ -31,10 +31,6 @@ public abstract class AbstractUIController<COMPONENT extends AbstractComponent> 
 	// Page associée au controleur
 	private COMPONENT component;
 
-	/**
-	 * Initialisation des composants graphiques suite au démarrage du controleur
-	 */
-	public abstract void initDynamicComponentsOnPage();
 
 	
 	/**
@@ -49,8 +45,6 @@ public abstract class AbstractUIController<COMPONENT extends AbstractComponent> 
 	public void start(){
 		// Enregistrement des controleurs
 		registerControlerToUIComponentManager();
-		// Init des composants
-		initDynamicComponentsOnPage();
 		// Ajout des données
 		miseAJourVueDonnees();
 	}

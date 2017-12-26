@@ -115,7 +115,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * Init du suivi
 	 * @param tableSuiviDepenseControleur tableau de suivi
 	 */
-	@Override
+	@Deprecated
 	public void initDynamicComponentsOnPage(){
 
 		// Init des boutons
@@ -384,6 +384,10 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 */
 	@Override
 	public void miseAJourVueDonnees() {
+		
+		initDynamicComponentsOnPage();
+		
+		
 		BudgetMensuel budgetCourant = null;
 		try {
 			budgetCourant = chargeDonnees();

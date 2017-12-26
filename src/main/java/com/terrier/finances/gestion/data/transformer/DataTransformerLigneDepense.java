@@ -44,7 +44,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		
 		BasicTextEncryptor decryptor = getEncryptor();
 		
-		LigneDepense bo = new LigneDepense();
+		LigneDepense bo = new LigneDepense(true);
 		bo.setId(dto.getId());
 		if(dto.getAuteur() !=null){
 			bo.setAuteur(decryptor.decrypt(dto.getAuteur()));
@@ -62,10 +62,16 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		if(dto.getNotes() != null){
 			bo.setNotes(decryptor.decrypt(dto.getNotes()));
 		}
-		
+
 		bo.setPeriodique(dto.isPeriodique());
 		bo.setTypeDepense(TypeDepenseEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
-		bo.setValeur(Float.valueOf(decryptor.decrypt(dto.getValeur())));
+		
+		Float depenseVal =  Math.abs(Float.valueOf(decryptor.decrypt(dto.getValeur())));
+		if(bo.getTypeDepense().equals(TypeDepenseEnum.DEPENSE)){
+				depenseVal = -depenseVal;
+		};
+		
+		bo.setValeur(depenseVal);
 		LOGGER.trace("	[{}] \n > Transformation en BO > [{}]", dto, bo);
 		return bo;
 	}
@@ -93,7 +99,12 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		dto.setNotes(bo.getNotes() != null ? encryptor.encrypt(bo.getNotes()) : null);
 		dto.setPeriodique(bo.isPeriodique());
 		dto.setTypeDepense(encryptor.encrypt(bo.getTypeDepense().name()));
-		dto.setValeur(encryptor.encrypt(String.valueOf(bo.getValeur())));
+		
+		Float depenseVal =  Math.abs(bo.getValeur());
+		if(bo.getTypeDepense().equals(TypeDepenseEnum.DEPENSE)){
+				depenseVal = -depenseVal;
+		};
+		dto.setValeur(encryptor.encrypt(String.valueOf(depenseVal)));
 		
 		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
 		return dto;

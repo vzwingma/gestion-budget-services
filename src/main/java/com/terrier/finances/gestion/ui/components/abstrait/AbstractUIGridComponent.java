@@ -39,9 +39,13 @@ public abstract class AbstractUIGridComponent<CONTROL extends AbstractUIControll
 		controleur = createControleur();
 		LOGGER.info("[INIT] Démarrage du controleur {}", getControleur());
 		controleur.start();
+		paramComponentsOnPage();
 	}
 	
-
+	/**
+	 * Initialisation des composants graphiques suite au démarrage du controleur
+	 */
+	public abstract void paramComponentsOnPage();
 	
 	/**
 	 * @return controleur associé

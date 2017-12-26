@@ -66,7 +66,8 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 					type,
 					Float.valueOf(form.getTextFieldValeur().getValue()),
 					etat,
-					form.getCheckBoxPeriodique().getValue());
+					form.getCheckBoxPeriodique().getValue(),
+					getBudgetMensuelCourant().isActif());
 			LOGGER.debug("[IHM]  >  {}", ligneDepense);
 			String auteur = getUtilisateurCourant().getLibelle();
 			BudgetMensuel budget = getBudgetMensuelCourant();

@@ -3,17 +3,12 @@
  */
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations;
 
-import java.util.Date;
 import java.util.List;
 
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
-import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
-import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.vaadin.ui.Grid.Column;
 
 /**
  * Grille des opérations du budget
@@ -26,15 +21,6 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	private static final long serialVersionUID = 5190668755144306669L;
 
 
-	public static final int TAILLE_COLONNE_DATE = 95;
-	public static final int TAILLE_COLONNE_CATEGORIE = 150;
-	public static final int TAILLE_COLONNE_AUTEUR = 100;
-	public static final int TAILLE_COLONNE_DATE_EDITEE = 150;
-	public static final int TAILLE_COLONNE_ACTIONS = 110;
-	public static final int TAILLE_COLONNE_TYPE_MENSUEL = 65;
-	public static final int TAILLE_COLONNE_VALEUR = 100;
-
-
 	/**
 	 * Constructeur du controleur du composant
 	 * @param composant
@@ -43,60 +29,6 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 		super(composant);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.terrier.finances.gestion.ui.controler.common.AbstractUIController#initDynamicComponentsOnPage()
-	 */
-	@Override
-	public void initDynamicComponentsOnPage() {
-		/**
-		 * Table de suivi des dépenses
-		 */
-		getComponent().setWidth("100.0%");
-		getComponent().setHeight("100.0%");
-		getComponent().setColumnReorderingAllowed(false);
-		getComponent().setResponsive(true);
-//		getComponent().setColumnCollapsingAllowed(true);
-
-		Column<LigneDepense, Date> c = getComponent().addColumn(LigneDepense::getDateOperation);
-		c.setId(EntetesTableSuiviDepenseEnum.DATE_OPERATION.name()).setCaption(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getLibelle()).setWidth(TAILLE_COLONNE_DATE).setHidable(true).setResizable(false);
-		
-		Column<LigneDepense, CategorieDepense> c2 = getComponent().addColumn(LigneDepense::getCategorie);
-		c2.setId(EntetesTableSuiviDepenseEnum.CATEGORIE.name()).setCaption(EntetesTableSuiviDepenseEnum.CATEGORIE.getLibelle()).setWidth(TAILLE_COLONNE_CATEGORIE).setHidable(true).setResizable(false);
-		
-		Column<LigneDepense, CategorieDepense> c3 = getComponent().addColumn(LigneDepense::getSsCategorie);
-		c3.setId(EntetesTableSuiviDepenseEnum.SSCATEGORIE.name()).setCaption(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getLibelle()).setWidth(TAILLE_COLONNE_CATEGORIE).setHidable(true).setResizable(false);
-		
-		Column<LigneDepense, String> c4 = getComponent().addColumn(LigneDepense::getLibelle);
-		c4.setId(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name()).setCaption(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getLibelle()).setHidable(true).setResizable(false);
-		
-		Column<LigneDepense, String> c5 = getComponent().addColumn(LigneDepense::getLibelle);
-		c5.setId(EntetesTableSuiviDepenseEnum.LIBELLE.name()).setCaption(EntetesTableSuiviDepenseEnum.LIBELLE.getLibelle()).setHidden(true).setHidable(true).setResizable(false);
-		
-		Column<LigneDepense, TypeDepenseEnum> c6 = getComponent().addColumn(LigneDepense::getTypeDepense);
-		c6.setId(EntetesTableSuiviDepenseEnum.TYPE.name()).setCaption(EntetesTableSuiviDepenseEnum.TYPE.getLibelle()).setWidth(TAILLE_COLONNE_TYPE_MENSUEL).setHidden(true).setHidable(true).setResizable(false);
-		
-		Column<LigneDepense, Float> c7 = getComponent().addColumn(LigneDepense::getValeur);
-		c7.setId(EntetesTableSuiviDepenseEnum.VALEUR.name()).setCaption(EntetesTableSuiviDepenseEnum.VALEUR.getLibelle()).setWidth(TAILLE_COLONNE_VALEUR).setHidable(true).setResizable(false);
-		
-//		c7.setColumnAlignment(EntetesTableSuiviDepenseEnum.VALEUR.name(), Align.RIGHT);
-		
-		Column<LigneDepense, Boolean> c8 = getComponent().addColumn(LigneDepense::isPeriodique);
-		c8.setId(EntetesTableSuiviDepenseEnum.PERIODIQUE.name()).setCaption(EntetesTableSuiviDepenseEnum.PERIODIQUE.getLibelle()).setWidth(TAILLE_COLONNE_TYPE_MENSUEL).setHidden(true).setHidable(true).setResizable(false);
-		
-		Column<LigneDepense, ActionsLigneBudget> c9 = getComponent().addColumn(LigneDepense::getActionsOperation);
-		c9.setId(EntetesTableSuiviDepenseEnum.ACTIONS.name()).setCaption(EntetesTableSuiviDepenseEnum.ACTIONS.getLibelle()).setWidth(TAILLE_COLONNE_ACTIONS).setHidable(true).setResizable(false);
-		
-		Column<LigneDepense, Date> c10 = getComponent().addColumn(LigneDepense::getDateMaj);
-		c10.setId(EntetesTableSuiviDepenseEnum.DATE_MAJ.name()).setCaption(EntetesTableSuiviDepenseEnum.DATE_MAJ.getLibelle()).setWidth(TAILLE_COLONNE_DATE + 10).setHidable(true).setResizable(false);
-		
-		Column<LigneDepense, String> c11 = getComponent().addColumn(LigneDepense::getAuteur);
-		c11.setId(EntetesTableSuiviDepenseEnum.AUTEUR.name()).setCaption(EntetesTableSuiviDepenseEnum.AUTEUR.getLibelle()).setWidth(TAILLE_COLONNE_AUTEUR).setHidden(true).setHidable(true).setResizable(false);
-		
-		// Ajout du mode Dernier ligne sur la liste des dépenses
-		TableSuiviDepensesActionMenuHandler handler = new TableSuiviDepensesActionMenuHandler();
-//		getComponent().addActionHandler(handler);
-		getComponent().addItemClickListener(handler);
-	}
 
 	/**
 	 * Mise à jour de la vue
@@ -104,9 +36,24 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	 */
 	@Override
 	public void miseAJourVueDonnees() {
+		/**
+		 * Table de suivi des dépenses
+		 */
+		getComponent().setWidth("100.0%");
+		getComponent().setHeight("100.0%");
+		getComponent().setColumnReorderingAllowed(false);
+		getComponent().setResponsive(true);
+
+
+		//getComponent().setStyleGenerator(styleGenerator);
+		
+		// Ajout du mode Dernier ligne sur la liste des dépenses
+		TableSuiviDepensesActionMenuHandler handler = new TableSuiviDepensesActionMenuHandler();
+		//		getComponent().addActionHandler(handler);
+		getComponent().addItemClickListener(handler);
 		/*
 		try {
-	
+
 			// Table Factory pour le mode édition
 			getComponent().setTableFieldFactory(new TableSuiviDepenseEditedFieldFactory(getServiceParams().getCategories()));
 			// Style
@@ -118,7 +65,7 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
 			return;
 		}
-*/
+		 */
 	}
 
 
@@ -130,24 +77,24 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	 * @param listeDepenses liste des dépenses à utiliser
 	 */
 	public void miseAJourVueDonnees(boolean refreshAllDonnees, boolean budgetIsActif, List<LigneDepense> listeDepenses){
-/*
+		/*
 		if(refreshAllDonnees){
 			getComponent().removeAllItems();
 			getComponent().refreshRowCache();
 		}
-		*/
+		 */
 		// Ajout des opérations
 		getComponent().setItems(listeDepenses);
 
-		
+
 		// Mise à jour des colonnes suivant l'activité du budget
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.AUTEUR.name()).setHidden(budgetIsActif);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.ACTIONS.name()).setHidden(!budgetIsActif);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE.name()).setHidden(budgetIsActif);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name()).setHidden(!budgetIsActif);
-		
-		
-/*
+
+
+		/*
 		for (final LigneDepense ligneDepense : listeDepenses) {
 				// Type Popup view pour avoir les notes
 			Property<PopupView> property5 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name());
@@ -182,7 +129,7 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 			}
 		}
 		getComponent().refreshRowCache();
-		*/
+		 */
 	}
 
 
@@ -190,15 +137,15 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	 * Validation du formulaire
 	 */
 	public boolean validateEditableForm(){
-/*
+		/*
 		List<String> messagesErreurs = new ArrayList<String>();
 		String idLigneEditable = ((TableSuiviDepenseEditedFieldFactory)getComponent().getTableFieldFactory()).getIdLigneEditable();
 		if(getComponent().isEditable() && idLigneEditable != null){
 			for (Object itemID : getComponent().getItemIds()) {
 				Item itemLigneDepense = getComponent().getItem(itemID);
-				
+
 				String description = itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId()).getValue().toString();
-				
+
 				if(itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.CATEGORIE.getId()).getValue() == null){
 					messagesErreurs.add(description + " : La catégorie est obligatoire");
 				}
@@ -237,7 +184,7 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 			Notification.show(b.toString(), Notification.Type.WARNING_MESSAGE);
 		}
 		return messagesErreurs.isEmpty();
-		*/
+		 */
 		return true;
 	}
 }

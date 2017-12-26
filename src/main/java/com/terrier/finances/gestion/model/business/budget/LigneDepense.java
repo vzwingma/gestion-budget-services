@@ -68,8 +68,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		this.budgetIsActif = budgetIsActif;
 	}
 	
-
-	
 	/**
 	 * Constructeur
 	 * @param ssCategorie Catégorie
@@ -249,12 +247,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	public float getValeur() {
 		return valeur;
 	}
-	/**
-	 * @param valeur the valeur to set
-	 */
-	public void setValeur(Float valeur) {
-		this.valeur = valeur;
-	}
+
 
 	/**
 	 * @return the dateOperation

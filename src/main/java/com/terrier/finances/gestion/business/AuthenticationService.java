@@ -31,8 +31,6 @@ public class AuthenticationService {
 		LOGGER.info("[INIT] Authentification Service");
 	}
 
-
-
 	/**
 	 * Paramétrages
 	 */

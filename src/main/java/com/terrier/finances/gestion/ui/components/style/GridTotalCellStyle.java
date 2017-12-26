@@ -20,7 +20,7 @@ import elemental.json.JsonValue;
  * @author vzwingma
  *
  */
-public class TableTotalCellStyle extends TextRenderer implements StyleGenerator<TotalBudgetMensuel> {
+public class GridTotalCellStyle extends TextRenderer implements StyleGenerator<TotalBudgetMensuel> {
 
 
 	private static final long serialVersionUID = -2438700237527871644L;
@@ -32,7 +32,7 @@ public class TableTotalCellStyle extends TextRenderer implements StyleGenerator<
 
 	private EntetesTreeResumeDepenseEnum colonne;
 
-	public TableTotalCellStyle(EntetesTreeResumeDepenseEnum colonne) {
+	public GridTotalCellStyle(EntetesTreeResumeDepenseEnum colonne) {
 		this.colonne = colonne;
 	}
 
@@ -63,7 +63,4 @@ public class TableTotalCellStyle extends TextRenderer implements StyleGenerator<
         }
 		return super.encode(value);
 	}
-
-	
-	
 }

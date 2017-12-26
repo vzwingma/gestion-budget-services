@@ -14,7 +14,7 @@ public class TestLigneDepense {
 	
 	@Test
 	public void testUpdateProperty(){
-		LigneDepense old = new LigneDepense();
+		LigneDepense old = new LigneDepense(true);
 		old.setAuteur("A1");
 		old.setDateMaj(Calendar.getInstance().getTime());
 		old.setDateOperation(Calendar.getInstance().getTime());

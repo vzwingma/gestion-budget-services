@@ -46,7 +46,7 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 
 
   
-	@Override
+	@Deprecated
 	public void initDynamicComponentsOnPage() {
 		/**
 		 * Total resume
