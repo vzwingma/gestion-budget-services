@@ -4,16 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
+import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.TableSuiviDepenseController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 
 /**
- * Tableau de suivi des dépenses
+ * Tableau de suivi des opérations
  * @author vzwingma
  *
  */
-public class TableSuiviDepense extends AbstractUIGridComponent<TableSuiviDepenseController, BudgetMensuel> {
+public class GridOperations extends AbstractUIGridComponent<GridOperationsController, LigneDepense> {
 
 	/**
 	 * 
@@ -32,7 +32,7 @@ public class TableSuiviDepense extends AbstractUIGridComponent<TableSuiviDepense
 	/**
 	 * Constructure : démarrage du controleur
 	 */
-	public TableSuiviDepense(){
+	public GridOperations(){
 		// Start controleur
 		startControleur();
 		DATE_FORMAT_MAJ.setTimeZone(tzParis);
@@ -108,7 +108,7 @@ public class TableSuiviDepense extends AbstractUIGridComponent<TableSuiviDepense
 	 * @see com.terrier.finances.gestion.ui.components.AbstractUITableComponent#getControleur()
 	 */
 	@Override
-	public TableSuiviDepenseController createControleur() {
-		return new TableSuiviDepenseController(this);
+	public GridOperationsController createControleur() {
+		return new GridOperationsController(this);
 	}
 }

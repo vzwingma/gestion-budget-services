@@ -6,7 +6,7 @@ package com.terrier.finances.gestion.ui.components.style;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.TableSuiviDepenseController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIService;
 import com.vaadin.ui.Component;
 
@@ -24,13 +24,13 @@ public class TableDepensesDescriptionGenerator extends AbstractUIService { // im
 	 */
 	private static final long serialVersionUID = -1811163367277413727L;
 	// Controleur
-	private TableSuiviDepenseController controleur;
+	private GridOperationsController controleur;
 
 	/**
 	 * Constructeur
 	 * @param controleur ajout du controleur
 	 */
-	public TableDepensesDescriptionGenerator(TableSuiviDepenseController controleur){
+	public TableDepensesDescriptionGenerator(GridOperationsController controleur){
 		this.controleur = controleur;
 	}
 

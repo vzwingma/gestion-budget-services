@@ -11,7 +11,7 @@ import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.TableSuiviDepenseController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIService;
 import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.CellStyleGenerator;
@@ -30,9 +30,9 @@ public class TableDepensesCellStyle extends AbstractUIService implements CellSty
 	// private static final Logger LOGGER = LoggerFactory.getLogger(TableDepensesCellStyle.class);
 
 
-	private TableSuiviDepenseController controleur;
+	private GridOperationsController controleur;
 
-	public TableDepensesCellStyle(TableSuiviDepenseController controleur){
+	public TableDepensesCellStyle(GridOperationsController controleur){
 		this.controleur = controleur;
 	}
 

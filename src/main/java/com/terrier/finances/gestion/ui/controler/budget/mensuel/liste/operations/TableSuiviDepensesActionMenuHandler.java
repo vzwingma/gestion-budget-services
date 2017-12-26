@@ -6,8 +6,8 @@ package com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operation
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode.TableSuiviDepenseEditedFieldFactory;
+import com.terrier.finances.gestion.model.business.budget.LigneDepense;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.event.Action;
 import com.vaadin.ui.Grid.ItemClick;
@@ -18,7 +18,7 @@ import com.vaadin.ui.components.grid.ItemClickListener;
  * @author vzwingma
  *
  */
-public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListener implements Action.Handler, ItemClickListener{
+public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListener implements Action.Handler, ItemClickListener<LigneDepense>{
 
 
 	/**
@@ -62,9 +62,9 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 	 */
 	@Override
 	public void handleAction(Action action, Object sender, Object target) {
-		TableSuiviDepense tableSuivi = (TableSuiviDepense)sender;
+		GridOperations tableSuivi = (GridOperations)sender;
 		if(SET_LAST_DEPENSE.equals(action) && target != null){
-			putIdAsLastDepense(tableSuivi, (String)target);
+			putIdAsLastDepense(tableSuivi, (LigneDepense)target);
 		}	
 		else if(EDIT_DEPENSE.equals(action) && target != null){
 			editDepense(tableSuivi, (String)target);
@@ -75,11 +75,11 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 	/**
 	 * Set as last depense 
 	 * @param tableSuivi table
-	 * @param idDepense id
+	 * @param depense id
 	 */
-	private void putIdAsLastDepense(TableSuiviDepense tableSuivi, String idDepense){
-		LOGGER.info("Marquage de la dépense {} comme dernière action relevée", idDepense);
-		tableSuivi.getControleur().getServiceDepense().setLigneDepenseAsDerniereOperation(getBudgetMensuelCourant(), idDepense);
+	private void putIdAsLastDepense(GridOperations tableSuivi, LigneDepense depense){
+		LOGGER.info("Marquage de la dépense {} comme dernière action relevée", depense.getId());
+		tableSuivi.getControleur().getServiceDepense().setLigneDepenseAsDerniereOperation(getBudgetMensuelCourant(), depense.getId());
 		getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
 	}
 	
@@ -88,7 +88,7 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 	 * @param tableSuivi table
 	 * @param idDepense id
 	 */
-	private void editDepense(TableSuiviDepense tableSuivi, String idDepense){
+	private void editDepense(GridOperations tableSuivi, String idDepense){
 		LOGGER.info("Edition de la dépense {} : {}", idDepense, tableSuivi.getSelectedItems());
 		
 //		TableSuiviDepenseEditedFieldFactory factory = (TableSuiviDepenseEditedFieldFactory)tableSuivi.getTableFieldFactory();
@@ -98,10 +98,10 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 	}
 
 	@Override
-	public void itemClick(ItemClick event) {
+	public void itemClick(ItemClick<LigneDepense> event) {
 		if(event.getMouseEventDetails().isDoubleClick()){
-			TableSuiviDepense tableSuivi = (TableSuiviDepense)event.getSource();
-			putIdAsLastDepense(tableSuivi, (String)event.getItem());
+			GridOperations tableSuivi = (GridOperations)event.getSource();
+			putIdAsLastDepense(tableSuivi, event.getItem());
 		}
 		
 	}

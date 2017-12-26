@@ -36,6 +36,7 @@ public enum EntetesTableSuiviDepenseEnum {
 	
 	private String id;
 	private String libelle;
+	@Deprecated
 	private Class<?> type;
 	/**
 	 * Constructeur
@@ -45,6 +46,7 @@ public enum EntetesTableSuiviDepenseEnum {
 	private EntetesTableSuiviDepenseEnum(String id, String libelle, Class<?> type){
 		this.id = id;
 		this.libelle = libelle;
+		
 		this.type = type;
 	}
 
@@ -74,6 +76,7 @@ public enum EntetesTableSuiviDepenseEnum {
 	/**
 	 * @return the type
 	 */
+	@Deprecated
 	public Class<?> getType() {
 		return type;
 	}

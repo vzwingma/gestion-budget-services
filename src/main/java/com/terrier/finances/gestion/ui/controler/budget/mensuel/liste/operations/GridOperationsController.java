@@ -3,25 +3,25 @@
  */
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations;
 
+import java.util.Date;
 import java.util.List;
 
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
+import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
+import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.Grid.Column;
 
 /**
+ * Grille des opérations du budget
  * @author vzwingma
  *
  */
-public class TableSuiviDepenseController extends AbstractUIController<TableSuiviDepense>{
+public class GridOperationsController extends AbstractUIController<GridOperations>{
 
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5190668755144306669L;
 
 
@@ -38,7 +38,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	 * Constructeur du controleur du composant
 	 * @param composant
 	 */
-	public TableSuiviDepenseController(TableSuiviDepense composant) {
+	public GridOperationsController(GridOperations composant) {
 		super(composant);
 	}
 
@@ -49,65 +49,52 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	public void initDynamicComponentsOnPage() {
 		/**
 		 * Table de suivi des dépenses
-		 
+		 */
 		getComponent().setWidth("100.0%");
 		getComponent().setHeight("100.0%");
-		getComponent().setColumnCollapsingAllowed(true);
-		getComponent().setSortEnabled(true);
-		// Ajout des propriétés : ATTENTION les ID doivent correspondrent aux attributs de l'objet mappé
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), EntetesTableSuiviDepenseEnum.DATE_OPERATION.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), EntetesTableSuiviDepenseEnum.DATE_OPERATION.getLibelle());
-		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), TAILLE_COLONNE_DATE);
+		getComponent().setColumnReorderingAllowed(false);
+		getComponent().setResponsive(true);
+//		getComponent().setColumnCollapsingAllowed(true);
 
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.CATEGORIE.getId(),  EntetesTableSuiviDepenseEnum.CATEGORIE.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.CATEGORIE.getId(), EntetesTableSuiviDepenseEnum.CATEGORIE.getLibelle());
-		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.CATEGORIE.getId(), TAILLE_COLONNE_CATEGORIE);
-
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId(),  EntetesTableSuiviDepenseEnum.SSCATEGORIE.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId(), EntetesTableSuiviDepenseEnum.SSCATEGORIE.getLibelle());
-		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId(), TAILLE_COLONNE_CATEGORIE);
-
-		// Type Popup view pour avoir les notes
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getLibelle());
-		// Type String pour le mode éditable
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), EntetesTableSuiviDepenseEnum.LIBELLE.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), EntetesTableSuiviDepenseEnum.LIBELLE.getLibelle());
-		getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), true);
-
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.TYPE.getId(), EntetesTableSuiviDepenseEnum.TYPE.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.TYPE.getId(), EntetesTableSuiviDepenseEnum.TYPE.getLibelle());
-		getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.TYPE.getId(), true);
-		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.TYPE.getId(), TAILLE_COLONNE_TYPE_MENSUEL);
-
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.VALEUR.getId(), EntetesTableSuiviDepenseEnum.VALEUR.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.VALEUR.getId(), EntetesTableSuiviDepenseEnum.VALEUR.getLibelle());
-		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.VALEUR.getId(), TAILLE_COLONNE_VALEUR);
-		getComponent().setColumnAlignment(EntetesTableSuiviDepenseEnum.VALEUR.getId(), Align.RIGHT);
-
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), EntetesTableSuiviDepenseEnum.PERIODIQUE.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), EntetesTableSuiviDepenseEnum.PERIODIQUE.getLibelle());
-		getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), true);
-		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), TAILLE_COLONNE_TYPE_MENSUEL);
-
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), EntetesTableSuiviDepenseEnum.ACTIONS.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), EntetesTableSuiviDepenseEnum.ACTIONS.getLibelle());
-		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), TAILLE_COLONNE_ACTIONS);
-
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId(), EntetesTableSuiviDepenseEnum.DATE_MAJ.getType(), Calendar.getInstance().getTime());
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId(), EntetesTableSuiviDepenseEnum.DATE_MAJ.getLibelle());
-		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId(), TAILLE_COLONNE_DATE + 10);
-
-		getComponent().addContainerProperty(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), EntetesTableSuiviDepenseEnum.AUTEUR.getType(), null);
-		getComponent().setColumnHeader(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), EntetesTableSuiviDepenseEnum.AUTEUR.getLibelle());
-		getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), true);
-		getComponent().setColumnWidth(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), TAILLE_COLONNE_AUTEUR);
-
+		Column<LigneDepense, Date> c = getComponent().addColumn(LigneDepense::getDateOperation);
+		c.setId(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId()).setCaption(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getLibelle()).setWidth(TAILLE_COLONNE_DATE).setHidable(true).setResizable(false);
+		
+		Column<LigneDepense, CategorieDepense> c2 = getComponent().addColumn(LigneDepense::getCategorie);
+		c2.setId(EntetesTableSuiviDepenseEnum.CATEGORIE.getId()).setCaption(EntetesTableSuiviDepenseEnum.CATEGORIE.getLibelle()).setWidth(TAILLE_COLONNE_CATEGORIE).setHidable(true).setResizable(false);
+		
+		Column<LigneDepense, CategorieDepense> c3 = getComponent().addColumn(LigneDepense::getSsCategorie);
+		c3.setId(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId()).setCaption(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getLibelle()).setWidth(TAILLE_COLONNE_CATEGORIE).setHidable(true).setResizable(false);
+		
+		Column<LigneDepense, String> c4 = getComponent().addColumn(LigneDepense::getLibelle);
+		c4.setId(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId()).setCaption(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getLibelle()).setHidable(true).setResizable(false);
+		
+		Column<LigneDepense, String> c5 = getComponent().addColumn(LigneDepense::getLibelle);
+		c5.setId(EntetesTableSuiviDepenseEnum.LIBELLE.getId()).setCaption(EntetesTableSuiviDepenseEnum.LIBELLE.getLibelle()).setHidden(true).setHidable(true).setResizable(false);
+		
+		Column<LigneDepense, TypeDepenseEnum> c6 = getComponent().addColumn(LigneDepense::getTypeDepense);
+		c6.setId(EntetesTableSuiviDepenseEnum.TYPE.getId()).setCaption(EntetesTableSuiviDepenseEnum.TYPE.getLibelle()).setWidth(TAILLE_COLONNE_TYPE_MENSUEL).setHidden(true).setHidable(true).setResizable(false);
+		
+		Column<LigneDepense, Float> c7 = getComponent().addColumn(LigneDepense::getValeur);
+		c7.setId(EntetesTableSuiviDepenseEnum.VALEUR.getId()).setCaption(EntetesTableSuiviDepenseEnum.VALEUR.getLibelle()).setWidth(TAILLE_COLONNE_VALEUR).setHidable(true).setResizable(false);
+		
+//		c7.setColumnAlignment(EntetesTableSuiviDepenseEnum.VALEUR.getId(), Align.RIGHT);
+		
+		Column<LigneDepense, Boolean> c8 = getComponent().addColumn(LigneDepense::isPeriodique);
+		c8.setId(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId()).setCaption(EntetesTableSuiviDepenseEnum.PERIODIQUE.getLibelle()).setWidth(TAILLE_COLONNE_TYPE_MENSUEL).setHidden(true).setHidable(true).setResizable(false);
+		
+		Column<LigneDepense, String> c9 = getComponent().addColumn(LigneDepense::getId);
+		c9.setId(EntetesTableSuiviDepenseEnum.ACTIONS.getId()).setCaption(EntetesTableSuiviDepenseEnum.ACTIONS.getLibelle()).setWidth(TAILLE_COLONNE_ACTIONS).setHidable(true).setResizable(false);
+		
+		Column<LigneDepense, Date> c10 = getComponent().addColumn(LigneDepense::getDateMaj);
+		c10.setId(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId()).setCaption(EntetesTableSuiviDepenseEnum.DATE_MAJ.getLibelle()).setWidth(TAILLE_COLONNE_DATE + 10).setHidable(true).setResizable(false);
+		
+		Column<LigneDepense, String> c11 = getComponent().addColumn(LigneDepense::getAuteur);
+		c11.setId(EntetesTableSuiviDepenseEnum.AUTEUR.getId()).setCaption(EntetesTableSuiviDepenseEnum.AUTEUR.getLibelle()).setWidth(TAILLE_COLONNE_AUTEUR).setHidden(true).setHidable(true).setResizable(false);
+		
 		// Ajout du mode Dernier ligne sur la liste des dépenses
 		TableSuiviDepensesActionMenuHandler handler = new TableSuiviDepensesActionMenuHandler();
-		getComponent().addActionHandler(handler);
+//		getComponent().addActionHandler(handler);
 		getComponent().addItemClickListener(handler);
-		*/
 	}
 
 	/**
@@ -141,14 +128,17 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	 * @param budgetIsActif budget actif ?
 	 * @param listeDepenses liste des dépenses à utiliser
 	 */
-	@SuppressWarnings("unchecked")
 	public void miseAJourVueDonnees(boolean refreshAllDonnees, boolean budgetIsActif, List<LigneDepense> listeDepenses){
 /*
 		if(refreshAllDonnees){
 			getComponent().removeAllItems();
 			getComponent().refreshRowCache();
 		}
+		*/
+		// Ajout des opérations
+		getComponent().setItems(listeDepenses);
 
+/*
 		for (final LigneDepense ligneDepense : listeDepenses) {
 			// Access items and properties through the component
 			Item item1 = getComponent().getItem(ligneDepense.getId()); // Get item by explicit ID

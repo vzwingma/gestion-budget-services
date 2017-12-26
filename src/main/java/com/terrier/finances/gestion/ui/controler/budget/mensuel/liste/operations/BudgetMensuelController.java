@@ -64,7 +64,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 
 	// Table de suivi
-	private TableSuiviDepenseController tableSuiviDepenseControleur;
+	private GridOperationsController tableSuiviDepenseControleur;
 	private GridResumeTotauxController tableTotalResumeControleur;
 	private TreeResumeCategoriesController treeResumeControleur;
 

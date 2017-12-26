@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.TableSuiviDepenseController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
@@ -36,14 +36,14 @@ public class PopupNoteVisibitilityListener extends AbstractComponentListener imp
 	// Ligne de dépense
 	private final String idLigneDepense;
 	// Controleur
-	private final TableSuiviDepenseController controleur;
+	private final GridOperationsController controleur;
 
 	/**
 	 * Popup visibility listener
 	 * @param ligneDepense
 	 * @param controleur
 	 */
-	public PopupNoteVisibitilityListener(final String idLigneDepense, final TableSuiviDepenseController controleur){
+	public PopupNoteVisibitilityListener(final String idLigneDepense, final GridOperationsController controleur){
 		this.idLigneDepense = idLigneDepense;
 		this.controleur = controleur;
 	}

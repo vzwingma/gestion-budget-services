@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog.ConfirmationDialogCallback;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
@@ -96,7 +96,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 		
 		actions.getControleur().miseAJourEtatLigne(etat);
 		
-		TableSuiviDepense tableauDepense = (TableSuiviDepense)actions.getParent();
+		GridOperations tableauDepense = (GridOperations)actions.getParent();
 		/*
 		LOGGER.trace("Mode Edition ? {}", tableauDepense.isEditable());
 		// Si en mode éditable. Pas de mise à jour. Seulement lors de la validation

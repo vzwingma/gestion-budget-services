@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIComponent;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.ui.Button;
@@ -71,7 +71,7 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 	 * @param table
 	 */
 	@SuppressWarnings("rawtypes")
-	private void refreshModele(TableSuiviDepense table){
+	private void refreshModele(GridOperations table){
 		BudgetMensuel budgetCourant = getBudgetMensuelCourant();
 		String auteur = getUtilisateurCourant().getLibelle();
 /*
