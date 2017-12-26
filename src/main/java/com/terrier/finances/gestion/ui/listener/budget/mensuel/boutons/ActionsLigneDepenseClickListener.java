@@ -9,22 +9,16 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
-import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog.ConfirmationDialogCallback;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 
 /**
  * Listener sur les actions sur la ligne de dépenses
@@ -103,19 +97,16 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 		actions.getControleur().miseAJourEtatLigne(etat);
 		
 		TableSuiviDepense tableauDepense = (TableSuiviDepense)actions.getParent();
+		/*
 		LOGGER.trace("Mode Edition ? {}", tableauDepense.isEditable());
 		// Si en mode éditable. Pas de mise à jour. Seulement lors de la validation
 		if(!tableauDepense.isEditable()){
-			/**
-			 * Recalcul du budget
-			 */
+			// Recalcul du budget
 			BudgetMensuel budget = getBudgetMensuelCourant();
 			
 			try{
 				getControleur(BudgetMensuelController.class).getServiceDepense().majEtatLigneDepense(budget, actions.getControleur().getIdDepense(), etat, auteur);
-				/**
-				 * MAJ des tableaux
-				 */
+				// MAJ des tableaux
 				if(etat == null){
 					// Ligne supprimée
 					tableauDepense.removeItem(actions.getControleur().getIdDepense());
@@ -126,6 +117,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 			}
 			getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
 		}
+	*/
 	}
 	
 	/* (non-Javadoc)

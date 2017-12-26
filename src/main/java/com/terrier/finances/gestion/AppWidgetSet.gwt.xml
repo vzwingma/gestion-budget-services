@@ -16,14 +16,13 @@
 	<!-- To enable SuperDevMode, uncomment this line. See https://vaadin.com/wiki/-/wiki/Main/Using%20SuperDevMode 
 		for more information and instructions. <set-configuration-property name="devModeRedirectEnabled" 
 		value="true" /> -->
-
+<!--
 	<generate-with
 		class="com.terrier.finances.gestion.ui.components.OptimizedConnectorBundleLoaderFactory">
-		<when-type-assignable
-			class="com.vaadin.client.metadata.ConnectorBundleLoader" />
+	 	<when-type-assignable
+			class="com.vaadin.client.metadata.ConnectorBundleLoader" /> 
 	</generate-with>
-
+-->
     
-
-    <inherits name="com.zybnet.autocomplete.AutocompleteWidgetSet" />
+<!--     <inherits name="com.zybnet.autocomplete.AutocompleteWidgetSet" />   -->
 </module>

@@ -1,19 +1,17 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.ui.controler.budget.mensuel;
+package com.terrier.finances.gestion.ui.components.style.comptes.combobox;
 
 import java.util.List;
 
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.ComboBox.ItemStyleGenerator;
 
 /**
  * @author vzwingma
  *
  */
-public class ComptesComboboxItemStyle implements ItemStyleGenerator {
+public class ComptesItemStyle {//implements ItemStyleGenerator {
 
 	/**
 	 * 
@@ -22,12 +20,12 @@ public class ComptesComboboxItemStyle implements ItemStyleGenerator {
 	// Comptes
 	private List<CompteBancaire> comptes;
 	
-	public ComptesComboboxItemStyle( List<CompteBancaire> comptes){
+	public ComptesItemStyle( List<CompteBancaire> comptes){
 		this.comptes = comptes;
 	}
 	/* (non-Javadoc)
 	 * @see com.vaadin.ui.ComboBox.ItemStyleGenerator#getStyle(com.vaadin.ui.ComboBox, java.lang.Object)
-	 */
+	 
 	@Override
 	public String getStyle(ComboBox source, Object itemId) {
 		if(comptes != null && !comptes.isEmpty()){
@@ -39,5 +37,5 @@ public class ComptesComboboxItemStyle implements ItemStyleGenerator {
 		}
 		return null;
 	}
-
+*/
 }

@@ -1,17 +1,11 @@
 package com.terrier.finances.gestion.ui.components.budget.mensuel.components;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import com.terrier.finances.gestion.model.business.budget.LigneDepense;
-import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
-import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITableComponent;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
-import com.vaadin.data.Property;
 
 /**
  * Tableau de suivi des dépenses
@@ -47,7 +41,7 @@ public class TableSuiviDepense extends AbstractUITableComponent<TableSuiviDepens
 	/**
 	 * Affichage dans le tableau en mode consultation
 	 * @see com.vaadin.ui.Table#formatPropertyValue(java.lang.Object, java.lang.Object, com.vaadin.data.Property)
-	 */
+
 	@Override
 	protected String formatPropertyValue(Object rowId, Object colId,
 			Property<?> property) {
@@ -107,7 +101,7 @@ public class TableSuiviDepense extends AbstractUITableComponent<TableSuiviDepens
 		}		
 		return super.formatPropertyValue(rowId, colId, property);
 	}
-
+	 */
 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.ui.components.AbstractUITableComponent#getControleur()

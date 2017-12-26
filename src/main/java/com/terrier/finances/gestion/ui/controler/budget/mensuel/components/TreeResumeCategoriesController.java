@@ -5,23 +5,14 @@ package com.terrier.finances.gestion.ui.controler.budget.mensuel.components;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
-import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.terrier.finances.gestion.model.business.parametrage.CategorieDepenseComparator;
-import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TreeResumeCategories;
-import com.terrier.finances.gestion.ui.components.style.TreeResumeCellStyle;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Table.Align;
 
 /**
  * Controleur du tableau des résumés
@@ -59,7 +50,7 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 	public void initDynamicComponentsOnPage() {
 		/**
 		 * Total resume
-		 */
+		
 		getComponent().addContainerProperty(EntetesTreeResumeDepenseEnum.CATEGORIE.getId(), String.class, null);
 		getComponent().addContainerProperty(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), Double.class, null);
 		getComponent().setColumnWidth(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), TAILLE_COLONNE_VALEUR);
@@ -70,6 +61,7 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 		getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), Align.RIGHT);
 		
 		getComponent().setColumnHeader(EntetesTreeResumeDepenseEnum.CATEGORIE.getId(), EntetesTreeResumeDepenseEnum.CATEGORIE.getLibelle());		
+		 */
 	}
 	
 	
@@ -78,16 +70,20 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 	@Override
 	public void miseAJourVueDonnees() { 
 		// Style
+		/*
 		getComponent().setCellStyleGenerator(new TreeResumeCellStyle());
 		getComponent().addActionHandler(new TreeResumeCategoriesActionMenuHandler());
+		*/
 	}
 	
 	/**
 	 * Effacement des données
 	 */
 	public void resetVueDonnees(){
+		/*
 		getComponent().removeAllItems();
 		getComponent().refreshRowCache();
+		*/
 	}
 	
 	/**
@@ -101,7 +97,7 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 		if(dateBudget == null){
 			dateBudget = Calendar.getInstance();
 		}
-		
+		/*
 		getComponent().setColumnHeader(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), 
 				EntetesTreeResumeDepenseEnum.VALEUR_NOW.getLibelle()+ auDateFormat.format(dateBudget.getTime()));
 		getComponent().setColumnHeader(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), 
@@ -163,5 +159,6 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 				getComponent().setCollapsed(itemId, false);
 			}
 		}
+		*/
 	}
 }

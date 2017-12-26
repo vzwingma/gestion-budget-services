@@ -50,12 +50,12 @@ public class TreeResumeCategoriesActionMenuHandler implements Action.Handler{
             return new Action[]{ EXTEND_ALL_CATEGORIES, COLLAPSE_ALL_CATEGORIES };
 
         } else {
-        	Integer niveauCategorie = (Integer)target;
+        	String niveauCategorie = (String)target;
             // Context menu for a sous category
-        	if(niveauCategorie < 100){
-        		niveauCategorie = (Integer)tree.getParent(niveauCategorie);
+        	if(Integer.parseInt(niveauCategorie) < 100){
+        		niveauCategorie = tree.getParent().getId();
         	}
-    		Action actionCategorie = tree.isCollapsed(niveauCategorie) ? EXTEND_CATEGORIE : COLLAPSE_CATEGORIE;
+    		Action actionCategorie = tree.isExpanded(niveauCategorie) ? EXTEND_CATEGORIE : COLLAPSE_CATEGORIE;
     		return new Action[]{ actionCategorie, EXTEND_ALL_CATEGORIES, COLLAPSE_ALL_CATEGORIES };
         }
 	}
@@ -66,6 +66,8 @@ public class TreeResumeCategoriesActionMenuHandler implements Action.Handler{
 	@Override
 	public void handleAction(Action action, Object sender, Object target) {
 		TreeResumeCategories tree = (TreeResumeCategories)sender;
+		
+		/*
 		if(EXTEND_ALL_CATEGORIES.equals(action) || COLLAPSE_ALL_CATEGORIES.equals(action)){
 			for (Object objItemId : tree.getItemIds()) {
 				Integer itemId = (Integer)objItemId;
@@ -82,5 +84,6 @@ public class TreeResumeCategoriesActionMenuHandler implements Action.Handler{
 			LOGGER.trace("item {} : {}", target, tree.getItem(niveauCategorie));
 			tree.setCollapsed(niveauCategorie, COLLAPSE_CATEGORIE.equals(action));
 		}		
+		*/
 	}
 }

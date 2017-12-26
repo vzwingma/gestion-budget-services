@@ -2,7 +2,10 @@ package com.terrier.finances.gestion.ui.controler.budget.mensuel;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,12 +18,13 @@ import org.slf4j.LoggerFactory;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
+import com.terrier.finances.gestion.ui.components.style.comptes.combobox.ComptesItemCaptionStyle;
+import com.terrier.finances.gestion.ui.components.style.comptes.combobox.ComptesItemIconStyle;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TreeResumeCategoriesController;
@@ -34,11 +38,8 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionCr
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.values.CompteValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.values.DateBudgetValueChangeListener;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
-import com.vaadin.data.HasValue.ValueChangeEvent;
-import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.UIEvents;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.datefield.DateResolution;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
@@ -67,7 +68,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private TableSuiviDepenseController tableSuiviDepenseControleur;
 	private TableResumeTotauxController tableTotalResumeControleur;
 	private TreeResumeCategoriesController treeResumeControleur;
-	private ComboBox<String> compte;
+	private ComboBox<CompteBancaire> compte;
 
 	// Calcul de mise à jour du compte courant
 	private int oldMois;
@@ -143,11 +144,11 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		this.tableTotalResumeControleur = getComponent().getTableTotalResume().getControleur();
 
 		// Init premiere fois
-		Calendar dateBudget = Calendar.getInstance();
-		dateBudget.set(Calendar.DAY_OF_MONTH, 1);
+		Instant dateBudget = Instant.now();
+		//dateBudget.with(ChronoField.DAY_OF_MONTH, 1);
 		if(getComponent().getMois().getValue() == null){
-			getComponent().getMois().setValue(dateBudget.getTime());
-			LOGGER.debug("[INIT] Init du mois géré : {}", dateBudget.getTime());
+			getComponent().getMois().setValue(dateBudget.atZone(ZoneId.systemDefault()).toLocalDate());
+			LOGGER.debug("[INIT] Init du mois géré : {}", dateBudget.toString());
 		}
 		// Label last connexion
 		Date dateDernierAcces = getUtilisateurCourant().getDernierAcces();
@@ -173,23 +174,23 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		try{
 			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
 			// Ajout de la liste des comptes dans la combobox
+			this.compte.setItems(comptes);
+			// Sélection du premier du groupe
 			for (CompteBancaire compte : comptes) {
-				this.compte.addItem(compte.getId());
-
 				if(compte.getOrdre() <= ordreCompte){
-					this.compte.select(compte.getId());
+					this.compte.setSelectedItem(compte);
 					compteCourant = compte;
 					ordreCompte = compte.getOrdre();
 				}
-				if(getComponent().getIdCompteSelectionne() != null && compte.getId().equals(getComponent().getIdCompteSelectionne())){
-					this.compte.select(compte.getId());
+				if(getComponent().getCompteSelectionne() != null && compte.getId().equals(getComponent().getCompteSelectionne().getId())){
+					this.compte.setSelectedItem(getComponent().getCompteSelectionne());
 					compteCourant = compte;
 				}
-				// mise à jour du style
-				this.compte.setItemCaption(compte.getId(), "  " + compte.getLibelle());
-				this.compte.setItemIcon(compte.getId(), new ThemeResource(compte.getItemIcon()));
 			}
-			this.compte.setItemStyleGenerator(new ComptesComboboxItemStyle(comptes));
+			// mise à jour du style
+			this.compte.setItemCaptionGenerator(new ComptesItemCaptionStyle());
+			this.compte.setItemIconGenerator(new ComptesItemIconStyle());
+			//this.compte.setItemStyleGenerator(new ComptesComboboxItemStyle(comptes));
 
 			initRangeDebutFinMois(compteCourant.getId());
 			this.compte.setTextInputAllowed(false);
@@ -221,7 +222,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			}
 
 		}catch (DataNotFoundException e) {
-			Notification.show("Impossible de charger le budget du compte " + (compteCourant != null ? compteCourant.getLibelle() : "" ) + " du " + dateBudget.get(Calendar.MONTH)+"/"+ dateBudget.get(Calendar.YEAR), Notification.Type.ERROR_MESSAGE);
+			Notification.show("Impossible de charger le budget du compte " + (compteCourant != null ? compteCourant.getLibelle() : "" ) + " du " + dateBudget.get(ChronoField.MONTH_OF_YEAR)+"/"+ dateBudget.get(ChronoField.YEAR), Notification.Type.ERROR_MESSAGE);
 		}
 
 
@@ -273,6 +274,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * Sette la table en mode édition
 	 */
 	public void setTableOnEditableMode(boolean editableMode){
+		
+		/*
 		// Activation du tableau
 		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.TYPE.getId(), !editableMode);
 		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), !editableMode);
@@ -281,7 +284,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), editableMode);
 		getComponent().getTableSuiviDepense().setEditable(editableMode);
 		getComponent().getTableSuiviDepense().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), editableMode ? TableSuiviDepenseController.TAILLE_COLONNE_DATE_EDITEE : TableSuiviDepenseController.TAILLE_COLONNE_DATE);
-
+*/
 
 		getComponent().getButtonValider().setVisible(editableMode);
 		getComponent().getButtonValider().setEnabled(editableMode);
@@ -304,8 +307,9 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			// Premier budget du compte de cet utilisateur
 			try {
 				Calendar[] datePremierDernierBudgets = getServiceDepense().getDatePremierDernierBudgets(idCompte);
-				getComponent().getMois().setRangeStart(datePremierDernierBudgets[0].getTime());
+	/*			getComponent().getMois().setRangeStart(datePremierDernierBudgets[0].getTime());
 				getComponent().getMois().setRangeEnd(datePremierDernierBudgets[1].getTime());
+				*/
 			} catch (DataNotFoundException e) {
 				LOGGER.error("[IHM] Erreur lors du chargement du premier budget");
 			}
@@ -318,17 +322,18 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * Mise à jour du range fin
 	 * @param dateFin
 	 */
-	public void setRangeFinMois(Calendar dateFin, String idCompte){
+	public void setRangeFinMois(LocalDate dateFin, String idCompte){
 		if(dateFin != null){
 			// Bouton Mois suivant limité au mois prochain si le compte n'est pas clos
 			Calendar dateRangeBudget = Calendar.getInstance();
-			dateRangeBudget.setTime(dateFin.getTime());
+/*			dateRangeBudget.setTime(dateFin.getTime());
 			if(getServiceDepense().isCompteActif(idCompte)){
 				dateRangeBudget.add(Calendar.MONTH, 1);
 			}
 			if(dateRangeBudget.getTime().after(getComponent().getMois().getRangeEnd())){
 				getComponent().getMois().setRangeEnd(dateRangeBudget.getTime());
 			}
+			*/
 		}
 		LOGGER.debug("[IHM] < Affichage limité à [{}/{}] <", getComponent().getMois().getRangeStart(), getComponent().getMois().getRangeEnd());
 
@@ -340,12 +345,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private BudgetMensuel chargeDonnees() throws DataNotFoundException {
 		LOGGER.debug("[BUDGET] Chargement du budget pour le tableau de suivi des dépenses");
 
-		String idCompte = )this.compte.getValue();
-		Date dateMois = (Date)getComponent().getMois().getValue();
+		String idCompte = this.compte.getValue().getId();
+		LocalDate dateMois = getComponent().getMois().getValue();
 
 		Calendar c = Calendar.getInstance();
 		if(dateMois != null){
-			c.setTime(dateMois);
+			 //c.setTime(dateMois);
 		}
 
 		LOGGER.debug("[BUDGET] Gestion du Compte : {} du mois {}",idCompte, c.getTime());
@@ -395,11 +400,11 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			budgetCourant = chargeDonnees();
 		} catch (final DataNotFoundException e) {
 			Calendar c = Calendar.getInstance();
-			c.setTime(getComponent().getMois().getValue());
+	/*		c.setTime(getComponent().getMois().getValue());
 			c.set(Calendar.MONTH, this.oldMois);
 			c.set(Calendar.YEAR, this.oldAnnee);
 			LOGGER.warn("[BUDGET] Budget non trouvé. Réinjection de {}", c.getTime());
-			getComponent().getMois().setValue(c.getTime());
+			getComponent().getMois().setValue(c.getTime()); */
 			Notification.show(e.getMessage(), Notification.Type.WARNING_MESSAGE);
 			return;
 		}
@@ -412,17 +417,17 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 		tableSuiviDepenseControleur.miseAJourVueDonnees(this.refreshAllTable, budgetCourant.isActif(), listeDepenses);
 
-		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), budgetCourant.isActif());
-		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), !budgetCourant.isActif());
-		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), budgetCourant.isActif());
-		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), !budgetCourant.isActif());
+//		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.AUTEUR.getId(), budgetCourant.isActif());
+//		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.ACTIONS.getId(), !budgetCourant.isActif());
+//		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), budgetCourant.isActif());
+//		tableSuiviDepenseControleur.getComponent().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), !budgetCourant.isActif());
 
 		// Maj du mois
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		c.set(Calendar.MONTH, budgetCourant.getMois());
 		c.set(Calendar.YEAR, budgetCourant.getAnnee());
-		getComponent().getMois().setValue(c.getTime());
+//		getComponent().getMois().setValue(c.getTime());
 
 		// Boutons actions sur Budget inactif :
 		if(!budgetCourant.isActif()){
@@ -482,7 +487,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	/**
 	 * @return the compte
 	 */
-	public ComboBox<String> getCompte() {
+	public ComboBox<CompteBancaire> getCompte() {
 		return compte;
 	}
 

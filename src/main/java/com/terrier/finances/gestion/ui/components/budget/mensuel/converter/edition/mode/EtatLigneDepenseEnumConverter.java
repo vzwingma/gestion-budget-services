@@ -1,9 +1,9 @@
 package com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode;
 
-import java.util.Locale;
-
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.data.Converter;
+import com.vaadin.data.Result;
+import com.vaadin.data.ValueContext;
 
 /**
  * Convertisseur Modèle <==> Présentation de l'énum etat dépense
@@ -17,28 +17,22 @@ public class EtatLigneDepenseEnumConverter implements Converter<String, EtatLign
 	 */
 	private static final long serialVersionUID = 3943268078483103639L;
 
+	
+	
+	/* (non-Javadoc)
+	 * @see com.vaadin.data.Converter#convertToModel(java.lang.Object, com.vaadin.data.ValueContext)
+	 */
 	@Override
-	public EtatLigneDepenseEnum convertToModel(String value,
-			Class<? extends EtatLigneDepenseEnum> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
-		return EtatLigneDepenseEnum.valueOf(value);
+	public Result<EtatLigneDepenseEnum> convertToModel(String value, ValueContext context) {
+		// return EtatLigneDepenseEnum.valueOf(value);
+		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.vaadin.data.Converter#convertToPresentation(java.lang.Object, com.vaadin.data.ValueContext)
+	 */
 	@Override
-	public String convertToPresentation(EtatLigneDepenseEnum value,
-			Class<? extends String> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
+	public String convertToPresentation(EtatLigneDepenseEnum value, ValueContext context) {
 		return value.getLibelle();
 	}
-
-	@Override
-	public Class<EtatLigneDepenseEnum> getModelType() {
-		return EtatLigneDepenseEnum.class;
-	}
-
-	@Override
-	public Class<String> getPresentationType() {
-		return String.class;
-	}
-
 }

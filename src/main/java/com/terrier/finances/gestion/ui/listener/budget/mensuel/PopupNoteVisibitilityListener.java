@@ -93,7 +93,7 @@ public class PopupNoteVisibitilityListener extends AbstractComponentListener imp
 				});
 				// Refresh du tableau
 				this.controleur.miseAJourVueDonnees();
-				this.controleur.getComponent().refreshRowCache();
+//				this.controleur.getComponent().refreshRowCache();
 				
 			}
 			catch(DataNotFoundException|BudgetNotFoundException e){

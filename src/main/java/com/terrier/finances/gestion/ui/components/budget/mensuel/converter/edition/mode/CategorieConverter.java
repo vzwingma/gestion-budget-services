@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.Locale;
 
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.data.Converter;
+import com.vaadin.data.Result;
+import com.vaadin.data.ValueContext;
 
 /**
  * Convertisseur Modèle <==> Présentation de la catégorie de dépense
@@ -28,42 +30,29 @@ public class CategorieConverter implements Converter<String, CategorieDepense> {
 	public CategorieConverter(Collection<CategorieDepense> categories){
 		this.categories = categories;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
-	 */
+
+
 	@Override
-	public CategorieDepense convertToModel(String value,
-			Class<? extends CategorieDepense> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
-		for (CategorieDepense categorie : this.categories) {
-			if(categorie.getLibelle().equals(value)){
-				return categorie;
-			}
-			for (CategorieDepense ssCategorie : categorie.getListeSSCategories()) {
-				if(ssCategorie.getLibelle().equals(value)){
-					return ssCategorie;
-				}
-			}
-		}
+	public Result<CategorieDepense> convertToModel(String value, ValueContext context) {
+		
+//
+//		
+//		for (CategorieDepense categorie : this.categories) {
+//			if(categorie.getLibelle().equals(value)){
+//				return categorie;
+//			}
+//			for (CategorieDepense ssCategorie : categorie.getListeSSCategories()) {
+//				if(ssCategorie.getLibelle().equals(value)){
+//					return ssCategorie;
+//				}
+//			}
+//		}
 		return null;
 	}
 
 	@Override
-	public String convertToPresentation(CategorieDepense value,
-			Class<? extends String> targetType, Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException {
+	public String convertToPresentation(CategorieDepense value, ValueContext context) {
 		return value != null ? value.getLibelle() : "INCONNU";
-	}
-
-	@Override
-	public Class<CategorieDepense> getModelType() {
-		return CategorieDepense.class;
-	}
-
-	@Override
-	public Class<String> getPresentationType() {
-		return String.class;
 	}
 
 }

@@ -3,17 +3,11 @@
  */
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons;
 
-import java.util.Iterator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
-import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
-import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIComponent;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
@@ -22,7 +16,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 
 /**
  * @author vzwingma
@@ -81,7 +74,7 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 	private void refreshModele(TableSuiviDepense table){
 		BudgetMensuel budgetCourant = getBudgetMensuelCourant();
 		String auteur = getUtilisateurCourant().getLibelle();
-
+/*
 		for (Iterator iterator = table.getItemIds().iterator(); iterator.hasNext();) {
 			String itemId = (String) iterator.next();
 
@@ -89,13 +82,9 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 				String propId = (String) iteratorP.next();
 
 				LOGGER.trace(" Refresh modèle {} de {} : {}", propId, itemId, table.getItem(itemId).getItemProperty(propId).getValue());
-				/**
-				 * Pour les actions, on transforme ActionsLigneBudget en booléen
-				 */
+				// Pour les actions, on transforme ActionsLigneBudget en booléen
 				if(propId.equals(EntetesTableSuiviDepenseEnum.ACTIONS.getId())){
-					/**
-					 * Mise à jour de la dépense
-					 */
+					// Mise à jour de la dépense
 					ActionsLigneBudget actions = (ActionsLigneBudget)table.getItem(itemId).getItemProperty(propId).getValue();
 					if(actions != null){
 						EtatLigneDepenseEnum etat = EtatLigneDepenseEnum.ANNULEE;
@@ -120,9 +109,7 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 					}
 				}
 				else{
-					/**
-					 * Mise à jour de la dépense
-					 */
+					// Mise à jour de la dépense
 					try{
 						getControleur(BudgetMensuelController.class).getServiceDepense().majLigneDepense(budgetCourant, itemId,  propId, table.getItem(itemId).getItemProperty(propId).getType(), table.getItem(itemId).getItemProperty(propId).getValue(), auteur);
 					}
@@ -133,6 +120,7 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 			}
 
 		}
+		*/
 	}
 }
 

@@ -10,9 +10,8 @@ import com.terrier.finances.gestion.ui.components.stats.StatistiquesPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.ChangePageListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionDeconnexionClickListener;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.server.ThemeResource;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 
@@ -21,7 +20,7 @@ import com.vaadin.ui.Notification;
  * @author vzwingma
  *
  */
-public class StatistiquesController extends AbstractUIController<StatistiquesPage> implements ValueChangeListener, Serializable{
+public class StatistiquesController extends AbstractUIController<StatistiquesPage> implements ValueChangeListener<CompteBancaire>, Serializable{
 
 	/**
 	 * 
@@ -29,7 +28,7 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 	private static final long serialVersionUID = -6410285178655721867L;
 
 	
-	private ComboBox compte;
+	private ComboBox<CompteBancaire> compte;
 	
 	/**
 	 * Constructure du Controleur du composant
@@ -59,16 +58,16 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 		try{
 			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
 			for (CompteBancaire compte : comptes) {
-				this.compte.addItem(compte.getId());
-				this.compte.setItemCaption(compte.getId(), compte.getLibelle());
-				if(compte.getOrdre() <= ordreCompte){
-					this.compte.select(compte.getId());
-					ordreCompte = compte.getOrdre();
-				}
-				if(getComponent().getIdCompteSelectionne() != null && compte.getId().equals(getComponent().getIdCompteSelectionne())){
-					this.compte.select(compte.getId());				
-				}
-				this.compte.setItemIcon(compte.getId(), new ThemeResource(compte.getItemIcon()));
+//				this.compte.addItem(compte.getId());
+//				this.compte.setItemCaption(compte.getId(), compte.getLibelle());
+//				if(compte.getOrdre() <= ordreCompte){
+//					this.compte.select(compte.getId());
+//					ordreCompte = compte.getOrdre();
+//				}
+//				if(getComponent().getIdCompteSelectionne() != null && compte.getId().equals(getComponent().getIdCompteSelectionne())){
+//					this.compte.select(compte.getId());				
+//				}
+//				this.compte.setItemIcon(compte.getId(), new ThemeResource(compte.getItemIcon()));
 			}
 			this.compte.setTextInputAllowed(false);
 			this.compte.addValueChangeListener(this);
@@ -82,20 +81,14 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 	@Override
 	public void miseAJourVueDonnees() {
 		
-
 	}
 
-    
-    
     
     
 	@Override
-	public void valueChange(ValueChangeEvent event) {
+	public void valueChange(ValueChangeEvent<CompteBancaire> event) {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	
-	
 }
 

@@ -4,53 +4,39 @@
 package com.terrier.finances.gestion.ui.components.style;
 
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.CellStyleGenerator;
+import com.vaadin.client.widget.grid.CellReference;
+import com.vaadin.client.widget.grid.CellStyleGenerator;
+
 
 /**
  * Style des cellules du tableau des catégories
  * @author vzwingma
  *
  */
-public class TreeResumeCellStyle implements CellStyleGenerator {
+public class TreeResumeCellStyle implements CellStyleGenerator<String> {
 
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5413761571256496486L;
 	/**
 	 * Logger
 	 */
 	// private static final Logger LOGGER = LoggerFactory.getLogger(TreeResumeCellStyle.class);
 
 
-	@SuppressWarnings("unchecked")
 	/* (non-Javadoc)
-	 * @see com.vaadin.ui.Table.CellStyleGenerator#getStyle(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
+	 * @see com.vaadin.client.widget.grid.CellStyleGenerator#getStyle(com.vaadin.client.widget.grid.CellReference)
 	 */
 	@Override
-	public String getStyle(Table source, Object niveauCategorie, Object propertyId) {
-
-		String idProperty = (String)propertyId;
-		if(propertyId == null){
-			return null;
-		}
+	public String getStyle(CellReference<String> cellReference) {
 		String styles = "";
-		if((Integer)niveauCategorie < 100){
+		if(cellReference.getElement().getPropertyInt("Code") < 100){
 			styles = "tree-ss-categorie";
 		}
 		
 		// Coloration suivant la valeur du total de la ss catégorie
-		if(idProperty.equals(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId())
+		if(cellReference.getColumn().getHeaderCaption().equals(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getLibelle())
 			||
-			idProperty.equals(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId())){
+			cellReference.getColumn().getHeaderCaption().equals(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getLibelle())){
 			
-			Item i = source.getItem(niveauCategorie);
-			Property<Double> p = i.getItemProperty(idProperty);
-			if(p.getValue() >= 0){
+			if((Double)cellReference.getValue() >= 0){
 				styles += " v-table-cell-content-valeur";
 			}
 			else{

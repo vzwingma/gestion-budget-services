@@ -3,33 +3,13 @@
  */
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.components;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
-import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
-import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableSuiviDepense;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode.TableSuiviDepenseEditedFieldFactory;
-import com.terrier.finances.gestion.ui.components.style.TableDepensesCellStyle;
-import com.terrier.finances.gestion.ui.components.style.TableDepensesDescriptionGenerator;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.terrier.finances.gestion.ui.controler.validators.TypeDepenseValidator;
-import com.terrier.finances.gestion.ui.controler.validators.ValeurDepenseValidator;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.PopupNoteVisibitilityListener;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.RichTextArea;
-import com.vaadin.ui.Table.Align;
 
 /**
  * @author vzwingma
@@ -69,7 +49,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	public void initDynamicComponentsOnPage() {
 		/**
 		 * Table de suivi des dépenses
-		 */
+		 
 		getComponent().setWidth("100.0%");
 		getComponent().setHeight("100.0%");
 		getComponent().setColumnCollapsingAllowed(true);
@@ -127,6 +107,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 		TableSuiviDepensesActionMenuHandler handler = new TableSuiviDepensesActionMenuHandler();
 		getComponent().addActionHandler(handler);
 		getComponent().addItemClickListener(handler);
+		*/
 	}
 
 	/**
@@ -135,8 +116,9 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	 */
 	@Override
 	public void miseAJourVueDonnees() {
-
+		/*
 		try {
+	
 			// Table Factory pour le mode édition
 			getComponent().setTableFieldFactory(new TableSuiviDepenseEditedFieldFactory(getServiceParams().getCategories()));
 			// Style
@@ -148,7 +130,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
 			return;
 		}
-
+*/
 	}
 
 
@@ -161,7 +143,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	 */
 	@SuppressWarnings("unchecked")
 	public void miseAJourVueDonnees(boolean refreshAllDonnees, boolean budgetIsActif, List<LigneDepense> listeDepenses){
-
+/*
 		if(refreshAllDonnees){
 			getComponent().removeAllItems();
 			getComponent().refreshRowCache();
@@ -225,6 +207,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			}
 		}
 		getComponent().refreshRowCache();
+		*/
 	}
 
 
@@ -232,7 +215,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 	 * Validation du formulaire
 	 */
 	public boolean validateEditableForm(){
-
+/*
 		List<String> messagesErreurs = new ArrayList<String>();
 		String idLigneEditable = ((TableSuiviDepenseEditedFieldFactory)getComponent().getTableFieldFactory()).getIdLigneEditable();
 		if(getComponent().isEditable() && idLigneEditable != null){
@@ -279,5 +262,7 @@ public class TableSuiviDepenseController extends AbstractUIController<TableSuivi
 			Notification.show(b.toString(), Notification.Type.WARNING_MESSAGE);
 		}
 		return messagesErreurs.isEmpty();
+		*/
+		return true;
 	}
 }

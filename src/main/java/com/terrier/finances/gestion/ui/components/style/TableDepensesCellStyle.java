@@ -13,22 +13,17 @@ import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIService;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.CellStyleGenerator;
+import com.vaadin.client.widget.grid.CellReference;
+import com.vaadin.client.widget.grid.CellStyleGenerator;
 
 /**
  * Style des cellules du tableau de dépense
  * @author vzwingma
  *
  */
-public class TableDepensesCellStyle extends AbstractUIService implements CellStyleGenerator {
+public class TableDepensesCellStyle extends AbstractUIService implements CellStyleGenerator<String> {
 
 
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5413761571256496486L;
 	/**
 	 * Logger
 	 */
@@ -41,22 +36,26 @@ public class TableDepensesCellStyle extends AbstractUIService implements CellSty
 		this.controleur = controleur;
 	}
 
+
 	/* (non-Javadoc)
-	 * @see com.vaadin.ui.Table.CellStyleGenerator#getStyle(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
+	 * @see com.vaadin.client.widget.grid.CellStyleGenerator#getStyle(com.vaadin.client.widget.grid.CellReference)
 	 */
 	@Override
-	public String getStyle(Table source, Object idDepense, Object propertyId) {
-
+	public String getStyle(CellReference<String> cellReference) {
+		
 		StringBuilder style = new StringBuilder();
 		BudgetMensuel budgetCourant = getBudgetMensuelCourant();
+		
+		String idDepense = cellReference.getRow();
+		
 		if(controleur.getServiceDepense() != null && budgetCourant != null && idDepense != null){
 			List<LigneDepense> listeDepenses = budgetCourant.getListeDepenses();
 
 			// Style sur les cellules
-			String idProperty = (String)propertyId;
+			String idProperty = (String)cellReference.getColumn().getHeaderCaption();
 			if(idProperty != null){
 				// valeurs : (rouge pour négatif)
-				if(propertyId.equals(EntetesTableSuiviDepenseEnum.VALEUR.getId()) && listeDepenses != null){
+				if(idProperty.equals(EntetesTableSuiviDepenseEnum.VALEUR.getLibelle()) && listeDepenses != null){
 
 					for (LigneDepense depense : budgetCourant.getListeDepenses()) {
 						if(idDepense.equals(depense.getId()) && TypeDepenseEnum.DEPENSE.equals(depense.getTypeDepense())){
@@ -66,7 +65,7 @@ public class TableDepensesCellStyle extends AbstractUIService implements CellSty
 					return "valeur";
 				}
 				for (EntetesTableSuiviDepenseEnum cellId : EntetesTableSuiviDepenseEnum.values()){
-					if(propertyId.equals(cellId.getId())){
+					if(idProperty.equals(cellId.getId())){
 						return null;
 					}
 				}

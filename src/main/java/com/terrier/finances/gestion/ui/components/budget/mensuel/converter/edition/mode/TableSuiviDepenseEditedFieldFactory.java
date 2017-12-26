@@ -1,21 +1,8 @@
 package com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode;
 
 import java.util.Collection;
-import java.util.Date;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
-import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
-import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
-import com.vaadin.data.Container;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.ListSelect;
-import com.vaadin.ui.TextField;
 
 /**
  * Field Factory pour le mode edition
@@ -23,7 +10,7 @@ import com.vaadin.ui.TextField;
  * @author vzwingma
  *
  */
-public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
+public class TableSuiviDepenseEditedFieldFactory { //extends DefaultFieldFactory {
 
 	/**
 	 * 
@@ -51,7 +38,7 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 
 	/* (non-Javadoc)
 	 * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
-	 */
+	 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Field createField(Container container, Object itemId,
@@ -154,7 +141,7 @@ public class TableSuiviDepenseEditedFieldFactory extends DefaultFieldFactory {
 		editorField.setWidth("100%");
 		return editorField;
 	}
-
+*/
 
 
 	/**

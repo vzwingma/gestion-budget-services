@@ -16,6 +16,7 @@ import com.vaadin.shared.ui.Connect.LoadStyle;
  *
  */
 public class OptimizedConnectorBundleLoaderFactory extends ConnectorBundleLoaderFactory {
+	 /**
 	private Set<String> eagerConnectors = new HashSet<String>();
 	{
 		eagerConnectors.add(com.vaadin.client.ui.ui.UIConnector.class.getName());
@@ -28,23 +29,21 @@ public class OptimizedConnectorBundleLoaderFactory extends ConnectorBundleLoader
 		eagerConnectors.add(com.vaadin.client.ui.button.ButtonConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.combobox.ComboBoxConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.datefield.InlineDateFieldConnector.class.getName());
-		eagerConnectors.add(com.vaadin.client.ui.table.TableConnector.class.getName());
-		eagerConnectors.add(com.vaadin.client.ui.treetable.TreeTableConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.orderedlayout.HorizontalLayoutConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.csslayout.CssLayoutConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.datefield.PopupDateFieldConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.window.WindowConnector.class.getName());
 		eagerConnectors.add(com.vaadin.client.ui.panel.PanelConnector.class.getName());
 	}
-
+*/
 	@Override
 	protected LoadStyle getLoadStyle(JClassType connectorType) {
-		if (eagerConnectors.contains(connectorType.getQualifiedBinaryName())) {
-			return LoadStyle.EAGER;
-		} else {
+//		if (eagerConnectors.contains(connectorType.getQualifiedBinaryName())) {
+//			return LoadStyle.EAGER;
+//		} else {
 			// Loads all other connectors immediately after the initial view has
 			// been rendered
 			return LoadStyle.DEFERRED;
-		}
+//		}
 	}
 }

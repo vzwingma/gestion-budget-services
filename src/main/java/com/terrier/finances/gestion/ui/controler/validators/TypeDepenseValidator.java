@@ -6,13 +6,15 @@ package com.terrier.finances.gestion.ui.controler.validators;
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
+import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
+import com.vaadin.data.ValueContext;
 
 /**
  * @author vzwingma
  *
  */
-public class TypeDepenseValidator implements Validator {
+public class TypeDepenseValidator implements Validator<TypeDepenseEnum> {
 
 	/**
 	 * 
@@ -20,6 +22,8 @@ public class TypeDepenseValidator implements Validator {
 	private static final long serialVersionUID = -624292040215572087L;
 
 	private CategorieDepense ssCategorie;
+	
+	
 
 	/**
 	 * @param ssCategorie
@@ -28,11 +32,8 @@ public class TypeDepenseValidator implements Validator {
 		this.ssCategorie = ssCategorie;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.vaadin.data.Validator#validate(java.lang.Object)
-	 */
 	@Override
-	public void validate(Object value) throws InvalidValueException {
+	public ValidationResult apply(TypeDepenseEnum value, ValueContext context) {
 		if(value != null){
 			if( value instanceof TypeDepenseEnum){
 				TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
@@ -41,11 +42,12 @@ public class TypeDepenseValidator implements Validator {
 				}
 				// Cohérence type
 				if(!typeAttendu.equals((TypeDepenseEnum)value)){
-					throw new InvalidValueException("Le type de la dépense doit être ["+ typeAttendu.getId()+ " ("+typeAttendu.getLibelle()+")] pour une dépense de la catégorie {" + ssCategorie.getLibelle()+"}");					
+					return null;
+					//throw new InvalidValueException("Le type de la dépense doit être ["+ typeAttendu.getId()+ " ("+typeAttendu.getLibelle()+")] pour une dépense de la catégorie {" + ssCategorie.getLibelle()+"}");					
 				}
 			}
 		}
-		
+		return null;
 	}
 
 }

@@ -11,8 +11,8 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.converter.editi
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.event.Action;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Grid.ItemClick;
+import com.vaadin.ui.components.grid.ItemClickListener;
 
 /**
  * Controleur du menu du tableau des résumés
@@ -72,17 +72,7 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.vaadin.event.ItemClickEvent.ItemClickListener#itemClick(com.vaadin.event.ItemClickEvent)
-	 */
-	@Override
-	public void itemClick(ItemClickEvent event) {
-		if(event.isDoubleClick()){
-			TableSuiviDepense tableSuivi = (TableSuiviDepense)event.getSource();
-			putIdAsLastDepense(tableSuivi, (String)event.getItemId());
-		}
-	}
-	
+
 	/**
 	 * Set as last depense 
 	 * @param tableSuivi table
@@ -100,11 +90,20 @@ public class TableSuiviDepensesActionMenuHandler extends AbstractComponentListen
 	 * @param idDepense id
 	 */
 	private void editDepense(TableSuiviDepense tableSuivi, String idDepense){
-		LOGGER.info("Edition de la dépense {} : {}", idDepense, tableSuivi.getItem(idDepense));
+		LOGGER.info("Edition de la dépense {} : {}", idDepense, tableSuivi.getSelectedItems());
 		
-		TableSuiviDepenseEditedFieldFactory factory = (TableSuiviDepenseEditedFieldFactory)tableSuivi.getTableFieldFactory();
-		factory.setIdLigneEditable(idDepense);
+//		TableSuiviDepenseEditedFieldFactory factory = (TableSuiviDepenseEditedFieldFactory)tableSuivi.getTableFieldFactory();
+//		factory.setIdLigneEditable(idDepense);
 		getControleur(BudgetMensuelController.class).setTableOnEditableMode(true);
 		// getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
+	}
+
+	@Override
+	public void itemClick(ItemClick event) {
+		if(event.getMouseEventDetails().isDoubleClick()){
+			TableSuiviDepense tableSuivi = (TableSuiviDepense)event.getSource();
+			putIdAsLastDepense(tableSuivi, (String)event.getItem());
+		}
+		
 	}
 }

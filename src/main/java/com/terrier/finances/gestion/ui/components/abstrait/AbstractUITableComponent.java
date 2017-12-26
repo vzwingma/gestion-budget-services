@@ -10,14 +10,13 @@ import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Table;
 
 /**
  * @author vzwingma
  *
  * @param <CONTROL> controleur
  */
-public abstract class AbstractUITableComponent<CONTROL extends AbstractUIController<?>> extends Grid<String> {
+public abstract class AbstractUITableComponent<CONTROL extends AbstractUIController<?>> extends Grid {
 
 	/**
 	 * 
@@ -56,30 +55,10 @@ public abstract class AbstractUITableComponent<CONTROL extends AbstractUIControl
 	public abstract CONTROL createControleur();
 
 
-
-	/* (non-Javadoc)
-	 * @see com.vaadin.ui.Table#sort(java.lang.Object[], boolean[])
-	 */
-	@Override
-	public void sort(Object[] propertyId, boolean[] ascending)
-			throws UnsupportedOperationException {
-		super.sort(propertyId, ascending);
-	}
-
-
 	/**
 	 * @return le budget mensuel courant
 	 */
 	public BudgetMensuel getBudgetMensuelCourant(){
 		return UISessionManager.get().getSession().getBudgetMensuelCourant();
-	}
-
-
-	/* (non-Javadoc)
-	 * @see com.vaadin.ui.Table#sort()
-	 */
-	@Override
-	public void sort() {
-		super.sort();
 	}
 }

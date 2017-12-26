@@ -8,7 +8,6 @@ import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIService;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Component;
 
 /**
@@ -16,7 +15,7 @@ import com.vaadin.ui.Component;
  * @author vzwingma
  *
  */
-public class TableDepensesDescriptionGenerator extends AbstractUIService implements ItemDescriptionGenerator {
+public class TableDepensesDescriptionGenerator extends AbstractUIService { // implements ItemDescriptionGenerator {
 
 
 
@@ -38,7 +37,7 @@ public class TableDepensesDescriptionGenerator extends AbstractUIService impleme
 	/* (non-Javadoc)
 	 * @see com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator#generateDescription(com.vaadin.ui.Component, java.lang.Object, java.lang.Object)
 	 */
-	@Override
+	
 	public String generateDescription(Component source, Object itemId, Object propertyId) {
 
 		if(propertyId != null && 

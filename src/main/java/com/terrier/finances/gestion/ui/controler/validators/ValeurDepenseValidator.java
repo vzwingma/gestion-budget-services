@@ -3,13 +3,15 @@
  */
 package com.terrier.finances.gestion.ui.controler.validators;
 
+import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
+import com.vaadin.data.ValueContext;
 
 /**
  * @author vzwingma
  *
  */
-public class ValeurDepenseValidator implements Validator {
+public class ValeurDepenseValidator implements Validator<Object> {
 
 	/**
 	 * 
@@ -22,18 +24,15 @@ public class ValeurDepenseValidator implements Validator {
 		this.message = message;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.vaadin.data.Validator#validate(java.lang.Object)
-	 */
 	@Override
-	public void validate(Object value) throws InvalidValueException {
+	public ValidationResult apply(Object value, ValueContext context) {
 		if(value != null){
 			if( value instanceof String){
 				try{
 					String valeur = ((String)value).replaceAll(",", ".");
 					Double d = Double.valueOf(valeur);
 					if(!Double.isInfinite(d) && !Double.isNaN(d)){
-						return;
+						return null;
 					}			
 				}
 				catch(NumberFormatException e){ }
@@ -41,11 +40,14 @@ public class ValeurDepenseValidator implements Validator {
 			else if(value instanceof Float){
 				Float f = (Float)value;
 				if(!Float.isInfinite(f) && !Float.isNaN(f)){
-					return;
+					return null;
 				}
 			}
 		}
-		throw new InvalidValueException(message);
+		//throw new InvalidValueException(message);
+		return null;
 	}
+
+
 
 }

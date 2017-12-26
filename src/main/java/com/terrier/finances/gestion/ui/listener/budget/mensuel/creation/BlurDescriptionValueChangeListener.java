@@ -13,6 +13,7 @@ import com.vaadin.data.HasValue.ValueChangeListener;
  * @author vzwingma
  *
  */
+@SuppressWarnings("rawtypes")
 public class BlurDescriptionValueChangeListener extends AbstractComponentListener implements ValueChangeListener{
 
 	// Controleur

@@ -1,11 +1,7 @@
 package com.terrier.finances.gestion.ui.components.budget.mensuel.components;
 
-import java.math.BigDecimal;
-
-import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITreeTableComponent;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TreeResumeCategoriesController;
-import com.vaadin.data.Property;
 
 /**
  * Tableau de suivi des dépenses
@@ -29,7 +25,7 @@ public class TreeResumeCategories extends AbstractUITreeTableComponent<TreeResum
 	/**
 	 * Affichage dans le tableau en mode consultation
 	 * @see com.vaadin.ui.Table#formatPropertyValue(java.lang.Object, java.lang.Object, com.vaadin.data.Property)
-	 */
+
 	@Override
 	protected String formatPropertyValue(Object rowId, Object colId,
 			Property<?> property) {
@@ -52,6 +48,7 @@ public class TreeResumeCategories extends AbstractUITreeTableComponent<TreeResum
 		}	
 		return super.formatPropertyValue(rowId, colId, property);
 	}
+		 */
 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.ui.components.AbstractUITreeTableComponent#createControleur()
