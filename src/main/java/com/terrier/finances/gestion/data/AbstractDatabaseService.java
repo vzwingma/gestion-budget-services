@@ -54,9 +54,8 @@ public abstract class AbstractDatabaseService {
 	 * 
 	 */
 	private void updateMongoStatus(){
-        LOGGER.info("{} : Update Mongo Statut : {}", this.getClass(), mongoTemplate.getDb().listCollectionNames());
-        StatutStateEnum statutDB = mongoTemplate.getDb() != null ? StatutStateEnum.OK : StatutStateEnum.FATAL;
-        LOGGER.debug("Statut DB : {} -> {}", mongoTemplate.getDb(), statutDB);        
+        StatutStateEnum statutDB = mongoTemplate.getDb().getName() != null ? StatutStateEnum.OK : StatutStateEnum.FATAL;
+        LOGGER.debug("Statut DB : {} -> {}", mongoTemplate.getDb().getName(), statutDB);        
 		statutApplicationService.updateDependencyStatut(DependencyName.DATABASE, statutDB);
 	}
 }

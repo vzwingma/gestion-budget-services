@@ -8,10 +8,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
-import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TableResumeTotaux;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.vaadin.ui.components.grid.FooterRow;
 
 /**
  * Controleur du tableau des résumés

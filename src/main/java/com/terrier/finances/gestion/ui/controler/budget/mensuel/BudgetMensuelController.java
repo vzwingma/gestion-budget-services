@@ -25,6 +25,7 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.style.comptes.combobox.ComptesItemCaptionStyle;
 import com.terrier.finances.gestion.ui.components.style.comptes.combobox.ComptesItemIconStyle;
+import com.terrier.finances.gestion.ui.components.style.comptes.combobox.ComptesItemStyle;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TableSuiviDepenseController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.components.TreeResumeCategoriesController;
@@ -190,7 +191,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			// mise à jour du style
 			this.compte.setItemCaptionGenerator(new ComptesItemCaptionStyle());
 			this.compte.setItemIconGenerator(new ComptesItemIconStyle());
-			//this.compte.setItemStyleGenerator(new ComptesComboboxItemStyle(comptes));
+			this.compte.setStyleGenerator(new ComptesItemStyle());
 
 			initRangeDebutFinMois(compteCourant.getId());
 			this.compte.setTextInputAllowed(false);

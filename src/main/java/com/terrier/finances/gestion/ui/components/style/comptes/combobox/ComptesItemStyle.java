@@ -3,39 +3,28 @@
  */
 package com.terrier.finances.gestion.ui.components.style.comptes.combobox;
 
-import java.util.List;
-
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
+import com.vaadin.ui.StyleGenerator;
 
 /**
  * @author vzwingma
  *
  */
-public class ComptesItemStyle {//implements ItemStyleGenerator {
+public class ComptesItemStyle implements StyleGenerator<CompteBancaire> {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2719540462663954289L;
-	// Comptes
-	private List<CompteBancaire> comptes;
-	
-	public ComptesItemStyle( List<CompteBancaire> comptes){
-		this.comptes = comptes;
-	}
+	private static final long serialVersionUID = 682039604448023201L;
+
 	/* (non-Javadoc)
-	 * @see com.vaadin.ui.ComboBox.ItemStyleGenerator#getStyle(com.vaadin.ui.ComboBox, java.lang.Object)
-	 
+	 * @see com.vaadin.ui.StyleGenerator#apply(java.lang.Object)
+	 */
 	@Override
-	public String getStyle(ComboBox source, Object itemId) {
-		if(comptes != null && !comptes.isEmpty()){
-			for (CompteBancaire compteBancaire : comptes) {
-				if(((String)itemId).equals(compteBancaire.getId()) && !compteBancaire.isActif()){
-					return "barre";
-				}
-			}
+	public String apply(CompteBancaire compteBancaire) {
+		if(!compteBancaire.isActif()){
+			return "barre";
 		}
 		return null;
 	}
-*/
 }
