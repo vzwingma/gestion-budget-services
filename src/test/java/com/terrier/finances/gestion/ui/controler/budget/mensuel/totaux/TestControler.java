@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.ui.controler.budget.mensuel.components;
+package com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux;
 
 import java.util.Calendar;
 

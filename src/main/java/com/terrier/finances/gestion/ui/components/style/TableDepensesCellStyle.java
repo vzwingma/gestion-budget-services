@@ -65,7 +65,7 @@ public class TableDepensesCellStyle extends AbstractUIService implements CellSty
 					return "valeur";
 				}
 				for (EntetesTableSuiviDepenseEnum cellId : EntetesTableSuiviDepenseEnum.values()){
-					if(idProperty.equals(cellId.getId())){
+					if(idProperty.equals(cellId.name())){
 						return null;
 					}
 				}

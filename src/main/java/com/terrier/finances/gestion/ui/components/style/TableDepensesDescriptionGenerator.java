@@ -41,9 +41,9 @@ public class TableDepensesDescriptionGenerator extends AbstractUIService { // im
 	public String generateDescription(Component source, Object itemId, Object propertyId) {
 
 		if(propertyId != null && 
-				(((String)propertyId).equals(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId())
+				(((String)propertyId).equals(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name())
 						||
-						((String)propertyId).equals(EntetesTableSuiviDepenseEnum.LIBELLE.getId()))){
+						((String)propertyId).equals(EntetesTableSuiviDepenseEnum.LIBELLE.name()))){
 
 			BudgetMensuel budgetCourant = getBudgetMensuelCourant();
 			String idDepense = (String)itemId;

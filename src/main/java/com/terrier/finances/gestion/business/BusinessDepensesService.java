@@ -465,9 +465,9 @@ public class BusinessDepensesService {
 				ligneUpdated = budgetEnCours.getListeDepenses().remove(ligneDepense);
 			}
 			// Maj du modele (sauf pour CATEGORIE, DATE MAJ et AUTEUR)
-			else if(!propertyId.equals(EntetesTableSuiviDepenseEnum.CATEGORIE.getId())
-					&& !propertyId.equals(EntetesTableSuiviDepenseEnum.AUTEUR.getId())
-					&& !propertyId.equals(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId())){
+			else if(!propertyId.equals(EntetesTableSuiviDepenseEnum.CATEGORIE.name())
+					&& !propertyId.equals(EntetesTableSuiviDepenseEnum.AUTEUR.name())
+					&& !propertyId.equals(EntetesTableSuiviDepenseEnum.DATE_MAJ.name())){
 				ligneUpdated = ligneDepense.updateProperty(ligneId, propertyId, propClass, value);
 			}
 			// LibelleView n'est que pour l'IHM au même titre que les actions. donc pas de mise à jour des dates fonctionnelles

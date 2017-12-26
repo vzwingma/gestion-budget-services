@@ -10,6 +10,7 @@ import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.vaadin.ui.Grid.Column;
@@ -57,39 +58,39 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 //		getComponent().setColumnCollapsingAllowed(true);
 
 		Column<LigneDepense, Date> c = getComponent().addColumn(LigneDepense::getDateOperation);
-		c.setId(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId()).setCaption(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getLibelle()).setWidth(TAILLE_COLONNE_DATE).setHidable(true).setResizable(false);
+		c.setId(EntetesTableSuiviDepenseEnum.DATE_OPERATION.name()).setCaption(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getLibelle()).setWidth(TAILLE_COLONNE_DATE).setHidable(true).setResizable(false);
 		
 		Column<LigneDepense, CategorieDepense> c2 = getComponent().addColumn(LigneDepense::getCategorie);
-		c2.setId(EntetesTableSuiviDepenseEnum.CATEGORIE.getId()).setCaption(EntetesTableSuiviDepenseEnum.CATEGORIE.getLibelle()).setWidth(TAILLE_COLONNE_CATEGORIE).setHidable(true).setResizable(false);
+		c2.setId(EntetesTableSuiviDepenseEnum.CATEGORIE.name()).setCaption(EntetesTableSuiviDepenseEnum.CATEGORIE.getLibelle()).setWidth(TAILLE_COLONNE_CATEGORIE).setHidable(true).setResizable(false);
 		
 		Column<LigneDepense, CategorieDepense> c3 = getComponent().addColumn(LigneDepense::getSsCategorie);
-		c3.setId(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId()).setCaption(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getLibelle()).setWidth(TAILLE_COLONNE_CATEGORIE).setHidable(true).setResizable(false);
+		c3.setId(EntetesTableSuiviDepenseEnum.SSCATEGORIE.name()).setCaption(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getLibelle()).setWidth(TAILLE_COLONNE_CATEGORIE).setHidable(true).setResizable(false);
 		
 		Column<LigneDepense, String> c4 = getComponent().addColumn(LigneDepense::getLibelle);
-		c4.setId(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId()).setCaption(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getLibelle()).setHidable(true).setResizable(false);
+		c4.setId(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name()).setCaption(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getLibelle()).setHidable(true).setResizable(false);
 		
 		Column<LigneDepense, String> c5 = getComponent().addColumn(LigneDepense::getLibelle);
-		c5.setId(EntetesTableSuiviDepenseEnum.LIBELLE.getId()).setCaption(EntetesTableSuiviDepenseEnum.LIBELLE.getLibelle()).setHidden(true).setHidable(true).setResizable(false);
+		c5.setId(EntetesTableSuiviDepenseEnum.LIBELLE.name()).setCaption(EntetesTableSuiviDepenseEnum.LIBELLE.getLibelle()).setHidden(true).setHidable(true).setResizable(false);
 		
 		Column<LigneDepense, TypeDepenseEnum> c6 = getComponent().addColumn(LigneDepense::getTypeDepense);
-		c6.setId(EntetesTableSuiviDepenseEnum.TYPE.getId()).setCaption(EntetesTableSuiviDepenseEnum.TYPE.getLibelle()).setWidth(TAILLE_COLONNE_TYPE_MENSUEL).setHidden(true).setHidable(true).setResizable(false);
+		c6.setId(EntetesTableSuiviDepenseEnum.TYPE.name()).setCaption(EntetesTableSuiviDepenseEnum.TYPE.getLibelle()).setWidth(TAILLE_COLONNE_TYPE_MENSUEL).setHidden(true).setHidable(true).setResizable(false);
 		
 		Column<LigneDepense, Float> c7 = getComponent().addColumn(LigneDepense::getValeur);
-		c7.setId(EntetesTableSuiviDepenseEnum.VALEUR.getId()).setCaption(EntetesTableSuiviDepenseEnum.VALEUR.getLibelle()).setWidth(TAILLE_COLONNE_VALEUR).setHidable(true).setResizable(false);
+		c7.setId(EntetesTableSuiviDepenseEnum.VALEUR.name()).setCaption(EntetesTableSuiviDepenseEnum.VALEUR.getLibelle()).setWidth(TAILLE_COLONNE_VALEUR).setHidable(true).setResizable(false);
 		
-//		c7.setColumnAlignment(EntetesTableSuiviDepenseEnum.VALEUR.getId(), Align.RIGHT);
+//		c7.setColumnAlignment(EntetesTableSuiviDepenseEnum.VALEUR.name(), Align.RIGHT);
 		
 		Column<LigneDepense, Boolean> c8 = getComponent().addColumn(LigneDepense::isPeriodique);
-		c8.setId(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId()).setCaption(EntetesTableSuiviDepenseEnum.PERIODIQUE.getLibelle()).setWidth(TAILLE_COLONNE_TYPE_MENSUEL).setHidden(true).setHidable(true).setResizable(false);
+		c8.setId(EntetesTableSuiviDepenseEnum.PERIODIQUE.name()).setCaption(EntetesTableSuiviDepenseEnum.PERIODIQUE.getLibelle()).setWidth(TAILLE_COLONNE_TYPE_MENSUEL).setHidden(true).setHidable(true).setResizable(false);
 		
-		Column<LigneDepense, String> c9 = getComponent().addColumn(LigneDepense::getId);
-		c9.setId(EntetesTableSuiviDepenseEnum.ACTIONS.getId()).setCaption(EntetesTableSuiviDepenseEnum.ACTIONS.getLibelle()).setWidth(TAILLE_COLONNE_ACTIONS).setHidable(true).setResizable(false);
+		Column<LigneDepense, ActionsLigneBudget> c9 = getComponent().addColumn(LigneDepense::getActionsOperation);
+		c9.setId(EntetesTableSuiviDepenseEnum.ACTIONS.name()).setCaption(EntetesTableSuiviDepenseEnum.ACTIONS.getLibelle()).setWidth(TAILLE_COLONNE_ACTIONS).setHidable(true).setResizable(false);
 		
 		Column<LigneDepense, Date> c10 = getComponent().addColumn(LigneDepense::getDateMaj);
-		c10.setId(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId()).setCaption(EntetesTableSuiviDepenseEnum.DATE_MAJ.getLibelle()).setWidth(TAILLE_COLONNE_DATE + 10).setHidable(true).setResizable(false);
+		c10.setId(EntetesTableSuiviDepenseEnum.DATE_MAJ.name()).setCaption(EntetesTableSuiviDepenseEnum.DATE_MAJ.getLibelle()).setWidth(TAILLE_COLONNE_DATE + 10).setHidable(true).setResizable(false);
 		
 		Column<LigneDepense, String> c11 = getComponent().addColumn(LigneDepense::getAuteur);
-		c11.setId(EntetesTableSuiviDepenseEnum.AUTEUR.getId()).setCaption(EntetesTableSuiviDepenseEnum.AUTEUR.getLibelle()).setWidth(TAILLE_COLONNE_AUTEUR).setHidden(true).setHidable(true).setResizable(false);
+		c11.setId(EntetesTableSuiviDepenseEnum.AUTEUR.name()).setCaption(EntetesTableSuiviDepenseEnum.AUTEUR.getLibelle()).setWidth(TAILLE_COLONNE_AUTEUR).setHidden(true).setHidable(true).setResizable(false);
 		
 		// Ajout du mode Dernier ligne sur la liste des dépenses
 		TableSuiviDepensesActionMenuHandler handler = new TableSuiviDepensesActionMenuHandler();
@@ -138,34 +139,29 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 		// Ajout des opérations
 		getComponent().setItems(listeDepenses);
 
+		
+		// Mise à jour des colonnes suivant l'activité du budget
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.AUTEUR.name()).setHidden(budgetIsActif);
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.ACTIONS.name()).setHidden(!budgetIsActif);
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE.name()).setHidden(budgetIsActif);
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name()).setHidden(!budgetIsActif);
+		
+		
 /*
 		for (final LigneDepense ligneDepense : listeDepenses) {
-			// Access items and properties through the component
-			Item item1 = getComponent().getItem(ligneDepense.getId()); // Get item by explicit ID
-			if(item1 == null){
-				item1 = getComponent().addItem(ligneDepense.getId()); // Create item by explicit ID
-			}
-
-			Property<Date> property2 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId());
-			property2.setValue(ligneDepense.getDateOperation());
-			Property<CategorieDepense> property3 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.CATEGORIE.getId());
-			property3.setValue(ligneDepense.getCategorie());
-			Property<CategorieDepense> property4 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId());
-			property4.setValue(ligneDepense.getSsCategorie());
-
-			// Type Popup view pour avoir les notes
-			Property<PopupView> property5 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId());
+				// Type Popup view pour avoir les notes
+			Property<PopupView> property5 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name());
 
 			final RichTextArea rta = new RichTextArea();
 			rta.setValue(ligneDepense.getNotes() != null ? ligneDepense.getNotes() : "");
 			String noteStar = ligneDepense.getNotes() != null ? "  *" : "";
 			final PopupView ppv = new PopupView(ligneDepense.getLibelle() + noteStar, rta);
-			ppv.addPopupVisibilityListener(new PopupNoteVisibitilityListener(ligneDepense.getId(), this));
+			ppv.addPopupVisibilityListener(new PopupNoteVisibitilityListener(ligneDepense.name(), this));
 			ppv.setHideOnMouseOut(false);
 			property5.setValue(ppv);
 
 			// Type String
-			Property<String> property5b = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId());
+			Property<String> property5b = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.name());
 			if(budgetIsActif){
 				property5b.setValue(ligneDepense.getLibelle());	
 			}
@@ -174,24 +170,13 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 			}
 
 
-			Property<TypeDepenseEnum> property6 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.TYPE.getId());
-			property6.setValue(ligneDepense.getTypeDepense());			
-			Property<Float> property7 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.VALEUR.getId());
-			property7.setValue(ligneDepense.getValeur());
-			Property<Boolean> property8 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId());
-			property8.setValue(ligneDepense.isPeriodique());
-			Property<Date> property9 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.DATE_MAJ.getId());
-			property9.setValue(ligneDepense.getDateMaj());
-			Property<String> property10 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.AUTEUR.getId());
-			property10.setValue(ligneDepense.getAuteur());
-
 			// Pas d'action pour les réserves
-			if(!BusinessDepensesService.ID_SS_CAT_RESERVE.equals(ligneDepense.getSsCategorie().getId())
-					&& !BusinessDepensesService.ID_SS_CAT_PREVISION_SANTE.equals(ligneDepense.getSsCategorie().getId())
+			if(!BusinessDepensesService.ID_SS_CAT_RESERVE.equals(ligneDepense.getSsCategorie().name())
+					&& !BusinessDepensesService.ID_SS_CAT_PREVISION_SANTE.equals(ligneDepense.getSsCategorie().name())
 					&& budgetIsActif){
-				Property<ActionsLigneBudget> property11 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.ACTIONS.getId());
+				Property<ActionsLigneBudget> property11 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.ACTIONS.name());
 				ActionsLigneBudget actions = new ActionsLigneBudget();
-				actions.getControleur().setidDepense(ligneDepense.getId());
+				actions.getControleur().setidDepense(ligneDepense.name());
 				actions.getControleur().miseAJourEtatLigne(ligneDepense.getEtat());
 				property11.setValue(actions);
 			}
