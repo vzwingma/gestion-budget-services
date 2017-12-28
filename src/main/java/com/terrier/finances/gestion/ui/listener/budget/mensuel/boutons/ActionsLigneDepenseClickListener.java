@@ -120,7 +120,8 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 			catch(DataNotFoundException|BudgetNotFoundException e){
 				Notification.show("La dépense est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
 			}
-		//	getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
+			
+			getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
 		}
 
 	}
