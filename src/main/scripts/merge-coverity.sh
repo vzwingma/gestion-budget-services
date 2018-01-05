@@ -3,6 +3,7 @@ echo ${TRAVIS_BRANCH}
 # Merge vers la branche coverity_scan
 if [ ${TRAVIS_BRANCH} = "snapshot" ]; then
 	echo "Merge vers la branche Coverity";
+	git fetch --all
 	git checkout coverity_scan
 	git rebase master
 	git config --global push.default simple
