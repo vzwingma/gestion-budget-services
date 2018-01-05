@@ -16,7 +16,7 @@ script:
 # Tag git de master --> snapshot pour autodeploy sur rec  
   - ./src/main/scripts/tag-snapshot.sh
 # Merge sur la branche coverity
-#  - ./src/main/scripts/merge-coverity.sh
+  - ./src/main/scripts/merge-coverity.sh
 
 # Déploiement des releaes sur tag : snapshot ou version 
 before_deploy:
