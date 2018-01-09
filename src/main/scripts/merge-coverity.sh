@@ -1,7 +1,7 @@
 #/bin/bash
 echo ${TRAVIS_BRANCH}
 # Merge vers la branche coverity_scan
-if [ ${TRAVIS_BRANCH} = "snapshot" ]; then
+if [ ${TRAVIS_BRANCH} = "master" ]; then
 	echo "Merge vers la branche Coverity";
 	git fetch --all
 	git checkout -b coverity_scan origin/coverity_scan
