@@ -7,7 +7,8 @@ services:
 cache:
     directories:
       - $HOME/.m2
-
+git:
+  depth: false
 install: 
   - mvn clean install -DskipTests=true -B -P openshift
 
