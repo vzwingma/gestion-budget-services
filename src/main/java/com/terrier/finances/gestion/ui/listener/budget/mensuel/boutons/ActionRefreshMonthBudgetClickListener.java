@@ -4,6 +4,7 @@
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons;
 
 import java.text.SimpleDateFormat;
+import java.time.Month;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -45,17 +46,12 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 
 		/** Alerte **/
 		String warnMoisActif = "";
-		int moisPrecedent = 0;
+		Month moisPrecedent = Month.of(budgetMensuelCourant.getMois()).minus(1);
 		int anneePrecedente = budgetMensuelCourant.getAnnee();
-		if(budgetMensuelCourant.getMois() == Calendar.JANUARY){
-			moisPrecedent = Calendar.DECEMBER;
-			anneePrecedente = budgetMensuelCourant.getAnnee() - 1;
-		}
-		else{
-			moisPrecedent = budgetMensuelCourant.getMois() - 1;
-		}
+		
+			anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? budgetMensuelCourant.getAnnee() : budgetMensuelCourant.getAnnee() - 1;
 		Boolean budgetPrecedentActif = page.getControleur().getServiceDepense().isBudgetMensuelActif(
-				budgetMensuelCourant.getCompteBancaire().getId(), 
+				budgetMensuelCourant.getCompteBancaire(), 
 				moisPrecedent, anneePrecedente);
 		if(budgetPrecedentActif){
 			warnMoisActif = "<span style=\"color: red;\"><br> Attention : Le mois précédent n'est pas clos !</span>";

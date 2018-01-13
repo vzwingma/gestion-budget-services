@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.business;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,10 +70,10 @@ public class BusinessDepensesService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	public BudgetMensuel chargerBudgetMensuel(Utilisateur utilisateur, String compte, int mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
+	public BudgetMensuel chargerBudgetMensuel(Utilisateur utilisateur, CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget {} de {}/{}", compte, mois, annee);
 
-		CompteBancaire compteBancaire = serviceParams.getCompteById(compte);
+		CompteBancaire compteBancaire = serviceParams.getCompteById(compte.getId());
 		if(compteBancaire != null){
 			boolean proprietaire = false;
 			for (Utilisateur proprietaires : compteBancaire.getListeProprietaires()) {
@@ -103,12 +104,12 @@ public class BusinessDepensesService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	private BudgetMensuel chargerBudgetMensuelSurCompteActif(Utilisateur utilisateur, CompteBancaire compteBancaire, int mois, int annee) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
+	private BudgetMensuel chargerBudgetMensuelSurCompteActif(Utilisateur utilisateur, CompteBancaire compteBancaire, Month mois, int annee) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget du compte actif {} de {}/{}", compteBancaire.getId(), mois, annee);
 
 		BudgetMensuel budgetMensuel = null;
 		try{
-			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire.getId(), mois, annee);
+			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee);
 		}
 		catch(BudgetNotFoundException e){
 			budgetMensuel = initNewBudget(compteBancaire, utilisateur, mois, annee);
@@ -117,16 +118,9 @@ public class BusinessDepensesService {
 		if(budgetMensuel != null && budgetMensuel.isActif()){
 			// Recalcul du résultat du mois précédent
 			try{
-				int moisPrecedent = 0;
-				int anneePrecedente = annee;
-				if(mois == Calendar.JANUARY){
-					moisPrecedent = Calendar.DECEMBER;
-					anneePrecedente = annee -1;
-				}
-				else{
-					moisPrecedent = mois -1;
-				}
-				BudgetMensuel budgetPrecedent = this.dataDepenses.chargeBudgetMensuel(compteBancaire.getId(), moisPrecedent, anneePrecedente);
+				Month moisPrecedent = mois.minus(1);
+				int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
+				BudgetMensuel budgetPrecedent = this.dataDepenses.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente);
 				if(budgetPrecedent.isActif()){
 					calculBudget(budgetPrecedent);
 				}
@@ -150,23 +144,16 @@ public class BusinessDepensesService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	private BudgetMensuel chargerBudgetMensuelSurCompteInactif(CompteBancaire compteBancaire, int mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
+	private BudgetMensuel chargerBudgetMensuelSurCompteInactif(CompteBancaire compteBancaire, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget du compte inactif {} de {}/{}", compteBancaire.getId(), mois, annee);
 
 		BudgetMensuel budgetMensuel = null;
 		try{
-			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire.getId(), mois, annee);
+			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee);
 		}
 		catch(BudgetNotFoundException e){
-			int moisPrecedent = 0;
-			int anneePrecedente = annee;
-			if(mois == Calendar.JANUARY){
-				moisPrecedent = Calendar.DECEMBER;
-				anneePrecedente = annee -1;
-			}
-			else{
-				moisPrecedent = mois -1;
-			}
+			Month moisPrecedent = mois.minus(1);
+			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 			budgetMensuel = chargerBudgetMensuelSurCompteInactif(compteBancaire, moisPrecedent, anneePrecedente);
 		}
 		// On reporte l'état inactif du compte sur les anciens budgets
@@ -227,7 +214,7 @@ public class BusinessDepensesService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	public boolean isBudgetMensuelActif(String compte, int mois, int annee){
+	public boolean isBudgetMensuelActif(CompteBancaire compte, Month mois, int annee){
 		return this.dataDepenses.isBudgetActif(compte, mois, annee);
 	}
 
@@ -241,12 +228,12 @@ public class BusinessDepensesService {
 	 * @throws BudgetNotFoundException erreur budhet
 	 * @throws DataNotFoundException erreur données
 	 */
-	private BudgetMensuel initNewBudget(CompteBancaire compteBancaire, Utilisateur utilisateur, int mois, int annee) throws BudgetNotFoundException,CompteClosedException, DataNotFoundException{
+	private BudgetMensuel initNewBudget(CompteBancaire compteBancaire, Utilisateur utilisateur, Month mois, int annee) throws BudgetNotFoundException,CompteClosedException, DataNotFoundException{
 		LOGGER.info("[INIT] Initialisation du budget {} de {}/{}", compteBancaire.getId(), mois, annee);
 		BudgetMensuel budget = new BudgetMensuel();
 		budget.setActif(true);
 		budget.setAnnee(annee);
-		budget.setMois(mois);
+		budget.setMois(mois.getValue());
 		budget.setCompteBancaire(compteBancaire);
 		budget.setDateMiseAJour(Calendar.getInstance());
 		// Init si dans le futur par rapport au démarrage
@@ -254,24 +241,17 @@ public class BusinessDepensesService {
 		datePremierBudget.with(ChronoField.DAY_OF_MONTH, 1);
 
 		Calendar dateCourante = Calendar.getInstance();
-		dateCourante.set(Calendar.MONTH, mois);
+		dateCourante.set(Calendar.MONTH, mois.getValue());
 		dateCourante.set(Calendar.YEAR, annee);
 
 		if(dateCourante.after(datePremierBudget)){
 			// MAJ Calculs à partir du mois précédent
 			// Mois précédent
-			int moisPrecedent = 0;
-			int anneePrecedente = annee;
-			if(mois == Calendar.JANUARY){
-				moisPrecedent = Calendar.DECEMBER;
-				anneePrecedente = annee -1;
-			}
-			else{
-				moisPrecedent = mois -1;
-			}
+			Month moisPrecedent = mois.minus(1);
+			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 			// Recherche du budget précédent 
 			// Si impossible : BudgetNotFoundException
-			initBudgetFromBudgetPrecedent(budget, chargerBudgetMensuel(utilisateur, compteBancaire.getId(), moisPrecedent, anneePrecedente));
+			initBudgetFromBudgetPrecedent(budget, chargerBudgetMensuel(utilisateur, compteBancaire, moisPrecedent, anneePrecedente));
 		}
 		else{
 			StringBuilder err = new StringBuilder().append("Le budget ").append(mois).append("/").append(annee).append(" n'a jamais existé");
@@ -310,7 +290,7 @@ public class BusinessDepensesService {
 		CompteBancaire compteBancaire = serviceParams.getCompteById(budgetMensuel.getCompteBancaire().getId());
 		if(compteBancaire != null){
 			// S'il y a eu cloture, on ne fait rien
-			initNewBudget(compteBancaire, utilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
+			initNewBudget(compteBancaire, utilisateur, Month.of(budgetMensuel.getMois()), budgetMensuel.getAnnee());
 		}
 		else{
 			throw new DataNotFoundException("Le compte bancaire " + budgetMensuel.getCompteBancaire().getId() + " est introuvable");
@@ -351,13 +331,13 @@ public class BusinessDepensesService {
 	 * @throws DataNotFoundException erreur données
 	 * @throws CompteClosedException 
 	 */
-	public void ajoutLigneTransfertIntercompte(String idBudget, LigneDepense ligneDepense, String compteCrediteur, Utilisateur utilisateur) throws BudgetNotFoundException, DataNotFoundException, CompteClosedException{
+	public void ajoutLigneTransfertIntercompte(String idBudget, LigneDepense ligneDepense, CompteBancaire compteCrediteur, Utilisateur utilisateur) throws BudgetNotFoundException, DataNotFoundException, CompteClosedException{
 
 		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
 		/**
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
 		 */
-		BudgetMensuel budgetTransfert = chargerBudgetMensuel(utilisateur, compteCrediteur, budget.getMois(), budget.getAnnee());
+		BudgetMensuel budgetTransfert = chargerBudgetMensuel(utilisateur, compteCrediteur, Month.of(budget.getMois()), budget.getAnnee());
 		if(budget.getCompteBancaire().isActif() && budgetTransfert.getCompteBancaire().isActif() && budget.isActif() && budgetTransfert.isActif()){
 			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneDepense);
 

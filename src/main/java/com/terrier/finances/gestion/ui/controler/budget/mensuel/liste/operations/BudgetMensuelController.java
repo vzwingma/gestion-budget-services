@@ -3,6 +3,7 @@ package com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operation
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
@@ -339,23 +340,23 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private BudgetMensuel chargeDonnees() throws DataNotFoundException {
 		LOGGER.debug("[BUDGET] Chargement du budget pour le tableau de suivi des dépenses");
 
-		String idCompte = getComponent().getComboBoxComptes().getValue().getId();
+		CompteBancaire compte = getComponent().getComboBoxComptes().getValue();
 		LocalDate dateMoisSelectionne = getComponent().getMois().getValue();
-		LOGGER.debug("[BUDGET] Gestion du Compte : {} du mois {}/{}",idCompte, dateMoisSelectionne.getMonth(), dateMoisSelectionne.getYear());
+		LOGGER.debug("[BUDGET] Gestion du Compte : {} du mois {}/{}",compte, dateMoisSelectionne.getMonth(), dateMoisSelectionne.getYear());
 
 		try {
 			// Budget
 			BudgetMensuel budget = getServiceDepense().chargerBudgetMensuel(
 					getUtilisateurCourant(),
-					idCompte,
-					dateMoisSelectionne.getMonthValue(), 
+					compte,
+					Month.of(dateMoisSelectionne.getMonthValue()), 
 					dateMoisSelectionne.getYear());
 
 			// Maj du budget
 			getUISession().setBudgetMensuelCourant(budget);
 			// Mise à jour du mois suivant le résultat de la requête
 			// (gère les comptes cloturés, on récupère que le dernier accessible)
-			if(budget.getMois() == oldMois && idCompte.equals(oldIdCompte)){
+			if(budget.getMois() == oldMois && compte.equals(oldIdCompte)){
 				refreshAllTable = false;
 				LOGGER.info("[BUDGET] Pas de changement de mois ou de compte : Pas de refresh total des tableaux");
 			}
@@ -365,12 +366,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			}
 			oldMois = budget.getMois();
 			oldAnnee = budget.getAnnee();
-			oldIdCompte = idCompte;
+			oldIdCompte = compte.getId();
 			return budget;
 		} catch (BudgetNotFoundException e) {
 			String messageerreur = new StringBuilder().
 					append("Impossible de charger le budget du compte ").
-					append(idCompte).append(" du ").
+					append(compte).append(" du ").
 					append(dateMoisSelectionne.getMonth()).append("/").append(dateMoisSelectionne.getYear()).
 					toString();
 			throw new DataNotFoundException(messageerreur);
