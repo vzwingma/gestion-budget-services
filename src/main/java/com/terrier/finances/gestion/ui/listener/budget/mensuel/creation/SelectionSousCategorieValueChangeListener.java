@@ -3,6 +3,9 @@
  */
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
+import java.util.Optional;
+import java.util.Set;
+
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -17,7 +20,7 @@ import com.vaadin.data.HasValue.ValueChangeListener;
  * @author vzwingma
  *
  */
-public class SelectionSousCategorieValueChangeListener extends AbstractComponentListener implements ValueChangeListener<CategorieDepense>{
+public class SelectionSousCategorieValueChangeListener extends AbstractComponentListener implements ValueChangeListener<Set<CategorieDepense>>{
 
 	private CreerDepenseController controleur;
 
@@ -34,31 +37,33 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
 	 */
 	@Override
-	public void valueChange(ValueChangeEvent<CategorieDepense> event) {
-		CategorieDepense ssCategorie = event.getValue();
-		
-		/**
-		 * Sélection d'un virement intercompte
-		 */
-		boolean interCompte = false;
-		if(ssCategorie != null){
-			interCompte = BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ssCategorie.getId());
-		}
-		controleur.getComponent().getListSelectComptes().setVisible(interCompte);
-		controleur.getComponent().getLayoutCompte().setVisible(interCompte);
-		controleur.getComponent().getLabelCompte().setVisible(interCompte);
-		
+	public void valueChange(ValueChangeEvent<Set<CategorieDepense>> event) {
 
-		/**
-		 * Préparation du type de dépense
-		 */
-		if(ssCategorie != null){
-			TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
-			if(BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(ssCategorie.getId()) || BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(ssCategorie.getId())){
-				typeAttendu = TypeDepenseEnum.CREDIT;
+		Optional<CategorieDepense> catSelected = event.getValue().stream().findFirst();
+		if(catSelected.isPresent()){
+			CategorieDepense ssCategorie = catSelected.get();	
+			/**
+			 * Sélection d'un virement intercompte
+			 */
+			boolean interCompte = false;
+			if(ssCategorie != null){
+				interCompte = BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ssCategorie.getId());
 			}
-			controleur.getComponent().getListSelectType().select(typeAttendu);
-		}
+			controleur.getComponent().getListSelectComptes().setVisible(interCompte);
+			controleur.getComponent().getLayoutCompte().setVisible(interCompte);
+			controleur.getComponent().getLabelCompte().setVisible(interCompte);
 
+
+			/**
+			 * Préparation du type de dépense
+			 */
+			if(ssCategorie != null){
+				TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
+				if(BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(ssCategorie.getId()) || BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(ssCategorie.getId())){
+					typeAttendu = TypeDepenseEnum.CREDIT;
+				}
+				controleur.getComponent().getListSelectType().select(typeAttendu);
+			}
+		}
 	}
 }

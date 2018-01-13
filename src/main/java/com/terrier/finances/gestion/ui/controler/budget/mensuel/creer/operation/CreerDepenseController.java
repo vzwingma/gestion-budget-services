@@ -1,6 +1,8 @@
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.creer.operation;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,16 +16,11 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.CreerDepenseForm;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionValiderCreationDepenseClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.AutocompleteDescriptionQueryListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.AutocompleteDescriptionSuggestionPickedListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.BlurDescriptionValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.ui.Notification;
-import com.zybnet.autocomplete.server.AutocompleteField;
-import com.zybnet.autocomplete.server.AutocompleteQueryListener;
 
 /**
  * Controleur de créer des dépenses
@@ -62,34 +59,19 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 	public void initDynamicComponentsOnPage(){
 		// Sélection d'une catégorie
 		getComponent().getComboBoxCategorie().addValueChangeListener(new SelectionCategorieValueChangeListener(this));
-		getComponent().getComboBoxCategorie().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		
 		// Sélection d'une sous catégorie
 		getComponent().getComboBoxSsCategorie().addValueChangeListener(new SelectionSousCategorieValueChangeListener(this));
-		getComponent().getComboBoxSsCategorie().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		
 		getComponent().getListSelectComptes().setVisible(false);
-		getComponent().getListSelectComptes().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		getComponent().getLayoutCompte().setVisible(false);
 		getComponent().getLabelCompte().setVisible(false);
-	//	getComponent().getLabelCompte().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 		// Périodique
 		getComponent().getCheckBoxPeriodique().setCaption(null);
 		getComponent().getCheckBoxPeriodique().setDescription("Cocher pour une dépense mensuelle");
-		getComponent().getCheckBoxPeriodique().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
 
 		// Description
-		getComponent().getTextFieldDescription().setTrimQuery(true);
-		getComponent().getTextFieldDescription().setRequiredIndicatorVisible(true);
-//		getComponent().getTextFieldDescription().setBuffered(false);
-//		getComponent().getTextFieldDescription().setInvalidAllowed(true);
-//		getComponent().getTextFieldDescription().setInvalidCommitted(true);
-		getComponent().getTextFieldDescription().setDelay(0);
-		
-		// Valeur
-		getComponent().getListSelectType().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
-		getComponent().getTextFieldValeur().addValueChangeListener(new BlurDescriptionValueChangeListener(this));
-		
+				
 		// Bouton
 		getComponent().getButtonValider().addClickListener(new ActionValiderCreationDepenseClickListener());
 		getComponent().getButtonValider().setDescription("Valider l'opération et fermer l'écran de saisie");
@@ -165,32 +147,21 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
 			return;
 		}
-//		getComponent().getComboBoxCategorie().removeAllItems();
-//		for (CategorieDepense categorieDepense : categories) {
-//			getComponent().getComboBoxCategorie().addItem(categorieDepense);	
-//		}
+		getComponent().getComboBoxCategorie().setItems(categories);
+
 //		// SS catégorie
-//		getComponent().getComboBoxSsCategorie().removeAllItems();
-//		getComponent().getComboBoxSsCategorie().setEnabled(false);
+		getComponent().getComboBoxSsCategorie().setEnabled(false);
 
 		/**
 		 *  Query
 		 */
-		AutocompleteField<String> descriptionField = getComponent().getTextFieldDescription();
-		descriptionField.setSuggestionPickedListener(new AutocompleteDescriptionSuggestionPickedListener(descriptionField, this));
-
-		AutocompleteQueryListener<String> listener = new AutocompleteDescriptionQueryListener(
-				getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete(), this) ;
-		getComponent().getTextFieldDescription().setQueryListener(listener);
 		// Description
-		getComponent().getTextFieldDescription().setText("");
-		getComponent().getTextFieldDescription().setData("");
-		getComponent().getTextFieldDescription().clearChoices();
-		getComponent().getTextFieldDescription().clear();
+	
 
 		
 		
 		// Comptes pour virement intercomptes
+		List<CompteBancaire> compteIntercomptes = new ArrayList<>();
 //		getComponent().getListSelectComptes().setNullSelectionAllowed(true);
 //		getComponent().getListSelectComptes().removeAllItems();
 		try{
@@ -200,15 +171,15 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 						&& 
 						// #57 Compte actif
 						compte.isActif()){
-//					getComponent().getListSelectComptes().addItem(compte.getId());
-//					getComponent().getListSelectComptes().setItemCaption(compte.getId(), compte.getLibelle());
+					compteIntercomptes.add(compte);
 				}
 			}
 		} catch (DataNotFoundException e) {
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
 			return;
 		}
-
+		getComponent().getListSelectComptes().setItems(compteIntercomptes);
+		
 		// Valeur
 		getComponent().getTextFieldValeur().setValue("0");
 		// Type dépense
