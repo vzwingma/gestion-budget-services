@@ -35,7 +35,7 @@ public class DateBudgetValueChangeListener implements ValueChangeListener<LocalD
 		LocalDate dateBudget = event.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		dateBudget.with(ChronoField.DAY_OF_MONTH, 1);
 		this.controleur.setRangeFinMois(dateBudget, idCompte);
-		if(dateBudget.getMonthValue() != this.controleur.getOldMois() || dateBudget.getYear() != this.controleur.getOldAnnee()){
+		if(!dateBudget.getMonth().equals(this.controleur.getOldMois()) || dateBudget.getYear() != this.controleur.getOldAnnee()){
 			this.controleur.miseAJourVueDonnees();			
 		}
 	}

@@ -233,7 +233,7 @@ public class BusinessDepensesService {
 		BudgetMensuel budget = new BudgetMensuel();
 		budget.setActif(true);
 		budget.setAnnee(annee);
-		budget.setMois(mois.getValue());
+		budget.setMois(mois);
 		budget.setCompteBancaire(compteBancaire);
 		budget.setDateMiseAJour(Calendar.getInstance());
 		// Init si dans le futur par rapport au démarrage
@@ -290,7 +290,7 @@ public class BusinessDepensesService {
 		CompteBancaire compteBancaire = serviceParams.getCompteById(budgetMensuel.getCompteBancaire().getId());
 		if(compteBancaire != null){
 			// S'il y a eu cloture, on ne fait rien
-			initNewBudget(compteBancaire, utilisateur, Month.of(budgetMensuel.getMois()), budgetMensuel.getAnnee());
+			initNewBudget(compteBancaire, utilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
 		}
 		else{
 			throw new DataNotFoundException("Le compte bancaire " + budgetMensuel.getCompteBancaire().getId() + " est introuvable");
@@ -337,7 +337,7 @@ public class BusinessDepensesService {
 		/**
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
 		 */
-		BudgetMensuel budgetTransfert = chargerBudgetMensuel(utilisateur, compteCrediteur, Month.of(budget.getMois()), budget.getAnnee());
+		BudgetMensuel budgetTransfert = chargerBudgetMensuel(utilisateur, compteCrediteur, budget.getMois(), budget.getAnnee());
 		if(budget.getCompteBancaire().isActif() && budgetTransfert.getCompteBancaire().isActif() && budget.isActif() && budgetTransfert.isActif()){
 			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneDepense);
 

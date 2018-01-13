@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.model.business.budget;
 
 import java.io.Serializable;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class BudgetMensuel implements Serializable {
 	/**
 	 * Mois du budget
 	 */
-	private int mois;
+	private Month mois;
 	private int annee;
 	/**
 	 * Budget actif
@@ -158,7 +159,7 @@ public class BudgetMensuel implements Serializable {
 	/**
 	 * @return the mois
 	 */
-	public int getMois() {
+	public Month getMois() {
 		return mois;
 	}
 
@@ -182,7 +183,7 @@ public class BudgetMensuel implements Serializable {
 	/**
 	 * @param mois the mois to set
 	 */
-	public void setMois(int mois) {
+	public void setMois(Month mois) {
 		this.mois = mois;
 	}
 

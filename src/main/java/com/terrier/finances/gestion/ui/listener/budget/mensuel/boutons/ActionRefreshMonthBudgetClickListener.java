@@ -41,12 +41,12 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 		Calendar c = Calendar.getInstance();
 		BudgetMensuel budgetMensuelCourant = getBudgetMensuelCourant();
 		
-		c.set(Calendar.MONTH, budgetMensuelCourant.getMois());
+		c.set(Calendar.MONTH, budgetMensuelCourant.getMois().getValue());
 		SimpleDateFormat sfd = new SimpleDateFormat("MMMM YYYY", Locale.FRENCH);
 
 		/** Alerte **/
 		String warnMoisActif = "";
-		Month moisPrecedent = Month.of(budgetMensuelCourant.getMois()).minus(1);
+		Month moisPrecedent = budgetMensuelCourant.getMois().minus(1);
 		int anneePrecedente = budgetMensuelCourant.getAnnee();
 		
 			anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? budgetMensuelCourant.getAnnee() : budgetMensuelCourant.getAnnee() - 1;

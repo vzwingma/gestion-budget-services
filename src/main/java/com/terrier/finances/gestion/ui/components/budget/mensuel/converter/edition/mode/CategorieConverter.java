@@ -1,7 +1,6 @@
 package com.terrier.finances.gestion.ui.components.budget.mensuel.converter.edition.mode;
 
 import java.util.Collection;
-import java.util.Locale;
 
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.vaadin.data.Converter;

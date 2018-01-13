@@ -70,7 +70,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private TreeResumeCategoriesController treeResumeControleur;
 
 	// Calcul de mise à jour du compte courant
-	private int oldMois;
+	private Month oldMois;
 	private int oldAnnee;
 	private String oldIdCompte;
 	private boolean refreshAllTable = false;
@@ -254,12 +254,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 					getBudgetMensuelCourant(), 
 					getUtilisateurCourant());
 			// Ack pour forcer le "refreshAllTable"
-			oldMois = -1;
+			oldMois = null;
 			miseAJourVueDonnees();
 		} catch (BudgetNotFoundException | DataNotFoundException | CompteClosedException e) {
 			LOGGER.error("[BUDGET] Erreur lors de la réinitialisation du compte", e);
 			Notification.show("Impossible de réinitialiser le mois courant "+
-					( getBudgetMensuelCourant().getMois() + 1)+"/"+ getBudgetMensuelCourant().getAnnee()
+					getBudgetMensuelCourant().getMois()+"/"+ getBudgetMensuelCourant().getAnnee()
 					+" du compte "+ getBudgetMensuelCourant().getCompteBancaire().getLibelle(), 
 					Notification.Type.ERROR_MESSAGE);
 		}
@@ -416,7 +416,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		// Maj du mois
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.DAY_OF_MONTH, 1);
-		c.set(Calendar.MONTH, budgetCourant.getMois());
+//		c.set(Calendar.MONTH, budgetCourant.getMois());
 		c.set(Calendar.YEAR, budgetCourant.getAnnee());
 //		getComponent().getMois().setValue(c.getTime());
 
@@ -460,10 +460,10 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * @param listeDepenses
 	 * @return date max d'une liste de dépenses
 	 */
-	private Calendar getMaxDateListeDepenses(List<LigneDepense> listeDepenses, int moisBudgetCourant, int anneeBudgetCourant){
+	private Calendar getMaxDateListeDepenses(List<LigneDepense> listeDepenses, Month moisBudgetCourant, int anneeBudgetCourant){
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR, anneeBudgetCourant);
-		c.set(Calendar.MONTH, moisBudgetCourant);
+		c.set(Calendar.MONTH, moisBudgetCourant.getValue());
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		if(listeDepenses != null){
 			for (LigneDepense ligneDepense : listeDepenses) {
@@ -485,7 +485,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	/**
 	 * @return the oldMois
 	 */
-	public int getOldMois() {
+	public Month getOldMois() {
 		return oldMois;
 	}
 

@@ -3,6 +3,7 @@
  */
 package com.terrier.finances.gestion.data.transformer;
 
+import java.time.Month;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses()));
 		bo.setMargeSecurite(dto.getMargeSecurite() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecurite())) : 0D);
 		bo.setMargeSecuriteFinMois(dto.getMargeSecuriteFinMois() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecuriteFinMois())) : 0D);
-		bo.setMois(dto.getMois() + 1);
+		bo.setMois(Month.of(dto.getMois() + 1));
 		bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getResultatMoisPrecedent())) : 0D);
 		
 		/*
@@ -134,7 +135,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		dto.setMargeSecurite(bo.getMargeSecurite() != null ? encrytor.encrypt(bo.getMargeSecurite().toString()) : null);
 		dto.setMargeSecuriteFinMois(bo.getMargeSecuriteFinMois() != null ?  encrytor.encrypt(bo.getMargeSecuriteFinMois().toString()) : null);
 
-		dto.setMois(bo.getMois() - 1);
+		dto.setMois(bo.getMois().getValue() - 1);
 		dto.setResultatMoisPrecedent(bo.getResultatMoisPrecedent() != null ?  encrytor.encrypt(bo.getResultatMoisPrecedent().toString()) : null);
 		dto.setFinArgentAvance( encrytor.encrypt(String.valueOf(bo.getFinArgentAvance())));
 		dto.setFinCompteReel( encrytor.encrypt(String.valueOf(bo.getFinCompteReel())));
