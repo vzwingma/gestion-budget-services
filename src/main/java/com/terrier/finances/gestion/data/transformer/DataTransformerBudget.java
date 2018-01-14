@@ -51,69 +51,74 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	public BudgetMensuel transformDTOtoBO(BudgetMensuelDTO dto) {
 		
 		BasicTextEncryptor decryptor = getEncryptor();
-		
-		BudgetMensuel bo = new BudgetMensuel();
-		bo.setActif(dto.isActif());
-		bo.setAnnee(dto.getAnnee());
-		bo.setCompteBancaire(dto.getCompteBancaire());
-		if(dto.getDateMiseAJour() != null){
-			Calendar c = Calendar.getInstance();
-			c.setTime(dto.getDateMiseAJour());
-			bo.setDateMiseAJour(c);
-		}
-		bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses()));
-		bo.setMargeSecurite(dto.getMargeSecurite() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecurite())) : 0D);
-		bo.setMargeSecuriteFinMois(dto.getMargeSecuriteFinMois() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecuriteFinMois())) : 0D);
-		bo.setMois(Month.of(dto.getMois() + 1));
-		bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getResultatMoisPrecedent())) : 0D);
-		
-		/*
-		 * Budget clos : utilisation des valeurs calculées
-		 */
-		if(!bo.isActif()){
-			bo.setNowArgentAvance(dto.getNowArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getNowArgentAvance())) : 0);
-			bo.setNowCompteReel(dto.getNowCompteReel() != null ? Double.valueOf(decryptor.decrypt(dto.getNowCompteReel())): 0);
-			bo.setFinArgentAvance(dto.getFinArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getFinArgentAvance())): 0);
-			bo.setFinCompteReel(dto.getFinCompteReel() != null ? Double.valueOf(decryptor.decrypt(dto.getFinCompteReel())):0);
-			// Complétion des totaux
-			Map<CategorieDepense, Double[]> totalCategorieBO = new HashMap<CategorieDepense, Double[]>();
-			if(dto.getTotalParCategories() != null){
-				for (String catKey : dto.getTotalParCategories().keySet()) {
-					String[] totaux = dto.getTotalParCategories().get(catKey);
-					Double[] totauxBO = new Double[totaux.length];
-					for (int i = 0; i < totaux.length; i++) {
-						totauxBO[i] = totaux[i] != null ? Double.valueOf(decryptor.decrypt(totaux[i])) : 0D;
-					}
-					try {
-						totalCategorieBO.put(parametrageService.chargeCategorieParId(decryptor.decrypt(catKey)), totauxBO);
-					} catch (DataNotFoundException e) {
-						LOGGER.error("Impossible de trouver la catégorie {}", decryptor.decrypt(catKey));
+		try{
+			BudgetMensuel bo = new BudgetMensuel();
+			bo.setActif(dto.isActif());
+			bo.setAnnee(dto.getAnnee());
+			bo.setCompteBancaire(dto.getCompteBancaire());
+			if(dto.getDateMiseAJour() != null){
+				Calendar c = Calendar.getInstance();
+				c.setTime(dto.getDateMiseAJour());
+				bo.setDateMiseAJour(c);
+			}
+			bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses()));
+			bo.setMargeSecurite(dto.getMargeSecurite() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecurite())) : 0D);
+			bo.setMargeSecuriteFinMois(dto.getMargeSecuriteFinMois() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecuriteFinMois())) : 0D);
+			bo.setMois(Month.of(dto.getMois() + 1));
+			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getResultatMoisPrecedent())) : 0D);
+			
+			/*
+			 * Budget clos : utilisation des valeurs calculées
+			 */
+			if(!bo.isActif()){
+				bo.setNowArgentAvance(dto.getNowArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getNowArgentAvance())) : 0);
+				bo.setNowCompteReel(dto.getNowCompteReel() != null ? Double.valueOf(decryptor.decrypt(dto.getNowCompteReel())): 0);
+				bo.setFinArgentAvance(dto.getFinArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getFinArgentAvance())): 0);
+				bo.setFinCompteReel(dto.getFinCompteReel() != null ? Double.valueOf(decryptor.decrypt(dto.getFinCompteReel())):0);
+				// Complétion des totaux
+				Map<CategorieDepense, Double[]> totalCategorieBO = new HashMap<CategorieDepense, Double[]>();
+				if(dto.getTotalParCategories() != null){
+					for (String catKey : dto.getTotalParCategories().keySet()) {
+						String[] totaux = dto.getTotalParCategories().get(catKey);
+						Double[] totauxBO = new Double[totaux.length];
+						for (int i = 0; i < totaux.length; i++) {
+							totauxBO[i] = totaux[i] != null ? Double.valueOf(decryptor.decrypt(totaux[i])) : 0D;
+						}
+						try {
+							totalCategorieBO.put(parametrageService.chargeCategorieParId(decryptor.decrypt(catKey)), totauxBO);
+						} catch (DataNotFoundException e) {
+							LOGGER.error("Impossible de trouver la catégorie {}", decryptor.decrypt(catKey));
+						}
 					}
 				}
-			}
-			bo.setTotalParCategories(totalCategorieBO);
-			// Complétion des totaux ss catégorie
-			Map<CategorieDepense, Double[]> totalSsCategorieBO = new HashMap<CategorieDepense, Double[]>();
-			if(dto.getTotalParSSCategories() != null){
-				for (String ssCatKey : dto.getTotalParSSCategories().keySet()) {
-					String[] totaux = dto.getTotalParSSCategories().get(ssCatKey);
-					Double[] totauxBO = new Double[totaux.length];
-					for (int i = 0; i < totaux.length; i++) {
-						totauxBO[i] = totaux[i] != null ? Double.valueOf(decryptor.decrypt(totaux[i])) : 0D;
-					}
-					try {
-						totalSsCategorieBO.put(parametrageService.chargeCategorieParId(decryptor.decrypt(ssCatKey)), totauxBO);
-					} catch (DataNotFoundException e) {
-						LOGGER.error("Impossible de trouver la catégorie {}", decryptor.decrypt(ssCatKey));
+				bo.setTotalParCategories(totalCategorieBO);
+				// Complétion des totaux ss catégorie
+				Map<CategorieDepense, Double[]> totalSsCategorieBO = new HashMap<CategorieDepense, Double[]>();
+				if(dto.getTotalParSSCategories() != null){
+					for (String ssCatKey : dto.getTotalParSSCategories().keySet()) {
+						String[] totaux = dto.getTotalParSSCategories().get(ssCatKey);
+						Double[] totauxBO = new Double[totaux.length];
+						for (int i = 0; i < totaux.length; i++) {
+							totauxBO[i] = totaux[i] != null ? Double.valueOf(decryptor.decrypt(totaux[i])) : 0D;
+						}
+						try {
+							totalSsCategorieBO.put(parametrageService.chargeCategorieParId(decryptor.decrypt(ssCatKey)), totauxBO);
+						} catch (DataNotFoundException e) {
+							LOGGER.error("Impossible de trouver la catégorie {}", decryptor.decrypt(ssCatKey));
+						}
 					}
 				}
+				bo.setTotalParSSCategories(totalSsCategorieBO);
 			}
-			bo.setTotalParSSCategories(totalSsCategorieBO);
+			bo.setId(dto.getId());
+			
+			LOGGER.debug("	[{}] \n > Transformation en BO > [{}]", dto, bo);
+			return bo;
 		}
-		bo.setId(dto.getId());
-		
-		LOGGER.debug("	[{}] \n > Transformation en BO > [{}]", dto, bo);
-		return bo;
+		catch(Exception e){
+			LOGGER.debug("	[{}] \n > Erreur lors de la transformation en BO > [{}]", dto, null);
+			return null;			
+		}
 	}
 
 

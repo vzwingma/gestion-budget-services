@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 
+import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.BudgetMensuelController;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -20,6 +21,7 @@ public class DateBudgetValueChangeListener implements ValueChangeListener<LocalD
 	 */
 	private static final long serialVersionUID = 5730762746251471137L;
 
+	
 	private BudgetMensuelController controleur;
 
 	public DateBudgetValueChangeListener(BudgetMensuelController controleur){
@@ -31,10 +33,10 @@ public class DateBudgetValueChangeListener implements ValueChangeListener<LocalD
 	public void valueChange(ValueChangeEvent<LocalDate> event) {
 
 		// Modification de la date
-		String idCompte = (String)this.controleur.getCompte().getValue().getId();
+		CompteBancaire compte = this.controleur.getCompte().getValue();
 		LocalDate dateBudget = event.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		dateBudget.with(ChronoField.DAY_OF_MONTH, 1);
-		this.controleur.setRangeFinMois(dateBudget, idCompte);
+		this.controleur.setRangeFinMois(dateBudget, compte.getId());
 		if(!dateBudget.getMonth().equals(this.controleur.getOldMois()) || dateBudget.getYear() != this.controleur.getOldAnnee()){
 			this.controleur.miseAJourVueDonnees();			
 		}

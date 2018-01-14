@@ -1,8 +1,6 @@
 package com.terrier.finances.gestion.data;
 
-import java.time.LocalDate;
 import java.time.Month;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,9 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
-import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
@@ -52,7 +48,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	 */
 	protected String getBudgetCollectionName(int annee){
 		StringBuilder collectionName = new StringBuilder("budget_").append(annee);
-		LOGGER.debug("Utilisation de la collection [{}]", collectionName);
+		LOGGER.trace("Utilisation de la collection [{}]", collectionName);
 		return  collectionName.toString();
 	}
 	/**
@@ -84,13 +80,24 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(idCompte).and("annee").is(annee));
 		Set<String> libellesDepenses = new HashSet<String>();
 		try{
-			List<BudgetMensuelDTO> budgetDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
-			if(budgetDTO != null){
-				for (BudgetMensuelDTO budgetMensuelDTO : budgetDTO) {
-					for (LigneDepense depense : getDataTransformerBudget().transformDTOtoBO(budgetMensuelDTO).getListeDepenses()) {
-						libellesDepenses.add(depense.getLibelle());
+			List<BudgetMensuelDTO> budgetsDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
+			if(budgetsDTO != null){
+
+				budgetsDTO
+				.parallelStream()
+				// liste dépenses transformées 
+				.map(budgetDTO -> getDataTransformerBudget().transformDTOtoBO(budgetDTO))
+				.forEach(budget -> {
+					if(budget != null && budget.getListeDepenses() != null && !budget.getListeDepenses().isEmpty()){
+						budget.getListeDepenses()
+						.parallelStream()
+						.forEach(operation -> {
+							if(operation != null){
+								libellesDepenses.add(operation.getLibelle());
+							}
+						});
 					}
-				}
+				});
 			}
 		}
 		catch(Exception e){
@@ -135,7 +142,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	 * @return budget actif
 	 */
 	public boolean isBudgetActif(CompteBancaire compte, Month mois, int annee){
-		
+
 		boolean actif = false;
 		try {
 			BudgetMensuelDTO budgetMensuel = chargeBudgetMensuelDTO(compte, mois, annee);
@@ -250,7 +257,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	 * @param compte id du compte
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
-	public LocalDate[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
+	public BudgetMensuelDTO[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
 		Query query1erBudget = new Query();
 		query1erBudget.addCriteria(Criteria.where("compteBancaire.id").is(compte));
 		query1erBudget.with(new Sort(Sort.Direction.ASC, "annee")).with(new Sort(Sort.Direction.ASC, "mois"));
@@ -268,26 +275,19 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 					break;
 				}				
 			}
-			LocalDate premier = DataUtils.localDateFirstDayOfMonth();
-			if(premierbudget != null){
-				premier.with(ChronoField.MONTH_OF_YEAR, premierbudget.getMois() + 1);
-				premier.with(ChronoField.YEAR, premierbudget.getAnnee());
-			}
-			BudgetMensuelDTO dernierbudget = null;
 
+			LOGGER.debug("Premier budget trouvé : {}", premierbudget);
+
+
+			BudgetMensuelDTO dernierbudget = null;
 			for (int a = Calendar.getInstance().get(Calendar.YEAR); a >= 2014; a--) {
 				dernierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a));
 				if(dernierbudget != null){
 					break;
 				}				
 			}
-			LocalDate dernier = DataUtils.localDateFirstDayOfMonth();
-			if(dernierbudget != null){
-				dernier.with(ChronoField.MONTH_OF_YEAR, dernierbudget.getMois() + 1);
-				dernier.with(ChronoField.YEAR, dernierbudget.getAnnee());
-			}
-			dernier.plusMonths(1);
-			return new LocalDate[]{premier, dernier};
+			LOGGER.debug("Dernier budget trouvé : {} -> {}", dernierbudget);
+			return new BudgetMensuelDTO[]{premierbudget, dernierbudget};
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement", e);

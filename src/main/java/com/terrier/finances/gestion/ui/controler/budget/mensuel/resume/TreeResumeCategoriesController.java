@@ -4,6 +4,7 @@
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.resume;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TreeResumeCategories;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 
@@ -92,11 +94,10 @@ public class TreeResumeCategoriesController extends AbstractUIController<TreeRes
 	 * @param budget budget à jour
 	 * @param dateBudget date du budget
 	 */
-	public void miseAJourVueDonnees(BudgetMensuel budget, Calendar dateBudget){
+	public void miseAJourVueDonnees(BudgetMensuel budget){
 		
-		if(dateBudget == null){
-			dateBudget = Calendar.getInstance();
-		}
+
+		LocalDate dateDerniereOperation = DataUtils.getMaxDateListeOperations(budget.getListeDepenses());
 		/*
 		getComponent().setColumnHeader(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), 
 				EntetesTreeResumeDepenseEnum.VALEUR_NOW.getLibelle()+ auDateFormat.format(dateBudget.getTime()));

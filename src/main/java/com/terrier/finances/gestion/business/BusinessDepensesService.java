@@ -18,6 +18,8 @@ import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
+import com.terrier.finances.gestion.model.data.DataUtils;
+import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -170,7 +172,18 @@ public class BusinessDepensesService {
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
 	public LocalDate[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
-		return this.dataDepenses.getDatePremierDernierBudgets(compte);
+		
+		BudgetMensuelDTO[] premierDernierBudgets = this.dataDepenses.getDatePremierDernierBudgets(compte);
+		
+		LocalDate premier = DataUtils.localDateFirstDayOfMonth();
+		if(premierDernierBudgets[0] != null){
+			premier = premier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[0].getMois() + 1).with(ChronoField.YEAR, premierDernierBudgets[0].getAnnee());
+		}
+		LocalDate dernier = DataUtils.localDateFirstDayOfMonth();
+		if(premierDernierBudgets[1] != null){
+			dernier = dernier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[1].getMois() + 1).with(ChronoField.YEAR, premierDernierBudgets[1].getAnnee()).plusMonths(1);
+		}
+		return new LocalDate[]{premier, dernier};
 	}
 
 	/**
@@ -240,11 +253,9 @@ public class BusinessDepensesService {
 		LocalDate datePremierBudget = getDatePremierDernierBudgets(compteBancaire.getId())[0];
 		datePremierBudget.with(ChronoField.DAY_OF_MONTH, 1);
 
-		Calendar dateCourante = Calendar.getInstance();
-		dateCourante.set(Calendar.MONTH, mois.getValue());
-		dateCourante.set(Calendar.YEAR, annee);
+		LocalDate dateCourante = DataUtils.localDateFirstDayOfMonth(mois, annee);
 
-		if(dateCourante.after(datePremierBudget)){
+		if(dateCourante.isAfter(datePremierBudget)){
 			// MAJ Calculs à partir du mois précédent
 			// Mois précédent
 			Month moisPrecedent = mois.minus(1);

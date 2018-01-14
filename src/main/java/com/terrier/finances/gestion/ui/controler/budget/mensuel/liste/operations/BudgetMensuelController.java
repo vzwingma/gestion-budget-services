@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.temporal.ChronoField;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -405,8 +404,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		tableSuiviDepenseControleur.miseAJourVueDonnees(this.refreshAllTable, budgetCourant.isActif(), listeDepenses);
 
 		// Maj du mois
-		getComponent().getMois().setValue(DataUtils.localDateFirstDayOfMonth());
-
+		getComponent().getMois().setValue(DataUtils.localDateFirstDayOfMonth(budgetCourant.getMois(), budgetCourant.getAnnee()));
+		
 		// Boutons actions sur Budget inactif :
 		if(!budgetCourant.isActif()){
 			getComponent().getButtonAnnuler().setVisible(false);
@@ -432,34 +431,14 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		 * Affichage par catégorie
 		 */
 		LOGGER.debug("[IHM] Total par categorie");
-		treeResumeControleur.miseAJourVueDonnees(budgetCourant, getMaxDateListeDepenses(listeDepenses, budgetCourant.getMois(), budgetCourant.getAnnee()));
+		treeResumeControleur.miseAJourVueDonnees(budgetCourant);
 		/**
 		 * Affichage du résumé
 		 */
-		tableTotalResumeControleur.miseAJourVueDonnees(budgetCourant, getMaxDateListeDepenses(listeDepenses, budgetCourant.getMois(), budgetCourant.getAnnee()));
+		tableTotalResumeControleur.miseAJourVueDonnees(budgetCourant);
 
 		LOGGER.debug("[IHM] << Mise à jour des vues <<");
 		this.refreshAllTable = false;
-	}
-
-
-	/**
-	 * @param listeDepenses
-	 * @return date max d'une liste de dépenses
-	 */
-	private Calendar getMaxDateListeDepenses(List<LigneDepense> listeDepenses, Month moisBudgetCourant, int anneeBudgetCourant){
-		Calendar c = Calendar.getInstance();
-		c.set(Calendar.YEAR, anneeBudgetCourant);
-		c.set(Calendar.MONTH, moisBudgetCourant.getValue());
-		c.set(Calendar.DAY_OF_MONTH, 1);
-		if(listeDepenses != null){
-			for (LigneDepense ligneDepense : listeDepenses) {
-				if(ligneDepense.getDateOperation() != null && c.getTime().before(ligneDepense.getDateOperation())){
-					c.setTime(ligneDepense.getDateOperation());
-				}
-			}
-		}
-		return c;
 	}
 
 	/**
@@ -488,8 +467,5 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 */
 	public String getOldIdCompte() {
 		return oldIdCompte;
-	}
-	
-	
+	}	
 }
-

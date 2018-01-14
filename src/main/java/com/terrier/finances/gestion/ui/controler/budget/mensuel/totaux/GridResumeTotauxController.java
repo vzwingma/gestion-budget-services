@@ -3,14 +3,15 @@
  */
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.TotalBudgetMensuel;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridResumeTotaux;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
@@ -25,8 +26,8 @@ public class GridResumeTotauxController extends AbstractUIController<GridResumeT
 
 	private static final long serialVersionUID = 5190668755144306669L;
 	
-	protected final SimpleDateFormat auDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.FRENCH);
-	protected final SimpleDateFormat finDateFormat = new SimpleDateFormat("MMM yyyy", Locale.FRENCH);
+	protected final DateTimeFormatter auDateFormat = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.FRENCH);
+	protected final DateTimeFormatter finDateFormat = DateTimeFormatter.ofPattern("MMM yyyy", Locale.FRENCH);
 
 	
 	/**
@@ -39,7 +40,7 @@ public class GridResumeTotauxController extends AbstractUIController<GridResumeT
 
 	@Override
 	public void miseAJourVueDonnees() { 
-		// Rien, cf #miseAJourVueDonnees(BudgetMensuel budget, Calendar dateBudget)
+		// Rien, cf #miseAJourVueDonnees(BudgetMensuel budget)
 
 	}
 	
@@ -50,11 +51,9 @@ public class GridResumeTotauxController extends AbstractUIController<GridResumeT
 	 * @param budget budget à jour
 	 * @param dateBudget date du budget
 	 */
-	public void miseAJourVueDonnees(BudgetMensuel budget, Calendar dateBudget){
-		
-		if(dateBudget == null){
-			dateBudget = Calendar.getInstance();
-		}
+	public void miseAJourVueDonnees(BudgetMensuel budget){
+
+		LocalDate dateDerniereOperation = DataUtils.getMaxDateListeOperations(budget.getListeDepenses());
 		
 		// Injection des données
 		List<TotalBudgetMensuel> totauxBudget = new ArrayList<TotalBudgetMensuel>();
@@ -62,8 +61,8 @@ public class GridResumeTotauxController extends AbstractUIController<GridResumeT
 		totauxBudget.add(new TotalBudgetMensuel("Solde réel du compte", budget.getNowCompteReel(), budget.getFinCompteReel()));
 		
 		// Maj des colonnes
-		getComponent().getColumn(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId()).setCaption(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getLibelle()+ auDateFormat.format(dateBudget.getTime()));
-		getComponent().getColumn(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId()).setCaption(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getLibelle()+ finDateFormat.format(dateBudget.getTime()));
+		getComponent().getColumn(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId()).setCaption(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getLibelle()+ dateDerniereOperation.format(auDateFormat));
+		getComponent().getColumn(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId()).setCaption(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getLibelle()+ dateDerniereOperation.format(finDateFormat));
 		getComponent().setItems(totauxBudget);
 		getComponent().getDataProvider().refreshAll();
 		getComponent().setDescription("Marge de sécurité : "+budget.getMargeSecurite()+" € <br> Marge à fin de mois : " + budget.getMargeSecuriteFinMois() + " €");
