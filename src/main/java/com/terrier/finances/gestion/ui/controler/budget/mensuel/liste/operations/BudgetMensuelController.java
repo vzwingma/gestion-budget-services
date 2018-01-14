@@ -82,6 +82,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		super(composant);
 		// Ajout du pooling listener de l'UI sur ce controleur
 		UI.getCurrent().addPollListener(this);
+		
+		initDynamicComponentsOnPage();
 	}
 
 	/**
@@ -116,7 +118,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * Init du suivi
 	 * @param tableSuiviDepenseControleur tableau de suivi
 	 */
-	@Deprecated
 	public void initDynamicComponentsOnPage(){
 
 		// Init des boutons
@@ -385,24 +386,16 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 */
 	@Override
 	public void miseAJourVueDonnees() {
-		
-		initDynamicComponentsOnPage();
-		
-		
 		BudgetMensuel budgetCourant = null;
 		try {
 			budgetCourant = chargeDonnees();
 		} catch (final DataNotFoundException e) {
-			Calendar c = Calendar.getInstance();
-	/*		c.setTime(getComponent().getMois().getValue());
-			c.set(Calendar.MONTH, this.oldMois);
-			c.set(Calendar.YEAR, this.oldAnnee);
-			LOGGER.warn("[BUDGET] Budget non trouvé. Réinjection de {}", c.getTime());
-			getComponent().getMois().setValue(c.getTime()); */
+			LOGGER.warn("[BUDGET] Budget non trouvé. Réinjection de {}", DataUtils.localDateFirstDayOfMonth(this.oldMois));
+			getComponent().getMois().setValue(DataUtils.localDateFirstDayOfMonth(this.oldMois)); 
 			Notification.show(e.getMessage(), Notification.Type.WARNING_MESSAGE);
 			return;
 		}
-		LOGGER.debug("[IHM] >> Mise à jour des vues >> {}", budgetCourant.isActif());		
+		LOGGER.info("[IHM] >> Mise à jour des vues >> {}", budgetCourant.isActif());		
 		LOGGER.debug("[IHM] Affichage des données dans le tableau de suivi des dépenses");
 		List<LigneDepense> listeDepenses = budgetCourant.getListeDepenses();		
 		/**
@@ -411,14 +404,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 		tableSuiviDepenseControleur.miseAJourVueDonnees(this.refreshAllTable, budgetCourant.isActif(), listeDepenses);
 
-
-
 		// Maj du mois
-		Calendar c = Calendar.getInstance();
-		c.set(Calendar.DAY_OF_MONTH, 1);
-//		c.set(Calendar.MONTH, budgetCourant.getMois());
-		c.set(Calendar.YEAR, budgetCourant.getAnnee());
-//		getComponent().getMois().setValue(c.getTime());
+		getComponent().getMois().setValue(DataUtils.localDateFirstDayOfMonth());
 
 		// Boutons actions sur Budget inactif :
 		if(!budgetCourant.isActif()){
