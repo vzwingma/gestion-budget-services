@@ -57,4 +57,7 @@ public enum EtatLigneDepenseEnum {
 		return null;
 	}
 	
+	public String toString(){
+		return getLibelle();
+	}
 }

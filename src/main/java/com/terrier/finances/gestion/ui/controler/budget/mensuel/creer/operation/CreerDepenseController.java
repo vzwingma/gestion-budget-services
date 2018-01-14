@@ -1,14 +1,11 @@
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.creer.operation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
+import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
@@ -18,8 +15,8 @@ import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionValiderCreationDepenseClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.event.ShortcutAction.ModifierKey;
+import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemCaptionStyle;
+import com.vaadin.ui.ComboBox.NewItemHandler;
 import com.vaadin.ui.Notification;
 
 /**
@@ -27,20 +24,18 @@ import com.vaadin.ui.Notification;
  * @author vzwingma
  *
  */
-public class CreerDepenseController extends AbstractUIController<CreerDepenseForm> {
+public class CreerDepenseController extends AbstractUIController<CreerDepenseForm> implements NewItemHandler {
 
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1546247300666000991L;
-
+	private static final long serialVersionUID = -1843521169417325067L;
 	/**
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreerDepenseController.class);
 
-	private boolean focus = false;
 
 	/**
 	 * Contructeur
@@ -52,79 +47,39 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 
 
 	/**
-	 * Init du suivi
-	 * @param tableSuiviDepense tableau de suivi
-	 */
-	@SuppressWarnings("unchecked")
-	public void initDynamicComponentsOnPage(){
-		// Sélection d'une catégorie
-		getComponent().getComboBoxCategorie().addValueChangeListener(new SelectionCategorieValueChangeListener(this));
-		
-		// Sélection d'une sous catégorie
-		getComponent().getComboBoxSsCategorie().addValueChangeListener(new SelectionSousCategorieValueChangeListener(this));
-		
-		getComponent().getListSelectComptes().setVisible(false);
-		getComponent().getLayoutCompte().setVisible(false);
-		getComponent().getLabelCompte().setVisible(false);
-		// Périodique
-		getComponent().getCheckBoxPeriodique().setCaption(null);
-		getComponent().getCheckBoxPeriodique().setDescription("Cocher pour une dépense mensuelle");
-
-		// Description
-				
-		// Bouton
-		getComponent().getButtonValider().addClickListener(new ActionValiderCreationDepenseClickListener());
-		getComponent().getButtonValider().setDescription("Valider l'opération et fermer l'écran de saisie");
-		getComponent().getButtonValiderContinuer().addClickListener(new ActionValiderCreationDepenseClickListener());
-		getComponent().getButtonValiderContinuer().setDescription("Valider l'opération et Créer une nouvelle opération");
-
-		addValidators();
-	}
-
-
-	/**
-	 * Ajout de la validation du formulaire
-	 */
-	private void addValidators(){
-//		getComponent().getComboBoxCategorie().setRequiredError("La catégorie est obligatoire");
-//		getComponent().getListSelectComptes().setRequiredError("Le compte de destination est obligatoire");
-//		getComponent().getComboBoxSsCategorie().setRequiredError("La sous catégorie est obligatoire");
-//		getComponent().getListSelectEtat().setRequiredError("L'état de la dépense est obligatoire");
-//		getComponent().getListSelectType().setRequiredError("Le type de dépense est obligatoire");
-//		getComponent().getTextFieldDescription().setRequiredError("La description est obligatoire");
-//
-//		getComponent().getTextFieldValeur().addValidator(new ValeurDepenseValidator("La valeur est incorrecte"));
-	}
-
-
-	/**
 	 * Validation du formulaire
 	 */
 	public boolean validateForm(){
-//		try{
-//			getComponent().getComboBoxCategorie().validate();
-//			getComponent().getComboBoxSsCategorie().validate();
-//			getComponent().getTextFieldValeur().validate();
-//			if(getComponent().getListSelectComptes().isVisible()){
-//				getComponent().getListSelectComptes().validate();
-//			}
-//		}
-//		catch(InvalidValueException e){
-//			LOGGER.info("La dépense est incorrecte", e);
-//			Notification.show("La dépense est incorrecte : " + e.getMessage(), Notification.Type.WARNING_MESSAGE);
-//			return false;
-//		}
-//
-//		// Vérification de la cohérence des données :
-//		TypeDepenseValidator typeValidator = new TypeDepenseValidator((CategorieDepense)getComponent().getComboBoxSsCategorie().getConvertedValue());
-//		try{
-//			typeValidator.validate((TypeDepenseEnum)getComponent().getListSelectType().getConvertedValue());
-//		}
-//		catch(InvalidValueException e){
-//			Notification.show(e.getMessage(), Notification.Type.WARNING_MESSAGE);
-//			return false;
-//		}
-		return true;
+		boolean validation = true;
+		validation &= getComponent().getComboBoxCategorie().getSelectedItem().isPresent();
+		validation &= getComponent().getComboBoxSsCategorie().getSelectedItem().isPresent();
+		validation &= getComponent().getTextFieldValeur().getOptionalValue().isPresent();
+		if(getComponent().getComboboxComptes().isVisible()){
+			validation &= getComponent().getComboboxComptes().getSelectedItem().isPresent();
+		}
+		TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
+		if(BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(getComponent().getComboBoxSsCategorie().getSelectedItem().get().getId()) || BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(getComponent().getComboBoxSsCategorie().getSelectedItem().get().getId())){
+			typeAttendu = TypeDepenseEnum.CREDIT;
+		}
+		// Cohérence type
+		validation &= typeAttendu.equals(getComponent().getComboboxType().getValue());
+
+		String value = getComponent().getTextFieldValeur().getValue();
+		if(value != null){
+			try{
+				String valeur = ((String)value).replaceAll(",", ".");
+				Double d = Double.valueOf(valeur);
+				validation &=(!Double.isInfinite(d) && !Double.isNaN(d));
+			}
+			catch(NumberFormatException e){ }
+		}
+
+
+		if(!validation){
+			LOGGER.info("L'opération est incorrecte");
+			Notification.show("L'opération est incorrecte", Notification.Type.WARNING_MESSAGE);
+		}
+		return validation;
 	}
 
 
@@ -136,101 +91,77 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 	@Override
 	public void miseAJourVueDonnees() {
 
-		/**
-		 *  Refresh
-		 */
+		// Sélection d'une catégorie
 		// Catégories
-		Collection<CategorieDepense> categories;
 		try {
-			categories = getServiceParams().getCategories();
+			getComponent().getComboBoxCategorie().setItems(getServiceParams().getCategories());
 		} catch (DataNotFoundException e) {
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
 			return;
 		}
-		getComponent().getComboBoxCategorie().setItems(categories);
+		getComponent().getComboBoxCategorie().setEmptySelectionAllowed(false);
+		getComponent().getComboBoxCategorie().setTextInputAllowed(false);
+		getComponent().getComboBoxCategorie().setEnabled(true);
+		getComponent().getComboBoxCategorie().addSelectionListener(new SelectionCategorieValueChangeListener(this));
 
-//		// SS catégorie
+		// Sélection d'une sous catégorie
+		getComponent().getComboBoxSsCategorie().setEmptySelectionAllowed(false);
+		getComponent().getComboBoxSsCategorie().setTextInputAllowed(false);
 		getComponent().getComboBoxSsCategorie().setEnabled(false);
+		getComponent().getComboBoxSsCategorie().addSelectionListener(new SelectionSousCategorieValueChangeListener(this));
 
-		/**
-		 *  Query
-		 */
-		// Description
-	
-
-		
-		
 		// Comptes pour virement intercomptes
-		List<CompteBancaire> compteIntercomptes = new ArrayList<>();
-//		getComponent().getListSelectComptes().setNullSelectionAllowed(true);
-//		getComponent().getListSelectComptes().removeAllItems();
 		try{
-			for (CompteBancaire compte : getServiceParams().getComptesUtilisateur(getUtilisateurCourant())) {
-				// # 58 Pas le compte courant
-				if(!compte.getId().equals(getBudgetMensuelCourant().getCompteBancaire().getId())
-						&& 
-						// #57 Compte actif
-						compte.isActif()){
-					compteIntercomptes.add(compte);
-				}
-			}
+			getComponent().getComboboxComptes().setItems(
+					getServiceParams().getComptesUtilisateur(getUtilisateurCourant())
+					.stream()
+					.filter(c -> c.isActif())
+					.filter(c -> !c.getId().equals(getBudgetMensuelCourant().getCompteBancaire().getId()))
+					.collect(Collectors.toList()));
 		} catch (DataNotFoundException e) {
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
 			return;
 		}
-		getComponent().getListSelectComptes().setItems(compteIntercomptes);
-		
+		getComponent().getComboboxComptes().setItemCaptionGenerator(new ComptesItemCaptionStyle());
+		getComponent().getComboboxComptes().setTextInputAllowed(false);
+		getComponent().getComboboxComptes().setVisible(false);
+		getComponent().getLayoutCompte().setVisible(false);
+		getComponent().getLabelCompte().setVisible(false);
 		// Valeur
 		getComponent().getTextFieldValeur().setValue("0");
 		// Type dépense
-//		getComponent().getListSelectType().setNullSelectionAllowed(false);
-//		getComponent().getListSelectType().removeAllItems();
-		for (TypeDepenseEnum type : TypeDepenseEnum.values()) {
-//			getComponent().getListSelectType().addItem(type);
-//			getComponent().getListSelectType().setItemCaption(type, type.getLibelle());
-			if(type.equals(TypeDepenseEnum.DEPENSE)){
-				getComponent().getListSelectType().select(type);
-			}
-		}
-				
+		getComponent().getComboboxType().setItems(TypeDepenseEnum.values());
+		getComponent().getComboboxType().setTextInputAllowed(false);
+		getComponent().getComboboxType().setSelectedItem(TypeDepenseEnum.DEPENSE);
+
 		// Etat
-//		getComponent().getListSelectEtat().setNullSelectionAllowed(false);
-//		getComponent().getListSelectEtat().removeAllItems();
-		for(EtatLigneDepenseEnum etat : EtatLigneDepenseEnum.values()){
-//			getComponent().getListSelectEtat().addItem(etat);
-//			getComponent().getListSelectEtat().setItemCaption(etat, etat.getLibelle());
-			// #50 : Gestion du style par préférence utilisateur
-			String etatNlleDepense = getUtilisateurCourant().getPreference(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE, String.class);
-			if(etatNlleDepense != null){
-				getComponent().getListSelectEtat().select(EtatLigneDepenseEnum.getEnum(etatNlleDepense));
-			}
+		getComponent().getListSelectEtat().setItems(EtatLigneDepenseEnum.values());
+		getComponent().getListSelectEtat().setTextInputAllowed(false);
+		// #50 : Gestion du style par préférence utilisateur
+		String etatNlleDepense = getUtilisateurCourant().getPreference(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE, String.class);
+		if(etatNlleDepense != null){
+			getComponent().getListSelectEtat().setSelectedItem(EtatLigneDepenseEnum.getEnum(etatNlleDepense));
 		}
-
-		// Périodique	
+		// Périodique
+		getComponent().getCheckBoxPeriodique().setCaption(null);
 		getComponent().getCheckBoxPeriodique().setValue(Boolean.FALSE);
+		getComponent().getCheckBoxPeriodique().setDescription("Cocher pour une dépense mensuelle");
+
+		// Description
+		getComponent().getTextFieldDescription().setItems(getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete());
+		getComponent().getTextFieldDescription().setNewItemHandler(this);
+		// Bouton
+		getComponent().getButtonValider().addClickListener(new ActionValiderCreationDepenseClickListener());
+		getComponent().getButtonValider().setDescription("Valider l'opération et fermer l'écran de saisie");
+		getComponent().getButtonValiderContinuer().addClickListener(new ActionValiderCreationDepenseClickListener());
+		getComponent().getButtonValiderContinuer().setDescription("Valider l'opération et Créer une nouvelle opération");	
 	}
-	
 
 
-	/**
-	 * Lorsque Focus sur l'autocomplete : Désactivation de la validation du formulaire par Entrée
-	 */
-	public void focusOnAutocompleteField(){
-		if(!focus){
-			LOGGER.debug("[IHM] Focus on AutoComplete");
-			getComponent().getButtonValider().setClickShortcut(KeyCode.INSERT, ModifierKey.CTRL);
-			focus = true;
-		}
-	}
-	
-	/**
-	 * Lorsque Blur sur l'autocomplete : Réactivation de la validation du formulaire par Entrée
-	 */
-	public void blurOnAutocompleteField(){
-		if(focus){
-			LOGGER.debug("[IHM] Blur from AutoComplete");
-			getComponent().getButtonValider().setClickShortcut(KeyCode.ENTER);
-			focus = false;
-		}
+
+	@Override
+	public void accept(String t) {
+		LOGGER.debug("Ajout de la description : {}", t);
+		getComponent().getTextFieldDescription().setSelectedItem(t);
 	}
 }

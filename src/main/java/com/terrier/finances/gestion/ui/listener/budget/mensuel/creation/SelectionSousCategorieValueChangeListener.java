@@ -4,15 +4,17 @@
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
 import java.util.Optional;
-import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.creer.operation.CreerDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.vaadin.data.HasValue.ValueChangeEvent;
-import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.event.selection.SingleSelectionEvent;
+import com.vaadin.event.selection.SingleSelectionListener;
 
 /**
  * Changement d'une ss catégorie dans le formulaire de création
@@ -20,10 +22,15 @@ import com.vaadin.data.HasValue.ValueChangeListener;
  * @author vzwingma
  *
  */
-public class SelectionSousCategorieValueChangeListener extends AbstractComponentListener implements ValueChangeListener<Set<CategorieDepense>>{
+public class SelectionSousCategorieValueChangeListener extends AbstractComponentListener implements SingleSelectionListener<CategorieDepense>{
 
 	private CreerDepenseController controleur;
 
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(SelectionSousCategorieValueChangeListener.class);
+	
 	public SelectionSousCategorieValueChangeListener(CreerDepenseController controleur){
 		this.controleur = controleur;
 	}
@@ -37,9 +44,9 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
 	 */
 	@Override
-	public void valueChange(ValueChangeEvent<Set<CategorieDepense>> event) {
-
-		Optional<CategorieDepense> catSelected = event.getValue().stream().findFirst();
+	public void selectionChange(SingleSelectionEvent<CategorieDepense> event) {
+		LOGGER.info("SELECT : {}", event);
+		Optional<CategorieDepense> catSelected = event.getFirstSelectedItem();
 		if(catSelected.isPresent()){
 			CategorieDepense ssCategorie = catSelected.get();	
 			/**
@@ -49,7 +56,7 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 			if(ssCategorie != null){
 				interCompte = BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ssCategorie.getId());
 			}
-			controleur.getComponent().getListSelectComptes().setVisible(interCompte);
+			controleur.getComponent().getComboboxComptes().setVisible(interCompte);
 			controleur.getComponent().getLayoutCompte().setVisible(interCompte);
 			controleur.getComponent().getLabelCompte().setVisible(interCompte);
 
@@ -62,7 +69,7 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 				if(BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(ssCategorie.getId()) || BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(ssCategorie.getId())){
 					typeAttendu = TypeDepenseEnum.CREDIT;
 				}
-				controleur.getComponent().getListSelectType().select(typeAttendu);
+				controleur.getComponent().getComboboxType().setSelectedItem(typeAttendu);
 			}
 		}
 	}

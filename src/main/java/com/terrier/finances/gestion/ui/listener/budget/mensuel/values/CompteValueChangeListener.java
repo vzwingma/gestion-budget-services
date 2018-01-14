@@ -21,8 +21,8 @@ public class CompteValueChangeListener implements ValueChangeListener<CompteBanc
 
 	// Logger
 	private static final Logger LOGGER = LoggerFactory.getLogger(CompteValueChangeListener.class);
-	
-	
+
+
 	private BudgetMensuelController controleur;
 
 	/**
@@ -35,9 +35,11 @@ public class CompteValueChangeListener implements ValueChangeListener<CompteBanc
 
 	@Override
 	public void valueChange(ValueChangeEvent<CompteBancaire> event) {
-		LOGGER.info("Changement du compte : {}->{}", event.getOldValue().getId(), event.getValue().getId());
-		// Modification du compte
-		this.controleur.initRangeDebutFinMois(event.getValue().getId());
-		this.controleur.miseAJourVueDonnees();
+		if(event.getOldValue() != null){
+			LOGGER.info("Changement du compte : {}->{}", event.getOldValue().getId(), event.getValue().getId());
+			// Modification du compte
+			this.controleur.initRangeDebutFinMois(event.getValue().getId());
+			this.controleur.miseAJourVueDonnees();
+		}
 	}
 }

@@ -3,23 +3,32 @@
  */
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
-import java.util.Set;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.creer.operation.CreerDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.vaadin.data.HasValue.ValueChangeEvent;
-import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.event.selection.SingleSelectionEvent;
+import com.vaadin.event.selection.SingleSelectionListener;
 
 /**
  * Changement d'une catégorie dans le formulaire de création
  * @author vzwingma
  *
  */
-public class SelectionCategorieValueChangeListener extends AbstractComponentListener implements ValueChangeListener<Set<CategorieDepense>>{
+public class SelectionCategorieValueChangeListener extends AbstractComponentListener implements SingleSelectionListener<CategorieDepense>{
 
 	private CreerDepenseController controleur;
+
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(SelectionCategorieValueChangeListener.class);
 
 	public SelectionCategorieValueChangeListener(CreerDepenseController controleur){
 		this.controleur = controleur;
@@ -31,27 +40,35 @@ public class SelectionCategorieValueChangeListener extends AbstractComponentList
 
 	/**
 	 * Sélection d'une catégorie
-	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
+	 * @see com.vaadin.event.selection.SelectionListener#selectionChange(com.vaadin.event.selection.SelectionEvent)
 	 */
 	@Override
-	public void valueChange(ValueChangeEvent<Set<CategorieDepense>> event) {
-		Set<CategorieDepense> categories = event.getValue();
-		CategorieDepense categorie = categories.iterator().next();
+	public void selectionChange(SingleSelectionEvent<CategorieDepense> event) {
+		
+		Optional<CategorieDepense> categories = event.getSelectedItem();
+		if(categories.isPresent()){
+			CategorieDepense categorie = categories.get();
+			
+			// Sélection d'une catégorie
+			// Alimentation de la liste des sous catégories
+			if(categorie != null && categorie.getListeSSCategories() != null){
 
-		// Sélection d'une catégorie
-		// Alimentation de la liste des sous catégories
-		if(categorie != null && categorie.getListeSSCategories() != null){
-
-			Stream<CategorieDepense> streamSSCategories = categorie.getListeSSCategories().stream().filter(cat -> cat.isActif()).sorted();
-			controleur.getComponent().getComboBoxSsCategorie().setItems(streamSSCategories);
-			// #51 : S'il n'y a qu'un seul élément : sélection automatique de celui ci
-			if(streamSSCategories.count() == 1){
-				controleur.getComponent().getComboBoxSsCategorie().select(streamSSCategories.findFirst().get());
+				List<CategorieDepense> streamSSCategories = categorie.getListeSSCategories()
+						.stream()
+						.filter(cat -> cat.isActif())
+						.sorted()
+						.collect(Collectors.toList());
+				controleur.getComponent().getComboBoxSsCategorie().setItems(streamSSCategories);
+				LOGGER.info("SELECT : {} -> {}", categorie, streamSSCategories);
+				// #51 : S'il n'y a qu'un seul élément : sélection automatique de celui ci
+				if(streamSSCategories.size() == 1){
+					controleur.getComponent().getComboBoxSsCategorie().setSelectedItem(streamSSCategories.get(0));
+				}
+				controleur.getComponent().getComboBoxSsCategorie().setEnabled(true);
 			}
-			controleur.getComponent().getComboBoxSsCategorie().setEnabled(true);
-		}
-		else{
-			controleur.getComponent().getComboBoxSsCategorie().setEnabled(false);
+			else{
+				controleur.getComponent().getComboBoxSsCategorie().setEnabled(false);
+			}
 		}
 	}
 }

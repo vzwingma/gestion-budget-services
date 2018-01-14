@@ -50,4 +50,7 @@ public enum TypeDepenseEnum {
 		return libelle;
 	}
 	
+	public String toString(){
+		return getLibelle();
+	}
 }
