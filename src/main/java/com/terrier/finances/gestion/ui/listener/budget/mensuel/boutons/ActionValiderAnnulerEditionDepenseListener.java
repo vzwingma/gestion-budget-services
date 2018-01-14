@@ -44,9 +44,9 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 		BudgetMensuelPage page  = AbstractUIComponent.getParentComponent(editer, BudgetMensuelPage.class);
 		if(page != null){
 			if(state){
-				boolean validateForm = page.getTableSuiviDepense().getControleur().validateEditableForm();
+				boolean validateForm = page.getGridOperations().getControleur().validateEditableForm();
 				if(validateForm){
-					refreshModele(page.getTableSuiviDepense());
+					refreshModele(page.getGridOperations());
 					// Recalcul du budget
 					getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(getBudgetMensuelCourant());
 					getControleur(BudgetMensuelController.class).setTableOnEditableMode(false);

@@ -1,12 +1,12 @@
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux;
 
-import java.util.Calendar;
+import java.time.LocalDate;
 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
+import com.terrier.finances.gestion.model.data.DataUtils;
 
 /**
  * Tests des controleurs
@@ -23,8 +23,10 @@ public class TestControler {
 	@Test
 	public void testAffichageDate(){
 		GridResumeTotauxController t = new GridResumeTotauxController(null);
+		
+		LocalDate now = DataUtils.localDateNow();
+		
 		LOGGER.info("du {} à fin {}", 
-				t.auDateFormat.format(Calendar.getInstance().getTime()), 
-				t.finDateFormat.format(Calendar.getInstance().getTime()));
+				now.format(t.auDateFormat), now.format(t.finDateFormat));
 	}
 }

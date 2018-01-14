@@ -3,12 +3,12 @@
  */
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons;
 
-import java.text.SimpleDateFormat;
 import java.time.Month;
-import java.util.Calendar;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
@@ -38,18 +38,16 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 		Button refreshMont = event.getButton();
 		page  = (BudgetMensuelPage)refreshMont.getParent().getParent().getParent().getParent().getParent();
 
-		Calendar c = Calendar.getInstance();
+
 		BudgetMensuel budgetMensuelCourant = getBudgetMensuelCourant();
-		
-		c.set(Calendar.MONTH, budgetMensuelCourant.getMois().getValue());
-		SimpleDateFormat sfd = new SimpleDateFormat("MMMM YYYY", Locale.FRENCH);
+		String moisAffiche = DataUtils.localDateFirstDayOfMonth(budgetMensuelCourant.getMois()).format(DateTimeFormatter.ofPattern("MMMM YYYY", Locale.FRENCH));
 
 		/** Alerte **/
 		String warnMoisActif = "";
 		Month moisPrecedent = budgetMensuelCourant.getMois().minus(1);
 		int anneePrecedente = budgetMensuelCourant.getAnnee();
+		anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? budgetMensuelCourant.getAnnee() : budgetMensuelCourant.getAnnee() - 1;
 		
-			anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? budgetMensuelCourant.getAnnee() : budgetMensuelCourant.getAnnee() - 1;
 		Boolean budgetPrecedentActif = page.getControleur().getServiceDepense().isBudgetMensuelActif(
 				budgetMensuelCourant.getCompteBancaire(), 
 				moisPrecedent, anneePrecedente);
@@ -57,10 +55,9 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 			warnMoisActif = "<span style=\"color: red;\"><br> Attention : Le mois précédent n'est pas clos !</span>";
 		}
 
-
 		// Confirmation
 		ConfirmDialog confirm = new ConfirmDialog("Réinitialisation du budget mensuel courant", 
-				"Voulez vous réinitialiser le budget du mois de "+ sfd.format(c.getTime())+" ? " +
+				"Voulez vous réinitialiser le budget du mois de "+ moisAffiche+" ? " +
 						warnMoisActif, "Oui", "Non", this);
 		confirm.setWidth("400px");
 		confirm.setHeight("150px");
