@@ -13,6 +13,8 @@ import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridCompone
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.terrier.finances.gestion.ui.styles.operations.OperationBudgetTypeRenderer;
+import com.vaadin.data.Binder;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.TextRenderer;
@@ -65,6 +67,9 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	 */
 	@Override
 	public void paramComponentsOnPage() {
+		
+		Binder<LigneDepense> binder = getEditor().getBinder();
+		
 		Column<LigneDepense, Date> c = addColumn(LigneDepense::getDateOperation);
 		c.setId(EntetesTableSuiviDepenseEnum.DATE_OPERATION.name())
 			.setCaption(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getLibelle())
@@ -95,6 +100,8 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c4.setRenderer(new TextRenderer(""));
+		// Binding Edition
+		c4.setEditorBinding(binder.bind(new TextField(), LigneDepense::getLibelle, LigneDepense::setLibelle));
 		
 		Column<LigneDepense, String> c5 = addColumn(LigneDepense::getLibelle);
 		c5.setId(EntetesTableSuiviDepenseEnum.LIBELLE.name())

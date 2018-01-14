@@ -17,11 +17,13 @@ import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.data.DataUtils;
+import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.resume.TreeResumeCategoriesController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
@@ -64,7 +66,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 
 	// Table de suivi
-	private GridOperationsController tableSuiviDepenseControleur;
+	private GridOperationsController gridOperationsControleur;
 	private GridResumeTotauxController tableTotalResumeControleur;
 	private TreeResumeCategoriesController treeResumeControleur;
 
@@ -115,7 +117,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 	/**
 	 * Init du suivi
-	 * @param tableSuiviDepenseControleur tableau de suivi
+	 * @param gridOperationsControleur tableau de suivi
 	 */
 	public void initDynamicComponentsOnPage(){
 
@@ -138,7 +140,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 
 		// Init des controleurs
-		this.tableSuiviDepenseControleur = getComponent().getTableSuiviDepense().getControleur();
+		this.gridOperationsControleur = getComponent().getGridOperations().getControleur();
 		this.treeResumeControleur = getComponent().getTreeResume().getControleur();
 		this.tableTotalResumeControleur = getComponent().getTableTotalResume().getControleur();
 
@@ -273,17 +275,9 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 */
 	public void setTableOnEditableMode(boolean editableMode){
 		
-		/*
 		// Activation du tableau
-		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.TYPE.getId(), !editableMode);
-		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.PERIODIQUE.getId(), !editableMode);
-		// Inversion du champ Libelle
-		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE.getId(), !editableMode);
-		getComponent().getTableSuiviDepense().setColumnCollapsed(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.getId(), editableMode);
-		getComponent().getTableSuiviDepense().setEditable(editableMode);
-		getComponent().getTableSuiviDepense().setColumnWidth(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getId(), editableMode ? TableSuiviDepenseController.TAILLE_COLONNE_DATE_EDITEE : TableSuiviDepenseController.TAILLE_COLONNE_DATE);
-*/
-
+		getComponent().getGridOperations().getControleur().setTableOnEditableMode(editableMode);
+		// Et des boutons
 		getComponent().getButtonValider().setVisible(editableMode);
 		getComponent().getButtonValider().setEnabled(editableMode);
 		getComponent().getButtonAnnuler().setVisible(editableMode);
@@ -401,7 +395,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		 * Affichage des lignes dans le tableau
 		 **/
 
-		tableSuiviDepenseControleur.miseAJourVueDonnees(this.refreshAllTable, budgetCourant.isActif(), listeDepenses);
+		gridOperationsControleur.miseAJourVueDonnees(this.refreshAllTable, budgetCourant.isActif(), listeDepenses);
 
 		// Maj du mois
 		getComponent().getMois().setValue(DataUtils.localDateFirstDayOfMonth(budgetCourant.getMois(), budgetCourant.getAnnee()));

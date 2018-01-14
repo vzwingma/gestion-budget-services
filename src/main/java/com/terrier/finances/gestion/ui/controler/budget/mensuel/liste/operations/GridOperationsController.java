@@ -69,6 +69,20 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	}
 
 
+	/**
+	 * Sette la table en mode édition
+	 */
+	public void setTableOnEditableMode(boolean editableMode){
+		
+		// Activation du tableau
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.TYPE.name()).setHidden(!editableMode);
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.PERIODIQUE.name()).setHidden(!editableMode);
+		// Inversion du champ Libelle
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE.name()).setHidden(!editableMode);
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name()).setHidden(editableMode);
+		getComponent().getEditor().setEnabled(editableMode);
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.DATE_OPERATION.name()).setWidth(editableMode ? GridOperations.TAILLE_COLONNE_DATE_EDITEE : GridOperations.TAILLE_COLONNE_DATE);
+	}
 
 	/**
 	 * Mise à jour de la vue suite aux données
@@ -77,12 +91,7 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	 * @param listeDepenses liste des dépenses à utiliser
 	 */
 	public void miseAJourVueDonnees(boolean refreshAllDonnees, boolean budgetIsActif, List<LigneDepense> listeDepenses){
-		/*
-		if(refreshAllDonnees){
-			getComponent().removeAllItems();
-			getComponent().refreshRowCache();
-		}
-		 */
+
 		// Ajout des opérations
 		getComponent().setItems(listeDepenses);
 
