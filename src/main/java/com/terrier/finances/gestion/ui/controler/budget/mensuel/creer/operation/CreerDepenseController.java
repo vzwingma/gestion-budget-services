@@ -58,7 +58,12 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 			validation &= getComponent().getComboboxComptes().getSelectedItem().isPresent();
 		}
 		TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
-		if(BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(getComponent().getComboBoxSsCategorie().getSelectedItem().get().getId()) || BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(getComponent().getComboBoxSsCategorie().getSelectedItem().get().getId())){
+		if(	getComponent().getTextFieldValeur().getOptionalValue().isPresent()
+				&& getComponent().getComboBoxCategorie().getSelectedItem().isPresent()
+				&& getComponent().getComboBoxSsCategorie().getSelectedItem().isPresent()
+				&& (
+				BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(getComponent().getComboBoxSsCategorie().getSelectedItem().get().getId()) 
+				|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(getComponent().getComboBoxSsCategorie().getSelectedItem().get().getId()))){
 			typeAttendu = TypeDepenseEnum.CREDIT;
 		}
 		// Cohérence type
@@ -93,8 +98,10 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 
 		// Sélection d'une catégorie
 		// Catégories
+		getComponent().getComboBoxCategorie().clear();
+		getComponent().getComboBoxCategorie().setSelectedItem(null);
 		try {
-			getComponent().getComboBoxCategorie().setItems(getServiceParams().getCategories());
+			getComponent().getComboBoxCategorie().setItems(getServiceParams().getCategories().stream().sorted((c1, c2) -> c1.getLibelle().compareTo(c2.getLibelle())));
 		} catch (DataNotFoundException e) {
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
 			return;
@@ -104,12 +111,16 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getComboBoxCategorie().setEnabled(true);
 		getComponent().getComboBoxCategorie().addSelectionListener(new SelectionCategorieValueChangeListener(this));
 
+		
 		// Sélection d'une sous catégorie
+		getComponent().getComboBoxSsCategorie().clear();
+		getComponent().getComboBoxSsCategorie().setSelectedItem(null);
 		getComponent().getComboBoxSsCategorie().setEmptySelectionAllowed(false);
 		getComponent().getComboBoxSsCategorie().setTextInputAllowed(false);
 		getComponent().getComboBoxSsCategorie().setEnabled(false);
 		getComponent().getComboBoxSsCategorie().addSelectionListener(new SelectionSousCategorieValueChangeListener(this));
-
+		
+		
 		// Comptes pour virement intercomptes
 		try{
 			getComponent().getComboboxComptes().setItems(
@@ -118,6 +129,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 					.filter(c -> c.isActif())
 					.filter(c -> !c.getId().equals(getBudgetMensuelCourant().getCompteBancaire().getId()))
 					.collect(Collectors.toList()));
+			getComponent().getComboboxComptes().clear();
 		} catch (DataNotFoundException e) {
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
 			return;
@@ -127,16 +139,20 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getComboboxComptes().setVisible(false);
 		getComponent().getLayoutCompte().setVisible(false);
 		getComponent().getLabelCompte().setVisible(false);
+		// Description
+		getComponent().getTextFieldDescription().setSelectedItem(null);
 		// Valeur
+		getComponent().getTextFieldValeur().clear();
 		getComponent().getTextFieldValeur().setValue("0");
 		// Type dépense
 		getComponent().getComboboxType().setItems(TypeDepenseEnum.values());
 		getComponent().getComboboxType().setTextInputAllowed(false);
 		getComponent().getComboboxType().setSelectedItem(TypeDepenseEnum.DEPENSE);
-
+		getComponent().getComboboxType().clear();
 		// Etat
 		getComponent().getListSelectEtat().setItems(EtatLigneDepenseEnum.values());
 		getComponent().getListSelectEtat().setTextInputAllowed(false);
+		getComponent().getListSelectEtat().clear();
 		// #50 : Gestion du style par préférence utilisateur
 		String etatNlleDepense = getUtilisateurCourant().getPreference(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE, String.class);
 		if(etatNlleDepense != null){
@@ -146,10 +162,11 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getCheckBoxPeriodique().setCaption(null);
 		getComponent().getCheckBoxPeriodique().setValue(Boolean.FALSE);
 		getComponent().getCheckBoxPeriodique().setDescription("Cocher pour une dépense mensuelle");
-
+		getComponent().getCheckBoxPeriodique().clear();
 		// Description
 		getComponent().getTextFieldDescription().setItems(getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete());
 		getComponent().getTextFieldDescription().setNewItemHandler(this);
+		getComponent().getTextFieldDescription().clear();
 		// Bouton
 		getComponent().getButtonValider().addClickListener(new ActionValiderCreationDepenseClickListener());
 		getComponent().getButtonValider().setDescription("Valider l'opération et fermer l'écran de saisie");

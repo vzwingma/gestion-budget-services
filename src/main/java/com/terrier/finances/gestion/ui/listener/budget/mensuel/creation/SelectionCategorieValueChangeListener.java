@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.creer.operation.CreerDepenseController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
@@ -25,10 +22,6 @@ public class SelectionCategorieValueChangeListener extends AbstractComponentList
 
 	private CreerDepenseController controleur;
 
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(SelectionCategorieValueChangeListener.class);
 
 	public SelectionCategorieValueChangeListener(CreerDepenseController controleur){
 		this.controleur = controleur;
@@ -45,6 +38,9 @@ public class SelectionCategorieValueChangeListener extends AbstractComponentList
 	@Override
 	public void selectionChange(SingleSelectionEvent<CategorieDepense> event) {
 		
+		controleur.getComponent().getComboBoxSsCategorie().clear();
+		controleur.getComponent().getComboBoxSsCategorie().setSelectedItem(null);
+		
 		Optional<CategorieDepense> categories = event.getSelectedItem();
 		if(categories.isPresent()){
 			CategorieDepense categorie = categories.get();
@@ -59,10 +55,12 @@ public class SelectionCategorieValueChangeListener extends AbstractComponentList
 						.sorted()
 						.collect(Collectors.toList());
 				controleur.getComponent().getComboBoxSsCategorie().setItems(streamSSCategories);
-				LOGGER.info("SELECT : {} -> {}", categorie, streamSSCategories);
 				// #51 : S'il n'y a qu'un seul élément : sélection automatique de celui ci
 				if(streamSSCategories.size() == 1){
 					controleur.getComponent().getComboBoxSsCategorie().setSelectedItem(streamSSCategories.get(0));
+				}
+				else{
+					controleur.getComponent().getComboBoxSsCategorie().setSelectedItem(null);
 				}
 				controleur.getComponent().getComboBoxSsCategorie().setEnabled(true);
 			}
