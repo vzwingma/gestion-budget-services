@@ -26,8 +26,8 @@ public class GridResumeTotauxController extends AbstractUIController<GridResumeT
 
 	private static final long serialVersionUID = 5190668755144306669L;
 	
-	protected final DateTimeFormatter auDateFormat = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.FRENCH);
-	protected final DateTimeFormatter finDateFormat = DateTimeFormatter.ofPattern("MMM yyyy", Locale.FRENCH);
+	public static final DateTimeFormatter auDateFormat = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.FRENCH);
+	public static final DateTimeFormatter finDateFormat = DateTimeFormatter.ofPattern("MMM yyyy", Locale.FRENCH);
 
 	
 	/**

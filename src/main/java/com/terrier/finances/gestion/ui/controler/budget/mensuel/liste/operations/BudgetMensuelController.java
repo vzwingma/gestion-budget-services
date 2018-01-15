@@ -23,7 +23,7 @@ import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.resume.TreeResumeCategoriesController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.resume.TreeGridResumeCategoriesController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionDeconnexionClickListener;
@@ -63,7 +63,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	// Table de suivi
 	private GridOperationsController gridOperationsControleur;
 	private GridResumeTotauxController gridResumeTotauxControleur;
-	private TreeResumeCategoriesController treeResumeControleur;
+	private TreeGridResumeCategoriesController treeResumeControleur;
 
 	// Calcul de mise à jour du compte courant
 	private Month oldMois;

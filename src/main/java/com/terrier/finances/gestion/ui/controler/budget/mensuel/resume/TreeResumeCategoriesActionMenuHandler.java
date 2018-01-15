@@ -6,7 +6,7 @@ package com.terrier.finances.gestion.ui.controler.budget.mensuel.resume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TreeResumeCategories;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TreeGridResumeCategories;
 import com.vaadin.event.Action;
 
 /**
@@ -44,7 +44,7 @@ public class TreeResumeCategoriesActionMenuHandler implements Action.Handler{
 	@Override
 	public Action[] getActions(Object target, Object sender) {
 
-		TreeResumeCategories tree = (TreeResumeCategories)sender;
+		TreeGridResumeCategories tree = (TreeGridResumeCategories)sender;
         if (target == null) {
             // Context menu in an empty space -> add a new main category
             return new Action[]{ EXTEND_ALL_CATEGORIES, COLLAPSE_ALL_CATEGORIES };
@@ -55,7 +55,7 @@ public class TreeResumeCategoriesActionMenuHandler implements Action.Handler{
         	if(Integer.parseInt(niveauCategorie) < 100){
         		niveauCategorie = tree.getParent().getId();
         	}
-    		Action actionCategorie = tree.isExpanded(niveauCategorie) ? EXTEND_CATEGORIE : COLLAPSE_CATEGORIE;
+    		Action actionCategorie = null; // tree.isExpanded(niveauCategorie) ? EXTEND_CATEGORIE : COLLAPSE_CATEGORIE;
     		return new Action[]{ actionCategorie, EXTEND_ALL_CATEGORIES, COLLAPSE_ALL_CATEGORIES };
         }
 	}
@@ -65,7 +65,7 @@ public class TreeResumeCategoriesActionMenuHandler implements Action.Handler{
 	 */
 	@Override
 	public void handleAction(Action action, Object sender, Object target) {
-		TreeResumeCategories tree = (TreeResumeCategories)sender;
+		TreeGridResumeCategories tree = (TreeGridResumeCategories)sender;
 		
 		/*
 		if(EXTEND_ALL_CATEGORIES.equals(action) || COLLAPSE_ALL_CATEGORIES.equals(action)){
