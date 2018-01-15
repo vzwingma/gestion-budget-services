@@ -17,13 +17,11 @@ import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.data.DataUtils;
-import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurDroitsEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.resume.TreeResumeCategoriesController;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
@@ -54,9 +52,7 @@ import com.vaadin.ui.UI;
  */
 public class BudgetMensuelController extends AbstractUIController<BudgetMensuelPage> implements UIEvents.PollListener, Serializable{
 
-	/**
-	 * 
-	 */
+	//
 	private static final long serialVersionUID = -235154625221927340L;
 
 	/**
@@ -67,13 +63,13 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 	// Table de suivi
 	private GridOperationsController gridOperationsControleur;
-	private GridResumeTotauxController tableTotalResumeControleur;
+	private GridResumeTotauxController gridResumeTotauxControleur;
 	private TreeResumeCategoriesController treeResumeControleur;
 
 	// Calcul de mise à jour du compte courant
 	private Month oldMois;
 	private int oldAnnee;
-	private String oldIdCompte;
+	private CompteBancaire oldCompte;
 	private boolean refreshAllTable = false;
 	/**
 	 * Constructure du Controleur du composant
@@ -142,7 +138,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		// Init des controleurs
 		this.gridOperationsControleur = getComponent().getGridOperations().getControleur();
 		this.treeResumeControleur = getComponent().getTreeResume().getControleur();
-		this.tableTotalResumeControleur = getComponent().getTableTotalResume().getControleur();
+		this.gridResumeTotauxControleur = getComponent().getGridResumeTotaux().getControleur();
 
 		// Init premiere fois
 		LocalDate dateBudget = DataUtils.localDateFirstDayOfMonth();
@@ -350,7 +346,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			getUISession().setBudgetMensuelCourant(budget);
 			// Mise à jour du mois suivant le résultat de la requête
 			// (gère les comptes cloturés, on récupère que le dernier accessible)
-			if(budget.getMois() == oldMois && compte.equals(oldIdCompte)){
+			if(budget.getMois() == oldMois && compte.equals(oldCompte)){
 				refreshAllTable = false;
 				LOGGER.info("[BUDGET] Pas de changement de mois ou de compte : Pas de refresh total des tableaux");
 			}
@@ -360,7 +356,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			}
 			oldMois = budget.getMois();
 			oldAnnee = budget.getAnnee();
-			oldIdCompte = compte.getId();
+			oldCompte = compte;
 			return budget;
 		} catch (BudgetNotFoundException e) {
 			String messageerreur = new StringBuilder().
@@ -429,7 +425,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		/**
 		 * Affichage du résumé
 		 */
-		tableTotalResumeControleur.miseAJourVueDonnees(budgetCourant);
+		gridResumeTotauxControleur.miseAJourVueDonnees(budgetCourant);
 
 		LOGGER.debug("[IHM] << Mise à jour des vues <<");
 		this.refreshAllTable = false;
@@ -455,11 +451,4 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	public int getOldAnnee() {
 		return oldAnnee;
 	}
-
-	/**
-	 * @return the oldIdCompte
-	 */
-	public String getOldIdCompte() {
-		return oldIdCompte;
-	}	
 }

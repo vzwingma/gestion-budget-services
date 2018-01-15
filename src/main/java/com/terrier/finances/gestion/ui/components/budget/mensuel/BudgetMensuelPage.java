@@ -205,7 +205,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 	/**
 	 * @return the tableTotalResume
 	 */
-	public GridResumeTotaux getTableTotalResume() {
+	public GridResumeTotaux getGridResumeTotaux() {
 		return tableTotalResume;
 	}
 

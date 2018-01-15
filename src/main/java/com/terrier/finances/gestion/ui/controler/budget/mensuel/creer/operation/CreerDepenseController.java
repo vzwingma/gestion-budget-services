@@ -27,9 +27,7 @@ import com.vaadin.ui.Notification;
 public class CreerDepenseController extends AbstractUIController<CreerDepenseForm> implements NewItemHandler {
 
 
-	/**
-	 * 
-	 */
+	// 
 	private static final long serialVersionUID = -1843521169417325067L;
 	/**
 	 * Logger
