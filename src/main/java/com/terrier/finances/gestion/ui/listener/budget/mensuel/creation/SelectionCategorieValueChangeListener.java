@@ -20,6 +20,7 @@ import com.vaadin.event.selection.SingleSelectionListener;
  */
 public class SelectionCategorieValueChangeListener extends AbstractComponentListener implements SingleSelectionListener<CategorieDepense>{
 
+	// Controleur
 	private CreerDepenseController controleur;
 
 

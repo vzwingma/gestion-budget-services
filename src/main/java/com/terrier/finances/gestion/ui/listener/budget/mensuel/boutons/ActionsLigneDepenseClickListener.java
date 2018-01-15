@@ -14,7 +14,6 @@ import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog.ConfirmationDialogCallback;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.BudgetMensuelController;
@@ -99,23 +98,14 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 	private void updateLigne(EtatLigneDepenseEnum etat, String auteur){
 
 		// Mise à jour de l'état
-
 		actions.getControleur().miseAJourEtatLigne(etat);
-		GridOperations tableauDepense = actions.findAncestor(GridOperations.class);
-
-		//LOGGER.trace("Mode Edition ? {}", tableauDepense.isEditable());
 		// Si en mode éditable. Pas de mise à jour. Seulement lors de la validation
-		if(!false) { //tableauDepense.isEditable()){
+		if(!false) { //actions.findAncestor(GridOperations.class).isEditable()){
 			// Recalcul du budget
 			BudgetMensuel budget = getBudgetMensuelCourant();
 
 			try{
 				getControleur(BudgetMensuelController.class).getServiceDepense().majEtatLigneDepense(budget, actions.getControleur().getIdOperation(), etat, auteur);
-				// MAJ des tableaux
-				if(etat == null){
-					// Ligne supprimée
-					//tableauDepense.getDataProvider().removeItem(actions.getControleur().getIdOperation());
-				}
 			}
 			catch(DataNotFoundException|BudgetNotFoundException e){
 				Notification.show("La dépense est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);

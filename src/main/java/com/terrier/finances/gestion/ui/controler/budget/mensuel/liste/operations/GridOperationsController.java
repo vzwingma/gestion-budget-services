@@ -44,13 +44,8 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 		getComponent().setColumnReorderingAllowed(false);
 		getComponent().setResponsive(true);
 
-
 		//getComponent().setStyleGenerator(styleGenerator);
 		
-		// Ajout du mode Dernier ligne sur la liste des dépenses
-		TableSuiviDepensesActionMenuHandler handler = new TableSuiviDepensesActionMenuHandler();
-		//		getComponent().addActionHandler(handler);
-		getComponent().addItemClickListener(handler);
 		/*
 		try {
 

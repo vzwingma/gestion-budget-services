@@ -5,9 +5,6 @@ package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -24,12 +21,8 @@ import com.vaadin.event.selection.SingleSelectionListener;
  */
 public class SelectionSousCategorieValueChangeListener extends AbstractComponentListener implements SingleSelectionListener<CategorieDepense>{
 
+	// Controleur
 	private CreerDepenseController controleur;
-
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(SelectionSousCategorieValueChangeListener.class);
 	
 	public SelectionSousCategorieValueChangeListener(CreerDepenseController controleur){
 		this.controleur = controleur;
@@ -45,7 +38,6 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 	 */
 	@Override
 	public void selectionChange(SingleSelectionEvent<CategorieDepense> event) {
-		LOGGER.info("SELECT : {}", event);
 		Optional<CategorieDepense> catSelected = event.getFirstSelectedItem();
 		if(catSelected.isPresent()){
 			CategorieDepense ssCategorie = catSelected.get();	
@@ -59,7 +51,6 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 			controleur.getComponent().getComboboxComptes().setVisible(interCompte);
 			controleur.getComponent().getLayoutCompte().setVisible(interCompte);
 			controleur.getComponent().getLabelCompte().setVisible(interCompte);
-
 
 			/**
 			 * Préparation du type de dépense

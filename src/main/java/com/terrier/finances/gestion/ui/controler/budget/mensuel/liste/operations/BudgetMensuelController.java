@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.List;
@@ -31,8 +32,6 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionLoc
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionRefreshMonthBudgetClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionValiderAnnulerEditionDepenseListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionCreerDepenseClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.values.CompteValueChangeListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.values.DateBudgetValueChangeListener;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemCaptionStyle;
 import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemIconStyle;
@@ -157,7 +156,16 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 		// Maj des composants MOIS/COMPTES
         getComponent().getMois().setResolution(DateResolution.MONTH);
-		getComponent().getMois().addValueChangeListener(new DateBudgetValueChangeListener(this));
+		getComponent().getMois().addValueChangeListener(event -> {
+			// Modification de la date
+			CompteBancaire compte = getCompte().getValue();
+			LocalDate newDateBudget = event.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			newDateBudget.with(ChronoField.DAY_OF_MONTH, 1);
+			setRangeFinMois(newDateBudget, compte.getId());
+			if(!newDateBudget.getMonth().equals(getOldMois()) || newDateBudget.getYear() != getOldAnnee()){
+				miseAJourVueDonnees();			
+			}
+		});
 
 
 		getComponent().getComboBoxComptes().setDescription("Choix du compte");
@@ -190,7 +198,15 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 			initRangeDebutFinMois(compteCourant.getId());
 			getComponent().getComboBoxComptes().setTextInputAllowed(false);
-			getComponent().getComboBoxComptes().addValueChangeListener(new CompteValueChangeListener(this));
+			// modif du compte
+			getComponent().getComboBoxComptes().addValueChangeListener(event -> {
+				if(event.getOldValue() != null){
+					LOGGER.info("Changement du compte : {}->{}", event.getOldValue().getId(), event.getValue().getId());
+					// Modification du compte
+					initRangeDebutFinMois(event.getValue().getId());
+					miseAJourVueDonnees();
+				}
+			});
 
 
 			// Bouton stat
