@@ -45,6 +45,7 @@ public class TreeGridResumeCategoriesController extends AbstractUIController<Tre
 		super(composant);
 	}
 
+	private boolean gridCollapsed = true;
 
 
 	@Override
@@ -102,5 +103,23 @@ public class TreeGridResumeCategoriesController extends AbstractUIController<Tre
 		listeResumeTotaux.sort((r1, r2) -> r1.getTypeTotal().compareTo(r2.getTypeTotal()));
 
 		getComponent().setItems(listeResumeTotaux, ResumeTotalCategories::getSousCategories);
+	}
+	
+	/**
+	 * Collapse/expand
+	 */
+	public void collapseExpendTreeGrid(){
+		getComponent().getTreeData().getRootItems()
+		.stream()
+		.forEach(
+				categorie -> {
+					if(gridCollapsed){
+						getComponent().getDataCommunicator().expand(categorie);
+					}
+					else{
+						getComponent().getDataCommunicator().collapse(categorie);
+					}
+				});
+		gridCollapsed = !gridCollapsed;
 	}
 }
