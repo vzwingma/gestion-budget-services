@@ -70,6 +70,8 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 		
 		Binder<LigneDepense> binder = getEditor().getBinder();
 		
+		setSelectionMode(SelectionMode.SINGLE);
+		
 		Column<LigneDepense, Date> c = addColumn(LigneDepense::getDateOperation);
 		c.setId(EntetesTableSuiviDepenseEnum.DATE_OPERATION.name())
 			.setCaption(EntetesTableSuiviDepenseEnum.DATE_OPERATION.getLibelle())

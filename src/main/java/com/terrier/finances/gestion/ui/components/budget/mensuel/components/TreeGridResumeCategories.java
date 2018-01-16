@@ -47,6 +47,8 @@ public class TreeGridResumeCategories extends AbstractUITreeGridComponent<Resume
 		.setWidth(TAILLE_COLONNE_VALEUR)
 		.setRenderer(new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_FIN));
 		
+		// Pas de sélection de lignes
+		setSelectionMode(SelectionMode.NONE);
 		/**
 
 		getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), Align.RIGHT);
@@ -61,7 +63,4 @@ public class TreeGridResumeCategories extends AbstractUITreeGridComponent<Resume
 	public TreeGridResumeCategoriesController createControleur() {
 		return new TreeGridResumeCategoriesController(this);
 	}
-
-
-
 }
