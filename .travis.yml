@@ -65,8 +65,8 @@ before_deploy:
         docker tag vzwingmann/gestion_budget:travis vzwingmann/gestion_budget:latest ; 
         docker push vzwingmann/gestion_budget:latest ;         
     else 
-       docker tag vzwingmann/gestion_budget:travis vzwingmann/gestion_budget:$TRAVIS_BRANCH
-       docker push vzwingmann/gestion_budget:$TRAVIS_BRANCH
+       docker tag vzwingmann/gestion_budget:travis vzwingmann/gestion_budget:$TRAVIS_BRANCH ; 
+       docker push vzwingmann/gestion_budget:$TRAVIS_BRANCH ; 
     fi;   
 
 deploy:
