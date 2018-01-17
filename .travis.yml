@@ -12,7 +12,7 @@ git:
   
 before_install:
 # Version tagguée > Application de la version sur Maven
-  - if [ "$TRAVIS_BRANCH" == v ]; 
+  - if [[ $TRAVIS_BRANCH == v* ]]; 
     then 
         VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
     else 
