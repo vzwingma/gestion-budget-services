@@ -24,7 +24,7 @@ before_install:
     mvn versions:commit;
   
 install: 
-  - mvn clean
+  - mvn clean install -DskipTests=true -B -P openshift
 
 script:
   # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB.
