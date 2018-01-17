@@ -14,10 +14,10 @@ before_install:
 # Version tagguée > Application de la version sur Maven
   - if [ "$TRAVIS_BRANCH" == v ]; 
     then 
-        VERSION==$(echo $TRAVIS_BRANCH | cut -b 2-); 
+        VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
     else 
-        VERSION==`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec  -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
-        VERSION=$(echo $VERSION | sed -r 's/(SNAPSHOT)+//gi')-snapeushote; 
+        VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec  -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
+        VERSION=$(echo $VERSION | sed -r 's/(-SNAPSHOT)+//gi')-SNAPSHOT; 
     fi; 
     echo "Application de la version $VERSION"; 
     mvn versions:set -DnewVersion=$VERSION; 
