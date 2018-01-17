@@ -11,13 +11,12 @@ git:
   depth: false
   
 before_install:
-    # Version tagguée > Application de la version sur Maven
+# Version tagguée > Application de la version sur Maven
   - if [ "$TRAVIS_BRANCH" == v ]; 
     then 
         VERSION==$(echo $TRAVIS_BRANCH | cut -b 2-); 
-    # Version non tagguée > Application du suffixe SNAPSHOT sur Maven
     else 
-        VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec  -Dexec.executable='echo' -Dexec.args='${project.version}'` ;
+        VERSION==`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec  -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
         VERSION=$(echo $VERSION | sed -r 's/(SNAPSHOT)+//gi')-snapeushote; 
     fi; 
     echo "Application de la version $VERSION"; 
