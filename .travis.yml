@@ -18,7 +18,7 @@ before_install:
     # Version non tagguée > Application du suffixe SNAPSHOT sur Maven
     else 
         VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec  -Dexec.executable='echo' -Dexec.args='${project.version}'` ;
-        VERSION=$(echo $VERSION | sed -r 's/(SNAPSHOT)+//gi')-snapeushote
+        VERSION=$(echo $VERSION | sed -r 's/(SNAPSHOT)+//gi')-snapeushote; 
     fi; 
     echo "Application de la version $VERSION"; 
     mvn versions:set -DnewVersion=$VERSION; 
