@@ -1,4 +1,5 @@
 language: java
+
 env:
   global:
     # COVERITY_SCAN_TOKEN
