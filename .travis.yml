@@ -28,24 +28,24 @@ install:
 script:
   # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB.
   - if [ ${TRAVIS_BRANCH} = "master" ]; 
-  then 
-    echo "ReTag de snapshot"; 
-    git tag -d snapshot; 
-    git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget :refs/tags/snapshot; 
-    git tag snapshot; 
-    git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget --tags; 
-  else 
-    echo "Pas de reTag de snapshot"; 
-  fi
+    then 
+      echo "ReTag de snapshot"; 
+      git tag -d snapshot; 
+      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget :refs/tags/snapshot; 
+      git tag snapshot; 
+      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget --tags; 
+    else 
+      echo "Pas de reTag de snapshot"; 
+    fi
   # Merge sur la branche coverity
   - if [ ${TRAVIS_BRANCH} = "master" ]; 
-  then 
-    echo "Merge vers la branche Coverity"; 
-    git fetch --all; 
-    git branch coverity_scan origin/coverity_scan; 
-    git checkout coverity_scan; 
-    git merge master; 
-    git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget; 
-  else 
-    echo "Pas de merge vers la branche Coverity"; 
-  fi
+    then 
+      echo "Merge vers la branche Coverity"; 
+      git fetch --all; 
+      git branch coverity_scan origin/coverity_scan; 
+      git checkout coverity_scan; 
+      git merge master; 
+      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget; 
+    else 
+      echo "Pas de merge vers la branche Coverity"; 
+    fi
