@@ -6,6 +6,8 @@
 
 <a href='https://travis-ci.org/vzwingma/gestion-budget/branches'><img src='https://travis-ci.org/vzwingma/gestion-budget.svg' alt='Build Status' /></a>
 <a href="https://scan.coverity.com/projects/vzwingma-gestion-budget"><img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/7385.svg"/></a>
+<a href="https://sonarcloud.io/dashboard?id=com.terrier.finances%3Agestion-budget"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/badges/gate?key=com.terrier.finances:gestion-budget"/></a>
+
 [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/gestion-budget/badge.svg)](https://snyk.io/test/github/vzwingma/gestion-budget)
 [![Dépendences](https://beta.gemnasium.com/badges/github.com/vzwingma/gestion-budget.svg)](https://beta.gemnasium.com/projects/github.com/vzwingma/gestion-budget)
 
