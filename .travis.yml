@@ -1,23 +1,82 @@
+sudo: required
+
 language: java
-env:
-  global:
-    # COVERITY_SCAN_TOKEN
-    # ** specific to your project **
-    - secure: "rxTQHSt0vr89fPGexg4bHCSV8PiXk+RUjopHjlk1S79dCiTlv315ABzPZ26SQ7q6TuxpMp1eQ1f98tsAbx6/nWnYgG3Vty/qGYNQ1O6Hi+LthF5DsxEMJXFp4NWDqFxa2kEXhRt5BDjlGwOEp70uPZyt2ETKb/1ppSu3lKicloZ3PncSF/ty/qbIZ7JPdZHW/1DPmYb0+R3ukZ5cmljzRjsrLcVYj/tLiC2sV+4myHwejw4TkbhP+Ig/klQ3prHb2BZL60Qt5/puroaiMAOryT4lwEpCjd9rjY2b61YF0JYyRhxx1j8MLnKM9p76zzn+bOrXoCinhg4Ah7D5ZledpoBKuWHczLno2CH+GGlDhm5OHX5zWXcvyz8zWHlg7fe66lGrMSuYoKLdHVVeItRWHj/myjQFwAnwJ0w9KjmjMwAltowCsRb8m6CKncbi6YZ2G4ltuYk31JWPCp1vJwk1U4NvSg1sqV90NGmucxQ3C1INrv0FxIpsCKeJXvd2gN50AwEWqOATM+n3EW8p3AejuDmQV7g0jUqUT+bjuTrTAP8T1N5Yf1SPLvQFu9QgZuRUa9+OVeskZY1iswBvB3ipOhjbBg//MNcmN72n4aQ6+m4rpgV2kMtW8EkUyqrG2sJYS5e4EXHxWDT2b1PoKLTczAvjXYQGpAIYTC/qGxk4Tn8="
+
+services:
+  - docker
+cache:
+    directories:
+      - $HOME/.m2
+git:
+  depth: false
+  
+before_install:
+# Version tagguée > Application de la version sur Maven
+  - if [[ $TRAVIS_BRANCH == v* ]]; 
+    then 
+        VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+    else 
+        VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec  -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
+        VERSION=$(echo $VERSION | sed -r 's/(-SNAPSHOT)+//gi')-SNAPSHOT; 
+    fi; 
+    echo "Application de la version $VERSION"; 
+    mvn versions:set -DnewVersion=$VERSION; 
+    mvn versions:commit;
+  
 install: 
-  - mvn clean install sonar:sonar -P openshift -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget
-addons:
-  coverity_scan:
-    # GitHub project metadata
-    project:
-      name: vzwingma/gestion-budget
-    # Where email notification of build analysis results will be sent
-    notification_email: vincent.zwingmann@gmail.com
-    build_command_prepend: mvn clean
-    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
-    build_command: mvn compile
-    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
-    # Take care in resource usage, and consider the build frequency allowances per
-    #   https://scan.coverity.com/faq#frequency
-    branch_pattern: coverity_scan
-after_script: cat /home/travis/build/vzwingma/gestion-budget/cov-int/scm_log.txt
+  - mvn clean install -DskipTests=true -B -P openshift
+
+script:
+  # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB.
+  - if [ ${TRAVIS_BRANCH} = "master" ]; 
+    then 
+      echo "ReTag de snapshot"; 
+      git tag -d snapshot; 
+      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget :refs/tags/snapshot; 
+      git tag snapshot; 
+      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget --tags; 
+    else 
+      echo "Pas de reTag de snapshot"; 
+    fi
+  # Merge sur la branche coverity
+  - if [ ${TRAVIS_BRANCH} = "master" ]; 
+    then 
+      echo "Merge vers la branche Coverity"; 
+      git fetch --all; 
+      git branch coverity_scan origin/coverity_scan; 
+      git checkout coverity_scan; 
+      git merge master; 
+      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget; 
+    else 
+      echo "Pas de merge vers la branche Coverity"; 
+    fi
+
+# Déploiement des releaes sur tag : snapshot ou version 
+before_deploy:
+  - cp ~/build/vzwingma/gestion-budget/target/webapps/budget.war ~/build/vzwingma/gestion-budget/src/main/external-ressources/docker/budget.war
+  - cd ~/build/vzwingma/gestion-budget/src/main/external-ressources/docker
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+  - docker build -t vzwingmann/gestion_budget:travis .
+  - if [[ $TRAVIS_BRANCH == v* ]]; 
+    then 
+        VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+        docker tag vzwingmann/gestion_budget:travis vzwingmann/gestion_budget:$VERSION ; 
+        docker push vzwingmann/gestion_budget:$VERSION ; 
+        docker tag vzwingmann/gestion_budget:travis vzwingmann/gestion_budget:latest ; 
+        docker push vzwingmann/gestion_budget:latest ;         
+    else 
+       docker tag vzwingmann/gestion_budget:travis vzwingmann/gestion_budget:$TRAVIS_BRANCH ; 
+       docker push vzwingmann/gestion_budget:$TRAVIS_BRANCH ; 
+    fi;   
+
+deploy:
+# Déploiement des releaes sur tag : snapshot ou version 
+  - provider: releases
+    api-key:
+      secure: RQZitfoBm2ICLJovBDW1efW9eTHlw668UW8wHJBMEJwh7MkdT9R76Y8Ki1TysiyFy7TIXaavqQ6+StT5QTNB7zajeqrZgRxKYrs7Pumh8E7Kvad13Ee5CAwCASEpb/HHzHW+tL1SHSt+5DrEIZgLM9wWglK0zOtT8RitNpnw/hWf/UM0PXQfgh2MNUlOz6n9KB9TXolD9qdTKV2n/bBWzyoMLno0e3LTUDqtzfm4X/Rd4euoiy04EMHBxDooTNDhw5Vq8RLNC0FcWiz8+GfTb4tc6wt2vzp5OT77Y1WMz6Ysrd+8f4Yeod8+8/kS9NcrUEE4yir8d5OHwGVfbJ91hoMKb2ZXC86pPXQZLKRw50IGql3laI9JT1+slsKc0esmyy6AMIfkSSzLmkNHUv8NzlUJ/Kw0e+cGAkrhks2AzQnGioHxUCNGeRztNfZYqvtaLjibvRZLOZvn802elO9lGuGTo46if3OCscLAtiecWBfy5/kr4ksI3WbVtBmZSuaKK10sjXAvj/Bd9UJj3q1vuOnuT2Fszc7HmRtORPpuLEZyJjBxD9400yG17/uRMGi0d+7zzlLbqOZaHQnKccvq2/2IVW198Y8p/yT+cOQrvdXIc/edNB603BILp8/TA+taF+2iTq+i+fDh9HFPNFwaf0+Dv3NSFQLEYB9eSWaSXG0=
+    skip_cleanup: true
+    overwrite: true
+    file: /home/travis/build/vzwingma/gestion-budget/target/webapps/budget.war
+    on:
+      repo: vzwingma/gestion-budget
+      tags: true
