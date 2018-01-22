@@ -165,7 +165,7 @@ public class StatutDependencyObject {
 	 * @return the date
 	 */
 	public String getDate() {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		return date != null ? sdf.format(this.date.getTime()) : "null";
 	}
 
