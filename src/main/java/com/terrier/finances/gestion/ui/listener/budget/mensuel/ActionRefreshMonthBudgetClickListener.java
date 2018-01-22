@@ -41,7 +41,7 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 		BudgetMensuel budgetMensuelCourant = getBudgetMensuelCourant();
 		
 		c.set(Calendar.MONTH, budgetMensuelCourant.getMois());
-		SimpleDateFormat sfd = new SimpleDateFormat("MMMM YYYY", Locale.FRENCH);
+		SimpleDateFormat sfd = new SimpleDateFormat("MMMM yyyy", Locale.FRENCH);
 
 		/** Alerte **/
 		String warnMoisActif = "";
