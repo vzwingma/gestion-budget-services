@@ -9,7 +9,7 @@ cache:
       - $HOME/.m2
 
 install: 
-  - mvn clean install -DskipTests=true -B -P openshift
+  - mvn clean install sonar:sonar -B -P openshift -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget
 
 script:
   - chmod a+x ./src/main/scripts/*.sh
