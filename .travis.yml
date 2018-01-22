@@ -5,7 +5,7 @@ env:
     # ** specific to your project **
     - secure: "rxTQHSt0vr89fPGexg4bHCSV8PiXk+RUjopHjlk1S79dCiTlv315ABzPZ26SQ7q6TuxpMp1eQ1f98tsAbx6/nWnYgG3Vty/qGYNQ1O6Hi+LthF5DsxEMJXFp4NWDqFxa2kEXhRt5BDjlGwOEp70uPZyt2ETKb/1ppSu3lKicloZ3PncSF/ty/qbIZ7JPdZHW/1DPmYb0+R3ukZ5cmljzRjsrLcVYj/tLiC2sV+4myHwejw4TkbhP+Ig/klQ3prHb2BZL60Qt5/puroaiMAOryT4lwEpCjd9rjY2b61YF0JYyRhxx1j8MLnKM9p76zzn+bOrXoCinhg4Ah7D5ZledpoBKuWHczLno2CH+GGlDhm5OHX5zWXcvyz8zWHlg7fe66lGrMSuYoKLdHVVeItRWHj/myjQFwAnwJ0w9KjmjMwAltowCsRb8m6CKncbi6YZ2G4ltuYk31JWPCp1vJwk1U4NvSg1sqV90NGmucxQ3C1INrv0FxIpsCKeJXvd2gN50AwEWqOATM+n3EW8p3AejuDmQV7g0jUqUT+bjuTrTAP8T1N5Yf1SPLvQFu9QgZuRUa9+OVeskZY1iswBvB3ipOhjbBg//MNcmN72n4aQ6+m4rpgV2kMtW8EkUyqrG2sJYS5e4EXHxWDT2b1PoKLTczAvjXYQGpAIYTC/qGxk4Tn8="
 install: 
-  - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organisation=$SONAR_ORG
+  - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organisation=$SONAR_ORG -Dsonar.projectKey=gestion-budget
 addons:
   coverity_scan:
     # GitHub project metadata
