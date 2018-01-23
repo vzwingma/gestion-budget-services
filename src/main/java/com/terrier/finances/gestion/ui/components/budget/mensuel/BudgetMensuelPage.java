@@ -283,13 +283,11 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 	private VerticalLayout buildMainLayout() {
 		// common part: create layout
 		mainLayout = new VerticalLayout();
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
+		mainLayout.setSizeFull();
 		mainLayout.setMargin(true);
 		
 		// top-level component properties
-		setWidth("100.0%");
-		setHeight("100.0%");
+		setSizeFull();
 		
 		// menu
 		menu = buildMenu();
@@ -304,8 +302,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 		
 		// absoluteLayout_1
 		absoluteLayout_1 = new AbsoluteLayout();
-		absoluteLayout_1.setWidth("-1px");
-		absoluteLayout_1.setHeight("-1px");
+		absoluteLayout_1.setSizeUndefined();
 		mainLayout.addComponent(absoluteLayout_1);
 		
 		return mainLayout;
@@ -328,8 +325,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 		
 		// mois
 		mois = new InlineDateField();
-		mois.setWidth("-1px");
-		mois.setHeight("-1px");
+		mois.setSizeUndefined();
 		menu.addComponent(mois);
 		menu.setComponentAlignment(mois, new Alignment(48));
 		
@@ -345,15 +341,13 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 	private HorizontalLayout buildHorizontalLayout_1() {
 		// common part: create layout
 		horizontalLayout_1 = new HorizontalLayout();
-		horizontalLayout_1.setWidth("-1px");
-		horizontalLayout_1.setHeight("-1px");
+		horizontalLayout_1.setSizeUndefined();
 		horizontalLayout_1.setMargin(false);
 		horizontalLayout_1.setSpacing(true);
 		
 		// labelLastConnected
 		labelLastConnected = new Label();
-		labelLastConnected.setWidth("-1px");
-		labelLastConnected.setHeight("-1px");
+		labelLastConnected.setSizeUndefined();
 		labelLastConnected.setValue("Label");
 		horizontalLayout_1.addComponent(labelLastConnected);
 		horizontalLayout_1.setComponentAlignment(labelLastConnected,
@@ -376,8 +370,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 	private HorizontalLayout buildBudgetMensuel() {
 		// common part: create layout
 		budgetMensuel = new HorizontalLayout();
-		budgetMensuel.setWidth("100.0%");
-		budgetMensuel.setHeight("100.0%");
+		budgetMensuel.setSizeFull();
 		budgetMensuel.setMargin(false);
 		
 		// verticalLayoutResume
@@ -405,8 +398,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 		
 		// treeResume
 		treeResume = new TreeGridResumeCategories();
-		treeResume.setWidth("100.0%");
-		treeResume.setHeight("100.0%");
+		treeResume.setSizeFull();
 		verticalLayoutResume.addComponent(treeResume);
 		verticalLayoutResume.setExpandRatio(treeResume, 1.0f);
 		
@@ -423,14 +415,12 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 	private VerticalLayout buildVerticalLayoutDepenses() {
 		// common part: create layout
 		verticalLayoutDepenses = new VerticalLayout();
-		verticalLayoutDepenses.setWidth("100.0%");
-		verticalLayoutDepenses.setHeight("100.0%");
+		verticalLayoutDepenses.setSizeFull();
 		verticalLayoutDepenses.setMargin(false);
 		
 		// tableSuiviDepense
 		gridOperations = new GridOperations();
-		gridOperations.setWidth("100.0%");
-		gridOperations.setHeight("100.0%");
+		gridOperations.setSizeFull();
 		verticalLayoutDepenses.addComponent(gridOperations);
 		verticalLayoutDepenses.setExpandRatio(gridOperations, 40.0f);
 		verticalLayoutDepenses.setComponentAlignment(gridOperations,
@@ -492,8 +482,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 		buttonEditer = new Button();
 		buttonEditer.setStyleName("primary");
 		buttonEditer.setCaption("Modifier les opérations");
-		buttonEditer.setWidth("-1px");
-		buttonEditer.setHeight("-1px");
+		buttonEditer.setSizeUndefined();
 		horizontalLayoutActions.addComponent(buttonEditer);
 		horizontalLayoutActions.setComponentAlignment(buttonEditer,
 				new Alignment(48));
@@ -502,8 +491,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 		buttonAnnuler = new Button();
 		buttonAnnuler.setStyleName("danger");
 		buttonAnnuler.setCaption("Annuler");
-		buttonAnnuler.setWidth("-1px");
-		buttonAnnuler.setHeight("-1px");
+		buttonAnnuler.setSizeUndefined();
 		horizontalLayoutActions.addComponent(buttonAnnuler);
 		horizontalLayoutActions.setComponentAlignment(buttonAnnuler,
 				new Alignment(48));
@@ -512,8 +500,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 		buttonValider = new Button();
 		buttonValider.setStyleName("friendly");
 		buttonValider.setCaption("Valider");
-		buttonValider.setWidth("-1px");
-		buttonValider.setHeight("-1px");
+		buttonValider.setSizeUndefined();
 		horizontalLayoutActions.addComponent(buttonValider);
 		horizontalLayoutActions.setComponentAlignment(buttonValider,
 				new Alignment(48));
@@ -522,8 +509,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 		buttonCreate = new Button();
 		buttonCreate.setStyleName("friendly");
 		buttonCreate.setCaption("Créer une nouvelle dépense");
-		buttonCreate.setWidth("-1px");
-		buttonCreate.setHeight("-1px");
+		buttonCreate.setSizeUndefined();
 		buttonCreate.setTabIndex(2);
 		horizontalLayoutActions.addComponent(buttonCreate);
 		horizontalLayoutActions.setComponentAlignment(buttonCreate,

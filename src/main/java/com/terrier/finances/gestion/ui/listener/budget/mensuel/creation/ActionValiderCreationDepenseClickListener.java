@@ -3,12 +3,15 @@
  */
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
+import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -51,21 +54,21 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 		// Validation
 		if(form.getControleur().validateForm()){
 			// Si oui création
-			TypeDepenseEnum type = TypeDepenseEnum.DEPENSE;
-			if(form.getComboboxType().getSelectedItem().isPresent()){
-				type = form.getComboboxType().getSelectedItem().get();
-			}
-			EtatLigneDepenseEnum etat = EtatLigneDepenseEnum.PREVUE;
-			if(form.getListSelectEtat().getSelectedItem().isPresent()){
-				etat = form.getListSelectEtat().getSelectedItem().get();
-			}
+			Optional<TypeDepenseEnum> typeSelected = form.getComboboxType().getSelectedItem();
+			TypeDepenseEnum type = typeSelected.isPresent() ? typeSelected.get() : TypeDepenseEnum.DEPENSE;
+			
+			 
+			Optional<EtatLigneDepenseEnum> etatSelected = form.getListSelectEtat().getSelectedItem();
+			EtatLigneDepenseEnum etat = etatSelected.isPresent() ? etatSelected.get() : EtatLigneDepenseEnum.PREVUE;
 
-			if(form.getComboBoxSsCategorie().getSelectedItem().isPresent() 
-					&& form.getTextFieldDescription().getSelectedItem().isPresent()
+			Optional<CategorieDepense> categorieSelected = form.getComboBoxSsCategorie().getSelectedItem();
+			Optional<String> descriptionSelected = form.getTextFieldDescription().getSelectedItem();
+			if(categorieSelected.isPresent() 
+					&& descriptionSelected.isPresent()
 					){
 				LigneDepense ligneDepense = new LigneDepense(
-						form.getComboBoxSsCategorie().getSelectedItem().get(), 
-						form.getTextFieldDescription().getSelectedItem().get(), 
+						categorieSelected.get(), 
+						descriptionSelected.get(), 
 						type,
 						Float.valueOf(form.getTextFieldValeur().getValue()),
 						etat,

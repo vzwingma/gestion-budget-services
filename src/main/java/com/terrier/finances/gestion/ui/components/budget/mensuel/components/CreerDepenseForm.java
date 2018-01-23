@@ -249,13 +249,11 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 	private HorizontalLayout buildMainLayout() {
 		// common part: create layout
 		mainLayout = new HorizontalLayout();
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
+		mainLayout.setSizeFull();
 		mainLayout.setMargin(false);
 		
 		// top-level component properties
-		setWidth("100.0%");
-		setHeight("100.0%");
+		setSizeFull();
 		
 		// gridLayout
 		gridLayout = buildGridLayout();
@@ -281,8 +279,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// label_1
 		label_1 = new Label();
-		label_1.setWidth("-1px");
-		label_1.setHeight("-1px");
+		label_1.setSizeUndefined();
 		label_1.setValue("Catégorie");
 		gridLayout.addComponent(label_1, 0, 0);
 		gridLayout.setComponentAlignment(label_1, new Alignment(33));
@@ -294,8 +291,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// label_5
 		label_5 = new Label();
-		label_5.setWidth("-1px");
-		label_5.setHeight("-1px");
+		label_5.setSizeUndefined();
 		label_5.setValue("Compte");
 		gridLayout.addComponent(label_5, 0, 1);
 		gridLayout.setComponentAlignment(label_5, new Alignment(33));
@@ -320,8 +316,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// label_4
 		label_4 = new Label();
-		label_4.setWidth("-1px");
-		label_4.setHeight("-1px");
+		label_4.setSizeUndefined();
 		label_4.setValue("Valeur");
 		gridLayout.addComponent(label_4, 0, 3);
 		gridLayout.setComponentAlignment(label_4, new Alignment(33));
@@ -333,8 +328,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// labelEtat
 		labelEtat = new Label();
-		labelEtat.setWidth("-1px");
-		labelEtat.setHeight("-1px");
+		labelEtat.setSizeUndefined();
 		labelEtat.setValue("Etat");
 		gridLayout.addComponent(labelEtat, 0, 4);
 		gridLayout.setComponentAlignment(labelEtat, new Alignment(33));

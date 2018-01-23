@@ -18,8 +18,9 @@ import com.vaadin.ui.Notification;
 /**
  * Controleur de la page des statistiques
  * @author vzwingma
- *
+ * @deprecated
  */
+@Deprecated
 public class StatistiquesController extends AbstractUIController<StatistiquesPage> implements ValueChangeListener<CompteBancaire>, Serializable{
 
 	/**
@@ -80,7 +81,7 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 
 	@Override
 	public void miseAJourVueDonnees() {
-		
+		// Rien à faire pour le moment
 	}
 
     

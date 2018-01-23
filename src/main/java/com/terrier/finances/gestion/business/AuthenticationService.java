@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.business.auth.PasswordEncoder;
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
-import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**

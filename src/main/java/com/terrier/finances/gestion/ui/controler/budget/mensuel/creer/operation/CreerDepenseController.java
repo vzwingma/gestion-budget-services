@@ -59,18 +59,19 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		}
 		TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
 		
-		CategorieDepense categorieSelectionnee = null;
-		if(getComponent().getComboBoxSsCategorie().getSelectedItem().isPresent()){
-			categorieSelectionnee = getComponent().getComboBoxSsCategorie().getSelectedItem().get();
+		CategorieDepense ssCategorieSelectionnee = null;
+		Optional<CategorieDepense> selection = getComponent().getComboBoxSsCategorie().getSelectedItem();
+		if(selection.isPresent()){
+			ssCategorieSelectionnee = selection.get();
 		}
 		
 		
 		if(	getComponent().getTextFieldValeur().getOptionalValue().isPresent()
 				&& getComponent().getComboBoxCategorie().getSelectedItem().isPresent()
-				&& getComponent().getComboBoxSsCategorie().getSelectedItem().isPresent()
+				&& ssCategorieSelectionnee != null
 				&& (
-				BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(categorieSelectionnee.getId()) 
-				|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(categorieSelectionnee.getId()))){
+				BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(ssCategorieSelectionnee.getId()) 
+				|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(ssCategorieSelectionnee.getId()))){
 			typeAttendu = TypeDepenseEnum.CREDIT;
 		}
 		// Cohérence type

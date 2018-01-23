@@ -35,7 +35,7 @@ public class BudgetMensuel implements Serializable {
 	/**
 	 * Mois du budget
 	 */
-	private Month mois;
+	private transient Month mois;
 	private int annee;
 	/**
 	 * Budget actif
