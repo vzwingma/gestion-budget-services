@@ -28,6 +28,8 @@ public class PasswordEncoder {
 	
 	private PasswordEncoder() {  }
 
+	private static final int iterations = 1000;
+	
 	/**
 	 * @param password  mot de passe
 	 * @return mot de passe hashé
@@ -37,7 +39,7 @@ public class PasswordEncoder {
 	public static String generateStrongPasswordHash(String password)
 	{
 		try{
-			int iterations = 1000;
+			
 			char[] chars = password.toCharArray();
 			byte[] salt = getSalt();
 
@@ -47,7 +49,7 @@ public class PasswordEncoder {
 
 			hash = skf.generateSecret(spec).getEncoded();
 
-			return new StringBuilder(iterations).append(":").append(toHex(salt)).append(":").append(toHex(hash)).toString();
+			return new StringBuilder().append(iterations).append(":").append(toHex(salt)).append(":").append(toHex(hash)).toString();
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			return null;
 		}
