@@ -27,7 +27,7 @@ public class OperationBudgetTypeRenderer extends TextRenderer {
             return super.encode(null);
             // Valeur
         } else if(value instanceof Double){
-        	StringBuffer valeur = new StringBuffer();
+        	StringBuilder valeur = new StringBuilder();
 			Double truncatedDouble=new BigDecimal((Double)value).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 			valeur.append(truncatedDouble);
 			valeur.append(" €");
@@ -45,7 +45,7 @@ public class OperationBudgetTypeRenderer extends TextRenderer {
         else if(value instanceof Float){
         	
         	Float f = (Float)value;
-        	StringBuffer valeur = new StringBuffer();
+        	StringBuilder valeur = new StringBuilder();
         	if(f < 0){
         		valeur.append("- ");
         	}

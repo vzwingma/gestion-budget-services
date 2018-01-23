@@ -25,10 +25,6 @@ public class GridTotalCellStyle extends TextRenderer implements StyleGenerator<T
 
 	private static final long serialVersionUID = -2438700237527871644L;
 
-	/**
-	 * Logger
-	 */
-	//private static final Logger LOGGER = LoggerFactory.getLogger(TreeResumeCellStyle.class);
 
 	private EntetesTreeResumeDepenseEnum colonne;
 
@@ -55,7 +51,7 @@ public class GridTotalCellStyle extends TextRenderer implements StyleGenerator<T
         if (value == null) {
             return super.encode(null);
         } else if(value instanceof Double){
-        	StringBuffer valeur = new StringBuffer();
+        	StringBuilder valeur = new StringBuilder();
 			Double truncatedDouble=new BigDecimal((Double)value).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 			valeur.append(truncatedDouble);
 			valeur.append(" €");

@@ -10,16 +10,14 @@ import com.vaadin.ui.StyleGenerator;
 /**
  * Style des lignes du tableau de dépense
  * @author vzwingma
- *
+ * @deprecated
  */
+@Deprecated
 public class GridOperationStyle implements StyleGenerator<LigneDepense> {
 
 
 	private static final long serialVersionUID = -6709397765771547573L;
-	/**
-	 * Logger
-	 */
-	// private static final Logger LOGGER = LoggerFactory.getLogger(TableDepensesCellStyle.class);
+
 
 
 	private Boolean oddStyleLignes;

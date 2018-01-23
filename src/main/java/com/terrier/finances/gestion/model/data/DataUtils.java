@@ -21,7 +21,9 @@ import com.terrier.finances.gestion.model.business.budget.LigneDepense;
  */
 public class DataUtils {
 
-
+	private DataUtils(){
+		// Constructeur privé pour classe utilitaire
+	}
 
 	/**
 	 * @return la date actuelle en LocalDate
@@ -82,7 +84,15 @@ public class DataUtils {
 		if(listeOperations != null && !listeOperations.isEmpty()){
 			// Comparaison de date
 			Comparator <LigneDepense> comparator = Comparator.comparing(LigneDepense::getDateOperation, (date1, date2) -> {
-	            return date1 == null ? 1 : date2 == null ? -1 : date1.before(date2) ? -1 : 1;
+				if(date1 == null){
+					return 1;
+				}
+				else if(date2 == null){
+					return -1;
+				}
+				else{
+					return date1.before(date2) ? -1 : 1;
+				}
 	        });;
 			Date dateDerniereOperation = listeOperations.stream().max(comparator).get().getDateOperation();
 			if(dateDerniereOperation != null){

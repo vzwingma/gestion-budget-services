@@ -95,6 +95,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	 * @param propertyId propriété
 	 * @param propClass classe
 	 * @param value nouvelle valeur
+	 * @deprecated :
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Deprecated
