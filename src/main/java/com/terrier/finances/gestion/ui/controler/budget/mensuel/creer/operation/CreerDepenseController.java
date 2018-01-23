@@ -152,7 +152,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getListSelectEtat().setTextInputAllowed(false);
 		getComponent().getListSelectEtat().clear();
 		// #50 : Gestion du style par préférence utilisateur
-		String etatNlleDepense = getUtilisateurCourant().getPreference(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE, String.class);
+		String etatNlleDepense = getUtilisateurCourant().getPreference(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE);
 		if(etatNlleDepense != null){
 			getComponent().getListSelectEtat().setSelectedItem(EtatLigneDepenseEnum.getEnum(etatNlleDepense));
 		}

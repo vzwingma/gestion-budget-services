@@ -27,6 +27,6 @@ public class CompteClosedException extends Exception {
 	
 	public CompteClosedException(StringBuilder libelleErreur){
 		super(libelleErreur.toString());
-		LOGGER.error(libelleErreur.toString());
+		LOGGER.error("{}", libelleErreur);
 	}
 }

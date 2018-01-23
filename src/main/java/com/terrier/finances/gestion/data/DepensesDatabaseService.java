@@ -41,13 +41,16 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	@Autowired @Qualifier("dataTransformerBudget")
 	private DataTransformerBudget dataTransformerBudget;
 
-
+	private static final String COLLECTION_BUDGET = "budget_";
+	private static final String ATTRIBUT_COMPTE_ID = "compteBancaire.id";
+	private static final String ATTRIBUT_ANNEE = "annee";
+	
 	/**
 	 * @param annee année
 	 * @return le nom de la collection
 	 */
 	protected String getBudgetCollectionName(int annee){
-		StringBuilder collectionName = new StringBuilder("budget_").append(annee);
+		StringBuilder collectionName = new StringBuilder(COLLECTION_BUDGET).append(annee);
 		LOGGER.trace("Utilisation de la collection [{}]", collectionName);
 		return  collectionName.toString();
 	}
@@ -58,7 +61,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	protected String getBudgetCollectionName(String idBudget){
 		if(idBudget != null){
 			String[] idParts = idBudget.split("_");
-			StringBuilder collectionName = new StringBuilder("budget_").append(idParts[1]);
+			StringBuilder collectionName = new StringBuilder(COLLECTION_BUDGET).append(idParts[1]);
 			LOGGER.debug("Utilisation de la collection [{}]", collectionName);
 			return  collectionName.toString();	
 		}
@@ -77,7 +80,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public Set<String> chargeLibellesDepenses(String idCompte, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(idCompte).and("annee").is(annee));
+		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte).and(ATTRIBUT_ANNEE).is(annee));
 		Set<String> libellesDepenses = new HashSet<String>();
 		try{
 			List<BudgetMensuelDTO> budgetsDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
@@ -101,7 +104,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 			}
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement", e);
+			LOGGER.error("Erreur lors du chargement des libellés des dépenses du compte {} de {}", idCompte, annee, e);
 		}
 		return libellesDepenses;
 	}
@@ -117,13 +120,13 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public BudgetMensuel chargeBudgetMensuel(CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee);
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(compte.getId()).and("mois").is(mois.getValue() -1).and("annee").is(annee));
+		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and("mois").is(mois.getValue() -1).and(ATTRIBUT_ANNEE).is(annee));
 		BudgetMensuelDTO budgetDTO = null;
 		try{
 			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement", e);
+			LOGGER.error("Erreur lors du chargement du budget mensuel", e);
 		}
 		if(budgetDTO == null){
 			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee));
@@ -187,7 +190,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(idBudget));
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement", e);
+			LOGGER.error("Erreur lors du chargement du budget d'id {}", idBudget, e);
 		}
 		if(budgetDTO == null){
 			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget ").append(idBudget));
@@ -203,13 +206,13 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public BudgetMensuelDTO chargeBudgetMensuelDTO(CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee);
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(compte.getId()).and("mois").is(mois.getValue() - 1).and("annee").is(annee));
+		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and("mois").is(mois.getValue() - 1).and(ATTRIBUT_ANNEE).is(annee));
 		BudgetMensuelDTO budgetDTO = null;
 		try{
 			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement", e);
+			LOGGER.error("Erreur lors du chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee, e);
 		}
 		if(budgetDTO == null){
 			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee));
@@ -225,7 +228,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	 */
 	public List<BudgetMensuelDTO> chargeBudgetsMensuelsDTO(String idCompte) throws DataNotFoundException{
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("compteBancaire.id").is(idCompte));
+		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte));
 
 		List<BudgetMensuelDTO> budgets = new ArrayList<BudgetMensuelDTO>();
 
@@ -236,11 +239,11 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 				budgets.addAll(getMongoOperation().find(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a)));
 			}
 			catch(Exception e){
-				LOGGER.error("Erreur lors du chargement", e);
+				LOGGER.error("Erreur lors du chargement des budgets du compte {}", idCompte, e);
 			}
 		}
 		if(budgets.isEmpty()){
-			LOGGER.error("Erreur lors du chargement");
+			LOGGER.error("Erreur lors du chargement des budgets du compte {} : la liste est vide", idCompte);
 			throw new DataNotFoundException("Erreur lors du chargement des budgets");
 		}
 		else{
@@ -259,13 +262,13 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	 */
 	public BudgetMensuelDTO[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
 		Query query1erBudget = new Query();
-		query1erBudget.addCriteria(Criteria.where("compteBancaire.id").is(compte));
-		query1erBudget.with(new Sort(Sort.Direction.ASC, "annee")).with(new Sort(Sort.Direction.ASC, "mois"));
+		query1erBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
+		query1erBudget.with(new Sort(Sort.Direction.ASC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.ASC, "mois"));
 		query1erBudget.limit(1);
 
 		Query querydernierBudget = new Query();
-		querydernierBudget.addCriteria(Criteria.where("compteBancaire.id").is(compte));
-		querydernierBudget.with(new Sort(Sort.Direction.DESC, "annee")).with(new Sort(Sort.Direction.DESC, "mois"));
+		querydernierBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
+		querydernierBudget.with(new Sort(Sort.Direction.DESC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.DESC, "mois"));
 		querydernierBudget.limit(1);
 		try{
 			BudgetMensuelDTO premierbudget = null;
@@ -290,8 +293,8 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 			return new BudgetMensuelDTO[]{premierbudget, dernierbudget};
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement", e);
-			throw new DataNotFoundException("Erreur lors du chargement");
+			LOGGER.error("Erreur lors du chargement de la date du premier budget de {}", compte, e);
+			throw new DataNotFoundException("Erreur lors du chargement de la date du premier budget de " + compte);
 		}
 	}
 
@@ -316,8 +319,8 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 			}
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement", e);
-			throw new DataNotFoundException("Erreur lors du chargement");
+			LOGGER.error("Erreur lors du chargement des opérations de {}", idBudget, e);
+			throw new DataNotFoundException("Erreur lors du chargement des opérations de " + idBudget);
 		}
 	}
 

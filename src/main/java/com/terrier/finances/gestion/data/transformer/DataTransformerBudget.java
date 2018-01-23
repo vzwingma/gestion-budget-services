@@ -37,7 +37,9 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	/**
 	 * Constructeur pour Spring
 	 */
-	public DataTransformerBudget(){ }
+	public DataTransformerBudget(){
+		// Constructeur pour Spring
+	}
 
 	/**
 	 * Logger

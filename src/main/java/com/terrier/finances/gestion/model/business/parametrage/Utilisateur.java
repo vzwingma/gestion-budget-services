@@ -26,12 +26,12 @@ import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 public class Utilisateur implements Serializable {
 
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5912920498104708791L;
+	private static final long serialVersionUID = 6535669274718528190L;
 	
-
 	@Id
 	private String id;
 	// Login
@@ -124,7 +124,7 @@ public class Utilisateur implements Serializable {
 	 * @return the preferences
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getPreference(UtilisateurPrefsEnum clePreference, Class<T> typeAttendu) {
+	public <T> T getPreference(UtilisateurPrefsEnum clePreference) {
 		return (T)prefsUtilisateur.get(clePreference);
 	}
 
