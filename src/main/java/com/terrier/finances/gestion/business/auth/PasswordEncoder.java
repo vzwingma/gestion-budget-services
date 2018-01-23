@@ -47,7 +47,7 @@ public class PasswordEncoder {
 
 			hash = skf.generateSecret(spec).getEncoded();
 
-			return iterations + ":" + toHex(salt) + ":" + toHex(hash);
+			return new StringBuilder(iterations).append(":").append(toHex(salt)).append(":").append(toHex(hash)).toString();
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			return null;
 		}
@@ -128,7 +128,7 @@ public class PasswordEncoder {
 		int paddingLength = (array.length * 2) - hex.length();
 		if(paddingLength > 0)
 		{
-			return String.format("%0"  +paddingLength + "d", 0) + hex;
+			return String.format(new StringBuilder().append("%0").append(paddingLength).append("d").toString(), 0) + hex;
 		}else{
 			return hex;
 		}

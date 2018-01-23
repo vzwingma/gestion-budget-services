@@ -141,7 +141,6 @@ public class UISession {
 	 * @return the utilisateurCourant
 	 */
 	public Utilisateur getUtilisateurCourant() {
-		// LOGGER.trace("[{}] Utilisateur courant > {}", this.idSession, this.utilisateurCourant);
 		return utilisateurCourant;
 	}
 

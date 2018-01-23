@@ -71,7 +71,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 				}
 			}
 			catch(Exception e){
-				return null;
+				return new ArrayList<CategorieDepense>();
 			}
 		}
 		return new ArrayList<CategorieDepense>(mapCategories.values());
@@ -111,8 +111,8 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 			return getMongoOperation().findOne(queryUser, Utilisateur.class);
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors de la recherche", e);
-			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur");
+			LOGGER.error("Erreur lors de la recherche de l'utilisateur {}", login, e);
+			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + login);
 		}
 	}
 
@@ -125,7 +125,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 			getMongoOperation().save(utilisateur);
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors de la recherche", e);
+			LOGGER.error("Erreur lors de la sauvegarde de l'utilisateur", e);
 		}
 	}
 
@@ -155,15 +155,15 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 						return Integer.compare(compte1.getOrdre(), compte2.getOrdre());
 					}
 				});
-				LOGGER.info(" {} comptes chargés : {} ", listeComptes.size(), listeComptes.toString());
+				LOGGER.info(" {} comptes chargés : {} ", listeComptes.size(), listeComptes);
 			}
 			catch(Exception e){
-				LOGGER.error("Erreur lors du chargement", e);
+				LOGGER.error("Erreur lors du chargement des comptes de {}", utilisateur, e);
 			}
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors de la recherche", e);
-			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur");
+			LOGGER.error("Erreur lors du chargement des comptes de {}", utilisateur, e);
+			throw new DataNotFoundException("Erreur lors de la recherche des comptes");
 		}
 		return listeComptes;
 	}
@@ -184,8 +184,8 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 			return getMongoOperation().findOne(queryBudget, CompteBancaire.class);
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors de la recherche", e);
-			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur");
+			LOGGER.error("Erreur lors du chargement du compte {}", idCompte, e);
+			throw new DataNotFoundException("Erreur lors de la recherche de compte");
 		}
 	}
 

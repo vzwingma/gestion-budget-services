@@ -48,9 +48,17 @@ public class UISessionManager implements Runnable {
 	public void startSessionsControl(){
 		pool = new ScheduledThreadPoolExecutor(1);
 		pool.scheduleAtFixedRate(this, 0, 1, TimeUnit.MINUTES);
-		UISessionManager.sessionManager = this;
+		setSessionManager(this);
 	}
 
+	/**
+	 * Update du session manager
+	 * @param manager UISessionManager
+	 */
+	private synchronized static void setSessionManager(UISessionManager manager){
+		UISessionManager.sessionManager = manager;
+	}
+	
 	/**
 	 * Arrêt du controle des sessions
 	 */

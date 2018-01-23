@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.business.auth.PasswordEncoder;
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
+import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**
@@ -58,11 +59,9 @@ public class AuthenticationService {
 			// Vérification du mot de passe
 			if(PasswordEncoder.validatePassword(motPasseEnClair, utilisateur.getHashMotDePasse())){
 				// Enregistrement de la date du dernier accès à maintenant
-				Date dernierAcces = utilisateur.getDernierAcces();
 				dataDBParams.majUtilisateur(utilisateur);
-				dernierAcces = Calendar.getInstance().getTime();
+				Date dernierAcces = Calendar.getInstance().getTime();
 				utilisateur.setDernierAcces(dernierAcces);
-
 				if(utilisateur.getMasterCleChiffrementDonnees() == null){
 					LOGGER.error("Erreur 3 lors de l'authentification. Master key introuvable");
 					return null;
@@ -72,7 +71,7 @@ public class AuthenticationService {
 					BasicTextEncryptor decryptorCle = new BasicTextEncryptor();
 					decryptorCle.setPassword(motPasseEnClair);
 					String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getMasterCleChiffrementDonnees());
-					// LOGGER.debug("> MasterKey déchiffrée des données : {}", cleChiffrementDonnees);
+
 					utilisateur.getEncryptor().setPassword(cleChiffrementDonnees);
 				}
 				return utilisateur;
@@ -99,7 +98,6 @@ public class AuthenticationService {
 		BasicTextEncryptor decryptorForMasterKey = new BasicTextEncryptor();
 		decryptorForMasterKey.setPassword(oldPassword);
 		String masterKeyClear = decryptorForMasterKey.decrypt(utilisateur.getMasterCleChiffrementDonnees());
-		// LOGGER.debug("Déchiffrement MasterKey : {}" , masterKeyClear);
 		BasicTextEncryptor encryptorForMasterKey = new BasicTextEncryptor();
 		encryptorForMasterKey.setPassword(newPassword);
 		String masterKeyEncr = encryptorForMasterKey.encrypt(masterKeyClear);

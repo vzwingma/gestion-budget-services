@@ -128,7 +128,9 @@ public class BusinessDepensesService {
 				}
 				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
 			}
-			catch(BudgetNotFoundException e){ }
+			catch(BudgetNotFoundException e){
+				LOGGER.error("Le budget précédent celui de [{}/{}] est introuvable", mois, annee);
+			}
 			// Résultat mensuel mis à jour
 			calculBudgetEtSauvegarde(budgetMensuel);
 			// Ajout de l'autocomplete
@@ -265,8 +267,8 @@ public class BusinessDepensesService {
 			initBudgetFromBudgetPrecedent(budget, chargerBudgetMensuel(utilisateur, compteBancaire, moisPrecedent, anneePrecedente));
 		}
 		else{
-			StringBuilder err = new StringBuilder().append("Le budget ").append(mois).append("/").append(annee).append(" n'a jamais existé");
-			LOGGER.warn(err.toString());
+			String err = new StringBuilder("Le budget ").append(mois).append("/").append(annee).append(" n'a jamais existé").toString();
+			LOGGER.warn(err);
 			budget.setFinArgentAvance(0D);
 			budget.setFinCompteReel(0D);
 			budget.setNowArgentAvance(0D);
@@ -275,7 +277,6 @@ public class BusinessDepensesService {
 			budget.setListeDepenses(new ArrayList<LigneDepense>());
 			budget.setMargeSecurite(0D);
 			budget.setMargeSecuriteFinMois(0D);
-			// throw new BudgetNotFoundException();
 		}
 
 		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
@@ -354,7 +355,7 @@ public class BusinessDepensesService {
 
 			// #59 : Cohérence des états
 			EtatLigneDepenseEnum etatDepenseCourant = ligneDepense.getEtat();
-			EtatLigneDepenseEnum etatDepenseTransfert = EtatLigneDepenseEnum.PREVUE;
+			EtatLigneDepenseEnum etatDepenseTransfert = null;
 			switch (etatDepenseCourant) {
 			case ANNULEE:
 				etatDepenseTransfert = EtatLigneDepenseEnum.ANNULEE;

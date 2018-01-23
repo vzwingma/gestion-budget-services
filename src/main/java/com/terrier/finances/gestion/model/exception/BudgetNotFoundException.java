@@ -26,6 +26,6 @@ public class BudgetNotFoundException extends Exception {
 	
 	
 	public BudgetNotFoundException(StringBuilder libelleErreur){
-		LOGGER.error(libelleErreur.toString());
+		LOGGER.error("{}", libelleErreur);
 	}
 }
