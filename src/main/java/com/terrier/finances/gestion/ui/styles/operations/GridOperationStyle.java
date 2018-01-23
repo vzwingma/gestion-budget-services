@@ -18,8 +18,6 @@ public class GridOperationStyle implements StyleGenerator<LigneDepense> {
 
 	private static final long serialVersionUID = -6709397765771547573L;
 
-
-
 	private Boolean oddStyleLignes;
 
 	public GridOperationStyle(Boolean oddStyleLignes){
@@ -59,8 +57,7 @@ public class GridOperationStyle implements StyleGenerator<LigneDepense> {
 		 */
 		int rang = 0;
 		if(!BusinessDepensesService.ID_SS_CAT_RESERVE.equals(depense.getSsCategorie().getId())){
-			style = new StringBuilder(depense.getEtat().getId());
-			return style.toString();
+			return depense.getEtat().getId();
 		}
 
 		// Gestion du style par préférence utilisateur

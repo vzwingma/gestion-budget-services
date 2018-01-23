@@ -51,42 +51,56 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 		// Validation
 		if(form.getControleur().validateForm()){
 			// Si oui création
-			TypeDepenseEnum type = !form.getComboboxType().getSelectedItem().isPresent() ? TypeDepenseEnum.DEPENSE : form.getComboboxType().getSelectedItem().get();
-			EtatLigneDepenseEnum etat = !form.getListSelectEtat().getSelectedItem().isPresent() ? EtatLigneDepenseEnum.PREVUE : form.getListSelectEtat().getSelectedItem().get();
+			TypeDepenseEnum type = TypeDepenseEnum.DEPENSE;
+			if(form.getComboboxType().getSelectedItem().isPresent()){
+				type = form.getComboboxType().getSelectedItem().get();
+			}
+			EtatLigneDepenseEnum etat = EtatLigneDepenseEnum.PREVUE;
+			if(form.getListSelectEtat().getSelectedItem().isPresent()){
+				etat = form.getListSelectEtat().getSelectedItem().get();
+			}
 
-			LigneDepense ligneDepense = new LigneDepense(
-					form.getComboBoxSsCategorie().getSelectedItem().get(), 
-					form.getTextFieldDescription().getSelectedItem().get(), 
-					type,
-					Float.valueOf(form.getTextFieldValeur().getValue()),
-					etat,
-					form.getCheckBoxPeriodique().getValue(),
-					getBudgetMensuelCourant().isActif());
-			LOGGER.debug("[IHM]  >  {}", ligneDepense);
-			String auteur = getUtilisateurCourant().getLibelle();
-			BudgetMensuel budget = getBudgetMensuelCourant();
-			try{
-				if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ligneDepense.getSsCategorie().getId())){
-					LOGGER.info("[IHM] Ajout d'un nouveau transfert intercompte");
-					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, ((CompteBancaire)form.getComboboxComptes().getSelectedItem().get()), getUtilisateurCourant());
-					Notification.show("Le transfert inter-compte a bien été créée", Notification.Type.TRAY_NOTIFICATION);
+			if(form.getComboBoxSsCategorie().getSelectedItem().isPresent() 
+					&& form.getTextFieldDescription().getSelectedItem().isPresent()
+					){
+				LigneDepense ligneDepense = new LigneDepense(
+						form.getComboBoxSsCategorie().getSelectedItem().get(), 
+						form.getTextFieldDescription().getSelectedItem().get(), 
+						type,
+						Float.valueOf(form.getTextFieldValeur().getValue()),
+						etat,
+						form.getCheckBoxPeriodique().getValue(),
+						getBudgetMensuelCourant().isActif());
+				LOGGER.debug("[IHM]  >  {}", ligneDepense);
+				String auteur = getUtilisateurCourant().getLibelle();
+				BudgetMensuel budget = getBudgetMensuelCourant();
+				try{
+					if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ligneDepense.getSsCategorie().getId())){
+						LOGGER.info("[IHM] Ajout d'un nouveau transfert intercompte");
+						getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, ((CompteBancaire)form.getComboboxComptes().getSelectedItem().get()), getUtilisateurCourant());
+						Notification.show("Le transfert inter-compte a bien été créée", Notification.Type.TRAY_NOTIFICATION);
+					}
+					else{
+						LOGGER.info("[IHM] Ajout d'une nouvelle dépense");
+						getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneDepenseEtCalcul(budget.getId(), ligneDepense, auteur);
+						Notification.show("La dépense a bien été créée", Notification.Type.TRAY_NOTIFICATION);
+					}
 				}
-				else{
-					LOGGER.info("[IHM] Ajout d'une nouvelle dépense");
-					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneDepenseEtCalcul(budget.getId(), ligneDepense, auteur);
-					Notification.show("La dépense a bien été créée", Notification.Type.TRAY_NOTIFICATION);
+				catch(Exception e){
+					LOGGER.error("Erreur : ", e);
+					Notification.show("Impossible de créer la dépense : " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
 				}
 			}
-			catch(Exception e){
-				LOGGER.error("Erreur : ", e);
-				Notification.show("Impossible de créer la dépense : " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			else{
+				LOGGER.error("Erreur : La catégorie ou la description sont invalides");
+				Notification.show("Impossible de créer la dépense : La catégorie ou la description sont invalides", Notification.Type.ERROR_MESSAGE);
 			}
 
 			/**
 			 * MAJ des tableaux
 			 */
 			BudgetMensuelController controleur = getControleur(BudgetMensuelController.class);
-			
+
 			if(event.getButton().getCaption().contains("Fermer")){
 				// Fin du formulaire
 				getUISession().getPopupModale().close();

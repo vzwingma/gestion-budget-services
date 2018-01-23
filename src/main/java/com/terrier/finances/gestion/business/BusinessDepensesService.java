@@ -179,11 +179,11 @@ public class BusinessDepensesService {
 		
 		LocalDate premier = DataUtils.localDateFirstDayOfMonth();
 		if(premierDernierBudgets[0] != null){
-			premier = premier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[0].getMois() + 1).with(ChronoField.YEAR, premierDernierBudgets[0].getAnnee());
+			premier = premier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[0].getMois() + 1L).with(ChronoField.YEAR, premierDernierBudgets[0].getAnnee());
 		}
 		LocalDate dernier = DataUtils.localDateFirstDayOfMonth();
 		if(premierDernierBudgets[1] != null){
-			dernier = dernier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[1].getMois() + 1).with(ChronoField.YEAR, premierDernierBudgets[1].getAnnee()).plusMonths(1);
+			dernier = dernier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[1].getMois() + 1L).with(ChronoField.YEAR, premierDernierBudgets[1].getAnnee()).plusMonths(1);
 		}
 		return new LocalDate[]{premier, dernier};
 	}
@@ -252,8 +252,7 @@ public class BusinessDepensesService {
 		budget.setCompteBancaire(compteBancaire);
 		budget.setDateMiseAJour(Calendar.getInstance());
 		// Init si dans le futur par rapport au démarrage
-		LocalDate datePremierBudget = getDatePremierDernierBudgets(compteBancaire.getId())[0];
-		datePremierBudget.with(ChronoField.DAY_OF_MONTH, 1);
+		LocalDate datePremierBudget = getDatePremierDernierBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
 
 		LocalDate dateCourante = DataUtils.localDateFirstDayOfMonth(mois, annee);
 

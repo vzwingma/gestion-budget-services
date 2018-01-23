@@ -66,7 +66,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private TreeGridResumeCategoriesController treeResumeControleur;
 
 	// Calcul de mise à jour du compte courant
-	private Month oldMois;
+	private transient Month oldMois;
 	private int oldAnnee;
 	private CompteBancaire oldCompte;
 	private boolean refreshAllTable = false;
@@ -148,7 +148,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		// Label last connexion
 		Date dateDernierAcces = getUtilisateurCourant().getDernierAcces();
 		if(dateDernierAcces != null){
-			SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm", Locale.FRENCH);
+			SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.FRENCH);
 			sdf.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
 			String date = sdf.format(dateDernierAcces.getTime());
 			this.getComponent().getLabelLastConnected().setValue("Dernière connexion : \n" + date);
@@ -159,8 +159,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		getComponent().getMois().addValueChangeListener(event -> {
 			// Modification de la date
 			CompteBancaire compte = getCompte().getValue();
-			LocalDate newDateBudget = event.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			newDateBudget.with(ChronoField.DAY_OF_MONTH, 1);
+			LocalDate newDateBudget = event.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().with(ChronoField.DAY_OF_MONTH, 1);
 			setRangeFinMois(newDateBudget, compte.getId());
 			if(!newDateBudget.getMonth().equals(getOldMois()) || newDateBudget.getYear() != getOldAnnee()){
 				miseAJourVueDonnees();			
@@ -330,7 +329,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 			// Bouton Mois suivant limité au mois prochain si le compte n'est pas clos
 			LocalDate dateRangeBudget = DataUtils.localDateFirstDayOfMonth();
 			if(getServiceDepense().isCompteActif(idCompte)){
-				dateRangeBudget.plusMonths(1);
+				dateRangeBudget = dateRangeBudget.plusMonths(1);
 			}
 			if(dateRangeBudget.isAfter(getComponent().getMois().getRangeEnd())){
 				getComponent().getMois().setRangeEnd(dateRangeBudget);
