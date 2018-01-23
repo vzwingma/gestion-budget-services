@@ -16,7 +16,7 @@
 		<mongo.data.version>3.5.0</mongo.data.version>
 		<spring.security.version>5.0.0.RELEASE</spring.security.version>
 		<vaadin.version>8.1.7</vaadin.version>
-		<jackson.version>2.9.2</jackson.version>
+		<jackson.version>2.9.3</jackson.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
