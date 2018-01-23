@@ -23,7 +23,7 @@ import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
  */
 public class BudgetMensuel implements Serializable {
 
-	public String id;
+	private String id;
 	/**
 	 * 
 	 */
