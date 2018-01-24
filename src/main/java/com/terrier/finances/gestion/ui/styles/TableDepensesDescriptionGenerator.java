@@ -13,7 +13,7 @@ import com.vaadin.ui.Component;
 /**
  * Style des cellules du tableau de dépense
  * @author vzwingma
- *
+ * @deprecated
  */
 @Deprecated
 public class TableDepensesDescriptionGenerator extends AbstractUIService { // implements ItemDescriptionGenerator {

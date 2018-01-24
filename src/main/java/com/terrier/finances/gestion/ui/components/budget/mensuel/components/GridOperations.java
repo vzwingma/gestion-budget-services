@@ -151,7 +151,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 		Column<LigneDepense, Date> c10 = addColumn(LigneDepense::getDateMaj);
 		c10.setId(EntetesTableSuiviDepenseEnum.DATE_MAJ.name())
 			.setCaption(EntetesTableSuiviDepenseEnum.DATE_MAJ.getLibelle())
-			.setWidth(TAILLE_COLONNE_DATE + 10)
+			.setWidth(TAILLE_COLONNE_DATE + 10D)
 			.setHidable(true)
 			.setResizable(false);
 		c10.setRenderer(new DateRenderer(DATE_FORMAT_MAJ));

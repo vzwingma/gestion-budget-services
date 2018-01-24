@@ -1,11 +1,13 @@
 package com.terrier.finances.gestion.ui.controler.budget.mensuel.creer.operation;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
@@ -56,12 +58,20 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 			validation &= getComponent().getComboboxComptes().getSelectedItem().isPresent();
 		}
 		TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
+		
+		CategorieDepense ssCategorieSelectionnee = null;
+		Optional<CategorieDepense> selection = getComponent().getComboBoxSsCategorie().getSelectedItem();
+		if(selection.isPresent()){
+			ssCategorieSelectionnee = selection.get();
+		}
+		
+		
 		if(	getComponent().getTextFieldValeur().getOptionalValue().isPresent()
 				&& getComponent().getComboBoxCategorie().getSelectedItem().isPresent()
-				&& getComponent().getComboBoxSsCategorie().getSelectedItem().isPresent()
+				&& ssCategorieSelectionnee != null
 				&& (
-				BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(getComponent().getComboBoxSsCategorie().getSelectedItem().get().getId()) 
-				|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(getComponent().getComboBoxSsCategorie().getSelectedItem().get().getId()))){
+				BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(ssCategorieSelectionnee.getId()) 
+				|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(ssCategorieSelectionnee.getId()))){
 			typeAttendu = TypeDepenseEnum.CREDIT;
 		}
 		// Cohérence type

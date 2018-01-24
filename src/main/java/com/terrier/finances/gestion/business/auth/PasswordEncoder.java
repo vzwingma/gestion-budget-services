@@ -28,7 +28,7 @@ public class PasswordEncoder {
 	
 	private PasswordEncoder() {  }
 
-	private static final int iterations = 1000;
+	private static final int ITERATIONS_HASH = 1000;
 	
 	/**
 	 * @param password  mot de passe
@@ -43,13 +43,13 @@ public class PasswordEncoder {
 			char[] chars = password.toCharArray();
 			byte[] salt = getSalt();
 
-			PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
+			PBEKeySpec spec = new PBEKeySpec(chars, salt, ITERATIONS_HASH, 64 * 8);
 			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 			byte[] hash;
 
 			hash = skf.generateSecret(spec).getEncoded();
 
-			return new StringBuilder().append(iterations).append(":").append(toHex(salt)).append(":").append(toHex(hash)).toString();
+			return new StringBuilder().append(ITERATIONS_HASH).append(":").append(toHex(salt)).append(":").append(toHex(hash)).toString();
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			return null;
 		}

@@ -1,11 +1,10 @@
 package com.terrier.finances.gestion.data;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,20 +140,12 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 		List<CompteBancaire>  listeComptes = new ArrayList<CompteBancaire>();
 		try{
 			LOGGER.info("Chargement des comptes de {} [_id={}]", utilisateur, utilisateur.getId());
-			Query queryBudget = new Query();
-			queryBudget
-			.addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(utilisateur.getId())));
+			Query queryBudget = new Query().addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(utilisateur.getId())));
 			try{
-				listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class);
-				Collections.sort(listeComptes, new Comparator<CompteBancaire>() {
-					/* (non-Javadoc)
-					 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-					 */
-					@Override
-					public int compare(CompteBancaire compte1, CompteBancaire compte2) {
-						return Integer.compare(compte1.getOrdre(), compte2.getOrdre());
-					}
-				});
+				listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class)
+						.stream()
+						.sorted((compte1, compte2) -> Integer.compare(compte1.getOrdre(), compte2.getOrdre()))
+						.collect(Collectors.toList());
 				LOGGER.info(" {} comptes chargés : {} ", listeComptes.size(), listeComptes);
 			}
 			catch(Exception e){

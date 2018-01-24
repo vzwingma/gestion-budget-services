@@ -23,7 +23,7 @@ import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
  */
 public class BudgetMensuel implements Serializable {
 
-	public String id;
+	private String id;
 	/**
 	 * 
 	 */
@@ -35,7 +35,7 @@ public class BudgetMensuel implements Serializable {
 	/**
 	 * Mois du budget
 	 */
-	private Month mois;
+	private transient Month mois;
 	private int annee;
 	/**
 	 * Budget actif

@@ -112,15 +112,13 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// common part: create layout
 		mainLayout = new GridLayout();
 		mainLayout.setStyleName("fondbleu");
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
+		mainLayout.setSizeFull();
 		mainLayout.setMargin(false);
 		mainLayout.setColumns(3);
 		mainLayout.setRows(3);
 
 		// top-level component properties
-		setWidth("100.0%");
-		setHeight("100.0%");
+		setSizeFull();
 
 		// AuthlLayout
 		AuthlLayout = buildAuthlLayout();
@@ -174,7 +172,7 @@ public class Login extends AbstractUIComponent<LoginController> {
 	private VerticalLayout buildVerticalLayout_1() {
 		// common part: create layout
 		verticalLayout_1 = new VerticalLayout();
-		verticalLayout_1.setWidth("-1px");
+		verticalLayout_1.setWidthUndefined();
 		verticalLayout_1.setHeight("200px");
 		verticalLayout_1.setMargin(false);
 
@@ -182,8 +180,8 @@ public class Login extends AbstractUIComponent<LoginController> {
 		textLogin = new TextField();
 		textLogin.setCaption("Login");
 		textLogin.setDescription("Entrer le login");
-		textLogin.setWidth("100.0%");
-		textLogin.setHeight("-1px");
+		textLogin.setSizeFull();
+		textLogin.setHeightUndefined();
 		textLogin.setId("login");
 		verticalLayout_1.addComponent(textLogin);
 
@@ -191,8 +189,8 @@ public class Login extends AbstractUIComponent<LoginController> {
 		passwordField = new PasswordField();
 		passwordField.setCaption("Mot de passe");
 		passwordField.setDescription("Entrer le mot de passe");
-		passwordField.setWidth("100.0%");
-		passwordField.setHeight("-1px");
+		passwordField.setSizeFull();
+		passwordField.setHeightUndefined();
 		passwordField.setId("password");
 		verticalLayout_1.addComponent(passwordField);
 
@@ -202,7 +200,7 @@ public class Login extends AbstractUIComponent<LoginController> {
 		buttonConnexion.setStyleName("primary");
 		buttonConnexion.setCaption("Connexion");
 		buttonConnexion.setWidth("145px");
-		buttonConnexion.setHeight("-1px");
+		buttonConnexion.setHeightUndefined();
 		verticalLayout_1.addComponent(buttonConnexion);
 		verticalLayout_1.setComponentAlignment(buttonConnexion, new Alignment(
 				48));
@@ -215,22 +213,20 @@ public class Login extends AbstractUIComponent<LoginController> {
 		// common part: create layout
 		VersionLayout = new VerticalLayout();
 		VersionLayout.setWidth("150px");
-		VersionLayout.setHeight("-1px");
+		VersionLayout.setHeightUndefined();
 		VersionLayout.setMargin(false);
 
 		// labelVersion
 		labelVersion = new Label();
 		labelVersion.setStyleName("versionLabel");
-		labelVersion.setWidth("-1px");
-		labelVersion.setHeight("-1px");
+		labelVersion.setSizeUndefined();
 		labelVersion.setValue("Version : ");
 		VersionLayout.addComponent(labelVersion);
 
 		// labelBuildTime
 		labelBuildTime = new Label();
 		labelBuildTime.setStyleName("versionLabel");
-		labelBuildTime.setWidth("-1px");
-		labelBuildTime.setHeight("-1px");
+		labelBuildTime.setSizeUndefined();
 		labelBuildTime.setValue("Build : ");
 		VersionLayout.addComponent(labelBuildTime);
 
