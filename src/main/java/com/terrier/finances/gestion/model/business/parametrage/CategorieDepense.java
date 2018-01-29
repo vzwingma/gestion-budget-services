@@ -43,7 +43,7 @@ public class CategorieDepense implements Serializable, Comparable<CategorieDepen
 	/**
 	 * Liste des id des sous catégories
 	 */
-	private Set<String> listeIdsSSCategories;
+	private Set<String> listeIdsSSCategories = new HashSet<>();
 	/**
 	 * Catégorie
 	 */
