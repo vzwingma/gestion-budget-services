@@ -8,8 +8,9 @@ import com.vaadin.data.ValueContext;
 /**
  * Convertisseur Modèle <==> Présentation de l'énum etat dépense
  * @author vzwingma
- *
+ * @deprecated
  */
+@Deprecated
 public class EtatLigneDepenseEnumConverter implements Converter<String, EtatLigneDepenseEnum>{
 
 	/**

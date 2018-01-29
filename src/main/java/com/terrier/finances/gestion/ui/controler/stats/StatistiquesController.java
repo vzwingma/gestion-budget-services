@@ -1,19 +1,15 @@
 package com.terrier.finances.gestion.ui.controler.stats;
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.stats.StatistiquesPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.ChangePageListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionDeconnexionClickListener;
 import com.vaadin.data.HasValue.ValueChangeEvent;
-import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Notification;
 
 /**
  * Controleur de la page des statistiques
@@ -21,7 +17,7 @@ import com.vaadin.ui.Notification;
  * @deprecated
  */
 @Deprecated
-public class StatistiquesController extends AbstractUIController<StatistiquesPage> implements ValueChangeListener<CompteBancaire>, Serializable{
+public class StatistiquesController extends AbstractUIController<StatistiquesPage> implements Serializable{
 
 	/**
 	 * 
@@ -55,41 +51,12 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 		this.compte.setDescription("Choix du compte");
 		this.compte.setTextInputAllowed(false);
 		this.compte.setEmptySelectionAllowed(false);
-		int ordreCompte = 100;
-		try{
-			List<CompteBancaire> comptes = getServiceParams().getComptesUtilisateur(getUtilisateurCourant());
-			for (CompteBancaire compte : comptes) {
-//				this.compte.addItem(compte.getId());
-//				this.compte.setItemCaption(compte.getId(), compte.getLibelle());
-//				if(compte.getOrdre() <= ordreCompte){
-//					this.compte.select(compte.getId());
-//					ordreCompte = compte.getOrdre();
-//				}
-//				if(getComponent().getIdCompteSelectionne() != null && compte.getId().equals(getComponent().getIdCompteSelectionne())){
-//					this.compte.select(compte.getId());				
-//				}
-//				this.compte.setItemIcon(compte.getId(), new ThemeResource(compte.getItemIcon()));
-			}
-			this.compte.setTextInputAllowed(false);
-			this.compte.addValueChangeListener(this);
-		} catch (DataNotFoundException e) {
-			Notification.show("Impossible de charger les comptes de "+ getUtilisateurCourant(), Notification.Type.ERROR_MESSAGE);
-		}
-		
 	}
 
 
 	@Override
 	public void miseAJourVueDonnees() {
 		// Rien à faire pour le moment
-	}
-
-    
-    
-	@Override
-	public void valueChange(ValueChangeEvent<CompteBancaire> event) {
-		// TODO Auto-generated method stub
-		
 	}
 }
 

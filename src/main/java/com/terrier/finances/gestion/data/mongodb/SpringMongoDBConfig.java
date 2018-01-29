@@ -35,10 +35,9 @@ public class SpringMongoDBConfig {
 	 * @param password mot de passe
 	 * @param db nom de la BDD
 	 * @return Template de connexion BDD
-	 * @throws Exception
 	 */
 	@Bean
-	public MongoTemplate mongoTemplate() throws Exception {
+	public MongoTemplate mongoTemplate() {
 
 		String db = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_DB, "budget-app-dev");
 		String host = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_HOST, "ds113936.mlab.com");

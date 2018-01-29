@@ -143,7 +143,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		LocalDate dateBudget = DataUtils.localDateFirstDayOfMonth();
 		if(getComponent().getMois().getValue() == null){
 			getComponent().getMois().setValue(dateBudget);
-			LOGGER.debug("[INIT] Init du mois géré : {}", dateBudget.toString());
+			LOGGER.debug("[INIT] Init du mois géré : {}", dateBudget);
 		}
 		// Label last connexion
 		Date dateDernierAcces = getUtilisateurCourant().getDernierAcces();

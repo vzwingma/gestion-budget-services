@@ -499,7 +499,7 @@ public class BusinessDepensesService {
 			if(ligneDepense.getEtat() == null){
 				for (Iterator<LigneDepense> iterator = budget.getListeDepenses().iterator(); iterator
 						.hasNext();) {
-					LigneDepense type = (LigneDepense) iterator.next();
+					LigneDepense type = iterator.next();
 					if(type.getId().equals(ligneDepense.getId())){
 						iterator.remove();
 						ligneupdated = true;

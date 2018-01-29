@@ -39,8 +39,7 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 		/**
 		 * Table de suivi des dépenses
 		 */
-		getComponent().setWidth("100.0%");
-		getComponent().setHeight("100.0%");
+		getComponent().setSizeFull();
 		getComponent().setColumnReorderingAllowed(false);
 		getComponent().setResponsive(true);
 

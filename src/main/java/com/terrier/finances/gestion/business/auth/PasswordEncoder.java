@@ -57,7 +57,7 @@ public class PasswordEncoder {
 
 	/**
 	 * @return salt
-	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchAlgorithmException 
 	 */
 	private static byte[] getSalt() throws NoSuchAlgorithmException
 	{
@@ -106,9 +106,8 @@ public class PasswordEncoder {
 	/**
 	 * @param hex
 	 * @return bytes[]
-	 * @throws NoSuchAlgorithmException
 	 */
-	private static byte[] fromHex(String hex) throws NoSuchAlgorithmException
+	private static byte[] fromHex(String hex)
 	{
 		byte[] bytes = new byte[hex.length() / 2];
 		for(int i = 0; i<bytes.length ;i++)
@@ -121,9 +120,8 @@ public class PasswordEncoder {
 	/**
 	 * @param array
 	 * @return String from hex
-	 * @throws NoSuchAlgorithmException
 	 */
-	private static String toHex(byte[] array) throws NoSuchAlgorithmException
+	private static String toHex(byte[] array)
 	{
 		BigInteger bi = new BigInteger(1, array);
 		String hex = bi.toString(16);

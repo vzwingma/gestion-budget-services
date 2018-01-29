@@ -36,8 +36,7 @@ public class UserAuthProvider implements AuthenticationProvider {
 	 * @see org.springframework.security.authentication.AuthenticationProvider#authenticate(org.springframework.security.core.Authentication)
 	 */
 	@Override
-	public Authentication authenticate(Authentication authentication)
-			throws AuthenticationException {
+	public Authentication authenticate(Authentication authentication) {
 		String username = authentication.getName();
 		String password = (String) authentication.getCredentials();
 		Utilisateur utilisateur = authenticationService.authenticate(username, password);

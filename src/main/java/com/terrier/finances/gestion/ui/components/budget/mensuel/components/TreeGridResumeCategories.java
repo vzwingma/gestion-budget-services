@@ -28,12 +28,11 @@ public class TreeGridResumeCategories extends AbstractUITreeGridComponent<Resume
 	public TreeGridResumeCategories(){
 		// Start controleur
 		startControleur();
-
 	}
 
 	
 	@Override
-	public void paramComponentsOnPage() {
+	public void paramComponentsOnTreeGrid() {
 		
 		addColumn(ResumeTotalCategories::getTypeTotal)
 		.setId(EntetesTreeResumeDepenseEnum.CATEGORIE.getId())
@@ -70,7 +69,7 @@ public class TreeGridResumeCategories extends AbstractUITreeGridComponent<Resume
 	 * @see com.terrier.finances.gestion.ui.components.AbstractUITreeTableComponent#createControleur()
 	 */
 	@Override
-	public TreeGridResumeCategoriesController createControleur() {
+	public TreeGridResumeCategoriesController createControleurTreeGrid() {
 		return new TreeGridResumeCategoriesController(this);
 	}
 }

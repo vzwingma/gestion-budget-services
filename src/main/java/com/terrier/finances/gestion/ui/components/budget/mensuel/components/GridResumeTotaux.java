@@ -27,7 +27,7 @@ public class GridResumeTotaux extends AbstractUIGridComponent<GridResumeTotauxCo
 
 
 	@Override
-	public void paramComponentsOnPage() {
+	public void paramComponentsOnGrid() {
 
 		setSelectionMode(SelectionMode.NONE);
 		// Style
@@ -67,7 +67,7 @@ public class GridResumeTotaux extends AbstractUIGridComponent<GridResumeTotauxCo
 	 * @see com.terrier.finances.gestion.ui.components.AbstractUITableComponent#createControleur()
 	 */
 	@Override
-	public GridResumeTotauxController createControleur() {
+	public GridResumeTotauxController createControleurGrid() {
 		return new GridResumeTotauxController(this);
 	}
 }

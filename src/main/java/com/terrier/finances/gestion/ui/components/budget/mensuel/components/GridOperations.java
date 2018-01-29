@@ -57,7 +57,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	 * @see com.terrier.finances.gestion.ui.components.AbstractUITableComponent#getControleur()
 	 */
 	@Override
-	public GridOperationsController createControleur() {
+	public GridOperationsController createControleurGrid() {
 		return new GridOperationsController(this);
 	}
 
@@ -66,7 +66,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	 * @see com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent#paramComponentsOnPage()
 	 */
 	@Override
-	public void paramComponentsOnPage() {
+	public void paramComponentsOnGrid() {
 		
 		Binder<LigneDepense> binder = getEditor().getBinder();
 		

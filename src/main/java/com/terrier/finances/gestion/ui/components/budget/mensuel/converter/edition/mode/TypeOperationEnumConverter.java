@@ -8,8 +8,9 @@ import com.vaadin.data.ValueContext;
 /**
  * Convertisseur Modèle <==> Présentation de l'énum type TypeDepenseEnum
  * @author vzwingma
- *
+ * @deprecated
  */
+@Deprecated
 public class TypeOperationEnumConverter implements Converter<String, TypeDepenseEnum>{
 
 	/**

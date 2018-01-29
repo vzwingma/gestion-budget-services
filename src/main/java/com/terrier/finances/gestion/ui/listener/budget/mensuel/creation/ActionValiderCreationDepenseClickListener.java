@@ -78,9 +78,11 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 				String auteur = getUtilisateurCourant().getLibelle();
 				BudgetMensuel budget = getBudgetMensuelCourant();
 				try{
-					if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ligneDepense.getSsCategorie().getId())){
+					Optional<CompteBancaire> compteTransfert = form.getComboboxComptes().getSelectedItem();
+					if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ligneDepense.getSsCategorie().getId())
+							&& compteTransfert.isPresent()){
 						LOGGER.info("[IHM] Ajout d'un nouveau transfert intercompte");
-						getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, ((CompteBancaire)form.getComboboxComptes().getSelectedItem().get()), getUtilisateurCourant());
+						getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, compteTransfert.get(), getUtilisateurCourant());
 						Notification.show("Le transfert inter-compte a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 					}
 					else{

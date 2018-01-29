@@ -84,7 +84,9 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 				Double d = Double.valueOf(valeur);
 				validation &=(!Double.isInfinite(d) && !Double.isNaN(d));
 			}
-			catch(NumberFormatException e){ }
+			catch(NumberFormatException e){ 
+				validation &= false;
+			}
 		}
 
 
