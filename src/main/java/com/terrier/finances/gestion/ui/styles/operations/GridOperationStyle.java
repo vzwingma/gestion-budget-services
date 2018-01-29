@@ -55,7 +55,7 @@ public class GridOperationStyle implements StyleGenerator<LigneDepense> {
 		 *  Style pour les autres lignes
 		 *  Sauf pour les dépenses réalisées, et celle réserve
 		 */
-		int rang = 0;
+		int rang = (int)Math.random()*2;
 		if(!BusinessDepensesService.ID_SS_CAT_RESERVE.equals(depense.getSsCategorie().getId())){
 			return depense.getEtat().getId();
 		}
