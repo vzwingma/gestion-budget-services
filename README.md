@@ -15,6 +15,6 @@
 
 ### Swagger des API
 
-Swagger UI  : <a href='http://localhost:8080/gestion-budget/swagger-ui.html'>/gestion-budget/swagger-ui.html</a>
+Swagger UI  : <a href='http://localhost:8080/gestion-budget/swagger-ui.html'>/budget/swagger-ui.html</a>
 
-API docs v2 : <a href='http://localhost:8080/gestion-budget/v2/api-docs'>/gestion-budget/v2/api-docs</a>
+API docs v2 : <a href='http://localhost:8080/gestion-budget/v2/api-docs'>/budget/v2/api-docs</a>
