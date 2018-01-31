@@ -14,7 +14,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<spring.version>5.0.3.RELEASE</spring.version>
 		<mongo.data.version>3.6.1</mongo.data.version>
-		<spring.security.version>5.0.3.RELEASE</spring.security.version>
+		<spring.security.version>5.0.1.RELEASE</spring.security.version>
 		<vaadin.version>7.7.6</vaadin.version>
 		<jackson.version>2.9.4</jackson.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
