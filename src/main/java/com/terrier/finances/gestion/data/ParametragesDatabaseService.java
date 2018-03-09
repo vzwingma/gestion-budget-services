@@ -79,9 +79,10 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 
 
 	/**
-	 * @return la liste des catégories
+	 * @return la catégorie
+	 * @param id identifiant de la catégorie
 	 */
-	public CategorieDepense chargeCategorieParId(String id) throws DataNotFoundException{
+	public CategorieDepense chargeCategorieParId(String id) {
 
 		if(mapCategories.size() == 0){
 			chargeCategories();

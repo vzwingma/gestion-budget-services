@@ -129,7 +129,7 @@ public class ParametragesService {
 	/**
 	 * @return liste des catégories
 	 */
-	public List<CategorieDepense> getCategories() throws DataNotFoundException{
+	public List<CategorieDepense> getCategories(){
 		if(listeCategories == null){
 			listeCategories = dataParams.chargeCategories();
 			LOGGER.info("> Chargement des catégories <");

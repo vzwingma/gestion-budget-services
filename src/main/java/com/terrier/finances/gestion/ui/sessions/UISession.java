@@ -108,7 +108,7 @@ public class UISession {
 	 * Enregistrement des controleurs
 	 * @param controleur controleur à enregistrer
 	 */
-	public <CTRL extends AbstractUIController<? extends AbstractComponent>> void registerUIControler(CTRL controleur) {
+	public <C extends AbstractUIController<? extends AbstractComponent>> void registerUIControler(C controleur) {
 		if(mapControleurs.get(controleur.getClass()) == null){
 			LOGGER.info("[{}] Enregistrement du controleur : {}", this.idSession, controleur);
 			mapControleurs.put(controleur.getClass(), controleur);
@@ -122,8 +122,8 @@ public class UISession {
 	 * @return the mapControleurs
 	 */
 	@SuppressWarnings("unchecked")
-	public <CTRL extends AbstractUIController<? extends CustomComponent>> CTRL getControleur(Class<CTRL> classNameControleur) {
-		return (CTRL) mapControleurs.get(classNameControleur);
+	public <C extends AbstractUIController<? extends CustomComponent>> C getControleur(Class<C> classNameControleur) {
+		return (C) mapControleurs.get(classNameControleur);
 	}
 
 	/**

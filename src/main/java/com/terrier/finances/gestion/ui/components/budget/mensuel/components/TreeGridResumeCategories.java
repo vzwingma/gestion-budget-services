@@ -12,7 +12,7 @@ import com.vaadin.shared.MouseEventDetails.MouseButton;
  * @author vzwingma
  *
  */
-public class TreeGridResumeCategories extends AbstractUITreeGridComponent<ResumeTotalCategories, TreeGridResumeCategoriesController> {
+public class TreeGridResumeCategories extends AbstractUITreeGridComponent<TreeGridResumeCategoriesController, ResumeTotalCategories> {
 
 	/**
 	 * 

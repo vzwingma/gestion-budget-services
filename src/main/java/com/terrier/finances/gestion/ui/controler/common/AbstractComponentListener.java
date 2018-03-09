@@ -20,7 +20,7 @@ public abstract class AbstractComponentListener extends AbstractUIService {
 	 * @param classNameControleur
 	 * @return controleur correspondant
 	 */
-	public <CTRL extends AbstractUIController<? extends CustomComponent>> CTRL getControleur(Class<CTRL> classNameControleur) {
+	public <C extends AbstractUIController<? extends CustomComponent>> C getControleur(Class<C> classNameControleur) {
 		return getUISession().getControleur(classNameControleur);
 	}
 	

@@ -20,7 +20,6 @@ import com.terrier.finances.gestion.model.IDataTransformer;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**
  * DataTransformer
@@ -51,7 +50,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	 */
 	@Override
 	public BudgetMensuel transformDTOtoBO(BudgetMensuelDTO dto) {
-		
+
 		BasicTextEncryptor decryptor = getEncryptor();
 		try{
 			BudgetMensuel bo = new BudgetMensuel();
@@ -68,7 +67,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 			bo.setMargeSecuriteFinMois(dto.getMargeSecuriteFinMois() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecuriteFinMois())) : 0D);
 			bo.setMois(Month.of(dto.getMois() + 1));
 			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getResultatMoisPrecedent())) : 0D);
-			
+
 			/*
 			 * Budget clos : utilisation des valeurs calculées
 			 */
@@ -79,7 +78,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 				bo.setFinCompteReel(dto.getFinCompteReel() != null ? Double.valueOf(decryptor.decrypt(dto.getFinCompteReel())):0);
 				// Complétion des totaux
 				Map<CategorieDepense, Double[]> totalCategorieBO = new HashMap<>();
-				
+
 				if(dto.getTotalParCategories() != null){
 					dto.getTotalParCategories().entrySet()
 					.parallelStream()
@@ -95,8 +94,8 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 					});
 				}
 				bo.setTotalParCategories(totalCategorieBO);
-				
-				
+
+
 				// Complétion des totaux ss catégorie
 				Map<CategorieDepense, Double[]> totalSsCategorieBO = new HashMap<>();
 				if(dto.getTotalParSSCategories() != null){
@@ -116,7 +115,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 				bo.setTotalParSSCategories(totalSsCategorieBO);
 			}
 			bo.setId(dto.getId());
-			
+
 			LOGGER.debug("	[{}] \n > Transformation en BO > [{}]", dto, bo);
 			return bo;
 		}
@@ -125,17 +124,12 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 			return null;			
 		}
 	}
-	
-	
+
+
 	private CategorieDepense getCategorieByEncryptedId(String encryptedId){
-		try {
-			return parametrageService.chargeCategorieParId(getEncryptor().decrypt(encryptedId));
-		} catch (DataNotFoundException e) {
-			LOGGER.error("Impossible de trouver la catégorie {}", getEncryptor().decrypt(encryptedId));
-			return null;
-		}
+		return parametrageService.chargeCategorieParId(getEncryptor().decrypt(encryptedId));
 	}
-	
+
 
 
 	/* (non-Javadoc)
@@ -143,9 +137,9 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	 */
 	@Override
 	public BudgetMensuelDTO transformBOtoDTO(BudgetMensuel bo) {
-		
+
 		BasicTextEncryptor encrytor = getEncryptor();
-		
+
 		BudgetMensuelDTO dto = new BudgetMensuelDTO();
 		dto.setActif(bo.isActif());
 		dto.setAnnee(bo.getAnnee());
@@ -179,7 +173,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		dto.setTotalParCategories(totalCategorieDTO);
 
 		// Complétion des totaux ss catégorie
-		Map<String, String[]> totalSsCategorieDTO = new HashMap<String, String[]>();
+		Map<String, String[]> totalSsCategorieDTO = new HashMap<>();
 		if(bo.getTotalParSSCategories() != null){
 			bo.getTotalParSSCategories().entrySet()
 			.parallelStream()
@@ -221,6 +215,6 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	public final void setParametrageService(ParametragesDatabaseService parametrageService) {
 		this.parametrageService = parametrageService;
 	}
-	
-	
+
+
 }

@@ -14,10 +14,10 @@ import com.vaadin.ui.Grid;
 
 /**
  * @author vzwingma
- *
- * @param <CONTROL> controleur
+ * @param <D> donnée métier
+ * @param <C> controleur
  */
-public abstract class AbstractUIGridComponent<CONTROL extends AbstractUIController<?>, DONNEEMETIER> extends Grid<DONNEEMETIER> {
+public abstract class AbstractUIGridComponent<C extends AbstractUIController<?>, D> extends Grid<D> {
 
 	/**
 	 * 
@@ -28,7 +28,7 @@ public abstract class AbstractUIGridComponent<CONTROL extends AbstractUIControll
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUIGridComponent.class);
 	
-	private CONTROL controleurGrid;
+	private C controleurGrid;
 	
 
 
@@ -50,14 +50,14 @@ public abstract class AbstractUIGridComponent<CONTROL extends AbstractUIControll
 	/**
 	 * @return controleur associé
 	 */
-	public CONTROL getControleur(){
+	public C getControleur(){
 		return controleurGrid;
 	}
 	
 	/**
 	 * @return création d'un controleur
 	 */
-	public abstract CONTROL createControleurGrid();
+	public abstract C createControleurGrid();
 
 	
 	/**

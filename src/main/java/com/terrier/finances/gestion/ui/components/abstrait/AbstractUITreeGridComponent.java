@@ -11,10 +11,10 @@ import com.vaadin.ui.TreeGrid;
 
 /**
  * @author vzwingma
- *
- * @param <CONTROL> controleur
+ * @param <D> donnée métier
+ * @param <C> controleur
  */
-public abstract class AbstractUITreeGridComponent<DONNEEMETIER, CONTROL extends AbstractUIController<?>> extends TreeGrid<DONNEEMETIER> {
+public abstract class AbstractUITreeGridComponent<C extends AbstractUIController<?>, D> extends TreeGrid<D> {
 
 	/**
 	 * 
@@ -26,7 +26,7 @@ public abstract class AbstractUITreeGridComponent<DONNEEMETIER, CONTROL extends 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUITreeGridComponent.class);
 	
 	
-	private CONTROL controleur;
+	private C controleur;
 	
 
 
@@ -50,13 +50,13 @@ public abstract class AbstractUITreeGridComponent<DONNEEMETIER, CONTROL extends 
 	/**
 	 * @return controleur associé
 	 */
-	public CONTROL getControleur(){
+	public C getControleur(){
 		return controleur;
 	}
 	
 	/**
 	 * @return création d'un controleur
 	 */
-	public abstract CONTROL createControleurTreeGrid();
+	public abstract C createControleurTreeGrid();
 
 }
