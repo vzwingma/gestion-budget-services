@@ -56,7 +56,7 @@ public class UISession {
 	private BudgetMensuel budgetMensuelCourant;
 
 	@SuppressWarnings("rawtypes")
-	private Map<Class, AbstractUIController<? extends AbstractComponent>> mapControleurs = new HashMap<Class, AbstractUIController<? extends AbstractComponent>>();
+	private Map<Class, AbstractUIController<? extends AbstractComponent>> mapControleurs = new HashMap<>();
 	// Page principale
 	private Layout mainLayout;
 

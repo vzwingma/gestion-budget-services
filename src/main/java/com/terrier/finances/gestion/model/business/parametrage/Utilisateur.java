@@ -5,6 +5,7 @@ package com.terrier.finances.gestion.model.business.parametrage;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,11 +58,11 @@ public class Utilisateur implements Serializable {
 	/**
 	 * Préférences
 	 */
-	private Map<UtilisateurPrefsEnum, Object> prefsUtilisateur = new HashMap<>();
+	private Map<UtilisateurPrefsEnum, Object> prefsUtilisateur = new EnumMap<>(UtilisateurPrefsEnum.class);
 	/**
 	 * Droits
 	 */
-	private Map<UtilisateurDroitsEnum, Boolean> droits = new HashMap<>();
+	private Map<UtilisateurDroitsEnum, Boolean> droits = new EnumMap<>(UtilisateurDroitsEnum.class);
 	
 	
 	/**

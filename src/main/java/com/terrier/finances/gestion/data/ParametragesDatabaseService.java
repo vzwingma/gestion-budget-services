@@ -28,15 +28,15 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	/**
 	 * Liste des catégories
 	 */
-	private Map<String, CategorieDepense> mapCategories = new HashMap<String, CategorieDepense>();
+	private Map<String, CategorieDepense> mapCategories = new HashMap<>();
 	/**
 	 * Liste des sous catégories
 	 */
-	private Map<String, CategorieDepense> mapSSCategories = new HashMap<String, CategorieDepense>();	
+	private Map<String, CategorieDepense> mapSSCategories = new HashMap<>();	
 	/**
 	 * Liste des utilisateurs
 	 */
-	private List<Utilisateur> listeUtilisateurs = new ArrayList<Utilisateur>();
+	private List<Utilisateur> listeUtilisateurs = new ArrayList<>();
 
 	/**
 	 * Logger
@@ -46,7 +46,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	/**
 	 * @return la liste des catégories
 	 */
-	public List<CategorieDepense> chargeCategories() throws DataNotFoundException{
+	public List<CategorieDepense> chargeCategories() {
 		if(mapCategories.size() == 0){
 			try{
 				List<CategorieDepense> listeAllCategories =  getMongoOperation().findAll(CategorieDepense.class);
@@ -70,10 +70,10 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 				}
 			}
 			catch(Exception e){
-				return new ArrayList<CategorieDepense>();
+				return new ArrayList<>();
 			}
 		}
-		return new ArrayList<CategorieDepense>(mapCategories.values());
+		return new ArrayList<>(mapCategories.values());
 	}
 
 
@@ -137,7 +137,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	 * @throws DataNotFoundException erreur dans la connexion
 	 */
 	public List<CompteBancaire> chargeComptes(Utilisateur utilisateur) throws DataNotFoundException{
-		List<CompteBancaire>  listeComptes = new ArrayList<CompteBancaire>();
+		List<CompteBancaire>  listeComptes = new ArrayList<>();
 		try{
 			LOGGER.info("Chargement des comptes de {} [_id={}]", utilisateur, utilisateur.getId());
 			Query queryBudget = new Query().addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(utilisateur.getId())));

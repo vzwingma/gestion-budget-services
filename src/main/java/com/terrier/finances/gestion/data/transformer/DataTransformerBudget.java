@@ -78,12 +78,12 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 				bo.setFinArgentAvance(dto.getFinArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getFinArgentAvance())): 0);
 				bo.setFinCompteReel(dto.getFinCompteReel() != null ? Double.valueOf(decryptor.decrypt(dto.getFinCompteReel())):0);
 				// Complétion des totaux
-				Map<CategorieDepense, Double[]> totalCategorieBO = new HashMap<CategorieDepense, Double[]>();
+				Map<CategorieDepense, Double[]> totalCategorieBO = new HashMap<>();
 				
 				if(dto.getTotalParCategories() != null){
 					dto.getTotalParCategories().entrySet()
 					.parallelStream()
-					.forEach((entry) -> {
+					.forEach(entry -> {
 						CategorieDepense c = getCategorieByEncryptedId(entry.getKey());
 						if(c != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
@@ -98,11 +98,11 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 				
 				
 				// Complétion des totaux ss catégorie
-				Map<CategorieDepense, Double[]> totalSsCategorieBO = new HashMap<CategorieDepense, Double[]>();
+				Map<CategorieDepense, Double[]> totalSsCategorieBO = new HashMap<>();
 				if(dto.getTotalParSSCategories() != null){
 					dto.getTotalParSSCategories().entrySet()
 					.parallelStream()
-					.forEach((entry) -> {
+					.forEach(entry -> {
 						CategorieDepense ssC = getCategorieByEncryptedId(entry.getKey());
 						if(ssC != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
@@ -164,11 +164,11 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		dto.setNowCompteReel( encrytor.encrypt(String.valueOf(bo.getNowCompteReel())));
 
 		// Complétion des totaux
-		Map<String, String[]> totalCategorieDTO = new HashMap<String, String[]>();
+		Map<String, String[]> totalCategorieDTO = new HashMap<>();
 		if(bo.getTotalParCategories() != null){
 			bo.getTotalParCategories().entrySet()
 			.parallelStream()
-			.forEach((entry) -> {
+			.forEach(entry -> {
 				String[] totauxDTO = new String[entry.getValue().length];
 				for (int i = 0; i < entry.getValue().length; i++) {
 					totauxDTO[i] = entry.getValue()[i] != null ? encrytor.encrypt(entry.getValue()[i].toString()) : null;
@@ -183,7 +183,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		if(bo.getTotalParSSCategories() != null){
 			bo.getTotalParSSCategories().entrySet()
 			.parallelStream()
-			.forEach((entry) -> {
+			.forEach(entry -> {
 				String[] totauxDTO = new String[entry.getValue().length];
 				for (int i = 0; i < entry.getValue().length; i++) {
 					totauxDTO[i] = entry.getValue()[i] != null ? encrytor.encrypt(entry.getValue()[i].toString()) : null;

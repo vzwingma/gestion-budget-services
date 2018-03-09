@@ -38,7 +38,7 @@ public class CategorieDepense implements Serializable, Comparable<CategorieDepen
 	 * Liste des sous catégories
 	 */
 	@Transient
-	private Set<CategorieDepense> listeSSCategories = new HashSet<CategorieDepense>();
+	private Set<CategorieDepense> listeSSCategories = new HashSet<>();
 	
 	/**
 	 * Liste des id des sous catégories
@@ -65,7 +65,7 @@ public class CategorieDepense implements Serializable, Comparable<CategorieDepen
 	 */
 	public CategorieDepense(){
 		this.id = UUID.randomUUID().toString();
-	};
+	}
 	
 	
 

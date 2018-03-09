@@ -60,14 +60,14 @@ public class BudgetMensuel implements Serializable {
 	/**
 	 * Liste des dépenses
 	 */
-	private List<LigneDepense> listeDepenses = new ArrayList<LigneDepense>();
+	private List<LigneDepense> listeDepenses = new ArrayList<>();
 	/** 
 	 * Liste des libellés pour l'autocomplétion
 	 */
-	private Set<String> setLibellesDepensesForAutocomplete= new TreeSet<String>();
+	private Set<String> setLibellesDepensesForAutocomplete= new TreeSet<>();
 
-	private Map<CategorieDepense, Double[]> totalParCategories = new HashMap<CategorieDepense, Double[]>();
-	private Map<CategorieDepense, Double[]> totalParSSCategories = new HashMap<CategorieDepense, Double[]>();
+	private Map<CategorieDepense, Double[]> totalParCategories = new HashMap<>();
+	private Map<CategorieDepense, Double[]> totalParSSCategories = new HashMap<>();
 
 	/**
 	 * Totaux

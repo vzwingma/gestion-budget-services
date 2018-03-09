@@ -48,8 +48,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	private Date dateOperation;
 	// Date mise à jour
 	private Date dateMaj;
-	// Actions
-	private ActionsLigneBudget actionsOperation;
 	// Auteur MAJ
 	private String auteur;
 	// Périodique
@@ -335,15 +333,13 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	 */
 	public ActionsLigneBudget getActionsOperation() {
 		// Pas d'action pour les réserves
+		ActionsLigneBudget actionsOperation = null;
 		if(!BusinessDepensesService.ID_SS_CAT_RESERVE.equals(getSsCategorie().getId())
 				&& !BusinessDepensesService.ID_SS_CAT_PREVISION_SANTE.equals(getSsCategorie().getId())
 				&& budgetIsActif){
 			actionsOperation = new ActionsLigneBudget();
 			actionsOperation.getControleur().setIdOperation(getId());
 			actionsOperation.getControleur().miseAJourEtatLigne(getEtat());
-		}
-		else{
-			actionsOperation = null;
 		}
 		return actionsOperation;
 	}

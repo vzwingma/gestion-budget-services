@@ -8,7 +8,6 @@ import com.terrier.finances.gestion.ui.components.stats.StatistiquesPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.ChangePageListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionDeconnexionClickListener;
-import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.ui.ComboBox;
 
 /**

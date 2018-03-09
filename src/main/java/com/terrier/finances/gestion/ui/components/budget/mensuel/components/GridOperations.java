@@ -37,8 +37,8 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	public static final int TAILLE_COLONNE_TYPE_MENSUEL = 65;
 	public static final int TAILLE_COLONNE_VALEUR = 100;
 	
-	private final SimpleDateFormat DATE_FORMAT_MAJ = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
-	private final SimpleDateFormat DATE_FORMAT_OPERATION = new SimpleDateFormat("dd/MM/yyyy", Locale.FRENCH);
+	private final SimpleDateFormat dateFormatMaj = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
+	private final SimpleDateFormat dateFormatOperations = new SimpleDateFormat("dd/MM/yyyy", Locale.FRENCH);
 	private final TimeZone tzParis = TimeZone.getTimeZone("Europe/Paris");
 
 	/**
@@ -46,8 +46,8 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	 */
 	public GridOperations(){
 		
-		DATE_FORMAT_MAJ.setTimeZone(tzParis);
-		DATE_FORMAT_OPERATION.setTimeZone(tzParis);
+		dateFormatMaj.setTimeZone(tzParis);
+		dateFormatOperations.setTimeZone(tzParis);
 		// Start controleur
 		startControleur();
 	}
@@ -78,7 +78,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setWidth(TAILLE_COLONNE_DATE)
 			.setHidable(true)
 			.setResizable(false);
-		c.setRenderer(new DateRenderer(DATE_FORMAT_MAJ));
+		c.setRenderer(new DateRenderer(dateFormatMaj));
 
 		Column<LigneDepense, CategorieDepense> c2 = addColumn(LigneDepense::getCategorie);
 		c2.setId(EntetesTableSuiviDepenseEnum.CATEGORIE.name())
@@ -154,7 +154,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setWidth(TAILLE_COLONNE_DATE + 10D)
 			.setHidable(true)
 			.setResizable(false);
-		c10.setRenderer(new DateRenderer(DATE_FORMAT_MAJ));
+		c10.setRenderer(new DateRenderer(dateFormatMaj));
 		
 		Column<LigneDepense, String> c11 = addColumn(LigneDepense::getAuteur);
 		c11.setId(EntetesTableSuiviDepenseEnum.AUTEUR.name())

@@ -57,7 +57,7 @@ public class BudgetMensuelDTO implements Serializable {
 	 * Liste des dépenses
 	 */
 	@JsonIgnore
-	private List<LigneDepenseDTO> listeDepenses = new ArrayList<LigneDepenseDTO>();
+	private List<LigneDepenseDTO> listeDepenses = new ArrayList<>();
 
 	/**
 	 * Totaux
@@ -67,8 +67,8 @@ public class BudgetMensuelDTO implements Serializable {
 	private String finArgentAvance;
 	private String finCompteReel;
 
-	private Map<String, String[]> totalParCategories = new HashMap<String, String[]>();
-	private Map<String, String[]> totalParSSCategories = new HashMap<String, String[]>();
+	private Map<String, String[]> totalParCategories = new HashMap<>();
+	private Map<String, String[]> totalParSSCategories = new HashMap<>();
 	
 	/**
 	 * @return the id

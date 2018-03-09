@@ -77,11 +77,11 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	 * @param idCompte id du compte
 	 * @return liste des libellés
 	 */
-	public Set<String> chargeLibellesDepenses(String idCompte, int annee) throws BudgetNotFoundException{
+	public Set<String> chargeLibellesDepenses(String idCompte, int annee) {
 		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte).and(ATTRIBUT_ANNEE).is(annee));
-		Set<String> libellesDepenses = new HashSet<String>();
+		Set<String> libellesDepenses = new HashSet<>();
 		try{
 			List<BudgetMensuelDTO> budgetsDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
 			if(budgetsDTO != null){
@@ -132,8 +132,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee));
 		}
 		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
-		BudgetMensuel budgetMensuel = dataTransformerBudget.transformDTOtoBO(budgetDTO);
-		return budgetMensuel;
+		return dataTransformerBudget.transformDTOtoBO(budgetDTO);
 	}
 
 
@@ -230,7 +229,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte));
 
-		List<BudgetMensuelDTO> budgets = new ArrayList<BudgetMensuelDTO>();
+		List<BudgetMensuelDTO> budgets = new ArrayList<>();
 
 		// Année courante
 		Calendar annee = Calendar.getInstance();
@@ -289,7 +288,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 					break;
 				}				
 			}
-			LOGGER.debug("Dernier budget trouvé : {} -> {}", dernierbudget);
+			LOGGER.debug("Dernier budget trouvé : -> {}", dernierbudget);
 			return new BudgetMensuelDTO[]{premierbudget, dernierbudget};
 		}
 		catch(Exception e){

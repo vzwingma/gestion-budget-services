@@ -69,7 +69,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		Float depenseVal =  Math.abs(Float.valueOf(decryptor.decrypt(dto.getValeur())));
 		if(bo.getTypeDepense().equals(TypeDepenseEnum.DEPENSE)){
 				depenseVal = -depenseVal;
-		};
+		}
 		
 		bo.setValeur(depenseVal);
 		LOGGER.trace("	[{}] \n > Transformation en BO > [{}]", dto, bo);
@@ -103,7 +103,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		Float depenseVal =  Math.abs(bo.getValeur());
 		if(bo.getTypeDepense().equals(TypeDepenseEnum.DEPENSE)){
 				depenseVal = -depenseVal;
-		};
+		}
 		dto.setValeur(encryptor.encrypt(String.valueOf(depenseVal)));
 		
 		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);

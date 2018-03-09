@@ -46,7 +46,7 @@ public abstract class AbstractDatabaseService {
 	 */
 	public MongoOperations getMongoOperation(){
 		updateMongoStatus();
-		return (MongoOperations) mongoTemplate;
+		return mongoTemplate;
 	}
 	
 	
