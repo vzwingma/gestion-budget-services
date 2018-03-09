@@ -19,11 +19,6 @@ import com.vaadin.ui.Component;
 public class TableDepensesDescriptionGenerator extends AbstractUIService { // implements ItemDescriptionGenerator {
 
 
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1811163367277413727L;
 	// Controleur
 	private GridOperationsController controleur;
 

@@ -6,7 +6,6 @@ package com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIComponent;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.GridOperations;
@@ -70,11 +69,11 @@ public class ActionValiderAnnulerEditionDepenseListener extends AbstractComponen
 	 * Refresh
 	 * @param table
 	 */
-	@SuppressWarnings("rawtypes")
 	private void refreshModele(GridOperations table){
+		/*
 		BudgetMensuel budgetCourant = getBudgetMensuelCourant();
 		String auteur = getUtilisateurCourant().getLibelle();
-/*
+
 		for (Iterator iterator = table.getItemIds().iterator(); iterator.hasNext();) {
 			String itemId = (String) iterator.next();
 

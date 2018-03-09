@@ -111,12 +111,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		// Catégories
 		getComponent().getComboBoxCategorie().clear();
 		getComponent().getComboBoxCategorie().setSelectedItem(null);
-		try {
-			getComponent().getComboBoxCategorie().setItems(getServiceParams().getCategories().stream().sorted((c1, c2) -> c1.getLibelle().compareTo(c2.getLibelle())));
-		} catch (DataNotFoundException e) {
-			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
-			return;
-		}
+		getComponent().getComboBoxCategorie().setItems(getServiceParams().getCategories().stream().sorted((c1, c2) -> c1.getLibelle().compareTo(c2.getLibelle())));
 		getComponent().getComboBoxCategorie().setEmptySelectionAllowed(false);
 		getComponent().getComboBoxCategorie().setTextInputAllowed(false);
 		getComponent().getComboBoxCategorie().setEnabled(true);

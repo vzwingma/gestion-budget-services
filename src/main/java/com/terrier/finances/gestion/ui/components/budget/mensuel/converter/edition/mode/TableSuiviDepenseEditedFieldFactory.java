@@ -13,10 +13,6 @@ import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 @Deprecated
 public class TableSuiviDepenseEditedFieldFactory { //extends DefaultFieldFactory {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8561840459023324017L;
 
 	// Catégories
 	private Collection<CategorieDepense> categories;

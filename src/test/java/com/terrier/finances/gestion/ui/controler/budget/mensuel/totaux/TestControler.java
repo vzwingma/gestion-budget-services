@@ -22,11 +22,8 @@ public class TestControler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestControler.class);
 	@Test
 	public void testAffichageDate(){
-		GridResumeTotauxController t = new GridResumeTotauxController(null);
-		
 		LocalDate now = DataUtils.localDateNow();
-		
 		LOGGER.info("du {} à fin {}", 
-				now.format(t.auDateFormat), now.format(t.finDateFormat));
+				now.format(GridResumeTotauxController.auDateFormat), now.format(GridResumeTotauxController.finDateFormat));
 	}
 }
