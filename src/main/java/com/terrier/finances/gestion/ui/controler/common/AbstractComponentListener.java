@@ -29,6 +29,7 @@ public abstract class AbstractComponentListener extends AbstractUIService {
 	 * Set popup modale
 	 * @param popupModale enregistre la popup
 	 */
+	@Override
 	public void setPopupModale(Window popupModale){
 		getUISession().setPopupModale(popupModale);
 	}

@@ -8,8 +8,9 @@ import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
  * Field Factory pour le mode edition
  * Si la liste des id est remplie, ce sont les seuls lignes qui seront modifiées
  * @author vzwingma
- *
+ * @deprecated
  */
+@Deprecated
 public class TableSuiviDepenseEditedFieldFactory { //extends DefaultFieldFactory {
 
 	/**
@@ -22,10 +23,7 @@ public class TableSuiviDepenseEditedFieldFactory { //extends DefaultFieldFactory
 
 	private String idLigneEditable;
 
-	/**
-	 * Logger
-	 */
-	// private static final Logger LOGGER = LoggerFactory.getLogger(TableSuiviDepenseEditedFieldFactory.class);
+
 	/**
 	 * Constructeur
 	 * @param categories catégories de dépenses

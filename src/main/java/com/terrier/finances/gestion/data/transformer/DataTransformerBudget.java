@@ -79,36 +79,39 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 				bo.setFinCompteReel(dto.getFinCompteReel() != null ? Double.valueOf(decryptor.decrypt(dto.getFinCompteReel())):0);
 				// Complétion des totaux
 				Map<CategorieDepense, Double[]> totalCategorieBO = new HashMap<CategorieDepense, Double[]>();
+				
 				if(dto.getTotalParCategories() != null){
-					for (String catKey : dto.getTotalParCategories().keySet()) {
-						String[] totaux = dto.getTotalParCategories().get(catKey);
-						Double[] totauxBO = new Double[totaux.length];
-						for (int i = 0; i < totaux.length; i++) {
-							totauxBO[i] = totaux[i] != null ? Double.valueOf(decryptor.decrypt(totaux[i])) : 0D;
+					dto.getTotalParCategories().entrySet()
+					.parallelStream()
+					.forEach((entry) -> {
+						CategorieDepense c = getCategorieByEncryptedId(entry.getKey());
+						if(c != null){
+							Double[] totauxBO = new Double[entry.getValue().length];
+							for (int i = 0; i < entry.getValue().length; i++) {
+								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(decryptor.decrypt(entry.getValue()[i])) : 0D;
+							}
+							totalCategorieBO.put(c, totauxBO);
 						}
-						try {
-							totalCategorieBO.put(parametrageService.chargeCategorieParId(decryptor.decrypt(catKey)), totauxBO);
-						} catch (DataNotFoundException e) {
-							LOGGER.error("Impossible de trouver la catégorie {}", decryptor.decrypt(catKey));
-						}
-					}
+					});
 				}
 				bo.setTotalParCategories(totalCategorieBO);
+				
+				
 				// Complétion des totaux ss catégorie
 				Map<CategorieDepense, Double[]> totalSsCategorieBO = new HashMap<CategorieDepense, Double[]>();
 				if(dto.getTotalParSSCategories() != null){
-					for (String ssCatKey : dto.getTotalParSSCategories().keySet()) {
-						String[] totaux = dto.getTotalParSSCategories().get(ssCatKey);
-						Double[] totauxBO = new Double[totaux.length];
-						for (int i = 0; i < totaux.length; i++) {
-							totauxBO[i] = totaux[i] != null ? Double.valueOf(decryptor.decrypt(totaux[i])) : 0D;
+					dto.getTotalParSSCategories().entrySet()
+					.parallelStream()
+					.forEach((entry) -> {
+						CategorieDepense ssC = getCategorieByEncryptedId(entry.getKey());
+						if(ssC != null){
+							Double[] totauxBO = new Double[entry.getValue().length];
+							for (int i = 0; i < entry.getValue().length; i++) {
+								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(decryptor.decrypt(entry.getValue()[i])) : 0D;
+							}
+							totalSsCategorieBO.put(ssC, totauxBO);
 						}
-						try {
-							totalSsCategorieBO.put(parametrageService.chargeCategorieParId(decryptor.decrypt(ssCatKey)), totauxBO);
-						} catch (DataNotFoundException e) {
-							LOGGER.error("Impossible de trouver la catégorie {}", decryptor.decrypt(ssCatKey));
-						}
-					}
+					});
 				}
 				bo.setTotalParSSCategories(totalSsCategorieBO);
 			}
@@ -118,10 +121,21 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 			return bo;
 		}
 		catch(Exception e){
-			LOGGER.debug("	[{}] \n > Erreur lors de la transformation en BO > [{}]", dto, null);
+			LOGGER.debug("	[{}] \n > Erreur lors de la transformation en BO > [{}]", dto, null, e);
 			return null;			
 		}
 	}
+	
+	
+	private CategorieDepense getCategorieByEncryptedId(String encryptedId){
+		try {
+			return parametrageService.chargeCategorieParId(getEncryptor().decrypt(encryptedId));
+		} catch (DataNotFoundException e) {
+			LOGGER.error("Impossible de trouver la catégorie {}", getEncryptor().decrypt(encryptedId));
+			return null;
+		}
+	}
+	
 
 
 	/* (non-Javadoc)
@@ -151,24 +165,31 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 
 		// Complétion des totaux
 		Map<String, String[]> totalCategorieDTO = new HashMap<String, String[]>();
-		for (CategorieDepense catKey : bo.getTotalParCategories().keySet()) {
-			Double[] totaux = bo.getTotalParCategories().get(catKey);
-			String[] totauxDTO = new String[totaux.length];
-			for (int i = 0; i < totaux.length; i++) {
-				totauxDTO[i] = totaux[i] != null ? encrytor.encrypt(totaux[i].toString()) : null;
-			}
-			totalCategorieDTO.put(encrytor.encrypt(catKey.getId()), totauxDTO);
+		if(bo.getTotalParCategories() != null){
+			bo.getTotalParCategories().entrySet()
+			.parallelStream()
+			.forEach((entry) -> {
+				String[] totauxDTO = new String[entry.getValue().length];
+				for (int i = 0; i < entry.getValue().length; i++) {
+					totauxDTO[i] = entry.getValue()[i] != null ? encrytor.encrypt(entry.getValue()[i].toString()) : null;
+				}
+				totalCategorieDTO.put(encrytor.encrypt(entry.getKey().getId()), totauxDTO);
+			});
 		}
 		dto.setTotalParCategories(totalCategorieDTO);
+
 		// Complétion des totaux ss catégorie
 		Map<String, String[]> totalSsCategorieDTO = new HashMap<String, String[]>();
-		for (CategorieDepense ssCatKey : bo.getTotalParSSCategories().keySet()) {
-			Double[] totaux = bo.getTotalParSSCategories().get(ssCatKey);
-			String[] totauxDTO = new String[totaux.length];
-			for (int i = 0; i < totaux.length; i++) {
-				totauxDTO[i] = totaux[i] != null ? encrytor.encrypt(totaux[i].toString()) : null;
-			}
-			totalSsCategorieDTO.put(encrytor.encrypt(ssCatKey.getId()), totauxDTO);
+		if(bo.getTotalParSSCategories() != null){
+			bo.getTotalParSSCategories().entrySet()
+			.parallelStream()
+			.forEach((entry) -> {
+				String[] totauxDTO = new String[entry.getValue().length];
+				for (int i = 0; i < entry.getValue().length; i++) {
+					totauxDTO[i] = entry.getValue()[i] != null ? encrytor.encrypt(entry.getValue()[i].toString()) : null;
+				}
+				totalSsCategorieDTO.put(encrytor.encrypt(entry.getKey().getId()), totauxDTO);
+			});
 		}
 		dto.setTotalParSSCategories(totalSsCategorieDTO);
 
@@ -176,4 +197,30 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		LOGGER.debug("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
 		return dto;
 	}
+
+
+	/**
+	 * @return the dataTransformerLigneDepense
+	 */
+	public final DataTransformerLigneDepense getDataTransformerLigneDepense() {
+		return dataTransformerLigneDepense;
+	}
+
+
+	/**
+	 * @param dataTransformerLigneDepense the dataTransformerLigneDepense to set
+	 */
+	public final void setDataTransformerLigneDepense(DataTransformerLigneDepense dataTransformerLigneDepense) {
+		this.dataTransformerLigneDepense = dataTransformerLigneDepense;
+	}
+
+
+	/**
+	 * @param parametrageService the parametrageService to set
+	 */
+	public final void setParametrageService(ParametragesDatabaseService parametrageService) {
+		this.parametrageService = parametrageService;
+	}
+	
+	
 }

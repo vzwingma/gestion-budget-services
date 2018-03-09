@@ -28,7 +28,7 @@ public abstract class AbstractUIGridComponent<CONTROL extends AbstractUIControll
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUIGridComponent.class);
 	
-	private CONTROL controleur;
+	private CONTROL controleurGrid;
 	
 
 
@@ -36,28 +36,28 @@ public abstract class AbstractUIGridComponent<CONTROL extends AbstractUIControll
 	 * Démarrage
 	 */
 	public void startControleur(){
-		controleur = createControleur();
+		controleurGrid = createControleurGrid();
 		LOGGER.info("[INIT] Démarrage du controleur {}", getControleur());
-		controleur.start();
-		paramComponentsOnPage();
+		controleurGrid.start();
+		paramComponentsOnGrid();
 	}
 	
 	/**
 	 * Initialisation des composants graphiques suite au démarrage du controleur
 	 */
-	public abstract void paramComponentsOnPage();
+	public abstract void paramComponentsOnGrid();
 	
 	/**
 	 * @return controleur associé
 	 */
 	public CONTROL getControleur(){
-		return controleur;
+		return controleurGrid;
 	}
 	
 	/**
 	 * @return création d'un controleur
 	 */
-	public abstract CONTROL createControleur();
+	public abstract CONTROL createControleurGrid();
 
 	
 	/**

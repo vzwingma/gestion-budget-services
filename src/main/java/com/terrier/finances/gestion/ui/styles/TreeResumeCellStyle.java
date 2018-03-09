@@ -11,15 +11,10 @@ import com.vaadin.client.widget.grid.CellStyleGenerator;
 /**
  * Style des cellules du tableau des catégories
  * @author vzwingma
- *
+ * @deprecated
  */
 @Deprecated
 public class TreeResumeCellStyle implements CellStyleGenerator<String> {
-
-	/**
-	 * Logger
-	 */
-	// private static final Logger LOGGER = LoggerFactory.getLogger(TreeResumeCellStyle.class);
 
 
 	/* (non-Javadoc)

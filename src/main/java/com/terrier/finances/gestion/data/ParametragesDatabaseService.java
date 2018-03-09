@@ -141,16 +141,12 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 		try{
 			LOGGER.info("Chargement des comptes de {} [_id={}]", utilisateur, utilisateur.getId());
 			Query queryBudget = new Query().addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(utilisateur.getId())));
-			try{
-				listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class)
-						.stream()
-						.sorted((compte1, compte2) -> Integer.compare(compte1.getOrdre(), compte2.getOrdre()))
-						.collect(Collectors.toList());
-				LOGGER.info(" {} comptes chargés : {} ", listeComptes.size(), listeComptes);
-			}
-			catch(Exception e){
-				LOGGER.error("Erreur lors du chargement des comptes de {}", utilisateur, e);
-			}
+
+			listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class)
+					.stream()
+					.sorted((compte1, compte2) -> Integer.compare(compte1.getOrdre(), compte2.getOrdre()))
+					.collect(Collectors.toList());
+			LOGGER.info(" {} comptes chargés : {} ", listeComptes.size(), listeComptes);
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement des comptes de {}", utilisateur, e);

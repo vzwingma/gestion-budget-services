@@ -74,20 +74,20 @@ public class ParametragesService {
 	}
 
 	/**
-	 * @param UTCBuildTime the buildTime to set (en UTC)
+	 * @param utcBuildTime the buildTime to set (en UTC)
 	 */
 	@Value("${budget.build.time}")
-	public void setBuildTime(String UTCBuildTime) {
+	public void setBuildTime(String utcBuildTime) {
 		try {
 			SimpleDateFormat sdfutc = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
 			sdfutc.setTimeZone(TimeZone.getTimeZone("UTC"));
-			Date dateBuild = sdfutc.parse(UTCBuildTime);
+			Date dateBuild = sdfutc.parse(utcBuildTime);
 			SimpleDateFormat sdflocale = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
 			sdflocale.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
 			this.buildTime = sdflocale.format(dateBuild);
 
 		} catch (ParseException e) {
-			this.buildTime = UTCBuildTime;
+			this.buildTime = utcBuildTime;
 		}
 	}
 

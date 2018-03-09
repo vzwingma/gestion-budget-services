@@ -14,7 +14,7 @@ import com.vaadin.ui.TreeGrid;
  *
  * @param <CONTROL> controleur
  */
-public abstract class AbstractUITreeGridComponent<OBJECT, CONTROL extends AbstractUIController<?>> extends TreeGrid<OBJECT> {
+public abstract class AbstractUITreeGridComponent<DONNEEMETIER, CONTROL extends AbstractUIController<?>> extends TreeGrid<DONNEEMETIER> {
 
 	/**
 	 * 
@@ -25,6 +25,7 @@ public abstract class AbstractUITreeGridComponent<OBJECT, CONTROL extends Abstra
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUITreeGridComponent.class);
 	
+	
 	private CONTROL controleur;
 	
 
@@ -33,16 +34,16 @@ public abstract class AbstractUITreeGridComponent<OBJECT, CONTROL extends Abstra
 	 * Démarrage
 	 */
 	public void startControleur(){
-		controleur = createControleur();
+		controleur = createControleurTreeGrid();
 		LOGGER.info("[INIT] Démarrage du controleur {}", getControleur());
 		controleur.start();
-		paramComponentsOnPage();
+		paramComponentsOnTreeGrid();
 	}
 	
 	/**
 	 * Initialisation des composants graphiques suite au démarrage du controleur
 	 */
-	public abstract void paramComponentsOnPage();
+	public abstract void paramComponentsOnTreeGrid();
 	
 
 	
@@ -56,6 +57,6 @@ public abstract class AbstractUITreeGridComponent<OBJECT, CONTROL extends Abstra
 	/**
 	 * @return création d'un controleur
 	 */
-	public abstract CONTROL createControleur();
+	public abstract CONTROL createControleurTreeGrid();
 
 }
