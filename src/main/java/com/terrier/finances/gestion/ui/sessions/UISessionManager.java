@@ -29,7 +29,7 @@ public class UISessionManager implements Runnable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UISessionManager.class);
 
 	// Gestionnaire des composants UI
-	private ConcurrentHashMap<String, UISession> componentsManager = new ConcurrentHashMap<String, UISession>();
+	private ConcurrentHashMap<String, UISession> componentsManager = new ConcurrentHashMap<>();
 
 	private ScheduledThreadPoolExecutor pool;
 
@@ -55,7 +55,7 @@ public class UISessionManager implements Runnable {
 	 * Update du session manager
 	 * @param manager UISessionManager
 	 */
-	private synchronized static void setSessionManager(UISessionManager manager){
+	private static synchronized void setSessionManager(UISessionManager manager){
 		UISessionManager.sessionManager = manager;
 	}
 	
@@ -126,7 +126,7 @@ public class UISessionManager implements Runnable {
 		Calendar validiteSession = Calendar.getInstance();
 		validiteSession.add(Calendar.MINUTE, -sessionValidity);
 		for (Iterator<UISession> iterator = componentsManager.values().iterator(); iterator.hasNext();) {
-			UISession session = (UISession) iterator.next();
+			UISession session = iterator.next();
 			if(session.getLastAccessTime().before(validiteSession)){
 				LOGGER.warn("La session {} n'a pas été utilisé depuis {}. Déconnexion automatique", session.getIdSession(), validiteSession.getTime());
 				iterator.remove();

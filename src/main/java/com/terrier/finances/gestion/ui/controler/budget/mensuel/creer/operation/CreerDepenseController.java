@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
@@ -80,7 +81,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		String value = getComponent().getTextFieldValeur().getValue();
 		if(value != null){
 			try{
-				String valeur = ((String)value).replaceAll(",", ".");
+				String valeur = value.replaceAll(",", ".");
 				Double d = Double.valueOf(valeur);
 				validation &=(!Double.isInfinite(d) && !Double.isNaN(d));
 			}
@@ -110,12 +111,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		// Catégories
 		getComponent().getComboBoxCategorie().clear();
 		getComponent().getComboBoxCategorie().setSelectedItem(null);
-		try {
-			getComponent().getComboBoxCategorie().setItems(getServiceParams().getCategories().stream().sorted((c1, c2) -> c1.getLibelle().compareTo(c2.getLibelle())));
-		} catch (DataNotFoundException e) {
-			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
-			return;
-		}
+		getComponent().getComboBoxCategorie().setItems(getServiceParams().getCategories().stream().sorted((c1, c2) -> c1.getLibelle().compareTo(c2.getLibelle())));
 		getComponent().getComboBoxCategorie().setEmptySelectionAllowed(false);
 		getComponent().getComboBoxCategorie().setTextInputAllowed(false);
 		getComponent().getComboBoxCategorie().setEnabled(true);
@@ -136,7 +132,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 			getComponent().getComboboxComptes().setItems(
 					getServiceParams().getComptesUtilisateur(getUtilisateurCourant())
 					.stream()
-					.filter(c -> c.isActif())
+					.filter(CompteBancaire::isActif)
 					.filter(c -> !c.getId().equals(getBudgetMensuelCourant().getCompteBancaire().getId()))
 					.collect(Collectors.toList()));
 			getComponent().getComboboxComptes().clear();

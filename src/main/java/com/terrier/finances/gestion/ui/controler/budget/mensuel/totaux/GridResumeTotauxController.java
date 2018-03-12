@@ -56,7 +56,7 @@ public class GridResumeTotauxController extends AbstractUIController<GridResumeT
 		LocalDate dateDerniereOperation = DataUtils.getMaxDateListeOperations(budget.getListeDepenses());
 		
 		// Injection des données
-		List<TotalBudgetMensuel> totauxBudget = new ArrayList<TotalBudgetMensuel>();
+		List<TotalBudgetMensuel> totauxBudget = new ArrayList<>();
 		totauxBudget.add(new TotalBudgetMensuel("Argent avancé", budget.getNowArgentAvance(), budget.getFinArgentAvance()));
 		totauxBudget.add(new TotalBudgetMensuel("Solde réel du compte", budget.getNowCompteReel(), budget.getFinCompteReel()));
 		

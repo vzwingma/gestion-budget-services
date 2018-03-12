@@ -3,6 +3,8 @@
  */
 package com.terrier.finances.gestion.ui.styles.operations;
 
+import java.util.Random;
+
 import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.vaadin.ui.StyleGenerator;
@@ -55,7 +57,7 @@ public class GridOperationStyle implements StyleGenerator<LigneDepense> {
 		 *  Style pour les autres lignes
 		 *  Sauf pour les dépenses réalisées, et celle réserve
 		 */
-		int rang = (int)Math.random()*2;
+		int rang = new Random().nextInt()*2;
 		if(!BusinessDepensesService.ID_SS_CAT_RESERVE.equals(depense.getSsCategorie().getId())){
 			return depense.getEtat().getId();
 		}

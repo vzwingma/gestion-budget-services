@@ -15,11 +15,9 @@ import com.terrier.finances.gestion.model.business.budget.ResumeTotalCategories;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.TreeGridResumeCategories;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.vaadin.ui.Notification;
 
 /**
  * Controleur du tableau des résumés
@@ -71,8 +69,6 @@ public class TreeGridResumeCategoriesController extends AbstractUIController<Tre
 		List<ResumeTotalCategories> listeResumeTotaux = new ArrayList<>();
 
 		// Tri des catégories
-		try {
-
 			for (CategorieDepense categorie : getServiceParams().getCategories()) {
 
 				if(categorie != null && budget.getTotalParCategories().get(categorie) != null){
@@ -94,10 +90,6 @@ public class TreeGridResumeCategoriesController extends AbstractUIController<Tre
 					LOGGER.warn("Attention : Catégorie vide");
 				}
 			}
-		} catch (DataNotFoundException e) {
-			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
-			return;
-		}
 		listeResumeTotaux.sort((r1, r2) -> r1.getTypeTotal().compareTo(r2.getTypeTotal()));
 
 		getComponent().setItems(listeResumeTotaux, ResumeTotalCategories::getSousCategories);

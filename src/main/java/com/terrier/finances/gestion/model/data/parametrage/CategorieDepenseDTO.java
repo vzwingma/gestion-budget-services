@@ -25,7 +25,7 @@ public class CategorieDepenseDTO {
 	/**
 	 * Liste des sous catégories
 	 */
-	private Set<CategorieDepenseDTO> listeSSCategories = new HashSet<CategorieDepenseDTO>();
+	private Set<CategorieDepenseDTO> listeSSCategories = new HashSet<>();
 	/**
 	 * Catégorie parente
 	 */

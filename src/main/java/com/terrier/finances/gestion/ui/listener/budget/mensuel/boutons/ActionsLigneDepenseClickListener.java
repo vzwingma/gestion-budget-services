@@ -80,12 +80,11 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 		if(etat != null){
 			// MISE A Jour des boutons. Désactivation du bouton cliqué
 			for (Iterator<Component> iterator = ((CssLayout)(event.getButton().getParent())).iterator(); iterator.hasNext();) {
-				Component type = (Component) iterator.next();
+				Component type = iterator.next();
 				if(type instanceof Button){
 					type.setVisible(true);
 				}
-
-			};
+			}
 			event.getButton().setVisible(false);	
 			updateLigne(etat, getUtilisateurCourant().getLibelle());
 		}

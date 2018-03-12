@@ -12,16 +12,16 @@ import com.vaadin.ui.AbstractComponent;
  * Controleur d'un composant UI
  * @author vzwingma
  * 
- * @param <COMPONENT> composant associé
+ * @param <P> composant associé
  */
-public abstract class AbstractUIController<COMPONENT extends AbstractComponent> extends AbstractUIService implements Serializable {
+public abstract class AbstractUIController<P extends AbstractComponent> extends AbstractUIService implements Serializable {
 
 
 	/**
 	 * Constructeur
 	 * @param composant
 	 */
-	public AbstractUIController(COMPONENT composant){
+	public AbstractUIController(P composant){
 		this.component = composant;
 	}
 	/**
@@ -29,7 +29,7 @@ public abstract class AbstractUIController<COMPONENT extends AbstractComponent> 
 	 */
 	private static final long serialVersionUID = -5842153579328118762L;
 	// Page associée au controleur
-	private COMPONENT component;
+	private P component;
 
 
 	
@@ -79,7 +79,7 @@ public abstract class AbstractUIController<COMPONENT extends AbstractComponent> 
 	/**
 	 * @return the page
 	 */
-	public COMPONENT getComponent() {
+	public P getComponent() {
 		return component;
 	}	
 }

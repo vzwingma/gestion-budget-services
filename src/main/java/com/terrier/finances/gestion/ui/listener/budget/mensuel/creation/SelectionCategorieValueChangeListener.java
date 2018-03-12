@@ -52,7 +52,7 @@ public class SelectionCategorieValueChangeListener extends AbstractComponentList
 
 				List<CategorieDepense> streamSSCategories = categorie.getListeSSCategories()
 						.stream()
-						.filter(cat -> cat.isActif())
+						.filter(CategorieDepense::isActif)
 						.sorted()
 						.collect(Collectors.toList());
 				controleur.getComponent().getComboBoxSsCategorie().setItems(streamSSCategories);

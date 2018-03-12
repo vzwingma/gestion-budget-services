@@ -1,8 +1,5 @@
 package com.terrier.finances.gestion.ui.components.budget.mensuel.components;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.terrier.finances.gestion.model.business.budget.ResumeTotalCategories;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITreeGridComponent;
@@ -15,7 +12,7 @@ import com.vaadin.shared.MouseEventDetails.MouseButton;
  * @author vzwingma
  *
  */
-public class TreeGridResumeCategories extends AbstractUITreeGridComponent<ResumeTotalCategories, TreeGridResumeCategoriesController> {
+public class TreeGridResumeCategories extends AbstractUITreeGridComponent<TreeGridResumeCategoriesController, ResumeTotalCategories> {
 
 	/**
 	 * 
