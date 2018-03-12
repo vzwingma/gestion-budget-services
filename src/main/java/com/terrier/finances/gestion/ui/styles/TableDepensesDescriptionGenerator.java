@@ -16,7 +16,7 @@ import com.vaadin.ui.Component;
  * @deprecated
  */
 @Deprecated
-public class TableDepensesDescriptionGenerator extends AbstractUIService { // implements ItemDescriptionGenerator {
+public class TableDepensesDescriptionGenerator implements AbstractUIService { // implements ItemDescriptionGenerator {
 
 
 	// Controleur

@@ -11,7 +11,7 @@ import com.vaadin.ui.Window;
  * @author vzwingma
  *
  */
-public abstract class AbstractComponentListener extends AbstractUIService {
+public abstract class AbstractComponentListener implements AbstractUIService {
 
 	
 	
