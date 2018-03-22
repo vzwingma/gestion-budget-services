@@ -39,18 +39,6 @@ script:
     else 
       echo "Pas de reTag de snapshot"; 
     fi
-  # Merge sur la branche coverity
-  - if [ ${TRAVIS_BRANCH} = "master" ]; 
-    then 
-      echo "Merge vers la branche Coverity"; 
-      git fetch --all; 
-      git branch coverity_scan origin/coverity_scan; 
-      git checkout coverity_scan; 
-      git merge master; 
-      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget; 
-    else 
-      echo "Pas de merge vers la branche Coverity"; 
-    fi
 
 # Déploiement des releaes sur tag : snapshot ou version 
 before_deploy:
