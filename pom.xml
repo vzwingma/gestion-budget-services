@@ -140,7 +140,7 @@
 		<profile>
 			<id>vaadin</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
 				<resources>
@@ -192,6 +192,13 @@
 							<exclude>*.xml</exclude>
 						</excludes>
 					</resource>
+					<resource>
+						<directory>src/main/resources/config/openshift</directory>
+						<filtering>false</filtering>
+						<excludes>
+							<exclude>*.properties</exclude>
+						</excludes>
+					</resource>					
 				</resources>
 
 				<plugins>
