@@ -14,7 +14,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<spring.version>5.0.5.RELEASE</spring.version>
 		<mongo.data.version>3.6.3</mongo.data.version>
-		<spring.security.version>5.0.3.RELEASE</spring.security.version>
+		<spring.security.version>5.0.4.RELEASE</spring.security.version>
 		<vaadin.version>8.1.7</vaadin.version>
 		<jackson.version>2.9.5</jackson.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
@@ -313,7 +313,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.0</version>
+			<version>4.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -399,7 +399,7 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>swagger-ui</artifactId>
-			<version>3.12.1</version>
+			<version>3.13.4</version>
 		</dependency>
 
 		<!-- Tests -->
