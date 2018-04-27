@@ -54,6 +54,6 @@ public class TestDataUtils {
 		depenses.addAll(Arrays.asList(depense1, depense2, depense3));
 		LocalDate cd = DataUtils.getMaxDateListeOperations(depenses);
 		
-		assertEquals(Month.OCTOBER.getValue(), cd.get(ChronoField.MONTH_OF_YEAR));
+		assertEquals(Month.SEPTEMBER.getValue(), cd.get(ChronoField.MONTH_OF_YEAR));
 	}
 }
