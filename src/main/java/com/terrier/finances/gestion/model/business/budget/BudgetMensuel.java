@@ -411,16 +411,6 @@ public class BudgetMensuel implements Serializable {
 
 
 
-	/**
-	 * @param setLibellesDepensesForAutocomplete the listeLibellesDepenses to set
-	 */
-	public void setListeLibellesDepensesForAutocomplete(Set<String> setLibellesDepensesForAutocomplete) {
-		this.setLibellesDepensesForAutocomplete = setLibellesDepensesForAutocomplete;
-	}
-
-
-
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

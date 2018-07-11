@@ -56,7 +56,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 	/**
 	 * Logger
-	 */
+	 */ 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BudgetMensuelController.class);
 
 

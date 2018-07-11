@@ -459,7 +459,7 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		
 		// textFieldValeur
 		textFieldValeur = new TextField();
-		textFieldValeur.setWidth("270px");
+		textFieldValeur.setWidth("210px");
 		textFieldValeur.setHeightUndefined();
 		textFieldValeur.setRequiredIndicatorVisible(true);
 		horizontalLayout4.addComponent(textFieldValeur);
