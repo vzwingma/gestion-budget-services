@@ -87,7 +87,7 @@ public class TreeGridResumeCategoriesController extends AbstractUIController<Tre
 					}
 				}
 				else{
-					LOGGER.warn("Attention : Catégorie vide");
+					LOGGER.trace("Attention : Catégorie vide");
 				}
 			}
 		listeResumeTotaux.sort((r1, r2) -> r1.getTypeTotal().compareTo(r2.getTypeTotal()));
