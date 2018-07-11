@@ -14,13 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 /**
  * Controleur REST pour récupérer les budgets
  * @author vzwingma
@@ -28,7 +21,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value="/rest/admin")
-@Api(consumes="application/json", protocols="https", value="Administration", tags={"Services"})
+// @Api(consumes="application/json", protocols="https", value="Administration", tags={"Services"})
 public class AdminRestController {
 
 
@@ -46,7 +39,7 @@ public class AdminRestController {
 	 * @param oldpassword ancien mot de passe
 	 * @param newPassword nouveau mot de passe
 	 * @return résultat de l'opération
-	 */
+	 
 	@ApiOperation(httpMethod="GET", produces="application/text", protocols="HTTPS", value="Opération de changement de mot de passe", response=String.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Changement de passe réussi"),
@@ -58,7 +51,7 @@ public class AdminRestController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="login", required=true, value="Login de l'utilisateur", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="oldpassword", required=true, value="Ancien mot de passe de l'utilisateur", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="newpassword", required=true, value="Nouveau mot de passe de l'utilisateur", paramType="path")
-	})
+	}) */
 	@RequestMapping(value="/v1/password/{login}/{oldpassword}/{newpassword}", method=RequestMethod.GET)
 	public String ping(@PathVariable("login") String login, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
 		LOGGER.info("Changement du mot de passe pour {}", login);

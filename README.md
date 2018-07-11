@@ -8,7 +8,7 @@
 <a href='https://github.com/vzwingma/gestion-budget/issues'><img src='http://githubbadges.herokuapp.com/vzwingma/gestion-budget/issues?style=square' alt='Issues number' /></a>
 
 [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/gestion-budget/badge.svg)](https://snyk.io/test/github/vzwingma/gestion-budget)
-[![Dépendences](https://beta.gemnasium.com/badges/github.com/vzwingma/gestion-budget.svg)](https://beta.gemnasium.com/projects/github.com/vzwingma/gestion-budget)
+[![Dépendences](https://img.shields.io/librariesio/github/vzwingma/gestion-budget.svg)](https://libraries.io/github/vzwingma/gestion-budget)
 
 <a href="https://scan.coverity.com/projects/vzwingma-gestion-budget"><img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/7385.svg"/></a>
 <a href="https://sonarcloud.io/dashboard?id=gestion-budget"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/project_badges/measure?project=gestion-budget&metric=coverage" /></a>

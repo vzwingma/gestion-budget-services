@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.swagger.annotations.ApiModelProperty;
-
 /**
  * 
  * Statut d'une dépendance
@@ -23,25 +21,25 @@ import io.swagger.annotations.ApiModelProperty;
 public class StatutDependencyObject {
 
 	// Nom 
-	@ApiModelProperty(notes = "Nom de l'application ou de la dépendance", required=true)
+//	@ApiModelProperty(notes = "Nom de l'application ou de la dépendance", required=true)
 	private DependencyName nom;
 	
 	// Status du module
 	@JsonIgnore
-	@ApiModelProperty(notes = "Statut de l'application ou de la dépendance", required=true)
+//	@ApiModelProperty(notes = "Statut de l'application ou de la dépendance", required=true)
 	private StatutStateEnum statusObject;
 
 	// Statut calculée avec les status des dépendances
 	@JsonProperty("statut")
-	@ApiModelProperty(notes = "Statut calculé de l'application ou de la dépendance", required=true)
+//	@ApiModelProperty(notes = "Statut calculé de l'application ou de la dépendance", required=true)
 	private StatutStateEnum statusCompile;
 	
 	// Liste des dépendances
-	@ApiModelProperty(notes = "Liste des dépendances", required=true, dataType="StatutDependencyObject")
+//	@ApiModelProperty(notes = "Liste des dépendances", required=true, dataType="StatutDependencyObject")
 	private List<StatutDependencyObject> dependances = new ArrayList<>();
 	
 	// Date de la mise à jour
-	@ApiModelProperty(notes = "Date du statut", required=true)
+//	@ApiModelProperty(notes = "Date du statut", required=true)
 	private Calendar date;
 
 	/**
@@ -156,7 +154,7 @@ public class StatutDependencyObject {
 	/**
 	 * @return the timestamp
 	 */
-	@ApiModelProperty(notes = "Timestamp du statut", required=true)
+//	@ApiModelProperty(notes = "Timestamp du statut", required=true)
 	public Long getTimestamp() {
 		return this.date != null ? this.date.getTimeInMillis() : 0L;
 	}
