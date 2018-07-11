@@ -93,6 +93,8 @@ public class TreeGridResumeCategoriesController extends AbstractUIController<Tre
 		listeResumeTotaux.sort((r1, r2) -> r1.getTypeTotal().compareTo(r2.getTypeTotal()));
 
 		getComponent().setItems(listeResumeTotaux, ResumeTotalCategories::getSousCategories);
+		this.gridCollapsed = true;
+		collapseExpendTreeGrid();
 	}
 	
 	/**
