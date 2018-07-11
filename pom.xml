@@ -389,7 +389,7 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.11</version>
 		</dependency>
-		<!-- Swagger
+		<!-- Swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
@@ -406,7 +406,7 @@
 			<artifactId>swagger-ui</artifactId>
 			<version>3.13.4</version>
 		</dependency>
- -->
+ 
 		<!-- Tests -->
 		<dependency>
 			<groupId>junit</groupId>

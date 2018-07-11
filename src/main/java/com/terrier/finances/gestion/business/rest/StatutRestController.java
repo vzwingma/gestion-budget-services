@@ -18,6 +18,11 @@ import com.terrier.finances.gestion.business.statut.objects.DependencyName;
 import com.terrier.finances.gestion.business.statut.objects.StatutDependencyObject;
 import com.terrier.finances.gestion.business.statut.objects.StatutStateEnum;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 /**
  * Controleur REST pour récupérer les budgets
  * @author vzwingma
@@ -25,7 +30,7 @@ import com.terrier.finances.gestion.business.statut.objects.StatutStateEnum;
  */
 @RestController
 @RequestMapping(value="/rest")
-// @Api(consumes="application/json", protocols="https", value="Administration", tags={"Services"})
+@Api(consumes="application/json", protocols="https", value="Administration", tags={"Services"})
 public class StatutRestController {
 
 
@@ -47,14 +52,14 @@ public class StatutRestController {
 	/**
 	 * Appel PING
 	 * @return résultat du ping
-	 
+	 */
 	@ApiOperation(httpMethod="GET", produces="application/json", protocols="https", value="Statut de l'opération", response=StatutDependencyObject.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Statut de l'application"),
             @ApiResponse(code = 401, message = "L'opération doit être identifiée"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Ressource introuvable")
-    }) */
+    }) 
 	@RequestMapping(value="/statut", method=RequestMethod.GET)
 	public StatutDependencyObject ping(){
 		LOGGER.info("Appel statut : {}", this.statusApplicationService.getStatutApplication());
