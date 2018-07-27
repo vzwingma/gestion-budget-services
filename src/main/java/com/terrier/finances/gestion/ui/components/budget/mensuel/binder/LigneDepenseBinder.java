@@ -67,12 +67,22 @@ public class LigneDepenseBinder extends Binder<LigneDepense> {
 		return bind(new CheckBox(), LigneDepense::isPeriodique, LigneDepense::setPeriodique);
 	}
 
+	
+	ComboBox<CategorieDepense> cCategories = new  ComboBox<CategorieDepense>();
+	
 	/**
 	 * @return binding périodique
 	 */
 	public Binding<LigneDepense, CategorieDepense> bindCategories(){
+		cCategories.setEnabled(false);
+		return bind( cCategories, LigneDepense::getCategorie, LigneDepense::setCategorie);
+	}
+	/**
+	 * @return binding périodique
+	 */
+	public Binding<LigneDepense, CategorieDepense> bindSSCategories(){
+		
 		ComboBox<CategorieDepense> ssCategories = new  ComboBox<CategorieDepense>();
-
 		// Liste des sous catégories 
 		Set<CategorieDepense> sousCategories = serviceParam.getCategories().stream()
 				.map(c -> c.getListeSSCategories())
@@ -88,6 +98,7 @@ public class LigneDepenseBinder extends Binder<LigneDepense> {
 		ssCategories.setEmptySelectionAllowed(false);
 		ssCategories.setTextInputAllowed(false);
 		ssCategories.setEnabled(true);
+		ssCategories.addSelectionListener(event -> cCategories.setValue(event.getSelectedItem().get().getCategorieParente()));
 		return bind( ssCategories, LigneDepense::getSsCategorie, LigneDepense::setSsCategorie);
 	}
 }

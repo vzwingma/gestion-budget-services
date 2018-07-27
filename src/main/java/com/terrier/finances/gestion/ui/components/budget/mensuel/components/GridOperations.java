@@ -95,6 +95,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setResizable(false);
 		c2.setRenderer(new TextRenderer(""));
 		// Pas éditable
+		c2.setEditorBinding(binderLD.bindCategories());
 		
 		Column<LigneDepense, CategorieDepense> c3 = addColumn(LigneDepense::getSsCategorie);
 		c3.setId(EntetesTableSuiviDepenseEnum.SSCATEGORIE.name())
@@ -103,7 +104,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c3.setRenderer(new TextRenderer(""));
-		c3.setEditorBinding(binderLD.bindCategories());
+		c3.setEditorBinding(binderLD.bindSSCategories());
 		
 		Column<LigneDepense, String> c4 = addColumn(LigneDepense::getLibelle);
 		c4.setId(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name())
