@@ -1,8 +1,6 @@
 package com.terrier.finances.gestion.model.business.budget;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -87,56 +85,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		this.budgetIsActif = budgetActif;
 	}
 	
-	/**
-	 * Invoke dynamique de setter sur ligne dépense
-	 * @param ligneId id de la ligne
-	 * @param propertyId propriété
-	 * @param propClass classe
-	 * @param value nouvelle valeur
-	 * @deprecated :
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Deprecated
-	public boolean updateProperty(String ligneId, String propertyId, Class propClass, Object value){
-		Class ldClass = this.getClass();
-		boolean res = false; 
-		
-		String setMethodName = "set"+propertyId;
-		String getMethodName = "get"+propertyId; 
-		
-		if(propertyId.equals("Periodique")){
-			getMethodName = "is" + propertyId;
-		}
-		else if(propertyId.equals("LibelleView")){
-			return true;
-		}
-		Method g = null;
-		Method s = null;
-		try {
-			g = ldClass.getMethod(getMethodName);
-			s = ldClass.getMethod(setMethodName, propClass);
-			
-			Object getted = g.invoke(this);
-			
-			if((value != null && !value.equals(getted)) || (value == null && getted != null)){
-				s.invoke(this, value); // field value	
-				LOGGER.debug("Modification de la ligne [{}] : {}={}", ligneId, propertyId, value);
-				res = true;
-			}
-		}
-		catch (NoSuchMethodException nsme) {
-			LOGGER.error("Erreur getMethod ", nsme);
-		}
-		catch (IllegalAccessException iae) {
-			LOGGER.error("Erreur ivoke ", iae);
-		}
-		catch (InvocationTargetException ite) {
-			LOGGER.error("Erreur ivoke ", ite);
-		}
-		return res;
-	}
-	
-	
 
 	/**
 	 * @return Ligne dépense clonée
@@ -214,6 +162,10 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	 */
 	public CategorieDepense getCategorie() {
 		return this.ssCategorie != null ? this.ssCategorie.getCategorieParente() : null;
+	}
+	
+	public void setCategorie(CategorieDepense categorie){
+		// Ne fais rien. Calculé par le set de Sous Categorie
 	}
 
 	/**
