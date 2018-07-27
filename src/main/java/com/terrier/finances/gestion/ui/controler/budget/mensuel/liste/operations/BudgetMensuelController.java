@@ -27,7 +27,6 @@ import com.terrier.finances.gestion.ui.controler.budget.mensuel.resume.TreeGridR
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionDeconnexionClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionEditerDepensesClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionLockBudgetClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionRefreshMonthBudgetClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionCreerDepenseClickListener;
@@ -35,7 +34,6 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemCaptionStyle;
 import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemIconStyle;
 import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemStyle;
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.UIEvents;
 import com.vaadin.shared.ui.datefield.DateResolution;
 import com.vaadin.ui.ComboBox;
@@ -116,21 +114,13 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	public void initDynamicComponentsOnPage(){
 
 		// Init des boutons
-		getComponent().getButtonEditer().addClickListener(new ActionEditerDepensesClickListener());
-		getComponent().getButtonEditer().setDescription("Editer le tableau des opérations");
 		getComponent().getButtonCreate().addClickListener(new ActionCreerDepenseClickListener());
 		getComponent().getButtonCreate().setDescription("Ajouter une nouvelle opération");
 		getComponent().getComboBoxComptes().setEmptySelectionAllowed(false);
 
-		getComponent().getButtonValider().setVisible(false);
-		getComponent().getButtonValider().setEnabled(false);
-	//	getComponent().getButtonValider().addClickListener(new ActionQuitterEditionModeListener());
-		getComponent().getButtonValider().setDescription("Quitter le mode modification du tableau des opérations");
-		getComponent().getButtonValider().setClickShortcut(KeyCode.ENTER);
-
-
 		// Init des controleurs
 		this.gridOperationsControleur = getComponent().getGridOperations().getControleur();
+		this.gridOperationsControleur.setBudgetControleur(this);
 		this.treeResumeControleur = getComponent().getTreeResume().getControleur();
 		this.gridResumeTotauxControleur = getComponent().getGridResumeTotaux().getControleur();
 
@@ -278,22 +268,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	public boolean isGridOnEdition(){
 		return getComponent().getGridOperations().getEditor().isOpen();
 	}
-	/**
-	 * Sette la table en mode édition
-	 */
-	public void setTableOnEditableMode(boolean editableMode){
-		
-		// Activation du tableau
-		getComponent().getGridOperations().getControleur().updateViewGridOnEditableMode(editableMode);
-		// Et des boutons
-		getComponent().getButtonValider().setVisible(editableMode);
-		getComponent().getButtonValider().setEnabled(editableMode);
-		getComponent().getButtonEditer().setVisible(!editableMode);
-		getComponent().getButtonEditer().setEnabled(!editableMode);
-		getComponent().getButtonCreate().setVisible(!editableMode);
-		getComponent().getButtonCreate().setEnabled(!editableMode);		
-	}
-
 
 	/**
 	 * Mise à jour du range fin
@@ -408,8 +382,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		
 		// Boutons actions sur Budget inactif :
 		if(!budgetCourant.isActif()){
-			getComponent().getButtonValider().setVisible(false);
-			getComponent().getButtonEditer().setVisible(false);
 			getComponent().getButtonCreate().setVisible(false);
 			getComponent().getButtonRefreshMonth().setVisible(false);
 			getComponent().getButtonLock().setVisible(budgetCourant.getCompteBancaire().isActif());
@@ -419,7 +391,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		// Boutons actions sur Budget actif :
 		else{
 			getComponent().getButtonCreate().setVisible(budgetCourant.getCompteBancaire().isActif());
-			getComponent().getButtonEditer().setVisible(budgetCourant.getCompteBancaire().isActif());
 			getComponent().getButtonRefreshMonth().setVisible(budgetCourant.getCompteBancaire().isActif());
 			getComponent().getButtonLock().setVisible(budgetCourant.getCompteBancaire().isActif());
 			getComponent().getButtonLock().setDescription("Finaliser le budget mensuel");

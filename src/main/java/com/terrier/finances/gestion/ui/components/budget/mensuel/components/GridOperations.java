@@ -94,7 +94,8 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c2.setRenderer(new TextRenderer(""));
-
+		// Pas éditable
+		
 		Column<LigneDepense, CategorieDepense> c3 = addColumn(LigneDepense::getSsCategorie);
 		c3.setId(EntetesTableSuiviDepenseEnum.SSCATEGORIE.name())
 			.setCaption(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getLibelle())
@@ -161,7 +162,6 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c9.setRenderer(new ComponentRenderer());
-	//	c9.setEditorBinding(binderLD.bindActions());
 		
 		Column<LigneDepense, Date> c10 = addColumn(LigneDepense::getDateMaj);
 		c10.setId(EntetesTableSuiviDepenseEnum.DATE_MAJ.name())
@@ -182,6 +182,6 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 		c11.setRenderer(new TextRenderer(""));
 		// Not editable		
 
-		getControleur().updateViewGridOnEditableMode(true);
+		getEditor().setEnabled(true);
 	}
 }

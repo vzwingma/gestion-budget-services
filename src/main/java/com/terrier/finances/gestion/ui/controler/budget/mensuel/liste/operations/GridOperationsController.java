@@ -20,6 +20,7 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 
 	private static final long serialVersionUID = 5190668755144306669L;
 
+	private BudgetMensuelController budgetControleur;
 
 	/**
 	 * Constructeur du controleur du composant
@@ -42,10 +43,6 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 		getComponent().setSizeFull();
 		getComponent().setColumnReorderingAllowed(false);
 		getComponent().setResponsive(true);
-
-		//getComponent().setStyleGenerator(styleGenerator);
-
-
 	}
 
 	/**
@@ -53,16 +50,10 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	 */
 	public void updateViewGridOnEditableMode(boolean editableMode){
 
-		// Activation du tableau
+//		// Activation du tableau
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.TYPE.name()).setHidden(!editableMode);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.PERIODIQUE.name()).setHidden(!editableMode);
-		// Pas de catégorie
-		getComponent().getColumn(EntetesTableSuiviDepenseEnum.CATEGORIE.name()).setHidden(editableMode);
-		// Inversion du champ Libelle
-		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE.name()).setHidden(!editableMode);
-		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name()).setHidden(editableMode);
-		
-		getComponent().getColumn(EntetesTableSuiviDepenseEnum.DATE_OPERATION.name()).setWidth(editableMode ? GridOperations.TAILLE_COLONNE_DATE_EDITEE : GridOperations.TAILLE_COLONNE_DATE);
+		this.budgetControleur.getComponent().getButtonCreate().setVisible(!editableMode);
 	}
 
 	/**
@@ -82,44 +73,6 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.ACTIONS.name()).setHidden(!budgetIsActif);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE.name()).setHidden(budgetIsActif);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name()).setHidden(!budgetIsActif);
-
-
-		/*
-		for (final LigneDepense ligneDepense : listeDepenses) {
-				// Type Popup view pour avoir les notes
-			Property<PopupView> property5 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name());
-
-			final RichTextArea rta = new RichTextArea();
-			rta.setValue(ligneDepense.getNotes() != null ? ligneDepense.getNotes() : "");
-			String noteStar = ligneDepense.getNotes() != null ? "  *" : "";
-			final PopupView ppv = new PopupView(ligneDepense.getLibelle() + noteStar, rta);
-			ppv.addPopupVisibilityListener(new PopupNoteVisibitilityListener(ligneDepense.name(), this));
-			ppv.setHideOnMouseOut(false);
-			property5.setValue(ppv);
-
-			// Type String
-			Property<String> property5b = item1.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.name());
-			if(budgetIsActif){
-				property5b.setValue(ligneDepense.getLibelle());	
-			}
-			else{
-				property5b.setValue(ligneDepense.getLibelle() + noteStar);
-			}
-
-
-			// Pas d'action pour les réserves
-			if(!BusinessDepensesService.ID_SS_CAT_RESERVE.equals(ligneDepense.getSsCategorie().name())
-					&& !BusinessDepensesService.ID_SS_CAT_PREVISION_SANTE.equals(ligneDepense.getSsCategorie().name())
-					&& budgetIsActif){
-				Property<ActionsLigneBudget> property11 = item1.getItemProperty(EntetesTableSuiviDepenseEnum.ACTIONS.name());
-				ActionsLigneBudget actions = new ActionsLigneBudget();
-				actions.getControleur().setidDepense(ligneDepense.name());
-				actions.getControleur().miseAJourEtatLigne(ligneDepense.getEtat());
-				property11.setValue(actions);
-			}
-		}
-		getComponent().refreshRowCache();
-		 */
 	}
 
 
@@ -177,4 +130,14 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 		 */
 		return true;
 	}
+
+
+	/**
+	 * @param budgetControleur the budgetControleur to set
+	 */
+	public void setBudgetControleur(BudgetMensuelController budgetControleur) {
+		this.budgetControleur = budgetControleur;
+	}
+	
+	
 }

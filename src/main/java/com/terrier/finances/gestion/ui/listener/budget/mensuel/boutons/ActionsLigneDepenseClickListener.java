@@ -98,20 +98,18 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 
 		// Mise à jour de l'état
 		actions.getControleur().miseAJourEtatLigne(etat);
-		// Si en mode éditable. Pas de mise à jour. Seulement lors de la validation
-		if(!false) { //actions.findAncestor(GridOperations.class).isEditable()){
-			// Recalcul du budget
-			BudgetMensuel budget = getBudgetMensuelCourant();
 
-			try{
-				getControleur(BudgetMensuelController.class).getServiceDepense().majEtatLigneDepense(budget, actions.getControleur().getIdOperation(), etat, auteur);
-			}
-			catch(DataNotFoundException|BudgetNotFoundException e){
-				Notification.show("La dépense est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
-			}
-			
-			getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
+		// Recalcul du budget
+		BudgetMensuel budget = getBudgetMensuelCourant();
+		try{
+			getControleur(BudgetMensuelController.class).getServiceDepense().majEtatLigneDepense(budget, actions.getControleur().getIdOperation(), etat, auteur);
 		}
+		catch(DataNotFoundException|BudgetNotFoundException e){
+			Notification.show("La dépense est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
+		}
+
+		getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
+
 
 	}
 

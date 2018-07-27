@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.terrier.finances.gestion.business.ParametragesService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.vaadin.data.Binder;
@@ -48,7 +49,6 @@ public class LigneDepenseBinder extends Binder<LigneDepense> {
 	public Binding<LigneDepense, TypeDepenseEnum> bindTypeDepense(){
 		ComboBox<TypeDepenseEnum> cTypes = new ComboBox<TypeDepenseEnum>();
 		cTypes.setItems(TypeDepenseEnum.values());
-		cTypes.setSizeFull();	
 		return bind(cTypes, LigneDepense::getTypeDepense, LigneDepense::setTypeDepense);
 	}
 
@@ -68,8 +68,6 @@ public class LigneDepenseBinder extends Binder<LigneDepense> {
 		return bind(new CheckBox(), LigneDepense::isPeriodique, LigneDepense::setPeriodique);
 	}
 
-
-
 	/**
 	 * @return binding périodique
 	 */
@@ -87,11 +85,5 @@ public class LigneDepenseBinder extends Binder<LigneDepense> {
 		ssCategories.setTextInputAllowed(false);
 		ssCategories.setEnabled(true);
 		return bind( ssCategories, LigneDepense::getSsCategorie, LigneDepense::setSsCategorie);
-	}
-
-
-
-	public Binding<LigneDepense, ActionsLigneBudget> bindActions(){
-		return null; //bind(new ActionsLigneBudget(), LigneDepense::getEtat, LigneDepense::setEtat)
 	}
 }
