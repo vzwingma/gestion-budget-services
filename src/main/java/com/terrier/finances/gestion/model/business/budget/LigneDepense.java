@@ -247,6 +247,15 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		return valeur;
 	}
 
+	public String getValeurS() {
+		return new Float(Math.abs(valeur)).toString();
+	}
+
+	public void setValeurS(String valeurS){
+		if(valeurS != null){
+			this.valeur = Math.abs(Float.parseFloat(valeurS)) * (TypeDepenseEnum.DEPENSE.equals(this.getTypeDepense()) ? -1 : 1);
+		}
+	}
 
 	/**
 	 * @return the dateOperation

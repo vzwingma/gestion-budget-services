@@ -44,37 +44,24 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 		getComponent().setResponsive(true);
 
 		//getComponent().setStyleGenerator(styleGenerator);
-		
-		/*
-		try {
 
-			// Table Factory pour le mode édition
-			getComponent().setTableFieldFactory(new TableSuiviDepenseEditedFieldFactory(getServiceParams().getCategories()));
-			// Style
-			getComponent().setCellStyleGenerator(new TableDepensesCellStyle(this));
-			// Tooltip
-			getComponent().setItemDescriptionGenerator(new TableDepensesDescriptionGenerator(this));
 
-		} catch (DataNotFoundException e) {
-			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
-			return;
-		}
-		 */
 	}
-
 
 	/**
 	 * Sette la table en mode édition
 	 */
-	public void setTableOnEditableMode(boolean editableMode){
-		
+	public void updateViewGridOnEditableMode(boolean editableMode){
+
 		// Activation du tableau
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.TYPE.name()).setHidden(!editableMode);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.PERIODIQUE.name()).setHidden(!editableMode);
+		// Pas de catégorie
+		getComponent().getColumn(EntetesTableSuiviDepenseEnum.CATEGORIE.name()).setHidden(editableMode);
 		// Inversion du champ Libelle
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE.name()).setHidden(!editableMode);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name()).setHidden(editableMode);
-		getComponent().getEditor().setEnabled(editableMode);
+		
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.DATE_OPERATION.name()).setWidth(editableMode ? GridOperations.TAILLE_COLONNE_DATE_EDITEE : GridOperations.TAILLE_COLONNE_DATE);
 	}
 

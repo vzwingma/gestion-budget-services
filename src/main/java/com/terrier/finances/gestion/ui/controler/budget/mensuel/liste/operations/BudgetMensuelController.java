@@ -30,7 +30,6 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionDec
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionEditerDepensesClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionLockBudgetClickListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionRefreshMonthBudgetClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionValiderAnnulerEditionDepenseListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionCreerDepenseClickListener;
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
 import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemCaptionStyle;
@@ -125,13 +124,9 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 		getComponent().getButtonValider().setVisible(false);
 		getComponent().getButtonValider().setEnabled(false);
-		getComponent().getButtonValider().addClickListener(new ActionValiderAnnulerEditionDepenseListener());
-		getComponent().getButtonValider().setDescription("Valider les modifications du tableau des dépenses");
+	//	getComponent().getButtonValider().addClickListener(new ActionQuitterEditionModeListener());
+		getComponent().getButtonValider().setDescription("Quitter le mode modification du tableau des opérations");
 		getComponent().getButtonValider().setClickShortcut(KeyCode.ENTER);
-		getComponent().getButtonAnnuler().setVisible(false);
-		getComponent().getButtonAnnuler().setEnabled(false);
-		getComponent().getButtonAnnuler().addClickListener(new ActionValiderAnnulerEditionDepenseListener());
-		getComponent().getButtonAnnuler().setDescription("Annuler les modifications du tableau des dépenses");
 
 
 		// Init des controleurs
@@ -280,19 +275,19 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 
 
-
+	public boolean isGridOnEdition(){
+		return getComponent().getGridOperations().getEditor().isOpen();
+	}
 	/**
 	 * Sette la table en mode édition
 	 */
 	public void setTableOnEditableMode(boolean editableMode){
 		
 		// Activation du tableau
-		getComponent().getGridOperations().getControleur().setTableOnEditableMode(editableMode);
+		getComponent().getGridOperations().getControleur().updateViewGridOnEditableMode(editableMode);
 		// Et des boutons
 		getComponent().getButtonValider().setVisible(editableMode);
 		getComponent().getButtonValider().setEnabled(editableMode);
-		getComponent().getButtonAnnuler().setVisible(editableMode);
-		getComponent().getButtonAnnuler().setEnabled(editableMode);
 		getComponent().getButtonEditer().setVisible(!editableMode);
 		getComponent().getButtonEditer().setEnabled(!editableMode);
 		getComponent().getButtonCreate().setVisible(!editableMode);
@@ -413,7 +408,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		
 		// Boutons actions sur Budget inactif :
 		if(!budgetCourant.isActif()){
-			getComponent().getButtonAnnuler().setVisible(false);
 			getComponent().getButtonValider().setVisible(false);
 			getComponent().getButtonEditer().setVisible(false);
 			getComponent().getButtonCreate().setVisible(false);

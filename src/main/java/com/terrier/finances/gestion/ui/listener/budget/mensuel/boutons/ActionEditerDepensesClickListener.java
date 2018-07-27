@@ -34,8 +34,6 @@ public class ActionEditerDepensesClickListener extends AbstractComponentListener
 		Button editer = event.getButton();
 		BudgetMensuelPage page  = AbstractUIComponent.getParentComponent(editer, BudgetMensuelPage.class);
 		if(page != null){
-//			TableSuiviDepenseEditedFieldFactory factory = (TableSuiviDepenseEditedFieldFactory)page.getTableSuiviDepense().getTableFieldFactory();
-//			factory.setIdLigneEditable(null);
 			getControleur(BudgetMensuelController.class).setTableOnEditableMode(true);
 		}
 		else{
