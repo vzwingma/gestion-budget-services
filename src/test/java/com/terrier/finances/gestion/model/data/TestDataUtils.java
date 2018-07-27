@@ -47,13 +47,16 @@ public class TestDataUtils {
 		depense2.setDateOperation(c.getTime());
 		
 		LigneDepense depense3 = new LigneDepense(true);
-		c.set(Calendar.MONTH, 8);
-		depense3.setDateOperation(c.getTime());
+		Calendar c3 = Calendar.getInstance();
+		c3.set(Calendar.DAY_OF_MONTH, 12);
+		c3.set(Calendar.MONTH, Calendar.OCTOBER);
+		c3.set(Calendar.YEAR, 2050);
+		depense3.setDateOperation(c3.getTime());
 		
 		List<LigneDepense> depenses = new ArrayList<>();
 		depenses.addAll(Arrays.asList(depense1, depense2, depense3));
 		LocalDate cd = DataUtils.getMaxDateListeOperations(depenses);
 		
-		assertEquals(Month.SEPTEMBER.getValue(), cd.get(ChronoField.MONTH_OF_YEAR));
+		assertEquals(Month.OCTOBER.getValue(), cd.get(ChronoField.MONTH_OF_YEAR));
 	}
 }
