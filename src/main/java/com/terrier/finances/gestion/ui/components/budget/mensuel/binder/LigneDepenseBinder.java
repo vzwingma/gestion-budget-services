@@ -6,12 +6,11 @@ package com.terrier.finances.gestion.ui.components.budget.mensuel.binder;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.terrier.finances.gestion.business.BusinessDepensesService;
 import com.terrier.finances.gestion.business.ParametragesService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.vaadin.data.Binder;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
@@ -74,10 +73,15 @@ public class LigneDepenseBinder extends Binder<LigneDepense> {
 	public Binding<LigneDepense, CategorieDepense> bindCategories(){
 		ComboBox<CategorieDepense> ssCategories = new  ComboBox<CategorieDepense>();
 
-		// Liste des sous catégories
+		// Liste des sous catégories 
 		Set<CategorieDepense> sousCategories = serviceParam.getCategories().stream()
 				.map(c -> c.getListeSSCategories())
 				.flatMap(c -> c.stream())
+				// Sauf transfert intercompte et réservice
+				.filter(c -> 
+							!BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(c.getId()) 
+							&& 
+							! BusinessDepensesService.ID_SS_CAT_RESERVE.equals(c.getId()))
 				.sorted((c1, c2) -> c1.getLibelle().compareTo(c2.getLibelle()))
 				.collect(Collectors.toSet());
 		ssCategories.setItems(sousCategories);
