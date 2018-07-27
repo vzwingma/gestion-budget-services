@@ -1,7 +1,11 @@
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.editor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.components.grid.EditorCancelEvent;
 import com.vaadin.ui.components.grid.EditorCancelListener;
 import com.vaadin.ui.components.grid.EditorOpenEvent;
@@ -20,15 +24,20 @@ public class GridEditorListener implements EditorCancelListener<LigneDepense>, E
 	 * 
 	 */
 	private static final long serialVersionUID = -4092876167681783200L;
-	
-	
+
+	/**
+	 * Logger
+	 */ 
+	private static final Logger LOGGER = LoggerFactory.getLogger(GridEditorListener.class);
+
+
 	private GridOperationsController controler;
-	
+
 	public GridEditorListener(GridOperationsController controller) {
 		this.controler = controller;
 	}
-	
-	
+
+
 	@Override
 	public void onEditorCancel(EditorCancelEvent<LigneDepense> event) {
 		this.controler.updateViewGridOnEditableMode(false);
@@ -47,28 +56,20 @@ public class GridEditorListener implements EditorCancelListener<LigneDepense>, E
 	 */
 	@Override
 	public void onEditorSave(EditorSaveEvent<LigneDepense> event) {
-		this.controler.updateViewGridOnEditableMode(false);
-		/**
-		 * BudgetMensuelPage page  = AbstractUIComponent.getParentComponent(editer, BudgetMensuelPage.class);
-			if(page != null){
-				boolean validateForm = page.getGridOperations().getControleur().validateEditableForm();
-				if(validateForm){
-					refreshModele(page.getGridOperations());
-					// Recalcul du budget
-					getControleur(BudgetMensuelController.class).getServiceDepense().calculBudgetEtSauvegarde(getBudgetMensuelCourant());
-					getControleur(BudgetMensuelController.class).setTableOnEditableMode(false);
-					// MAJ des tableaux
-					getControleur(BudgetMensuelController.class).miseAJourVueDonnees();
-					Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
-				}
-				else{
-					LOGGER.warn("Les données sont incorrectes pas de mise à jour");
-				}
-			}
-			getControleur(BudgetMensuelController.class).setTableOnEditableMode(false);
-		 */
-	}
 
-	
-	
+		boolean validateForm = controler.validateEditableForm();
+		if(validateForm){
+			// Recalcul du budget
+			this.controler.getServiceDepense().calculBudgetEtSauvegarde(this.controler.getBudgetMensuelCourant());
+			// MAJ des tableaux
+			this.controler.getBudgetControleur().miseAJourVueDonnees();
+			Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
+			this.controler.updateViewGridOnEditableMode(false);
+		}
+		else{
+			Notification.show("Les données sont incorrectes pas de mise à jour", Notification.Type.TRAY_NOTIFICATION);
+			LOGGER.warn("Les données sont incorrectes pas de mise à jour");
+		}
+	}
 }
+

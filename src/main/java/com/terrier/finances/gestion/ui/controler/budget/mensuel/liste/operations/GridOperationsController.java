@@ -138,6 +138,14 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	public void setBudgetControleur(BudgetMensuelController budgetControleur) {
 		this.budgetControleur = budgetControleur;
 	}
+
+
+	/**
+	 * @return the budgetControleur
+	 */
+	public BudgetMensuelController getBudgetControleur() {
+		return budgetControleur;
+	}
 	
 	
 }
