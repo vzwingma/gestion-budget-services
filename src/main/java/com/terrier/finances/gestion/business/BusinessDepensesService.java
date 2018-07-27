@@ -20,13 +20,11 @@ import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
-import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.ui.sessions.UISession;
 
 /**
  * Service Métier : Dépenses
@@ -443,47 +441,6 @@ public class BusinessDepensesService {
 	}
 
 	/**
-	 * Mise à jour des lignes de dépenses
-	 * 
-	 * Attention : Pas d'appel à CalculBudget() car c'est fait seulement à la fin de toute la liste
-	 * 
-	 * @param ligneId  id de la ligne de dépense
-	 * @param propertyId id de la propriété
-	 * @param propClass classe de la propriété
-	 * @param value nouvelle valeur
-	 * @throws DataNotFoundException données introuvable
-	 */
-	public void majLigneDepense(BudgetMensuel budgetEnCours, String ligneId, String propertyId, @SuppressWarnings("rawtypes") Class propClass, Object value, String auteur) throws DataNotFoundException{
-
-		// Recherche de la ligne
-		LigneDepense ligneDepense = getLigneDepense(budgetEnCours, ligneId);
-		boolean ligneUpdated = false;
-		// Maj du modele (sauf pour Etat=null car cela signifie suppression de la ligne)
-		if(ligneDepense != null){
-			if(propertyId.equals("Etat") && value == null){
-				ligneUpdated = budgetEnCours.getListeDepenses().remove(ligneDepense);
-			}
-			// Maj du modele (sauf pour CATEGORIE, DATE MAJ et AUTEUR)
-			else if(!propertyId.equals(EntetesTableSuiviDepenseEnum.CATEGORIE.name())
-					&& !propertyId.equals(EntetesTableSuiviDepenseEnum.AUTEUR.name())
-					&& !propertyId.equals(EntetesTableSuiviDepenseEnum.DATE_MAJ.name())){
-				ligneUpdated = ligneDepense.updateProperty(ligneId, propertyId, propClass, value);
-			}
-			// LibelleView n'est que pour l'IHM au même titre que les actions. donc pas de mise à jour des dates fonctionnelles
-			if(ligneUpdated && !"LibelleView".equals(propertyId)){
-				ligneDepense.setDateMaj(Calendar.getInstance().getTime());
-				ligneDepense.setAuteur(auteur != null ? auteur : "");
-				// Mise à jour du budget
-				budgetEnCours.setDateMiseAJour(Calendar.getInstance());
-			}
-		}
-		else{
-			throw new DataNotFoundException("La ligne de dépense est introuvable");
-		}
-	}	
-
-
-	/**
 	 * Mise à jour d'une ligne de dépense 
 	 * @param idBudget identifiant de budget
 	 * @param ligneDepense ligne de dépense
@@ -534,24 +491,6 @@ public class BusinessDepensesService {
 		}
 	}	
 
-
-
-	/**
-	 * Enregistrement de la note pour une ligne
-	 * @param budget budget courant
-	 * @param ligneId id de la ligne à mettre à jour
-	 * @param note note à enregistrer
-	 * @param auteur auteur auteur de la note
-	 * @throws DataNotFoundException données introuvable
-	 * @throws BudgetNotFoundException erreur budget non trouvé
-	 */
-	public void majNotesLignesDepenses(String idBudget, String ligneId, String note, String auteur, UISession sessionUI) throws DataNotFoundException, BudgetNotFoundException{
-		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
-		majLigneDepense(budget, ligneId, "Notes", String.class, note, auteur);
-		// Mise à jour du budget
-		dataDepenses.sauvegardeBudgetMensuel(budget);
-		sessionUI.setBudgetMensuelCourant(budget);
-	}
 
 
 	/**
