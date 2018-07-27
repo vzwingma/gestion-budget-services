@@ -48,7 +48,10 @@ public class LoginController extends AbstractUIController<Login>{
 	 */
 	public void initDynamicComponentsOnPage() {
 		// Ajout controle
-		getComponent().getButtonConnexion().addClickListener(new LoginConnexionClickListener(this.getComponent()));
+		getComponent().getButtonConnexion().addClickListener(
+			e -> authenticateUser(
+				getComponent().getTextLogin().getValue(), 
+				getComponent().getPasswordField().getValue()));
 		getComponent().getTextLogin().focus();
 	}
 
