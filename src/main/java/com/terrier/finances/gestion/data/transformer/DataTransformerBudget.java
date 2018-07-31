@@ -116,7 +116,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 			}
 			bo.setId(dto.getId());
 
-			LOGGER.debug("	[{}] \n > Transformation en BO > [{}]", dto, bo);
+			LOGGER.trace("	[{}] \n > Transformation en BO > [{}]", dto, bo);
 			return bo;
 		}
 		catch(Exception e){
@@ -188,7 +188,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		dto.setTotalParSSCategories(totalSsCategorieDTO);
 
 		dto.setId(bo.getId());
-		LOGGER.debug("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
+		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
 		return dto;
 	}
 
