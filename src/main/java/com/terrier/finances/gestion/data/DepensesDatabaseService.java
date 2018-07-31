@@ -336,7 +336,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 			return null;
 		}
 		BudgetMensuelDTO budgetDTO = dataTransformerBudget.transformBOtoDTO(budgetBO);
-		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budgetDTO.getCompteBancaire().getLibelle(), budgetDTO.getMois(), budgetDTO.getAnnee());
+		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budgetDTO.getCompteBancaire().getLibelle(), budgetDTO.getMois() + 1, budgetDTO.getAnnee());
 		try{
 			getMongoOperation().save(budgetDTO, getBudgetCollectionName(budgetBO.getAnnee()));
 			LOGGER.info("Budget {} sauvegardé ", budgetDTO.getId());

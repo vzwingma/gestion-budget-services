@@ -171,16 +171,7 @@ public class ParametragesService {
 		return dataUsers.chargeCompteParId(idCompte, proprietaire);
 	}
 
-	/**
-	 * Recherche du compte par id
-	 * @param idCompte id du compte
-	 * @param utilisateur utilisateur
-	 * @return compteBancaire
-	 * @throws DataNotFoundException
-	 */
-	public boolean isCompteActif(String idCompte) throws DataNotFoundException{
-		return dataUsers.isCompteActif(idCompte);
-	}
+
 
 	/**
 	 * Recherche des comptes d'un utilisateur

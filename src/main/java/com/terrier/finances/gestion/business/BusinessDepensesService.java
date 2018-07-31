@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.data.DepensesDatabaseService;
+import com.terrier.finances.gestion.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
@@ -45,7 +46,8 @@ public class BusinessDepensesService {
 	 */
 	@Autowired
 	private DepensesDatabaseService dataDepenses;
-
+	@Autowired
+	private UtilisateurDatabaseService dataUsers;
 	/**
 	 * Paramétrages
 	 */
@@ -76,7 +78,6 @@ public class BusinessDepensesService {
 		CompteBancaire compteBancaire = serviceParams.getCompteById(compte.getId(), utilisateur.getLogin());
 		if(compteBancaire != null){
 			if(compteBancaire.isActif()){
-
 				try {
 					return chargerBudgetMensuelSurCompteActif(utilisateur, compteBancaire, mois, annee);
 				} catch (CompteClosedException e) {
@@ -112,10 +113,12 @@ public class BusinessDepensesService {
 			try{
 				Month moisPrecedent = mois.minus(1);
 				int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
+				LOGGER.debug("Chargement du budget du mois précédent du compte actif {} : {}/{}", compteBancaire.getId(), moisPrecedent, anneePrecedente);
 				BudgetMensuel budgetPrecedent = this.dataDepenses.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente);
 				if(budgetPrecedent.isActif()){
 					calculBudget(budgetPrecedent);
 				}
+				// TODO : Et si le budget n'est pas actif ? On ne recacule pas ?
 				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
 			}
 			catch(BudgetNotFoundException e){
@@ -203,7 +206,7 @@ public class BusinessDepensesService {
 	 */
 	public boolean isCompteActif(String idCompte){
 		try {
-			return serviceParams.isCompteActif(idCompte);
+			return dataUsers.isCompteActif(idCompte);
 		} catch (DataNotFoundException e) {
 			return false;
 		}
@@ -254,8 +257,7 @@ public class BusinessDepensesService {
 			initBudgetFromBudgetPrecedent(budget, chargerBudgetMensuel(utilisateur, compteBancaire, moisPrecedent, anneePrecedente));
 		}
 		else{
-			String err = new StringBuilder("Le budget ").append(mois).append("/").append(annee).append(" n'a jamais existé").toString();
-			LOGGER.warn(err);
+			LOGGER.warn("Le budget {}/{} n'a jamais existé", mois, annee);
 			budget.setFinArgentAvance(0D);
 			budget.setFinCompteReel(0D);
 			budget.setNowArgentAvance(0D);

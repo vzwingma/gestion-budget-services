@@ -4,18 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**
  * Service de données en MongoDB fournissant les paramètres
@@ -34,12 +26,6 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	 */
 	private Map<String, CategorieDepense> mapSSCategories = new HashMap<>();	
 
-
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ParametragesDatabaseService.class);
-
 	/**
 	 * @return la liste des catégories
 	 */
@@ -48,23 +34,23 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 			try{
 				List<CategorieDepense> listeAllCategories =  getMongoOperation().findAll(CategorieDepense.class);
 				// Ajout des catégories
-				for (CategorieDepense depenseCategorie : listeAllCategories) {
-					if(depenseCategorie.isCategorie()){
-						mapCategories.put(depenseCategorie.getId(), depenseCategorie);
-					}
-				}
+				listeAllCategories
+				.stream()
+				.filter(c -> c.isCategorie())
+				.forEach(c -> mapCategories.put(c.getId(), c));
 
 				// Ajout des sous catégories
-				for (CategorieDepense depenseSousCategorie : listeAllCategories) {
-					if(!depenseSousCategorie.isCategorie()){
-						CategorieDepense categorieParente = mapCategories.get(depenseSousCategorie.getIdCategorieParente());
-						if(categorieParente != null){
-							depenseSousCategorie.setCategorieParente(categorieParente);
-							categorieParente.getListeSSCategories().add(depenseSousCategorie);
-						}
-						mapSSCategories.put(depenseSousCategorie.getId(), depenseSousCategorie);
+				listeAllCategories
+				.stream()
+				.filter(c -> !c.isCategorie())
+				.forEach(c -> {
+					CategorieDepense categorieParente = mapCategories.get(c.getIdCategorieParente());
+					if(categorieParente != null){
+						c.setCategorieParente(categorieParente);
+						categorieParente.getListeSSCategories().add(c);
 					}
-				}
+					mapSSCategories.put(c.getId(), c);
+				});
 			}
 			catch(Exception e){
 				return new ArrayList<>();

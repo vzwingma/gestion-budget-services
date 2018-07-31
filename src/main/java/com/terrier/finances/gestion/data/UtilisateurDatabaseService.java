@@ -130,12 +130,13 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 	 */
 	public boolean isCompteActif(String idCompte) throws DataNotFoundException{
 		try{
-			LOGGER.info("Chargement du compte {}", idCompte);
 			Query queryBudget = new Query();
 			queryBudget
 				.addCriteria(Criteria.where("id").is(idCompte))
 				.addCriteria(Criteria.where("actif").is(true));
-			return getMongoOperation().findOne(queryBudget, CompteBancaire.class) != null;
+			boolean isActif = getMongoOperation().findOne(queryBudget, CompteBancaire.class) != null;
+			LOGGER.info("Compte {} est actif ? {}", idCompte, isActif);
+			return isActif;
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement du compte {}", idCompte, e);
