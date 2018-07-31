@@ -24,7 +24,7 @@ public class TestValidator {
 
 
 		// Ligne nulle
-		assertEquals(ValidationResult.error(anyString()).isError(), validator.apply(operation, null).isError());
+		assertEquals(ValidationResult.error("").isError(), validator.apply(operation, null).isError());
 
 		operation.setCategorie(new CategorieDepense());
 		operation.setSsCategorie(new CategorieDepense());
@@ -53,7 +53,7 @@ public class TestValidator {
 		operation.setValeurS("NaN");
 		// Ligne OK
 		ValidationResult r = validator.apply(operation, null);
-		assertEquals(ValidationResult.error(anyString()).isError(), r.isError());
+		assertEquals(ValidationResult.error("").isError(), r.isError());
 	}
 
 
@@ -74,7 +74,7 @@ public class TestValidator {
 		operation.setValeur(-123);
 		operation.setValeurS("-123");
 		operation.setTypeDepense(TypeDepenseEnum.DEPENSE);
-		assertEquals(ValidationResult.error(anyString()).isError(), validator.apply(operation, null).isError());
+		assertEquals(ValidationResult.error("").isError(), validator.apply(operation, null).isError());
 	}
 	
 	
@@ -90,7 +90,7 @@ public class TestValidator {
 		operation.setValeur(123);
 		operation.setValeurS("123");
 		operation.setTypeDepense(TypeDepenseEnum.CREDIT);
-		assertEquals(ValidationResult.error(anyString()).isError(), validator.apply(operation, null).isError());
+		assertEquals(ValidationResult.error("").isError(), validator.apply(operation, null).isError());
 	}
 	
 }
