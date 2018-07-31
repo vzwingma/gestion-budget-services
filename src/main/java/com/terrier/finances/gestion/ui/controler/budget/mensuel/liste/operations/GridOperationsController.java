@@ -62,8 +62,7 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	 * @param budgetIsActif budget actif ?
 	 * @param listeDepenses liste des dépenses à utiliser
 	 */
-	public void miseAJourVueDonnees(boolean refreshAllDonnees, boolean budgetIsActif, List<LigneDepense> listeDepenses){
-
+	public void miseAJourVueDonnees(boolean budgetIsActif, List<LigneDepense> listeDepenses){
 		// Ajout des opérations
 		getComponent().setItems(listeDepenses);
 

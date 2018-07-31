@@ -52,7 +52,7 @@ public class GridTotalCellStyle extends TextRenderer implements StyleGenerator<T
             return super.encode(null);
         } else if(value instanceof Double){
         	StringBuilder valeur = new StringBuilder();
-			Double truncatedDouble=new BigDecimal((Double)value).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			Double truncatedDouble=BigDecimal.valueOf((Double)value).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 			valeur.append(truncatedDouble);
 			valeur.append(" €");
             return Json.create(valeur.toString());

@@ -61,8 +61,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private GridResumeTotauxController gridResumeTotauxControleur;
 	private TreeGridResumeCategoriesController treeResumeControleur;
 
-	// Calcul de mise à jour du compte courant
-	private boolean refreshAllTable = false;
 	/**
 	 * Constructure du Controleur du composant
 	 * @param composant
@@ -328,7 +326,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 				// Maj du budget
 				getUISession().setBudgetMensuelCourant(budget);
 				LOGGER.debug("[BUDGET] Changement de mois ou de compte : Refresh total des tableaux");
-				refreshAllTable = true;
 				return budget;
 
 			} catch (BudgetNotFoundException e) {
@@ -342,7 +339,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		}
 		else{
 			LOGGER.debug("[BUDGET] Pas de changement de mois ou de compte : Renvoi du budget mensuel courant");
-			refreshAllTable = true;
 			return getBudgetMensuelCourant();
 		}
 	}
@@ -367,7 +363,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		/**
 		 * Affichage des lignes dans le tableau
 		 **/
-		gridOperationsControleur.miseAJourVueDonnees(this.refreshAllTable, budgetCourant.isActif(), listeOperations);
+		gridOperationsControleur.miseAJourVueDonnees(budgetCourant.isActif(), listeOperations);
 		// Boutons actions sur Budget inactif :
 		if(!budgetCourant.isActif()){
 			getComponent().getButtonCreate().setVisible(false);
@@ -396,6 +392,5 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		gridResumeTotauxControleur.miseAJourVueDonnees(budgetCourant);
 
 		LOGGER.debug("[IHM] << Mise à jour des vues <<");
-		this.refreshAllTable = false;
 	}
 }

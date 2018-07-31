@@ -182,7 +182,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	}
 
 	public String getValeurS() {
-		return new Float(Math.abs(valeur)).toString();
+		return Float.toString(Math.abs(valeur));
 	}
 
 	public void setValeurS(String valeurS){
