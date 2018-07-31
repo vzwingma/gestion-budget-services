@@ -34,8 +34,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	private CategorieDepense ssCategorie;
 	// Libellé
 	private String libelle;
-	// Notes
-	private String notes;
 	// Type de dépense
 	private TypeDepenseEnum typeDepense;
 	// Etat de la ligne
@@ -94,7 +92,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		LigneDepense ligneDepenseClonee = new LigneDepense(this.budgetIsActif);
 		ligneDepenseClonee.setId(UUID.randomUUID().toString());
 		ligneDepenseClonee.setLibelle(this.libelle);
-		ligneDepenseClonee.setNotes(this.notes);
 		ligneDepenseClonee.setSsCategorie(this.ssCategorie);
 		ligneDepenseClonee.setDateMaj(Calendar.getInstance().getTime());
 		ligneDepenseClonee.setDateOperation(null);
@@ -140,21 +137,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	public void setSsCategorie(CategorieDepense ssCategorie) {
 		LOGGER.trace("> MAJ de la catégorie de la dépense : {}", ssCategorie);
 		this.ssCategorie = ssCategorie;
-	}
-
-	
-	/**
-	 * @return the notes
-	 */
-	public String getNotes() {
-		return notes;
-	}
-
-	/**
-	 * @param notes the notes to set
-	 */
-	public void setNotes(String notes) {
-		this.notes = notes;
 	}
 
 	/**
