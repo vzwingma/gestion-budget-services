@@ -58,24 +58,6 @@ public class TestValidator {
 
 
 
-	@Test
-	public void testValidatorTypeDepense(){
-		LigneDepense operation = new LigneDepense(true);
-		operation.setCategorie(new CategorieDepense());
-		operation.setSsCategorie(new CategorieDepense());
-		operation.setEtat(EtatLigneDepenseEnum.PREVUE);
-		operation.setLibelle("TEST LIBELLE");		
-
-		operation.setValeur(123);
-		operation.setValeurS("123");
-		operation.setTypeDepense(TypeDepenseEnum.DEPENSE);
-		// Ligne Crédit
-		assertEquals(ValidationResult.error(anyString()).isError(), validator.apply(operation, null).isError());
-		operation.setValeur(-123);
-		operation.setValeurS("-123");
-		operation.setTypeDepense(TypeDepenseEnum.CREDIT);
-		assertEquals(ValidationResult.error(anyString()).isError(), validator.apply(operation, null).isError());
-	}
 	
 
 	@Test

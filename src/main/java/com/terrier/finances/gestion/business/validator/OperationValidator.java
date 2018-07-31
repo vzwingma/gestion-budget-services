@@ -43,13 +43,6 @@ public class OperationValidator implements Validator<LigneDepense> {
 		}
 
 
-		// Dépense = valeur négative
-		if(TypeDepenseEnum.DEPENSE.equals(operation.getTypeDepense()) && operation.getValeur() > 0){
-			return ValidationResult.error("L'opération est une dépense. La valeur doit être négative");
-		}
-		if(TypeDepenseEnum.CREDIT.equals(operation.getTypeDepense()) && operation.getValeur() < 0){
-			return ValidationResult.error("L'opération est une dépense. La valeur doit être positive");
-		}
 		// Catégorie crédit
 		if((BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(operation.getSsCategorie().getId()) 
 				|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(operation.getSsCategorie().getId()))){

@@ -13,6 +13,7 @@ import com.vaadin.ui.Layout;
  * @author vzwingma
  *
  */
+@Deprecated
 public class ChangePageListener extends AbstractComponentListener implements ClickListener{
 
 

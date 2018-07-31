@@ -55,7 +55,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 	 * @param newOperation operation
 	 * @param compteTransfert compte si transfert inter compte
 	 */
-	public void validateAndCreate(LigneDepense newOperation, Optional<CompteBancaire> compteTransfert){
+	public boolean validateAndCreate(LigneDepense newOperation, Optional<CompteBancaire> compteTransfert){
 		ValidationResult resultatValidation = new OperationValidator().apply(newOperation, null);
 		if(!resultatValidation.isError()){
 			// Si oui création
@@ -74,15 +74,18 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 					getServiceDepense().ajoutLigneDepenseEtCalcul(budget.getId(), newOperation, auteur);
 					Notification.show("La dépense a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 				}
+				return true;
 			}
 			catch(Exception e){
 				LOGGER.error("Erreur : ", e);
 				Notification.show("Impossible de créer la dépense : " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				return false;
 			}
 		}
 		else{
-			LOGGER.error("Erreur : La catégorie ou la description sont invalides");
-			Notification.show("Impossible de créer la dépense : La catégorie ou la description sont invalides", Notification.Type.ERROR_MESSAGE);
+			LOGGER.error("Erreur : {}", resultatValidation.getErrorMessage());
+			Notification.show("Impossible de créer la dépense : " + resultatValidation.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
+			return false;
 		}
 	}
 

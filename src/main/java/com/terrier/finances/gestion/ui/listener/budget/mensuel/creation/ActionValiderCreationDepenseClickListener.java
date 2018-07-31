@@ -60,32 +60,32 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 
 		LigneDepense newOperation = new LigneDepense(
 				categorieSelected.isPresent() ? categorieSelected.get() : null, 
-						descriptionSelected.isPresent() ? descriptionSelected.get() : null, 
-								type,
-								Float.valueOf(form.getTextFieldValeur().getValue()),
-								etat,
-								form.getCheckBoxPeriodique().getValue(),
-								getBudgetMensuelCourant().isActif());
+				descriptionSelected.isPresent() ? descriptionSelected.get() : null, 
+				type,
+				Math.abs(Float.valueOf(form.getTextFieldValeur().getValue())),
+				etat,
+				form.getCheckBoxPeriodique().getValue(),
+				getBudgetMensuelCourant().isActif());
 		LOGGER.debug("[IHM]  >  {}", newOperation);
-		getControleur(CreerDepenseController.class).validateAndCreate(newOperation, form.getComboboxComptes().getSelectedItem());
+		boolean resultat = getControleur(CreerDepenseController.class).validateAndCreate(newOperation, form.getComboboxComptes().getSelectedItem());
 
-		
-		/**
-		 * MAJ des tableaux
-		 */
-		BudgetMensuelController controleur = getControleur(BudgetMensuelController.class);
-		if(event.getButton().getCaption().contains("Fermer")){
-			// Fin du formulaire
-			getUISession().getPopupModale().close();
-			controleur.miseAJourVueDonnees();
+		if(resultat){
+			/**
+			 * MAJ des tableaux
+			 */
+			BudgetMensuelController controleur = getControleur(BudgetMensuelController.class);
+			if(event.getButton().getCaption().contains("Fermer")){
+				// Fin du formulaire
+				getUISession().getPopupModale().close();
+				controleur.miseAJourVueDonnees();
+			}
+			else{
+				// Reset du formulaire
+				form.getControleur().miseAJourVueDonnees();
+				controleur.miseAJourVueDonnees();		
+			}
 		}
-		else{
-			// Reset du formulaire
-			form.getControleur().miseAJourVueDonnees();
-			controleur.miseAJourVueDonnees();		
-		}
+
 	}
-	
-
 }
 
