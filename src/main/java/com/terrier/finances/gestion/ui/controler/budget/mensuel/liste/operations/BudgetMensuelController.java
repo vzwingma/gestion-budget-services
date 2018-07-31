@@ -36,7 +36,6 @@ import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemIconStyle;
 import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemStyle;
 import com.vaadin.event.UIEvents;
 import com.vaadin.shared.ui.datefield.DateResolution;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
@@ -63,9 +62,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	private TreeGridResumeCategoriesController treeResumeControleur;
 
 	// Calcul de mise à jour du compte courant
-	private transient Month oldMois;
-	private int oldAnnee;
-	private CompteBancaire oldCompte;
 	private boolean refreshAllTable = false;
 	/**
 	 * Constructure du Controleur du composant
@@ -75,7 +71,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		super(composant);
 		// Ajout du pooling listener de l'UI sur ce controleur
 		UI.getCurrent().addPollListener(this);
-		
+
 		initDynamicComponentsOnPage();
 	}
 
@@ -140,16 +136,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		}
 
 		// Maj des composants MOIS/COMPTES
-        getComponent().getMois().setResolution(DateResolution.MONTH);
-		getComponent().getMois().addValueChangeListener(event -> {
-			// Modification de la date
-			CompteBancaire compte = getCompte().getValue();
-			LocalDate newDateBudget = event.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().with(ChronoField.DAY_OF_MONTH, 1);
-			setRangeFinMois(newDateBudget, compte.getId());
-			if(!newDateBudget.getMonth().equals(getOldMois()) || newDateBudget.getYear() != getOldAnnee()){
-				miseAJourVueDonnees();			
-			}
-		});
+		getComponent().getMois().setResolution(DateResolution.MONTH);
 
 
 		getComponent().getComboBoxComptes().setDescription("Choix du compte");
@@ -182,16 +169,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 			initRangeDebutFinMois(compteCourant.getId());
 			getComponent().getComboBoxComptes().setTextInputAllowed(false);
-			// modif du compte
-			getComponent().getComboBoxComptes().addValueChangeListener(event -> {
-				if(event.getOldValue() != null){
-					LOGGER.info("Changement du compte : {}->{}", event.getOldValue().getId(), event.getValue().getId());
-					// Modification du compte
-					initRangeDebutFinMois(event.getValue().getId());
-					miseAJourVueDonnees();
-				}
-			});
-
 
 			// Bouton stat
 			//getComponent().getButtonStatistique().addClickListener(new ChangePageListener(StatistiquesPage.class));
@@ -217,11 +194,36 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 				getComponent().getButtonLock().setEnabled(false);
 			}
 
+
+			/*
+			 * Listeners
+			 */
+			getComponent().getMois().addValueChangeListener(event -> {
+				// Modification de la date
+				CompteBancaire compte = getComponent().getComboBoxComptes().getValue();
+				LocalDate newDateBudget = event.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().with(ChronoField.DAY_OF_MONTH, 1);
+				LocalDate oldDateBudget = event.getOldValue().atStartOfDay(ZoneId.systemDefault()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().with(ChronoField.DAY_OF_MONTH, 1);
+				if(!newDateBudget.isEqual(oldDateBudget)){
+					LOGGER.info("Changement du mois : {}/{} -> {}/{}", oldDateBudget.getMonth(), oldDateBudget.getYear(), newDateBudget.getMonth(), newDateBudget.getYear());
+					setRangeFinMois(newDateBudget, compte.getId());
+					miseAJourVueDonnees();			
+				}
+			});
+
+			// modif du compte
+			getComponent().getComboBoxComptes().addValueChangeListener(event -> {
+				if(event.getOldValue() != null){
+					LOGGER.info("Changement du compte : {}->{}", event.getOldValue().getId(), event.getValue().getId());
+					// Modification du compte
+					initRangeDebutFinMois(event.getValue().getId());
+					miseAJourVueDonnees();
+				}
+			});
+
+
 		}catch (DataNotFoundException e) {
 			Notification.show("Impossible de charger le budget du compte " + (compteCourant != null ? compteCourant.getLibelle() : "" ) + " du " + dateBudget.get(ChronoField.MONTH_OF_YEAR)+"/"+ dateBudget.get(ChronoField.YEAR), Notification.Type.ERROR_MESSAGE);
 		}
-
-
 	}
 
 
@@ -252,7 +254,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 					getBudgetMensuelCourant(), 
 					getUtilisateurCourant());
 			// Ack pour forcer le "refreshAllTable"
-			oldMois = null;
 			miseAJourVueDonnees();
 		} catch (BudgetNotFoundException | DataNotFoundException | CompteClosedException e) {
 			LOGGER.error("[BUDGET] Erreur lors de la réinitialisation du compte", e);
@@ -293,7 +294,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 * Mise à jour du range fin
 	 * @param dateFin
 	 */
-	public void setRangeFinMois(LocalDate dateFin, String idCompte){
+	private void setRangeFinMois(LocalDate dateFin, String idCompte){
 		if(dateFin != null){
 			// Bouton Mois suivant limité au mois prochain si le compte n'est pas clos
 			LocalDate dateRangeBudget = DataUtils.localDateFirstDayOfMonth();
@@ -304,7 +305,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 				getComponent().getMois().setRangeEnd(dateRangeBudget);
 			}
 		}
-		LOGGER.debug("[IHM] < Affichage limité à [{}/{}] <", getComponent().getMois().getRangeStart(), getComponent().getMois().getRangeEnd());
+		LOGGER.debug("[IHM] < Affichage fin limité à [{}/{}] <", getComponent().getMois().getRangeStart(), getComponent().getMois().getRangeEnd());
 
 	}
 
@@ -328,19 +329,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 			// Maj du budget
 			getUISession().setBudgetMensuelCourant(budget);
-			// Mise à jour du mois suivant le résultat de la requête
-			// (gère les comptes cloturés, on récupère que le dernier accessible)
-			if(budget.getMois() == oldMois && compte.equals(oldCompte)){
-				refreshAllTable = false;
-				LOGGER.info("[BUDGET] Pas de changement de mois ou de compte : Pas de refresh total des tableaux");
-			}
-			else{
-				LOGGER.debug("[BUDGET] Changement de mois ou de compte : Refresh total des tableaux");
-				refreshAllTable = true;
-			}
-			oldMois = budget.getMois();
-			oldAnnee = budget.getAnnee();
-			oldCompte = compte;
+			LOGGER.debug("[BUDGET] Changement de mois ou de compte : Refresh total des tableaux");
+			refreshAllTable = true;
 			return budget;
 		} catch (BudgetNotFoundException e) {
 			String messageerreur = new StringBuilder().
@@ -363,23 +353,17 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		try {
 			budgetCourant = chargeDonnees();
 		} catch (final DataNotFoundException e) {
-			LOGGER.warn("[BUDGET] Budget non trouvé. Réinjection de {}", DataUtils.localDateFirstDayOfMonth(this.oldMois));
-			getComponent().getMois().setValue(DataUtils.localDateFirstDayOfMonth(this.oldMois)); 
+			LOGGER.warn("[BUDGET] Budget non trouvé.");
 			Notification.show(e.getMessage(), Notification.Type.WARNING_MESSAGE);
 			return;
 		}
 		LOGGER.info("[IHM] >> Mise à jour des vues >> {}", budgetCourant.isActif());		
 		LOGGER.debug("[IHM] Affichage des données dans le tableau de suivi des dépenses");
-		List<LigneDepense> listeDepenses = budgetCourant.getListeDepenses();		
+		List<LigneDepense> listeOperations = budgetCourant.getListeDepenses();		
 		/**
 		 * Affichage des lignes dans le tableau
 		 **/
-
-		gridOperationsControleur.miseAJourVueDonnees(this.refreshAllTable, budgetCourant.isActif(), listeDepenses);
-
-		// Maj du mois
-		getComponent().getMois().setValue(DataUtils.localDateFirstDayOfMonth(budgetCourant.getMois(), budgetCourant.getAnnee()));
-		
+		gridOperationsControleur.miseAJourVueDonnees(this.refreshAllTable, budgetCourant.isActif(), listeOperations);
 		// Boutons actions sur Budget inactif :
 		if(!budgetCourant.isActif()){
 			getComponent().getButtonCreate().setVisible(false);
@@ -409,26 +393,5 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 
 		LOGGER.debug("[IHM] << Mise à jour des vues <<");
 		this.refreshAllTable = false;
-	}
-
-	/**
-	 * @return the compte
-	 */
-	public ComboBox<CompteBancaire> getCompte() {
-		return getComponent().getComboBoxComptes();
-	}
-
-	/**
-	 * @return the oldMois
-	 */
-	public Month getOldMois() {
-		return oldMois;
-	}
-
-	/**
-	 * @return the oldAnnee
-	 */
-	public int getOldAnnee() {
-		return oldAnnee;
 	}
 }
