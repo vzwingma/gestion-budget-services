@@ -11,7 +11,7 @@ import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
-import com.terrier.finances.gestion.ui.components.budget.mensuel.binder.LigneDepenseBinder;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.binder.LigneOperationEditorBinder;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.editor.GridEditorListener;
 import com.terrier.finances.gestion.ui.styles.operations.OperationBudgetTypeRenderer;
@@ -37,7 +37,8 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	public static final int TAILLE_COLONNE_TYPE_MENSUEL = 65;
 	public static final int TAILLE_COLONNE_VALEUR = 100;
 	
-	private final SimpleDateFormat dateFormatMaj = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
+	private final SimpleDateFormat dateFormatMaj = new
+			SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
 	private final SimpleDateFormat dateFormatOperations = new SimpleDateFormat("dd/MM/yyyy", Locale.FRENCH);
 	private final TimeZone tzParis = TimeZone.getTimeZone("Europe/Paris");
 
@@ -68,14 +69,13 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	@Override
 	public void paramComponentsOnGrid() {
 		
-		LigneDepenseBinder binderLD = new LigneDepenseBinder(getControleur().getServiceParams());
+		LigneOperationEditorBinder binderLD = new LigneOperationEditorBinder(getControleur().getServiceParams());
 		getEditor().setBinder(binderLD);
 		
 		GridEditorListener editorListener = new GridEditorListener(getControleur());
 		getEditor().addOpenListener(editorListener);
 		getEditor().addSaveListener(editorListener);
 		getEditor().addCancelListener(editorListener);
-		
 		setSelectionMode(SelectionMode.SINGLE);
 		
 		Column<LigneDepense, Date> c = addColumn(LigneDepense::getDateOperation);
