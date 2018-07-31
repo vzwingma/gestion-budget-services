@@ -67,68 +67,11 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 		// Ajout des opérations
 		getComponent().setItems(listeDepenses);
 
-
 		// Mise à jour des colonnes suivant l'activité du budget
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.AUTEUR.name()).setHidden(budgetIsActif);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.ACTIONS.name()).setHidden(!budgetIsActif);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE.name()).setHidden(budgetIsActif);
 		getComponent().getColumn(EntetesTableSuiviDepenseEnum.LIBELLE_VIEW.name()).setHidden(!budgetIsActif);
-	}
-
-
-	/**
-	 * Validation du formulaire
-	 */
-	public boolean validateEditableForm(){
-		/*
-		List<String> messagesErreurs = new ArrayList<String>();
-		String idLigneEditable = ((TableSuiviDepenseEditedFieldFactory)getComponent().getTableFieldFactory()).getIdLigneEditable();
-		if(getComponent().isEditable() && idLigneEditable != null){
-			for (Object itemID : getComponent().getItemIds()) {
-				Item itemLigneDepense = getComponent().getItem(itemID);
-
-				String description = itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.LIBELLE.getId()).getValue().toString();
-
-				if(itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.CATEGORIE.getId()).getValue() == null){
-					messagesErreurs.add(description + " : La catégorie est obligatoire");
-				}
-				if(itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId()).getValue() == null){
-					messagesErreurs.add(description + " : La sous-catégorie est obligatoire");
-				}
-				if(description == null || description.isEmpty()){
-					messagesErreurs.add(description + " : La description est obligatoire");
-				}
-				ValeurDepenseValidator validator = new ValeurDepenseValidator("La valeur est incorrecte");
-				try{
-					validator.validate(itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.VALEUR.getId()).getValue());
-				}
-				catch(InvalidValueException e){
-					messagesErreurs.add(description + " : La valeur est obligatoire");
-				}
-				// Vérification de la cohérence des données :
-				CategorieDepense ssCategorie = (CategorieDepense)itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.SSCATEGORIE.getId()).getValue();
-				TypeDepenseEnum type = (TypeDepenseEnum)itemLigneDepense.getItemProperty(EntetesTableSuiviDepenseEnum.TYPE.getId()).getValue();
-
-				TypeDepenseValidator typeValidator = new TypeDepenseValidator(ssCategorie);
-				try{
-					typeValidator.validate(type);
-				}
-				catch(InvalidValueException e){
-					messagesErreurs.add(description + " : " + e.getMessage());
-				}
-			}
-		}
-
-		StringBuilder b = new StringBuilder();
-		for (String string : messagesErreurs) {
-			b.append(string).append("\n");
-		}
-		if(!messagesErreurs.isEmpty()){
-			Notification.show(b.toString(), Notification.Type.WARNING_MESSAGE);
-		}
-		return messagesErreurs.isEmpty();
-		 */
-		return true;
 	}
 
 

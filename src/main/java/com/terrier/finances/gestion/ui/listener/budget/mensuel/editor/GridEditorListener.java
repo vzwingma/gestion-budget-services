@@ -1,8 +1,5 @@
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.editor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.vaadin.ui.Notification;
@@ -25,12 +22,7 @@ public class GridEditorListener implements EditorCancelListener<LigneDepense>, E
 	 */
 	private static final long serialVersionUID = -4092876167681783200L;
 
-	/**
-	 * Logger
-	 */ 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GridEditorListener.class);
-
-
+	// Controleur
 	private GridOperationsController controler;
 
 	public GridEditorListener(GridOperationsController controller) {
@@ -57,19 +49,12 @@ public class GridEditorListener implements EditorCancelListener<LigneDepense>, E
 	@Override
 	public void onEditorSave(EditorSaveEvent<LigneDepense> event) {
 
-		boolean validateForm = controler.validateEditableForm();
-		if(validateForm){
-			// Recalcul du budget
-			this.controler.getServiceDepense().calculBudgetEtSauvegarde(this.controler.getBudgetMensuelCourant());
-			// MAJ des tableaux
-			this.controler.getBudgetControleur().miseAJourVueDonnees();
-			Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
-			this.controler.updateViewGridOnEditableMode(false);
-		}
-		else{
-			Notification.show("Les données sont incorrectes pas de mise à jour", Notification.Type.TRAY_NOTIFICATION);
-			LOGGER.warn("Les données sont incorrectes pas de mise à jour");
-		}
+		// Recalcul du budget
+		this.controler.getServiceDepense().calculBudgetEtSauvegarde(this.controler.getBudgetMensuelCourant());
+		// MAJ des tableaux
+		this.controler.getBudgetControleur().miseAJourVueDonnees();
+		Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
+		this.controler.updateViewGridOnEditableMode(false);
 	}
 }
 

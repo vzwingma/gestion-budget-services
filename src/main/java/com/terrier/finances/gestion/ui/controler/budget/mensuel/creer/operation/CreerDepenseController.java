@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
-import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.business.validator.OperationValidator;
+import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
+import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -19,6 +21,7 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionVa
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemCaptionStyle;
+import com.vaadin.data.ValidationResult;
 import com.vaadin.ui.ComboBox.NewItemHandler;
 import com.vaadin.ui.Notification;
 
@@ -46,56 +49,41 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		super(composant);
 	}
 
-
+	
 	/**
-	 * Validation du formulaire
+	 * Validation formulaire
+	 * @param newOperation operation
+	 * @param compteTransfert compte si transfert inter compte
 	 */
-	public boolean validateForm(){
-		boolean validation = true;
-		validation &= getComponent().getComboBoxCategorie().getSelectedItem().isPresent();
-		validation &= getComponent().getComboBoxSsCategorie().getSelectedItem().isPresent();
-		validation &= getComponent().getTextFieldValeur().getOptionalValue().isPresent();
-		if(getComponent().getComboboxComptes().isVisible()){
-			validation &= getComponent().getComboboxComptes().getSelectedItem().isPresent();
-		}
-		TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
-		
-		CategorieDepense ssCategorieSelectionnee = null;
-		Optional<CategorieDepense> selection = getComponent().getComboBoxSsCategorie().getSelectedItem();
-		if(selection.isPresent()){
-			ssCategorieSelectionnee = selection.get();
-		}
-		
-		
-		if(	getComponent().getTextFieldValeur().getOptionalValue().isPresent()
-				&& getComponent().getComboBoxCategorie().getSelectedItem().isPresent()
-				&& ssCategorieSelectionnee != null
-				&& (
-				BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(ssCategorieSelectionnee.getId()) 
-				|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(ssCategorieSelectionnee.getId()))){
-			typeAttendu = TypeDepenseEnum.CREDIT;
-		}
-		// Cohérence type
-		validation &= typeAttendu.equals(getComponent().getComboboxType().getValue());
+	public void validateAndCreate(LigneDepense newOperation, Optional<CompteBancaire> compteTransfert){
+		ValidationResult resultatValidation = new OperationValidator().apply(newOperation, null);
+		if(!resultatValidation.isError()){
+			// Si oui création
 
-		String value = getComponent().getTextFieldValeur().getValue();
-		if(value != null){
+			String auteur = getUtilisateurCourant().getLibelle();
+			BudgetMensuel budget = getBudgetMensuelCourant();
 			try{
-				String valeur = value.replaceAll(",", ".");
-				Double d = Double.valueOf(valeur);
-				validation &=(!Double.isInfinite(d) && !Double.isNaN(d));
+				if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(newOperation.getSsCategorie().getId())
+						&& compteTransfert.isPresent()){
+					LOGGER.info("[IHM] Ajout d'un nouveau transfert intercompte");
+					getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), newOperation, compteTransfert.get(), getUtilisateurCourant());
+					Notification.show("Le transfert inter-compte a bien été créée", Notification.Type.TRAY_NOTIFICATION);
+				}
+				else{
+					LOGGER.info("[IHM] Ajout d'une nouvelle dépense");
+					getServiceDepense().ajoutLigneDepenseEtCalcul(budget.getId(), newOperation, auteur);
+					Notification.show("La dépense a bien été créée", Notification.Type.TRAY_NOTIFICATION);
+				}
 			}
-			catch(NumberFormatException e){ 
-				validation &= false;
+			catch(Exception e){
+				LOGGER.error("Erreur : ", e);
+				Notification.show("Impossible de créer la dépense : " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
-
-
-		if(!validation){
-			LOGGER.info("L'opération est incorrecte");
-			Notification.show("L'opération est incorrecte", Notification.Type.WARNING_MESSAGE);
+		else{
+			LOGGER.error("Erreur : La catégorie ou la description sont invalides");
+			Notification.show("Impossible de créer la dépense : La catégorie ou la description sont invalides", Notification.Type.ERROR_MESSAGE);
 		}
-		return validation;
 	}
 
 
