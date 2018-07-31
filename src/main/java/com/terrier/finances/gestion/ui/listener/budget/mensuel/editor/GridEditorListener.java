@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.editor;
 
+import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.vaadin.ui.Notification;
@@ -50,7 +51,8 @@ public class GridEditorListener implements EditorCancelListener<LigneDepense>, E
 	public void onEditorSave(EditorSaveEvent<LigneDepense> event) {
 
 		// Recalcul du budget
-		this.controler.getServiceDepense().calculBudgetEtSauvegarde(this.controler.getBudgetMensuelCourant());
+		BudgetMensuel budget = this.controler.getServiceDepense().calculEtSauvegardeBudget(this.controler.getBudgetMensuelCourant());
+		this.controler.updateBudgetCourantInSession(budget);
 		// MAJ des tableaux
 		this.controler.getBudgetControleur().miseAJourVueDonnees();
 		Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);

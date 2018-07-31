@@ -226,7 +226,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		}
 	}
 
-
+	
 	/**
 	 * Déconnexion de l'utilisateur
 	 */
@@ -240,7 +240,7 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	 */
 	public void lockBudget(boolean setBudgetActif){
 		LOGGER.info("[IHM] {} du budget mensuel", setBudgetActif ? "Ouverture" : "Clôture");
-		getServiceDepense().setBudgetActif(getBudgetMensuelCourant(), setBudgetActif);
+		updateBudgetCourantInSession(getServiceDepense().setBudgetActif(getBudgetMensuelCourant(), setBudgetActif));
 		miseAJourVueDonnees();
 	}
 
@@ -264,11 +264,6 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		}
 	}
 
-
-
-	public boolean isGridOnEdition(){
-		return getComponent().getGridOperations().getEditor().isOpen();
-	}
 
 	/**
 	 * Mise à jour du range fin
@@ -318,30 +313,39 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		CompteBancaire compte = getComponent().getComboBoxComptes().getValue();
 		LocalDate dateMoisSelectionne = getComponent().getMois().getValue();
 		LOGGER.debug("[BUDGET] Gestion du Compte : {} du mois {}/{}",compte, dateMoisSelectionne.getMonth(), dateMoisSelectionne.getYear());
+		if(getBudgetMensuelCourant() == null 
+				|| !getBudgetMensuelCourant().getCompteBancaire().getId().equals(compte.getId()) 
+				|| !getBudgetMensuelCourant().getMois().equals(dateMoisSelectionne.getMonth())
+				|| getBudgetMensuelCourant().getAnnee() != dateMoisSelectionne.getYear()){
+			try {
+				// Budget
+				BudgetMensuel budget = getServiceDepense().chargerBudgetMensuel(
+						getUtilisateurCourant(),
+						compte,
+						Month.of(dateMoisSelectionne.getMonthValue()), 
+						dateMoisSelectionne.getYear());
 
-		try {
-			// Budget
-			BudgetMensuel budget = getServiceDepense().chargerBudgetMensuel(
-					getUtilisateurCourant(),
-					compte,
-					Month.of(dateMoisSelectionne.getMonthValue()), 
-					dateMoisSelectionne.getYear());
+				// Maj du budget
+				getUISession().setBudgetMensuelCourant(budget);
+				LOGGER.debug("[BUDGET] Changement de mois ou de compte : Refresh total des tableaux");
+				refreshAllTable = true;
+				return budget;
 
-			// Maj du budget
-			getUISession().setBudgetMensuelCourant(budget);
-			LOGGER.debug("[BUDGET] Changement de mois ou de compte : Refresh total des tableaux");
+			} catch (BudgetNotFoundException e) {
+				String messageerreur = new StringBuilder().
+						append("Impossible de charger le budget du compte ").
+						append(compte).append(" du ").
+						append(dateMoisSelectionne.getMonth()).append("/").append(dateMoisSelectionne.getYear()).
+						toString();
+				throw new DataNotFoundException(messageerreur);
+			}
+		}
+		else{
+			LOGGER.debug("[BUDGET] Pas de changement de mois ou de compte : Renvoi du budget mensuel courant");
 			refreshAllTable = true;
-			return budget;
-		} catch (BudgetNotFoundException e) {
-			String messageerreur = new StringBuilder().
-					append("Impossible de charger le budget du compte ").
-					append(compte).append(" du ").
-					append(dateMoisSelectionne.getMonth()).append("/").append(dateMoisSelectionne.getYear()).
-					toString();
-			throw new DataNotFoundException(messageerreur);
+			return getBudgetMensuelCourant();
 		}
 	}
-
 
 
 	/* (non-Javadoc)

@@ -102,7 +102,9 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 		// Recalcul du budget
 		BudgetMensuel budget = getBudgetMensuelCourant();
 		try{
-			getControleur(BudgetMensuelController.class).getServiceDepense().majEtatLigneDepense(budget, actions.getControleur().getIdOperation(), etat, auteur);
+			updateBudgetCourantInSession(
+					getControleur(BudgetMensuelController.class).getServiceDepense()
+					.majEtatLigneDepense(budget, actions.getControleur().getIdOperation(), etat, auteur));
 		}
 		catch(DataNotFoundException|BudgetNotFoundException e){
 			Notification.show("La dépense est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);

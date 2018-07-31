@@ -32,7 +32,12 @@ public interface AbstractUIService  {
 		return getUISession().getUtilisateurCourant();
 	}
 
-
+	/**
+	 * @return le budget mensuel courant
+	 */
+	public default void updateBudgetCourantInSession(BudgetMensuel budget){
+		getUISession().setBudgetMensuelCourant(budget);
+	}
 	/**
 	 * @return le budget mensuel courant
 	 */
