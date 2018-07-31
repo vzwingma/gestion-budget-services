@@ -69,7 +69,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	@Override
 	public void paramComponentsOnGrid() {
 		
-		LigneOperationEditorBinder binderLD = new LigneOperationEditorBinder(getControleur().getServiceParams());
+		LigneOperationEditorBinder binderLD = new LigneOperationEditorBinder(getControleur().getServiceParams().getCategories());
 		getEditor().setBinder(binderLD);
 		
 		GridEditorListener editorListener = new GridEditorListener(getControleur());

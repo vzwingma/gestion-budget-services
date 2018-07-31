@@ -3,11 +3,11 @@
  */
 package com.terrier.finances.gestion.ui.components.budget.mensuel.binder;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.terrier.finances.gestion.business.BusinessDepensesService;
-import com.terrier.finances.gestion.business.ParametragesService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -28,15 +28,21 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 	 */
 	private static final long serialVersionUID = -8849882826136832053L;
 
-	private ParametragesService serviceParam ;
+	
+	private List<CategorieDepense> setCategories ;
 
-	public LigneOperationEditorBinder(ParametragesService serviceParam){
-		this.serviceParam = serviceParam;
+	/**
+	 * Constructeur
+	 * @param serviceParam
+	 */
+	public LigneOperationEditorBinder(List<CategorieDepense> setCategories){
+		this.setCategories = setCategories;
 	}
 
 
 	private ComboBox<CategorieDepense> cCategories = new  ComboBox<CategorieDepense>();
 	private ComboBox<CategorieDepense> ssCategories = new  ComboBox<CategorieDepense>();
+	private ComboBox<TypeDepenseEnum> cTypes = new ComboBox<TypeDepenseEnum>();
 	private TypeDepenseEnum expectedType = TypeDepenseEnum.DEPENSE;
 
 	/**
@@ -54,20 +60,8 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 	 * @return binding du type dépense
 	 */
 	public Binding<LigneDepense, TypeDepenseEnum> bindTypeDepense(){
-		ComboBox<TypeDepenseEnum> cTypes = new ComboBox<TypeDepenseEnum>();
+		cTypes = new ComboBox<TypeDepenseEnum>();
 		cTypes.setItems(TypeDepenseEnum.values());
-
-		if(this.ssCategories.getSelectedItem().isPresent())
-		{
-			if((BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(this.ssCategories.getSelectedItem().get().getId()) 
-					|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(this.ssCategories.getSelectedItem().get().getId()))){
-				expectedType = TypeDepenseEnum.CREDIT;
-			}
-			else{
-				expectedType = TypeDepenseEnum.DEPENSE;
-			}
-		}
-		
 		return this.forField(cTypes)
 				.withValidator(v -> v != null, "Le Type de dépense ne peut pas être nul")
 				.withValidator(v -> expectedType.equals(v), "L'opération est une "+expectedType.getId()+". La valeur doit être " + expectedType.getLibelle())
@@ -113,21 +107,32 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 
 
 		// Liste des sous catégories 
-		Set<CategorieDepense> sousCategories = serviceParam.getCategories().stream()
+		Set<CategorieDepense> sousCategories = setCategories.stream()
 				.map(c -> c.getListeSSCategories())
 				.flatMap(c -> c.stream())
 				// Sauf transfert intercompte et réservice
 				.filter(c -> 
-				!BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(c.getId()) 
-				&& 
-				! BusinessDepensesService.ID_SS_CAT_RESERVE.equals(c.getId()))
+						!BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(c.getId()) 
+						&&	! BusinessDepensesService.ID_SS_CAT_RESERVE.equals(c.getId()))
 				.sorted((c1, c2) -> c1.getLibelle().compareTo(c2.getLibelle()))
 				.collect(Collectors.toSet());
 		ssCategories.setItems(sousCategories);
 		ssCategories.setEmptySelectionAllowed(false);
 		ssCategories.setTextInputAllowed(false);
 		ssCategories.setEnabled(true);
-		ssCategories.addSelectionListener(event -> cCategories.setValue(event.getSelectedItem().get().getCategorieParente()));
+		// Update auto de la catégorie et du type
+		ssCategories.addSelectionListener(event -> {
+			cCategories.setValue(event.getSelectedItem().get().getCategorieParente());
+			if((BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(this.ssCategories.getSelectedItem().get().getId()) 
+					|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(this.ssCategories.getSelectedItem().get().getId()))){
+				expectedType = TypeDepenseEnum.CREDIT;
+			}
+			else{
+				expectedType = TypeDepenseEnum.DEPENSE;
+			}
+			cTypes.setValue(expectedType);
+			
+		});
 		return this.forField(ssCategories)
 				.withValidator(v -> v != null, "La sous catégorie est obligatoire")
 				.bind(LigneDepense::getSsCategorie, LigneDepense::setSsCategorie);
