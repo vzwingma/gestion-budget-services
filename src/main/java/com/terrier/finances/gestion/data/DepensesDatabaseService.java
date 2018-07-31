@@ -44,6 +44,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	private static final String COLLECTION_BUDGET = "budget_";
 	private static final String ATTRIBUT_COMPTE_ID = "compteBancaire.id";
 	private static final String ATTRIBUT_ANNEE = "annee";
+	private static final String ATTRIBUT_MOIS = "mois";
 	
 	/**
 	 * @param annee année
@@ -120,7 +121,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public BudgetMensuel chargeBudgetMensuel(CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee);
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and("mois").is(mois.getValue() -1).and(ATTRIBUT_ANNEE).is(annee));
+		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and(ATTRIBUT_MOIS).is(mois.getValue() -1).and(ATTRIBUT_ANNEE).is(annee));
 		BudgetMensuelDTO budgetDTO = null;
 		try{
 			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
@@ -205,7 +206,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public BudgetMensuelDTO chargeBudgetMensuelDTO(CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee);
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and("mois").is(mois.getValue() - 1).and(ATTRIBUT_ANNEE).is(annee));
+		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and(ATTRIBUT_MOIS).is(mois.getValue() - 1).and(ATTRIBUT_ANNEE).is(annee));
 		BudgetMensuelDTO budgetDTO = null;
 		try{
 			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
@@ -262,12 +263,12 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 	public BudgetMensuelDTO[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
 		Query query1erBudget = new Query();
 		query1erBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-		query1erBudget.with(new Sort(Sort.Direction.ASC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.ASC, "mois"));
+		query1erBudget.with(new Sort(Sort.Direction.ASC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.ASC, ATTRIBUT_MOIS));
 		query1erBudget.limit(1);
 
 		Query querydernierBudget = new Query();
 		querydernierBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-		querydernierBudget.with(new Sort(Sort.Direction.DESC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.DESC, "mois"));
+		querydernierBudget.with(new Sort(Sort.Direction.DESC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.DESC, ATTRIBUT_MOIS));
 		querydernierBudget.limit(1);
 		try{
 			BudgetMensuelDTO premierbudget = null;
@@ -283,7 +284,7 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 
 			BudgetMensuelDTO dernierbudget = null;
 			for (int a = Calendar.getInstance().get(Calendar.YEAR); a >= 2014; a--) {
-				dernierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a));
+				dernierbudget = getMongoOperation().findOne(querydernierBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a));
 				if(dernierbudget != null){
 					break;
 				}				
