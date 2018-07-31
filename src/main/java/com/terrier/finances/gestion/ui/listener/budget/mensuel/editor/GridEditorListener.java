@@ -18,9 +18,7 @@ import com.vaadin.ui.components.grid.EditorSaveListener;
  */
 public class GridEditorListener implements EditorCancelListener<LigneDepense>, EditorSaveListener<LigneDepense>, EditorOpenListener<LigneDepense> {
 
-	/**
-	 * 
-	 */
+	//
 	private static final long serialVersionUID = -4092876167681783200L;
 
 	// Controleur
@@ -49,13 +47,12 @@ public class GridEditorListener implements EditorCancelListener<LigneDepense>, E
 	 */
 	@Override
 	public void onEditorSave(EditorSaveEvent<LigneDepense> event) {
-
 		// Recalcul du budget
 		BudgetMensuel budget = this.controler.getServiceDepense().calculEtSauvegardeBudget(this.controler.getBudgetMensuelCourant());
 		this.controler.updateBudgetCourantInSession(budget);
 		// MAJ des tableaux
 		this.controler.getBudgetControleur().miseAJourVueDonnees();
-		Notification.show("Les dépenses ont bien été mises à jour", Notification.Type.TRAY_NOTIFICATION);
+		Notification.show("L'opération a bien été mise à jour", Notification.Type.TRAY_NOTIFICATION);
 		this.controler.updateViewGridOnEditableMode(false);
 	}
 }

@@ -9,7 +9,6 @@ public enum EntetesTableSuiviDepenseEnum {
 
 	CATEGORIE		("Catégorie"),
 	SSCATEGORIE		("Ss catégorie"),
-	LIBELLE_VIEW	("Description"),
 	LIBELLE			("Description"),
 	TYPE			("Operation"),
 	VALEUR			("Valeur"),
