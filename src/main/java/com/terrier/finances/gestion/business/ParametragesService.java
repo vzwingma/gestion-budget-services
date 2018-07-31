@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
+import com.terrier.finances.gestion.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
@@ -42,7 +43,8 @@ public class ParametragesService {
 	
 	@Autowired
 	private ParametragesDatabaseService dataParams;
-
+	@Autowired
+	private UtilisateurDatabaseService dataUsers;
 	/**
 	 * Liste des catégories
 	 */
@@ -133,17 +135,16 @@ public class ParametragesService {
 		if(listeCategories == null){
 			listeCategories = dataParams.chargeCategories();
 			LOGGER.info("> Chargement des catégories <");
-			for (CategorieDepense categorie : listeCategories) {
-				LOGGER.info("[{}] {}", categorie.isActif() ? "v" : "X", categorie);
-				for (CategorieDepense ssCategorie : categorie.getListeSSCategories()) {
-					LOGGER.info("[{}] 	{}", ssCategorie.isActif() ? "v" : "X", ssCategorie);	
-				}
-			}
+			listeCategories.stream().forEachOrdered(c -> {
+				LOGGER.debug("[{}] {}", c.isActif() ? "v" : "X", c);
+				c.getListeSSCategories().stream().forEachOrdered(s -> {
+					LOGGER.debug("[{}] 	{}", s.isActif() ? "v" : "X", s);	
+				});
+			});
 		}
 		return listeCategories;
 	}
-	
-	
+
 
 	/**
 	 * @param idCategorie
@@ -166,10 +167,20 @@ public class ParametragesService {
 	 * @return compteBancaire
 	 * @throws DataNotFoundException
 	 */
-	public CompteBancaire getCompteById(String idCompte) throws DataNotFoundException{
-		return dataParams.chargeCompteParId(idCompte);
+	public CompteBancaire getCompteById(String idCompte, String proprietaire) throws DataNotFoundException{
+		return dataUsers.chargeCompteParId(idCompte, proprietaire);
 	}
-	
+
+	/**
+	 * Recherche du compte par id
+	 * @param idCompte id du compte
+	 * @param utilisateur utilisateur
+	 * @return compteBancaire
+	 * @throws DataNotFoundException
+	 */
+	public boolean isCompteActif(String idCompte) throws DataNotFoundException{
+		return dataUsers.isCompteActif(idCompte);
+	}
 
 	/**
 	 * Recherche des comptes d'un utilisateur
@@ -178,7 +189,7 @@ public class ParametragesService {
 	 * @throws DataNotFoundException
 	 */
 	public List<CompteBancaire> getComptesUtilisateur(Utilisateur utilisateur) throws DataNotFoundException{
-		return dataParams.chargeComptes(utilisateur);
+		return dataUsers.chargeComptes(utilisateur);
 	}
 	
 	
@@ -187,5 +198,6 @@ public class ParametragesService {
 	 */
 	public void resetData(){
 		dataParams.resetData();
+		dataUsers.resetData();
 	}
 }

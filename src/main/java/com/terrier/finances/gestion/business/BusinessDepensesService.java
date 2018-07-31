@@ -73,25 +73,17 @@ public class BusinessDepensesService {
 	public BudgetMensuel chargerBudgetMensuel(Utilisateur utilisateur, CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget {} de {}/{}", compte, mois, annee);
 
-		CompteBancaire compteBancaire = serviceParams.getCompteById(compte.getId());
+		CompteBancaire compteBancaire = serviceParams.getCompteById(compte.getId(), utilisateur.getLogin());
 		if(compteBancaire != null){
-			boolean proprietaire = false;
-			for (Utilisateur proprietaires : compteBancaire.getListeProprietaires()) {
-				if(utilisateur.getLogin().equals(proprietaires.getLogin())){
-					proprietaire=true;
-				}
-			}
-			if(proprietaire){
-				if(compteBancaire.isActif()){
+			if(compteBancaire.isActif()){
 
-					try {
-						return chargerBudgetMensuelSurCompteActif(utilisateur, compteBancaire, mois, annee);
-					} catch (CompteClosedException e) {
-						// Rien car géré en aval
-					}
+				try {
+					return chargerBudgetMensuelSurCompteActif(utilisateur, compteBancaire, mois, annee);
+				} catch (CompteClosedException e) {
+					// Rien car géré en aval
 				}
-				return chargerBudgetMensuelSurCompteInactif(compteBancaire, mois, annee);
 			}
+			return chargerBudgetMensuelSurCompteInactif(compteBancaire, mois, annee);
 		}
 		throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte).append(" de ").append(utilisateur));
 	}
@@ -172,9 +164,9 @@ public class BusinessDepensesService {
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
 	public LocalDate[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
-		
+
 		BudgetMensuelDTO[] premierDernierBudgets = this.dataDepenses.getDatePremierDernierBudgets(compte);
-		
+
 		LocalDate premier = DataUtils.localDateFirstDayOfMonth();
 		if(premierDernierBudgets[0] != null){
 			premier = premier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[0].getMois() + 1L).with(ChronoField.YEAR, premierDernierBudgets[0].getAnnee());
@@ -210,10 +202,8 @@ public class BusinessDepensesService {
 	 * @return etat du compte
 	 */
 	public boolean isCompteActif(String idCompte){
-		CompteBancaire compteBancaire;
 		try {
-			compteBancaire = serviceParams.getCompteById(idCompte);
-			return compteBancaire != null ? compteBancaire.isActif() : false;
+			return serviceParams.isCompteActif(idCompte);
 		} catch (DataNotFoundException e) {
 			return false;
 		}
@@ -296,7 +286,7 @@ public class BusinessDepensesService {
 	 */
 	public void reinitialiserBudgetMensuel(BudgetMensuel budgetMensuel, Utilisateur utilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
-		CompteBancaire compteBancaire = serviceParams.getCompteById(budgetMensuel.getCompteBancaire().getId());
+		CompteBancaire compteBancaire = serviceParams.getCompteById(budgetMensuel.getCompteBancaire().getId(), utilisateur.getLogin());
 		if(compteBancaire != null){
 			// S'il y a eu cloture, on ne fait rien
 			initNewBudget(compteBancaire, utilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
@@ -375,7 +365,7 @@ public class BusinessDepensesService {
 					etatDepenseTransfert, 
 					ligneDepense.isPeriodique(), 
 					budgetTransfert.isActif());
-			
+
 			ajoutLigneDepense(budgetTransfert, ligneTransfert, utilisateur.getLibelle());
 			calculBudgetEtSauvegarde(budgetTransfert);
 			/**

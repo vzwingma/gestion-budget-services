@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.business.auth.PasswordEncoder;
-import com.terrier.finances.gestion.data.ParametragesDatabaseService;
+import com.terrier.finances.gestion.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
@@ -35,7 +35,7 @@ public class AuthenticationService {
 	 * Paramétrages
 	 */
 	@Autowired
-	private ParametragesDatabaseService dataDBParams;
+	private UtilisateurDatabaseService dataDBParams;
 
 
 	/**

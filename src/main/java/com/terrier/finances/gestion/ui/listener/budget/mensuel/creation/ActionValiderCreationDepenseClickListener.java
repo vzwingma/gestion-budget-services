@@ -85,7 +85,6 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 				controleur.miseAJourVueDonnees();		
 			}
 		}
-
 	}
 }
 
