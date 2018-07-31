@@ -38,7 +38,7 @@ public abstract class AbstractDatabaseService {
 	@Autowired
 	private StatusApplicationService statutApplicationService;
 	
-	ScheduledExecutorService monitorScheduler = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledExecutorService monitorScheduler = Executors.newSingleThreadScheduledExecutor();
 	/**
 	 * Constructeur permettant de définir les composants utilisés en DATA
 	 */
@@ -55,7 +55,6 @@ public abstract class AbstractDatabaseService {
 	 * @return opérations MongoDB
 	 */
 	public MongoOperations getMongoOperation(){
-		updateMongoStatus();
 		return mongoTemplate;
 	}
 	
@@ -65,7 +64,7 @@ public abstract class AbstractDatabaseService {
 	 */
 	private void updateMongoStatus(){
         StatutStateEnum statutDB = mongoTemplate.getDb().getName() != null ? StatutStateEnum.OK : StatutStateEnum.FATAL;
-        LOGGER.debug("Statut DB : {} -> {}", mongoTemplate.getDb().getName(), statutDB);        
+        LOGGER.trace("Statut DB : {} -> {}", mongoTemplate.getDb().getName(), statutDB);        
 		statutApplicationService.updateDependencyStatut(DependencyName.DATABASE, statutDB);
 	}
 }
