@@ -12,7 +12,6 @@ import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.components.confirm.ConfirmDialog;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -35,8 +34,8 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 	 */
 	@Override
 	public void buttonClick(ClickEvent event) {
-		Button refreshMont = event.getButton();
-		page  = (BudgetMensuelPage)refreshMont.getParent().getParent().getParent().getParent().getParent();
+
+		page  = (BudgetMensuelPage)event.getButton().getParent().getParent().getParent().getParent().getParent();
 
 
 		BudgetMensuel budgetMensuelCourant = getBudgetMensuelCourant();
@@ -45,7 +44,7 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 		/** Alerte **/
 		String warnMoisActif = "";
 		Month moisPrecedent = budgetMensuelCourant.getMois().minus(1);
-		int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? budgetMensuelCourant.getAnnee() : budgetMensuelCourant.getAnnee() - 1;
+		int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? budgetMensuelCourant.getAnnee() - 1 : budgetMensuelCourant.getAnnee();
 		
 		Boolean budgetPrecedentActif = page.getControleur().getServiceOperations().isBudgetMensuelActif(
 				budgetMensuelCourant.getCompteBancaire(), 

@@ -92,12 +92,12 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 					miseAJourVueDonnees();
 				}
 				else{
-					LOGGER.debug("[REFRESH][{}] Le budget est à jour par rapport à la  base de données. ", idSession);
+					LOGGER.debug("[REFRESH][{}] Le budget est à jour par rapport à la base de données. ", idSession);
 				}
 			}
 		}
 		else{
-			LOGGER.debug("{} session active. Pas de refresh automatique en cours", UISessionManager.get().getNombreSessionsActives());
+			LOGGER.trace("{} session active. Pas de refresh automatique en cours", UISessionManager.get().getNombreSessionsActives());
 		}
 	}
 
@@ -248,9 +248,9 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 	public void reinitialiserBudgetCourant() {
 		LOGGER.info("Réinitialisation du budget mensuel courant");
 		try {
-			getServiceOperations().reinitialiserBudgetMensuel(
+			updateBudgetCourantInSession(getServiceOperations().reinitialiserBudgetMensuel(
 					getBudgetMensuelCourant(), 
-					getUtilisateurCourant());
+					getUtilisateurCourant()));
 			// Ack pour forcer le "refreshAllTable"
 			miseAJourVueDonnees();
 		} catch (BudgetNotFoundException | DataNotFoundException | CompteClosedException e) {

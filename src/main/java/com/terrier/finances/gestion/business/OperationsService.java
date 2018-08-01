@@ -288,12 +288,12 @@ public class OperationsService {
 	 * @throws DataNotFoundException  erreur sur les données
 	 * @throws BudgetNotFoundException budget introuvable
 	 */
-	public void reinitialiserBudgetMensuel(BudgetMensuel budgetMensuel, Utilisateur utilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
+	public BudgetMensuel reinitialiserBudgetMensuel(BudgetMensuel budgetMensuel, Utilisateur utilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
 		CompteBancaire compteBancaire = serviceParams.getCompteById(budgetMensuel.getCompteBancaire().getId(), utilisateur.getLogin());
 		if(compteBancaire != null){
 			// S'il y a eu cloture, on ne fait rien
-			initNewBudget(compteBancaire, utilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
+			return initNewBudget(compteBancaire, utilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
 		}
 		else{
 			throw new DataNotFoundException("Le compte bancaire " + budgetMensuel.getCompteBancaire().getId() + " est introuvable");
