@@ -36,7 +36,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 				// Ajout des catégories
 				listeAllCategories
 				.stream()
-				.filter(c -> c.isCategorie())
+				.filter(CategorieDepense::isCategorie)
 				.forEach(c -> mapCategories.put(c.getId(), c));
 
 				// Ajout des sous catégories

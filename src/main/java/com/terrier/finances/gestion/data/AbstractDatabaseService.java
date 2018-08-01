@@ -48,7 +48,7 @@ public abstract class AbstractDatabaseService {
 
 	@PostConstruct
 	public void monitorDB(){
-		monitorScheduler.scheduleAtFixedRate(() -> { updateMongoStatus(); }, 1, 5, TimeUnit.MINUTES);
+		monitorScheduler.scheduleAtFixedRate(() -> updateMongoStatus() , 1, 5, TimeUnit.MINUTES);
 	}
 	
 	/**

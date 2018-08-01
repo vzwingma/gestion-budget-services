@@ -149,12 +149,12 @@ public class DepensesDatabaseService extends AbstractDatabaseService {
 		boolean actif = false;
 		try {
 			BudgetMensuelDTO budgetMensuel = chargeBudgetMensuelDTO(compte, mois, annee);
-			actif = budgetMensuel != null ? budgetMensuel.isActif() : false;
+			actif = budgetMensuel != null && budgetMensuel.isActif();
 		} catch (BudgetNotFoundException e) {
 			actif = false;
 		}
 		LOGGER.debug("Activité du budget {} de {}/{} : {}", compte, mois, annee, actif);
-		return false;
+		return actif;
 	}
 
 

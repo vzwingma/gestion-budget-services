@@ -3,7 +3,7 @@
  */
 package com.terrier.finances.gestion.business.validator;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.vaadin.data.ValidationResult;
@@ -30,7 +30,6 @@ public class OperationValidator implements Validator<LigneDepense> {
 		if(operation.getSsCategorie() == null
 				|| operation.getValeurS() == null
 				|| operation.getLibelle() == null
-				|| operation.getTypeDepense() == null
 				|| operation.getEtat() == null
 				|| operation.getTypeDepense() == null){
 			return ValidationResult.error("Un des éléments requis est nul");
@@ -44,8 +43,8 @@ public class OperationValidator implements Validator<LigneDepense> {
 
 
 		// Catégorie crédit
-		if((BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(operation.getSsCategorie().getId()) 
-				|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(operation.getSsCategorie().getId()))){
+		if((OperationsService.ID_SS_CAT_SALAIRE.equals(operation.getSsCategorie().getId()) 
+				|| OperationsService.ID_SS_CAT_REMBOURSEMENT.equals(operation.getSsCategorie().getId()))){
 			if(TypeDepenseEnum.DEPENSE.equals(operation.getTypeDepense())){
 				return ValidationResult.error("L'opération est un crédit. Le type doit être CREDIT");
 			}
