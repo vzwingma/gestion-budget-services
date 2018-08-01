@@ -15,7 +15,7 @@
 		<spring.version>5.0.7.RELEASE</spring.version>
 		<mongo.data.version>3.8.0</mongo.data.version>
 		<spring.security.version>5.0.6.RELEASE</spring.security.version>
-		<vaadin.version>8.1.7</vaadin.version>
+		<vaadin.version>8.4.4</vaadin.version>
 		<jackson.version>2.9.6</jackson.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
@@ -448,7 +448,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
