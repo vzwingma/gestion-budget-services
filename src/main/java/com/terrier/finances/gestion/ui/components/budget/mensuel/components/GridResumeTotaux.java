@@ -57,9 +57,6 @@ public class GridResumeTotaux extends AbstractUIGridComponent<GridResumeTotauxCo
 		.setHidable(false)
 		.setStyleGenerator(new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_FIN))
 		.setRenderer(new OperationBudgetTypeRenderer());
-		
-		
-		setStyleGenerator(new GridTotalCellStyle(null));
 	}
 
 	/* (non-Javadoc)
