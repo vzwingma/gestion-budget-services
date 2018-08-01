@@ -28,18 +28,18 @@ import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**
- * Service Métier : Dépenses
+ * Service Métier : Operations
  * @author vzwingma
  *
  */
 @Service
-public class BusinessDepensesService {
+public class OperationsService {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BusinessDepensesService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OperationsService.class);
 
 	/**
 	 * Lien vers les données
@@ -84,7 +84,9 @@ public class BusinessDepensesService {
 					// Rien car géré en aval
 				}
 			}
-			return chargerBudgetMensuelSurCompteInactif(compteBancaire, mois, annee);
+			else{
+				return chargerBudgetMensuelSurCompteInactif(compteBancaire, mois, annee);
+			}
 		}
 		throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte).append(" de ").append(utilisateur));
 	}

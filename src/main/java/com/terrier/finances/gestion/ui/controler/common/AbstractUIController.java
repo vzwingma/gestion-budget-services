@@ -3,7 +3,7 @@ package com.terrier.finances.gestion.ui.controler.common;
 import java.io.Serializable;
 
 import com.terrier.finances.gestion.business.AuthenticationService;
-import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.business.ParametragesService;
 import com.terrier.finances.gestion.ui.controler.FacadeServices;
 import com.vaadin.ui.AbstractComponent;
@@ -52,8 +52,8 @@ public abstract class AbstractUIController<P extends AbstractComponent> implemen
 	/**
 	 * @return service métier dépense
 	 */
-	public BusinessDepensesService getServiceDepense(){
-		return FacadeServices.get().getServiceDepense();
+	public OperationsService getServiceOperations(){
+		return FacadeServices.get().getServiceOperations();
 	}
 	
 	/**

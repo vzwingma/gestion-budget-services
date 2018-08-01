@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -40,9 +40,9 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 	}
 
 
-	private ComboBox<CategorieDepense> cCategories = new  ComboBox<CategorieDepense>();
-	private ComboBox<CategorieDepense> ssCategories = new  ComboBox<CategorieDepense>();
-	private ComboBox<TypeDepenseEnum> cTypes = new ComboBox<TypeDepenseEnum>();
+	private ComboBox<CategorieDepense> cCategories = new  ComboBox<>();
+	private ComboBox<CategorieDepense> ssCategories = new  ComboBox<>();
+	private ComboBox<TypeDepenseEnum> cTypes = new ComboBox<>();
 	private TypeDepenseEnum expectedType = TypeDepenseEnum.DEPENSE;
 
 	/**
@@ -112,8 +112,8 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 				.flatMap(c -> c.stream())
 				// Sauf transfert intercompte et réservice
 				.filter(c -> 
-						!BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(c.getId()) 
-						&&	! BusinessDepensesService.ID_SS_CAT_RESERVE.equals(c.getId()))
+						!OperationsService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(c.getId()) 
+						&&	! OperationsService.ID_SS_CAT_RESERVE.equals(c.getId()))
 				.sorted((c1, c2) -> c1.getLibelle().compareTo(c2.getLibelle()))
 				.collect(Collectors.toSet());
 		ssCategories.setItems(sousCategories);
@@ -123,8 +123,8 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 		// Update auto de la catégorie et du type
 		ssCategories.addSelectionListener(event -> {
 			cCategories.setValue(event.getSelectedItem().get().getCategorieParente());
-			if((BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(this.ssCategories.getSelectedItem().get().getId()) 
-					|| BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(this.ssCategories.getSelectedItem().get().getId()))){
+			if((OperationsService.ID_SS_CAT_SALAIRE.equals(this.ssCategories.getSelectedItem().get().getId()) 
+					|| OperationsService.ID_SS_CAT_REMBOURSEMENT.equals(this.ssCategories.getSelectedItem().get().getId()))){
 				expectedType = TypeDepenseEnum.CREDIT;
 			}
 			else{

@@ -5,7 +5,7 @@ import static org.mockito.Matchers.anyString;
 
 import org.junit.Test;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
@@ -67,7 +67,7 @@ public class TestValidator {
 		LigneDepense operation = new LigneDepense(true);
 		operation.setCategorie(new CategorieDepense());
 		operation.setSsCategorie(new CategorieDepense());
-		operation.getSsCategorie().setId(BusinessDepensesService.ID_SS_CAT_SALAIRE);
+		operation.getSsCategorie().setId(OperationsService.ID_SS_CAT_SALAIRE);
 		operation.setEtat(EtatLigneDepenseEnum.PREVUE);
 		operation.setLibelle("TEST LIBELLE");		
 

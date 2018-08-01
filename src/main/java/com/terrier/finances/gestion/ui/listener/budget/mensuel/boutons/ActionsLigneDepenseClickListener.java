@@ -103,7 +103,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 		BudgetMensuel budget = getBudgetMensuelCourant();
 		try{
 			updateBudgetCourantInSession(
-					getControleur(BudgetMensuelController.class).getServiceDepense()
+					getControleur(BudgetMensuelController.class).getServiceOperations()
 					.majEtatLigneDepense(budget, actions.getControleur().getIdOperation(), etat, auteur));
 		}
 		catch(DataNotFoundException|BudgetNotFoundException e){

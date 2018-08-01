@@ -5,7 +5,7 @@ package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
 import java.util.Optional;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.creer.operation.CreerDepenseController;
@@ -47,7 +47,7 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 			 */
 			boolean interCompte = false;
 			if(ssCategorie != null){
-				interCompte = BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ssCategorie.getId());
+				interCompte = OperationsService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ssCategorie.getId());
 			}
 			controleur.getComponent().getComboboxComptes().setVisible(interCompte);
 			controleur.getComponent().getLayoutCompte().setVisible(interCompte);
@@ -58,7 +58,7 @@ public class SelectionSousCategorieValueChangeListener extends AbstractComponent
 			 */
 			if(ssCategorie != null){
 				TypeDepenseEnum typeAttendu = TypeDepenseEnum.DEPENSE;
-				if(BusinessDepensesService.ID_SS_CAT_SALAIRE.equals(ssCategorie.getId()) || BusinessDepensesService.ID_SS_CAT_REMBOURSEMENT.equals(ssCategorie.getId())){
+				if(OperationsService.ID_SS_CAT_SALAIRE.equals(ssCategorie.getId()) || OperationsService.ID_SS_CAT_REMBOURSEMENT.equals(ssCategorie.getId())){
 					typeAttendu = TypeDepenseEnum.CREDIT;
 				}
 				controleur.getComponent().getComboboxType().setSelectedItem(typeAttendu);

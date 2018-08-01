@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.business.validator.OperationValidator;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
@@ -63,15 +63,15 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 			String auteur = getUtilisateurCourant().getLibelle();
 			BudgetMensuel budget = getBudgetMensuelCourant();
 			try{
-				if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(newOperation.getSsCategorie().getId())
+				if(OperationsService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(newOperation.getSsCategorie().getId())
 						&& compteTransfert.isPresent()){
 					LOGGER.info("[IHM] Ajout d'un nouveau transfert intercompte");
-					updateBudgetCourantInSession(getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), newOperation, compteTransfert.get(), getUtilisateurCourant()));
+					updateBudgetCourantInSession(getServiceOperations().ajoutLigneTransfertIntercompte(budget.getId(), newOperation, compteTransfert.get(), getUtilisateurCourant()));
 					Notification.show("Le transfert inter-compte a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 				}
 				else{
 					LOGGER.info("[IHM] Ajout d'une nouvelle dépense");
-					updateBudgetCourantInSession(getServiceDepense().ajoutLigneDepenseEtCalcul(budget.getId(), newOperation, auteur));
+					updateBudgetCourantInSession(getServiceOperations().ajoutLigneDepenseEtCalcul(budget.getId(), newOperation, auteur));
 					Notification.show("La dépense a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 				}
 				return true;

@@ -47,7 +47,7 @@ public class ActionRefreshMonthBudgetClickListener extends AbstractComponentList
 		Month moisPrecedent = budgetMensuelCourant.getMois().minus(1);
 		int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? budgetMensuelCourant.getAnnee() : budgetMensuelCourant.getAnnee() - 1;
 		
-		Boolean budgetPrecedentActif = page.getControleur().getServiceDepense().isBudgetMensuelActif(
+		Boolean budgetPrecedentActif = page.getControleur().getServiceOperations().isBudgetMensuelActif(
 				budgetMensuelCourant.getCompteBancaire(), 
 				moisPrecedent, anneePrecedente);
 		if(budgetPrecedentActif){

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Transient;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
@@ -277,8 +277,8 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	public ActionsLigneBudget getActionsOperation() {
 		// Pas d'action pour les réserves
 		ActionsLigneBudget actionsOperation = null;
-		if(!BusinessDepensesService.ID_SS_CAT_RESERVE.equals(getSsCategorie().getId())
-				&& !BusinessDepensesService.ID_SS_CAT_PREVISION_SANTE.equals(getSsCategorie().getId())
+		if(!OperationsService.ID_SS_CAT_RESERVE.equals(getSsCategorie().getId())
+				&& !OperationsService.ID_SS_CAT_PREVISION_SANTE.equals(getSsCategorie().getId())
 				&& budgetIsActif){
 			actionsOperation = new ActionsLigneBudget();
 			actionsOperation.getControleur().setIdOperation(getId());

@@ -137,9 +137,7 @@ public class ParametragesService {
 			LOGGER.info("> Chargement des catégories <");
 			listeCategories.stream().forEachOrdered(c -> {
 				LOGGER.debug("[{}] {}", c.isActif() ? "v" : "X", c);
-				c.getListeSSCategories().stream().forEachOrdered(s -> {
-					LOGGER.debug("[{}] 	{}", s.isActif() ? "v" : "X", s);	
-				});
+				c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}] 	{}", s.isActif() ? "v" : "X", s));
 			});
 		}
 		return listeCategories;
