@@ -14,6 +14,8 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBud
 import com.terrier.finances.gestion.ui.components.budget.mensuel.binder.LigneOperationEditorBinder;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.editor.GridEditorListener;
+import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellStyle;
+import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellValeurStyle;
 import com.terrier.finances.gestion.ui.styles.operations.OperationBudgetTypeRenderer;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -85,6 +87,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c.setRenderer(new DateRenderer(dateFormatMaj));
+		c.setStyleGenerator(new GridOperationCellStyle());
 		// Pas éditable
 
 		Column<LigneDepense, CategorieDepense> c2 = addColumn(LigneDepense::getCategorie);
@@ -94,6 +97,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c2.setRenderer(new TextRenderer(""));
+		c2.setStyleGenerator(new GridOperationCellStyle());
 		// Pas éditable
 		c2.setEditorBinding(binderLD.bindCategories());
 		
@@ -104,6 +108,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c3.setRenderer(new TextRenderer(""));
+		c3.setStyleGenerator(new GridOperationCellStyle());
 		c3.setEditorBinding(binderLD.bindSSCategories());
 		
 		Column<LigneDepense, String> c5 = addColumn(LigneDepense::getLibelle);
@@ -112,6 +117,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c5.setRenderer(new TextRenderer(""));
+		c5.setStyleGenerator(new GridOperationCellStyle());
 		// Binding Edition
 		c5.setEditorBinding(binderLD.bindLibelle());
 			
@@ -123,6 +129,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c6.setRenderer(new OperationBudgetTypeRenderer());
+		c6.setStyleGenerator(new GridOperationCellStyle());
 		// Binding Edition	
 		c6.setEditorBinding(binderLD.bindTypeDepense());
 		
@@ -133,7 +140,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c7.setRenderer(new OperationBudgetTypeRenderer());
-		//		c7.setColumnAlignment(EntetesTableSuiviDepenseEnum.VALEUR.name(), Align.RIGHT);
+		c7.setStyleGenerator(new GridOperationCellValeurStyle());
 		c7.setEditorBinding(binderLD.bindValeur());
 		
 		Column<LigneDepense, Boolean> c8 = addColumn(LigneDepense::isPeriodique);
@@ -144,6 +151,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c8.setRenderer(new OperationBudgetTypeRenderer());
+		c8.setStyleGenerator(new GridOperationCellStyle());
 		c8.setEditorBinding(binderLD.bindPeriodique());
 
 		Column<LigneDepense, ActionsLigneBudget> c9 = addColumn(LigneDepense::getActionsOperation);
@@ -152,6 +160,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setWidth(TAILLE_COLONNE_ACTIONS)
 			.setHidable(true)
 			.setResizable(false);
+		c9.setStyleGenerator(new GridOperationCellStyle());
 		c9.setRenderer(new ComponentRenderer());
 		
 		Column<LigneDepense, Date> c10 = addColumn(LigneDepense::getDateMaj);
@@ -160,6 +169,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setWidth(TAILLE_COLONNE_DATE + 10D)
 			.setHidable(true)
 			.setResizable(false);
+		c10.setStyleGenerator(new GridOperationCellStyle());
 		c10.setRenderer(new DateRenderer(dateFormatMaj));
 		// Not editable
 		
@@ -171,6 +181,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setHidable(true)
 			.setResizable(false);
 		c11.setRenderer(new TextRenderer(""));
+		c11.setStyleGenerator(new GridOperationCellStyle());
 		// Not editable		
 
 		getEditor().setEnabled(true);
