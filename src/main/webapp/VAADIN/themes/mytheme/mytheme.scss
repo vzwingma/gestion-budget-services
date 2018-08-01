@@ -52,8 +52,8 @@ $v-layout-padding-bottom: 10px;
 	opacity: 1;
 }
 
-.v-generated-body {
-	font: 400 12px/1.55 "Source Sans Pro", sans-serif;
+.v-app .v-app-loading {
+	font: 400 12px/1.55 "Source Sans Pro", sans-serif !important;
 }
 
 .v-label{
@@ -77,7 +77,7 @@ font-style: italic;
 /**		 Grid 		*/
 /********************/
 .v-grid-header .v-grid-cell {
-	background: #004f8a; !important;
+	background: #004f8a !important;
 	color: #fff;
 	font-weight: bold;
 }
@@ -136,24 +136,37 @@ padding-right:10 px;
 /************************/
 /* 		Tree Grid 		*/ 
 /************************/
-.v-treegrid-cell-content-totaux{
-font-size: 16px;
+.v-treegrid-header .v-treegrid-cell {
+	background: #004f8a !important;
+	color: #fff;
+	font-weight: bold;
 }
 
-.v-treegrid-cell-content-tree-ss-categorie{
-font-weight: 200;
+.v-grid-cell-content-totaux {
+color: #2c9720;
+font-size: 16px;
+text-align:right;
+padding-right:10 px;
+}
+
+.v-grid-cell-content-totaux_rouge {
+color: red;
+font-size: 16px;
+text-align:right;
+padding-right:10 px;
+}
+
+
+
+
+.v-treegrid-row-depth-0 {
+font-weight: 200 !important;
 }
 .v-treegrid-caption-container{
 min-height:0px;
 }
 
-/* */
-.v-autocomplete{
-position:absolute; 
-top: 5px;
-height:26px;
-left:-379px;
-}
+
 
 
 /* Boutons actions */

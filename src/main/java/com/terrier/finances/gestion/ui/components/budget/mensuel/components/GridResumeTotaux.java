@@ -4,6 +4,7 @@ import com.terrier.finances.gestion.model.business.budget.TotalBudgetMensuel;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.totaux.GridResumeTotauxController;
+import com.terrier.finances.gestion.ui.styles.operations.OperationBudgetTypeRenderer;
 import com.terrier.finances.gestion.ui.styles.total.GridTotalCellStyle;
 
 /**
@@ -30,10 +31,6 @@ public class GridResumeTotaux extends AbstractUIGridComponent<GridResumeTotauxCo
 	public void paramComponentsOnGrid() {
 
 		setSelectionMode(SelectionMode.NONE);
-		// Style
-		setStyleGenerator(new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.CATEGORIE));
-		////	getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), Align.RIGHT);
-		////	getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), Align.RIGHT);
 
 		/**
 		 * Total resume
@@ -43,24 +40,26 @@ public class GridResumeTotaux extends AbstractUIGridComponent<GridResumeTotauxCo
 		.setId(EntetesTreeResumeDepenseEnum.CATEGORIE.getId())
 		.setSortable(false)
 		.setResizable(false)
-		.setHidable(false)
-		.setStyleGenerator(new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.CATEGORIE));
+		.setHidable(false);
 
-		GridTotalCellStyle c2style = new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_NOW);
 		addColumn(TotalBudgetMensuel::getTotalADate)
 		.setId(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId())
 		.setSortable(false)
 		.setResizable(false)
-		.setHidable(false).setStyleGenerator(c2style).setRenderer(c2style);
+		.setHidable(false)
+		.setStyleGenerator(new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_NOW))
+		.setRenderer(new OperationBudgetTypeRenderer());
 
-		GridTotalCellStyle c3style = new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_FIN);
 		addColumn(TotalBudgetMensuel::getTotalFinMois)
 		.setId(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId())
 		.setSortable(false)
 		.setResizable(false)
 		.setHidable(false)
-		.setStyleGenerator(c3style)
-		.setRenderer(c3style);
+		.setStyleGenerator(new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_FIN))
+		.setRenderer(new OperationBudgetTypeRenderer());
+		
+		
+		setStyleGenerator(new GridTotalCellStyle(null));
 	}
 
 	/* (non-Javadoc)

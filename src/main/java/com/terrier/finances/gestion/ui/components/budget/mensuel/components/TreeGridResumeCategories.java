@@ -4,7 +4,8 @@ import com.terrier.finances.gestion.model.business.budget.ResumeTotalCategories;
 import com.terrier.finances.gestion.model.enums.EntetesTreeResumeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUITreeGridComponent;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.resume.TreeGridResumeCategoriesController;
-import com.terrier.finances.gestion.ui.styles.total.GridTotalCellStyle;
+import com.terrier.finances.gestion.ui.styles.operations.OperationBudgetTypeRenderer;
+import com.terrier.finances.gestion.ui.styles.resume.TreeGridResumeValeurCellStyle;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 
 /**
@@ -39,21 +40,19 @@ public class TreeGridResumeCategories extends AbstractUITreeGridComponent<TreeGr
 		.setId(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId())
 		.setCaption(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getLibelle())
 		.setWidth(TAILLE_COLONNE_VALEUR)
-		.setRenderer(new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_NOW));
+		.setRenderer(new OperationBudgetTypeRenderer())
+		.setStyleGenerator(new TreeGridResumeValeurCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_NOW));
 		
 		addColumn(ResumeTotalCategories::getTotalFinMois)
 		.setId(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId())
 		.setCaption(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getLibelle())
 		.setWidth(TAILLE_COLONNE_VALEUR)
-		.setRenderer(new GridTotalCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_FIN));
+		.setRenderer(new OperationBudgetTypeRenderer())
+		.setStyleGenerator(new TreeGridResumeValeurCellStyle(EntetesTreeResumeDepenseEnum.VALEUR_FIN));
 		
 		// Pas de sélection de lignes
 		setSelectionMode(SelectionMode.NONE);
-		/**
 
-		getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_NOW.getId(), Align.RIGHT);
-		getComponent().setColumnAlignment(EntetesTreeResumeDepenseEnum.VALEUR_FIN.getId(), Align.RIGHT);
-		 */
 		addItemClickListener(event -> {
 			// Double click / collapse/expend all
 			if(MouseButton.LEFT.equals(event.getMouseEventDetails().getButton()) && event.getMouseEventDetails().isDoubleClick()){
