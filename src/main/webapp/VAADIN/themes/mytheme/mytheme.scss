@@ -48,22 +48,18 @@ $v-layout-padding-bottom: 10px;
 /* http://flatuicolors.com/ */
 
 /* surcharge de la désactivation */
-.v-disabled{
-opacity: 1;
+.v-disabled {
+	opacity: 1;
 }
 
-.v-generated-body{
-	font: 300 12px/1.55 "Source Sans Pro", sans-serif;
+.v-generated-body {
+	font: 400 12px/1.55 "Source Sans Pro", sans-serif;
 }
 
 .v-label{
 	font-weight: 400;
 	color: #2c3e50;
 }
-
-
-
-
 
 .v-window-header{
 background-color: #004f8a;
@@ -80,39 +76,39 @@ font-style: italic;
 /********************/
 /**		 Grid 		*/
 /********************/
-.v-grid-column-header-content {
-	background-color: #004f8a;
+.v-grid-header .v-grid-cell {
+	background: #004f8a; !important;
 	color: #fff;
 	font-weight: bold;
 }
 
 /* Couleurs des lignes du tableau des dépenses */
-.v-grid-cell-realisee{
-background-color: #c9ebd8;
+td.v-grid-row-realisee {
+	background-color: #c9ebd8 !important;
 }
-.v-grid-cell-realisee-odd{
-background-color: #e9f7ef;
-}
-
-.v-grid-cell-prevue{
-background-color: #fce6c4;
-}
-.v-grid-cell-prevue-odd{
-background-color: #fdeed6;
+tr.v-grid-row-stripe > td.v-grid-row-realisee {
+	background-color: #e9f7ef !important;
 }
 
-.v-grid-cell-reportee{
-background-color: #e6d6ed;
+td.v-grid-row-prevue {
+	background-color: #fce6c4 !important;
 }
-.v-grid-cell-reportee-odd{
-background-color: #dcc5e6;
+tr.v-grid-row-stripe  > td.v-grid-row-prevue {
+	background-color: #fdeed6 !important;
 }
 
-.v-grid-cell-annulee{
-background-color: #cad2d3;
+td.v-grid-row-reportee {
+	background-color: #e6d6ed !important;
 }
-.v-grid-cell-annulee-odd{
-background-color: #dadfe0;
+tr.v-grid-row-stripe  > td.v-grid-row-reportee {
+	background-color: #dcc5e6 !important;
+}
+
+td.v-grid-row-annulee  {
+	background-color: #cad2d3 !important;
+}
+tr.v-grid-row-stripe  > td.v-grid-row-annulee {
+	background-color: #dadfe0 !important;
 }
 
 /* Style Last depense */
