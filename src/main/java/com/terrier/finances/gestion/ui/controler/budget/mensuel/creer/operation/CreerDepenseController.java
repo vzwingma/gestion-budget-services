@@ -22,7 +22,7 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.Selectio
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
 import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemCaptionStyle;
 import com.vaadin.data.ValidationResult;
-import com.vaadin.ui.ComboBox.NewItemHandler;
+import com.vaadin.ui.ComboBox.NewItemProvider;
 import com.vaadin.ui.Notification;
 
 /**
@@ -30,7 +30,7 @@ import com.vaadin.ui.Notification;
  * @author vzwingma
  *
  */
-public class CreerDepenseController extends AbstractUIController<CreerDepenseForm> implements NewItemHandler {
+public class CreerDepenseController extends AbstractUIController<CreerDepenseForm> implements NewItemProvider<String> {
 
 
 	// 
@@ -162,7 +162,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getCheckBoxPeriodique().clear();
 		// Description
 		getComponent().getTextFieldDescription().setItems(getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete());
-		getComponent().getTextFieldDescription().setNewItemHandler(this);
+		getComponent().getTextFieldDescription().setNewItemProvider(this);
 		getComponent().getTextFieldDescription().clear();
 		// Bouton
 		getComponent().getButtonValider().addClickListener(new ActionValiderCreationDepenseClickListener());
@@ -173,9 +173,14 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 
 
 
+	/* (non-Javadoc)
+	 * @see java.util.function.Function#apply(java.lang.Object)
+	 */
 	@Override
-	public void accept(String t) {
+	public Optional<String> apply(String t) {
 		LOGGER.debug("Ajout de la description : {}", t);
 		getComponent().getTextFieldDescription().setSelectedItem(t);
+		return Optional.of(t);
 	}
+
 }
