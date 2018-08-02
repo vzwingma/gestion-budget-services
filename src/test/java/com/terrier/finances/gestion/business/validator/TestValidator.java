@@ -1,7 +1,6 @@
 package com.terrier.finances.gestion.business.validator;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 
 import org.junit.Test;
 

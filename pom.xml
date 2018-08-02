@@ -261,7 +261,6 @@
 			<artifactId>vaadin-themes</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
-
 		<!-- SPRING -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -406,7 +405,6 @@
 			<artifactId>swagger-ui</artifactId>
 			<version>3.13.4</version>
 		</dependency>
- 
 		<!-- Tests -->
 		<dependency>
 			<groupId>junit</groupId>

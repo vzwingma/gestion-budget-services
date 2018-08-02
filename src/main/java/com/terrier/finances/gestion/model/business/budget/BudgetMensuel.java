@@ -1,3 +1,4 @@
+			
 package com.terrier.finances.gestion.model.business.budget;
 
 import java.io.Serializable;
@@ -91,9 +92,6 @@ public class BudgetMensuel implements Serializable {
 		finCompteReel = this.resultatMoisPrecedent + this.margeSecuriteFinMois;
 	}
 
-
-
-
 	/**
 	 * @return the id
 	 */
@@ -101,16 +99,12 @@ public class BudgetMensuel implements Serializable {
 		return id;
 	}
 
-
-
-
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(String id) {
 		this.id = id;
 	}
-
 
 	/**
 	 * @return the totalParCategories
@@ -126,7 +120,6 @@ public class BudgetMensuel implements Serializable {
 		return totalParSSCategories;
 	}
 
-
 	/**
 	 * @return the nowArgentAvance
 	 */
@@ -140,7 +133,6 @@ public class BudgetMensuel implements Serializable {
 	public double getNowCompteReel() {
 		return nowCompteReel;
 	}
-
 
 	/**
 	 * @return the finArgentAvance
@@ -163,14 +155,12 @@ public class BudgetMensuel implements Serializable {
 		return mois;
 	}
 
-
 	/**
 	 * @return the annee
 	 */
 	public int getAnnee() {
 		return annee;
 	}
-
 
 	/**
 	 * @param annee the annee to set
@@ -186,8 +176,6 @@ public class BudgetMensuel implements Serializable {
 	public void setMois(Month mois) {
 		this.mois = mois;
 	}
-
-
 
 	/**
 	 * @param nowArgentAvance the nowArgentAvance to set
@@ -282,8 +270,6 @@ public class BudgetMensuel implements Serializable {
 		this.dateMiseAJour = dateMiseAJour;
 	}
 
-
-
 	/**
 	 * @return the margeSecuriteFinMois
 	 */
@@ -299,8 +285,6 @@ public class BudgetMensuel implements Serializable {
 		this.margeSecuriteFinMois = margeSecuriteFinMois;
 	}
 
-
-
 	/**
 	 * @return the compteBancaire
 	 */
@@ -308,18 +292,12 @@ public class BudgetMensuel implements Serializable {
 		return compteBancaire;
 	}
 
-
-
-
 	/**
 	 * @param compteBancaire the compteBancaire to set
 	 */
 	public void setCompteBancaire(CompteBancaire compteBancaire) {
 		this.compteBancaire = compteBancaire;
 	}
-
-
-
 
 	/**
 	 * @param totalParCategories the totalParCategories to set
@@ -329,9 +307,6 @@ public class BudgetMensuel implements Serializable {
 		this.totalParCategories = totalParCategories;
 	}
 
-
-
-
 	/**
 	 * @param totalParSSCategories the totalParSSCategories to set
 	 */
@@ -340,18 +315,12 @@ public class BudgetMensuel implements Serializable {
 		this.totalParSSCategories = totalParSSCategories;
 	}
 
-
-
-
 	/**
 	 * @param nowArgentAvance the nowArgentAvance to set
 	 */
 	public void setNowArgentAvance(Double nowArgentAvance) {
 		this.nowArgentAvance = nowArgentAvance;
 	}
-
-
-
 
 	/**
 	 * @param nowCompteReel the nowCompteReel to set
@@ -360,18 +329,12 @@ public class BudgetMensuel implements Serializable {
 		this.nowCompteReel = nowCompteReel;
 	}
 
-
-
-
 	/**
 	 * @param finArgentAvance the finArgentAvance to set
 	 */
 	public void setFinArgentAvance(Double finArgentAvance) {
 		this.finArgentAvance = finArgentAvance;
 	}
-
-
-
 
 	/**
 	 * @param finCompteReel the finCompteReel to set
@@ -380,16 +343,12 @@ public class BudgetMensuel implements Serializable {
 		this.finCompteReel = finCompteReel;
 	}
 
-
-
-
 	/**
 	 * @return the actif
 	 */
 	public boolean isActif() {
 		return actif;
 	}
-
 
 	/**
 	 * @param actif the actif to set
@@ -398,18 +357,12 @@ public class BudgetMensuel implements Serializable {
 		this.actif = actif;
 	}
 
-	
-
-
 	/**
 	 * @return the listeLibellesDepenses
 	 */
 	public Set<String> getSetLibellesDepensesForAutocomplete() {
 		return setLibellesDepensesForAutocomplete;
 	}
-
-
-
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
