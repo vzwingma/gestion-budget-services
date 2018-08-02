@@ -42,219 +42,220 @@ $v-layout-padding-bottom: 10px;
 
 /* Mon theme */
 @mixin mytheme {
-  /* Include all the styles from the Valo theme */
-  @include valo;
+/* Include all the styles from the Valo theme */
+@include valo;
 
 /* http://flatuicolors.com/ */
 
-  /* surcharge de la désactivation */
-  .v-disabled{
-  	opacity: 1;
-  }
-
-  .v-generated-body{
-  	font: 300 12px/1.55 "Source Sans Pro", sans-serif;
-  }
-  
-  .v-label{
-  	font-weight: 400;
-  	color: #2c3e50;
-  }
-    
- /* Table */
-  .v-table-body {
-    background-color: #fff;
-	font-weight: 400;
-	color: #2c3e50;
-  }  
-  
-  .v-table-header {
-  	background-color: #004f8a;
-  	color: #fff;
-  	font-weight: bold;
-  }
-  
-  .v-window-header{
-    background-color: #004f8a;
-  	color: #fff;
-  	font-weight: bold;
-  }
-  
- /* Style de la combobox de liste des comptes */
- .v-filterselect-item-barre{
- 	text-decoration: line-through;
-	font-style: italic;
- }
-  
-  
- /* Couleurs du tableau des dépenses */
- .v-table-row-realisee{
-	background-color: #c9ebd8;
- }
- .v-table-row-realisee-odd{
-	background-color: #e9f7ef;
- }
- 
- .v-table-row-prevue{
-	background-color: #fce6c4;
- }
- .v-table-row-prevue-odd{
-	background-color: #fdeed6;
- }
-
- .v-table-row-reportee{
-	background-color: #e6d6ed;
- }
- .v-table-row-reportee-odd{
-	background-color: #dcc5e6;
- }
- 
- .v-table-row-annulee{
-	background-color: #cad2d3;
- }
- .v-table-row-annulee-odd{
-	background-color: #dadfe0;
- }
-  
- /* Couleurs de la colonne des valeurs */
-.last-depense{
-	color: #000000;
-	font-weight: bold;
-  }
-  
-.v-popupview{
- 	color: #000000;
- }
- 
- /* Couleurs de la colonne des valeurs */
-    .v-table-cell-content-valeur{
-	color: #2c9720;
-	text-align:right;
-	padding-right:10 px;
-  }
-  .v-table-cell-content-valeur_rouge{
-	color: red;
-	text-align:right;
-	padding-right:10 px;
-  }
-   
-    
-  .v-table-cell-content-totaux{
-  	font-size: 16px;
-  }
-    
-  .v-table-cell-content-tree-ss-categorie{
-  	font-weight: 200;
-  }
-  
-  
-  /* */
- .v-autocomplete{
- 	position:absolute; 
- 	top: 5px;
- 	height:26px;
- 	left:-379px;
- }
-
-  
-  /* Boutons actions */
-
-  .v-button-actions {
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-	color: #fff;
-	background: transparent;
-	height: 26px;
-	width: 26px;
-	border: 0px;
-  }
-
-.v-table-caption-container{
-	min-height:0px;
+/* surcharge de la désactivation */
+.v-disabled {
+	opacity: 1;
 }
 
- 
-.v-button-reinit {
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-	color: #fff;
-	background: transparent;
-	border: 0px;  
-  	background-image: url('./img/circle_reinit.png'); 
-  }
-  
-    
- 
-  .v-button-logout {
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-	color: #fff;
-	background: transparent;
-	border: 0px;  
-  	background-image: url('./img/logout.png'); 
-  }
-  
-  
-  .v-button-reel {
-  	background-image: url('./img/circle_ok.png'); 
-  }
-  
+.financesvaadinui .v-app .v-app-loading {
+	font: 400 12px/1.55 "Source Sans Pro", sans-serif !important;
+}
 
-  .v-button-supprimer {
-  	background-image: url('./img/circle_remove.png'); 
-  }
-    
-    .v-button-annuler {
-  	background-image: url('./img/circle_cancel.png'); 
-  }
-  
-    .v-button-reporter {
-  	background-image: url('./img/circle_arrow_right.png');
-  }
-  
-    .v-button-prevue {
-  	background-image: url('./img/circle_clock.png');
-  }
-  
-  
-  
- /* Login */
- .fondbleu {
-   background-color: #34495e;
-  }
- 
- .versionLabel {
- 	color: #fff;
- }
- 
- .login-header{
-    background-color: #0072C6;
-  	color: #fff;
-  	/* font-weight: bold; */
-	font-size: 20px;
- }
- 
- .loginLayout{
-	background-color: #ecf0f1;
- }
- 
- 
-.v-button-locked {
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
+.v-label{
+	font-weight: 400;
+	color: #2c3e50;
+}
+
+.v-window-header{
+background-color: #004f8a;
+color: #fff;
+font-weight: bold;
+}
+
+/* Style de la combobox de liste des comptes */
+.v-filterselect-item-barre{
+text-decoration: line-through;
+font-style: italic;
+}
+
+/********************/
+/**		 Grid 		*/
+/********************/
+.v-grid-header .v-grid-cell {
+	background: #004f8a !important;
 	color: #fff;
-	background: transparent;
-	border: 0px;  
-  	background-image: url('./img/locked.png'); 
-  }
+	font-weight: bold;
+}
+
+/* Couleurs des lignes du tableau des dépenses */
+td.v-grid-row-realisee {
+	background-color: #c9ebd8 !important;
+}
+tr.v-grid-row-stripe > td.v-grid-row-realisee {
+	background-color: #e9f7ef !important;
+}
+
+td.v-grid-row-prevue {
+	background-color: #fce6c4 !important;
+}
+tr.v-grid-row-stripe  > td.v-grid-row-prevue {
+	background-color: #fdeed6 !important;
+}
+
+td.v-grid-row-reportee {
+	background-color: #e6d6ed !important;
+}
+tr.v-grid-row-stripe  > td.v-grid-row-reportee {
+	background-color: #dcc5e6 !important;
+}
+
+td.v-grid-row-annulee  {
+	background-color: #cad2d3 !important;
+}
+tr.v-grid-row-stripe  > td.v-grid-row-annulee {
+	background-color: #dadfe0 !important;
+}
+
+/* Style Last depense */
+.last-depense{
+color: #000000;
+font-weight: bold;
+}
+
+.v-popupview{
+color: #000000;
+}
+
+/* Couleurs de la colonne des valeurs */
+.v-grid-cell-valeur{
+color: #2c9720;
+text-align:right;
+padding-right:10 px;
+}
+.v-grid-cell-valeur_rouge{
+color: red;
+text-align:right;
+padding-right:10 px;
+}
+
+/************************/
+/* 		Tree Grid 		*/ 
+/************************/
+.v-treegrid-header .v-treegrid-cell {
+	background: #004f8a !important;
+	color: #fff;
+	font-weight: bold;
+}
+
+.v-grid-cell-content-totaux {
+color: #2c9720;
+font-size: 16px;
+text-align:right;
+padding-right:10 px;
+}
+
+.v-grid-cell-content-totaux_rouge {
+color: red;
+font-size: 16px;
+text-align:right;
+padding-right:10 px;
+}
+
+
+
+
+.v-treegrid-row-depth-0 {
+font-weight: bold !important;
+}
+.v-treegrid-caption-container{
+min-height:0px;
+}
+
+
+
+
+/* Boutons actions */
+
+.v-button-actions {
+background-size: 100% 100%;
+background-repeat: no-repeat;
+color: #fff;
+background: transparent;
+height: 26px;
+width: 26px;
+border: 0px;
+}
+
+.v-button-reinit {
+background-size: 100% 100%;
+background-repeat: no-repeat;
+color: #fff;
+background: transparent;
+border: 0px;  
+background-image: url('./img/circle_reinit.png'); 
+}
+
+
+.v-button-logout {
+background-size: 100% 100%;
+background-repeat: no-repeat;
+color: #fff;
+background: transparent;
+border: 0px;  
+background-image: url('./img/logout.png'); 
+}
+
+.v-button-reel {
+background-image: url('./img/circle_ok.png'); 
+}
+
+.v-button-supprimer {
+background-image: url('./img/circle_remove.png'); 
+}
+
+.v-button-annuler {
+background-image: url('./img/circle_cancel.png'); 
+}
+
+.v-button-reporter {
+background-image: url('./img/circle_arrow_right.png');
+}
+
+.v-button-prevue {
+background-image: url('./img/circle_clock.png');
+}
+
+.v-button-locked {
+background-size: 100% 100%;
+background-repeat: no-repeat;
+color: #fff;
+background: transparent;
+border: 0px;  
+background-image: url('./img/locked.png'); 
+}
 
 .v-button-unlocked {
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-	color: #fff;
-	background: transparent;
-	border: 0px;  
-  	background-image: url('./img/unlocked.png'); 
-  }
-  
+background-size: 100% 100%;
+background-repeat: no-repeat;
+color: #fff;
+background: transparent;
+border: 0px;  
+background-image: url('./img/unlocked.png'); 
+}
+
+
+/* Login */
+.fondbleu {
+background-color: #34495e;
+}
+
+.versionLabel {
+color: #fff;
+}
+
+.login-header{
+background-color: #0072C6;
+color: #fff;
+/* font-weight: bold; */
+font-size: 20px;
+}
+
+.loginLayout{
+background-color: #ecf0f1;
+}
 }

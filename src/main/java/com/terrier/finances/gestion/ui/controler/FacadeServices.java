@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.terrier.finances.gestion.business.AuthenticationService;
-import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.business.ParametragesService;
 
 
@@ -38,7 +38,7 @@ public class FacadeServices {
 	 * Liens vers les services métiers
 	 */
 	@Autowired
-	private BusinessDepensesService serviceDepense;
+	private OperationsService serviceOperations;
 
 	@Autowired
 	private ParametragesService serviceParams;
@@ -58,16 +58,16 @@ public class FacadeServices {
 	/**
 	 * @return the serviceDepense
 	 */
-	public BusinessDepensesService getServiceDepense() {
-		return serviceDepense;
+	public OperationsService getServiceOperations() {
+		return serviceOperations;
 	}
 
 	/**
-	 * @param serviceDepense the serviceDepense to set
+	 * @param serviceOperations the serviceDepense to set
 	 */
-	public void setServiceDepense(BusinessDepensesService serviceDepense) {
-		LOGGER.info("Injection de BusinessDepensesService");
-		this.serviceDepense = serviceDepense;
+	public void setServiceOperations(OperationsService serviceOperations) {
+		LOGGER.info("Injection du service métier Operations");
+		this.serviceOperations = serviceOperations;
 	}
 
 	/**

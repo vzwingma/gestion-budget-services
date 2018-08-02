@@ -1,8 +1,6 @@
 package com.terrier.finances.gestion.model.business.budget;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -11,9 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Transient;
 
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
+import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 
 /**
  * 
@@ -34,8 +34,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	private CategorieDepense ssCategorie;
 	// Libellé
 	private String libelle;
-	// Notes
-	private String notes;
 	// Type de dépense
 	private TypeDepenseEnum typeDepense;
 	// Etat de la ligne
@@ -52,15 +50,17 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	private boolean periodique; 
 	// tag comme dernière opération
 	private boolean derniereOperation;
+	// Budget actif
+	private boolean budgetIsActif;
 	/**
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(LigneDepense.class);
 	
 	// Constructeur
-	public LigneDepense(){}
-	
-
+	public LigneDepense(boolean budgetIsActif){
+		this.budgetIsActif = budgetIsActif;
+	}
 	
 	/**
 	 * Constructeur
@@ -70,7 +70,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	 * @param valeur valeur
 	 * @param etat état
 	 */
-	public LigneDepense(CategorieDepense ssCategorie, String libelle, TypeDepenseEnum typeDepense, float valeur, EtatLigneDepenseEnum etat, boolean periodique){
+	public LigneDepense(CategorieDepense ssCategorie, String libelle, TypeDepenseEnum typeDepense, float valeur, EtatLigneDepenseEnum etat, boolean periodique, boolean budgetActif){
 		this.id = UUID.randomUUID().toString();
 		setSsCategorie(ssCategorie);
 		this.libelle = libelle;
@@ -80,55 +80,8 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		this.dateOperation = Calendar.getInstance().getTime();
 		this.periodique = periodique;
 		this.derniereOperation = false;
+		this.budgetIsActif = budgetActif;
 	}
-	
-	/**
-	 * Invoke dynamique de setter sur ligne dépense
-	 * @param ligneId id de la ligne
-	 * @param propertyId propriété
-	 * @param propClass classe
-	 * @param value nouvelle valeur
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public boolean updateProperty(String ligneId, String propertyId, Class propClass, Object value){
-		Class ldClass = this.getClass();
-		boolean res = false; 
-		
-		String setMethodName = "set"+propertyId;
-		String getMethodName = "get"+propertyId; 
-		
-		if(propertyId.equals("Periodique")){
-			getMethodName = "is" + propertyId;
-		}
-		else if(propertyId.equals("LibelleView")){
-			return true;
-		}
-		Method g = null;
-		Method s = null;
-		try {
-			g = ldClass.getMethod(getMethodName);
-			s = ldClass.getMethod(setMethodName, propClass);
-			
-			Object getted = g.invoke(this);
-			
-			if((value != null && !value.equals(getted)) || (value == null && getted != null)){
-				s.invoke(this, value); // field value	
-				LOGGER.debug("Modification de la ligne [{}] : {}={}", ligneId, propertyId, value);
-				res = true;
-			}
-		}
-		catch (NoSuchMethodException nsme) {
-			LOGGER.error("Erreur getMethod ", nsme);
-		}
-		catch (IllegalAccessException iae) {
-			LOGGER.error("Erreur ivoke ", iae);
-		}
-		catch (InvocationTargetException ite) {
-			LOGGER.error("Erreur ivoke ", ite);
-		}
-		return res;
-	}
-	
 	
 
 	/**
@@ -136,10 +89,9 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	 * @throws CloneNotSupportedException
 	 */
 	public LigneDepense cloneDepenseToMoisSuivant() {
-		LigneDepense ligneDepenseClonee = new LigneDepense();
+		LigneDepense ligneDepenseClonee = new LigneDepense(this.budgetIsActif);
 		ligneDepenseClonee.setId(UUID.randomUUID().toString());
 		ligneDepenseClonee.setLibelle(this.libelle);
-		ligneDepenseClonee.setNotes(this.notes);
 		ligneDepenseClonee.setSsCategorie(this.ssCategorie);
 		ligneDepenseClonee.setDateMaj(Calendar.getInstance().getTime());
 		ligneDepenseClonee.setDateOperation(null);
@@ -148,7 +100,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		ligneDepenseClonee.setTypeDepense(this.typeDepense);
 		ligneDepenseClonee.setValeur(this.valeur);
 		ligneDepenseClonee.setDerniereOperation(false);
-		
 		return ligneDepenseClonee;
 	}
 
@@ -188,26 +139,15 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		this.ssCategorie = ssCategorie;
 	}
 
-	
-	/**
-	 * @return the notes
-	 */
-	public String getNotes() {
-		return notes;
-	}
-
-	/**
-	 * @param notes the notes to set
-	 */
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
 	/**
 	 * @return the categorie
 	 */
 	public CategorieDepense getCategorie() {
 		return this.ssCategorie != null ? this.ssCategorie.getCategorieParente() : null;
+	}
+	
+	public void setCategorie(CategorieDepense categorie){
+		// Ne fais rien. Calculé par le set de Sous Categorie
 	}
 
 	/**
@@ -240,11 +180,15 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	public float getValeur() {
 		return valeur;
 	}
-	/**
-	 * @param valeur the valeur to set
-	 */
-	public void setValeur(Float valeur) {
-		this.valeur = valeur;
+
+	public String getValeurS() {
+		return Float.toString(Math.abs(valeur));
+	}
+
+	public void setValeurS(String valeurS){
+		if(valeurS != null){
+			this.valeur = Math.abs(Float.parseFloat(valeurS)) * (TypeDepenseEnum.DEPENSE.equals(this.getTypeDepense()) ? -1 : 1);
+		}
 	}
 
 	/**
@@ -325,21 +269,56 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		this.periodique = periodique;
 	}
 
+	
+	
+	/**
+	 * @return the actionsOperation
+	 */
+	public ActionsLigneBudget getActionsOperation() {
+		// Pas d'action pour les réserves
+		ActionsLigneBudget actionsOperation = null;
+		if(!OperationsService.ID_SS_CAT_RESERVE.equals(getSsCategorie().getId())
+				&& !OperationsService.ID_SS_CAT_PREVISION_SANTE.equals(getSsCategorie().getId())
+				&& budgetIsActif){
+			actionsOperation = new ActionsLigneBudget();
+			actionsOperation.getControleur().setIdOperation(getId());
+			actionsOperation.getControleur().miseAJourEtatLigne(getEtat());
+		}
+		return actionsOperation;
+	}
+
+
+	/**
+	 * @return the derniereOperation
+	 */
+	public boolean isDerniereOperation() {
+		return derniereOperation;
+	}
+
+	/**
+	 * @param derniereOperation the derniereOperation to set
+	 */
+	public void setDerniereOperation(boolean derniereOperation) {
+		this.derniereOperation = derniereOperation;
+	}	
+
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "LigneDepense [id=" + id + ", ssCategorie=" + ssCategorie.getId() + " (" + ssCategorie.getLibelle()
-				+ "), libelle=" + libelle + ", typeDepense=" + typeDepense
-				+ ", etat=" + etat + ", dateOperation="
-				+ dateOperation + ", dateMaj=" + dateMaj + ", auteur=" + auteur
-				+ ", periodique=" + periodique + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("LigneDepense [id=").append(id).append(", ssCategorie=").append(ssCategorie).append(", libelle=")
+				.append(libelle).append(", typeDepense=").append(typeDepense).append(", etat=").append(etat)
+				.append(", valeur=").append(valeur).append(", dateOperation=").append(dateOperation)
+				.append(", dateMaj=").append(dateMaj).append(", auteur=").append(auteur).append(", periodique=")
+				.append(periodique).append(", derniereOperation=").append(derniereOperation).append("]");
+		return builder.toString();
 	}
 
 
-	
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -391,17 +370,4 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		return 0;
 	}
 
-	/**
-	 * @return the derniereOperation
-	 */
-	public boolean isDerniereOperation() {
-		return derniereOperation;
-	}
-
-	/**
-	 * @param derniereOperation the derniereOperation to set
-	 */
-	public void setDerniereOperation(boolean derniereOperation) {
-		this.derniereOperation = derniereOperation;
-	}	
 }

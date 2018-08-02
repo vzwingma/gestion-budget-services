@@ -9,6 +9,7 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value="/rest")
-@Api(consumes="application/json", description="Services d'administration", protocols="https", value="Administration", tags={"Services"})
+@Api(consumes="application/json", protocols="https", value="Administration", tags={"Services"})
 public class StatutRestController {
 
 
@@ -59,8 +60,8 @@ public class StatutRestController {
             @ApiResponse(code = 401, message = "L'opération doit être identifiée"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Ressource introuvable")
-    })
-	@RequestMapping(value="/statut", method=RequestMethod.GET)
+    }) 
+	@GetMapping(value="/statut")
 	public StatutDependencyObject ping(){
 		LOGGER.info("Appel statut : {}", this.statusApplicationService.getStatutApplication());
 		return this.statusApplicationService.getStatutApplication();

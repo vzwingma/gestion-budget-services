@@ -28,6 +28,8 @@ public class PasswordEncoder {
 	
 	private PasswordEncoder() {  }
 
+	private static final int ITERATIONS_HASH = 1000;
+	
 	/**
 	 * @param password  mot de passe
 	 * @return mot de passe hashé
@@ -37,17 +39,17 @@ public class PasswordEncoder {
 	public static String generateStrongPasswordHash(String password)
 	{
 		try{
-			int iterations = 1000;
+			
 			char[] chars = password.toCharArray();
 			byte[] salt = getSalt();
 
-			PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
+			PBEKeySpec spec = new PBEKeySpec(chars, salt, ITERATIONS_HASH, 64 * 8);
 			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 			byte[] hash;
 
 			hash = skf.generateSecret(spec).getEncoded();
 
-			return iterations + ":" + toHex(salt) + ":" + toHex(hash);
+			return new StringBuilder().append(ITERATIONS_HASH).append(":").append(toHex(salt)).append(":").append(toHex(hash)).toString();
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			return null;
 		}
@@ -55,7 +57,7 @@ public class PasswordEncoder {
 
 	/**
 	 * @return salt
-	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchAlgorithmException 
 	 */
 	private static byte[] getSalt() throws NoSuchAlgorithmException
 	{
@@ -104,9 +106,8 @@ public class PasswordEncoder {
 	/**
 	 * @param hex
 	 * @return bytes[]
-	 * @throws NoSuchAlgorithmException
 	 */
-	private static byte[] fromHex(String hex) throws NoSuchAlgorithmException
+	private static byte[] fromHex(String hex)
 	{
 		byte[] bytes = new byte[hex.length() / 2];
 		for(int i = 0; i<bytes.length ;i++)
@@ -119,16 +120,15 @@ public class PasswordEncoder {
 	/**
 	 * @param array
 	 * @return String from hex
-	 * @throws NoSuchAlgorithmException
 	 */
-	private static String toHex(byte[] array) throws NoSuchAlgorithmException
+	private static String toHex(byte[] array)
 	{
 		BigInteger bi = new BigInteger(1, array);
 		String hex = bi.toString(16);
 		int paddingLength = (array.length * 2) - hex.length();
 		if(paddingLength > 0)
 		{
-			return String.format("%0"  +paddingLength + "d", 0) + hex;
+			return String.format(new StringBuilder().append("%0").append(paddingLength).append("d").toString(), 0) + hex;
 		}else{
 			return hex;
 		}

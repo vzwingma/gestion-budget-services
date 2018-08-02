@@ -18,7 +18,6 @@ import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 
 /**
  * DataTransformer
@@ -44,7 +43,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		
 		BasicTextEncryptor decryptor = getEncryptor();
 		
-		LigneDepense bo = new LigneDepense();
+		LigneDepense bo = new LigneDepense(true);
 		bo.setId(dto.getId());
 		if(dto.getAuteur() !=null){
 			bo.setAuteur(decryptor.decrypt(dto.getAuteur()));
@@ -53,19 +52,17 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		bo.setDateOperation(dto.getDateOperation());
 		bo.setDerniereOperation(dto.isDerniereOperation());
 		bo.setEtat(EtatLigneDepenseEnum.valueOf(decryptor.decrypt(dto.getEtat())));
-		try {
-			bo.setSsCategorie(parametrageService.chargeCategorieParId(decryptor.decrypt(dto.getIdSSCategorie())));
-		} catch (DataNotFoundException e) {
-			LOGGER.error("Erreur lors de la recherche en BDD de la sous catégorie {} -> {}", dto.getIdSSCategorie(), decryptor.decrypt(dto.getIdSSCategorie()));
-		}
+		bo.setSsCategorie(parametrageService.chargeCategorieParId(decryptor.decrypt(dto.getIdSSCategorie())));
 		bo.setLibelle(decryptor.decrypt(dto.getLibelle()));
-		if(dto.getNotes() != null){
-			bo.setNotes(decryptor.decrypt(dto.getNotes()));
-		}
-		
 		bo.setPeriodique(dto.isPeriodique());
 		bo.setTypeDepense(TypeDepenseEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
-		bo.setValeur(Float.valueOf(decryptor.decrypt(dto.getValeur())));
+		
+		Float depenseVal =  Math.abs(Float.valueOf(decryptor.decrypt(dto.getValeur())));
+		if(bo.getTypeDepense().equals(TypeDepenseEnum.DEPENSE)){
+				depenseVal = -depenseVal;
+		}
+		
+		bo.setValeur(depenseVal);
 		LOGGER.trace("	[{}] \n > Transformation en BO > [{}]", dto, bo);
 		return bo;
 	}
@@ -90,10 +87,14 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		dto.setIdCategorie(bo.getCategorie() != null ? encryptor.encrypt(bo.getCategorie().getId()) : null);
 		dto.setIdSSCategorie(bo.getSsCategorie() != null ? encryptor.encrypt(bo.getSsCategorie().getId()) : null);
 		dto.setLibelle(encryptor.encrypt(bo.getLibelle()));
-		dto.setNotes(bo.getNotes() != null ? encryptor.encrypt(bo.getNotes()) : null);
 		dto.setPeriodique(bo.isPeriodique());
 		dto.setTypeDepense(encryptor.encrypt(bo.getTypeDepense().name()));
-		dto.setValeur(encryptor.encrypt(String.valueOf(bo.getValeur())));
+		
+		Float depenseVal =  Math.abs(bo.getValeur());
+		if(bo.getTypeDepense().equals(TypeDepenseEnum.DEPENSE)){
+				depenseVal = -depenseVal;
+		}
+		dto.setValeur(encryptor.encrypt(String.valueOf(depenseVal)));
 		
 		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
 		return dto;

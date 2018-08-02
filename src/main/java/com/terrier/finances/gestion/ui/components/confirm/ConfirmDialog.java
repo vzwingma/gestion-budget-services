@@ -1,7 +1,7 @@
 package com.terrier.finances.gestion.ui.components.confirm;
 
 import com.terrier.finances.gestion.ui.sessions.UISessionManager;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -18,11 +18,12 @@ import com.vaadin.ui.Window;
  */
 public final class ConfirmDialog extends Window implements Button.ClickListener {
 
-	private static final long serialVersionUID = 1L;
+	
+	private static final long serialVersionUID = -4028700652105475717L;
 	private static final int ONE_HUNDRED_PERCENT = 100;
 	private static final int CONFIRMATION_DIALOG_WIDTH = 400;
 
-	private final ConfirmationDialogCallback callback;
+	private final transient ConfirmationDialogCallback callback;
 	private final Button okButton;
 	private final Button cancelButton;
 
@@ -72,7 +73,6 @@ public final class ConfirmDialog extends Window implements Button.ClickListener 
 	private VerticalLayout buildMainLayout() {
 		// common part: create layout
 		mainLayout = new VerticalLayout();
-		mainLayout.setImmediate(false);
 		mainLayout.setWidth("100%");
 		mainLayout.setHeight("100%");
 		mainLayout.setMargin(true);

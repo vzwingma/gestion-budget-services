@@ -6,9 +6,9 @@ package com.terrier.finances.gestion.business.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.business.AuthenticationService;
@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value="/rest/admin")
-@Api(consumes="application/json", description="Services d'administration", protocols="https", value="Administration", tags={"Services"})
+@Api(consumes="application/json", protocols="https", value="Administration", tags={"Services"})
 public class AdminRestController {
 
 
@@ -59,7 +59,7 @@ public class AdminRestController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="oldpassword", required=true, value="Ancien mot de passe de l'utilisateur", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="newpassword", required=true, value="Nouveau mot de passe de l'utilisateur", paramType="path")
 	})
-	@RequestMapping(value="/v1/password/{login}/{oldpassword}/{newpassword}", method=RequestMethod.GET)
+	@GetMapping(value="/v1/password/{login}/{oldpassword}/{newpassword}")
 	public String ping(@PathVariable("login") String login, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
 		LOGGER.info("Changement du mot de passe pour {}", login);
 		

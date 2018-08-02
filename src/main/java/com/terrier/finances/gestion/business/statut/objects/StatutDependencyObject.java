@@ -156,7 +156,7 @@ public class StatutDependencyObject {
 	/**
 	 * @return the timestamp
 	 */
-	@ApiModelProperty(notes = "Timestamp du statut", required=true)
+//	@ApiModelProperty(notes = "Timestamp du statut", required=true)
 	public Long getTimestamp() {
 		return this.date != null ? this.date.getTimeInMillis() : 0L;
 	}

@@ -14,9 +14,9 @@ import com.vaadin.ui.CustomComponent;
 /**
  * @author vzwingma
  *
- * @param <CONTROL> controleur
+ * @param <C> controleur
  */
-public abstract class AbstractUIComponent<CONTROL extends AbstractUIController<?>> extends CustomComponent {
+public abstract class AbstractUIComponent<C extends AbstractUIController<?>> extends CustomComponent {
 
 	/**
 	 * 
@@ -27,7 +27,7 @@ public abstract class AbstractUIComponent<CONTROL extends AbstractUIController<?
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUIComponent.class);
 	
-	private CONTROL controleur;
+	private C controleur;
 	
 	/**
 	 * Démarrage du controleur
@@ -43,7 +43,7 @@ public abstract class AbstractUIComponent<CONTROL extends AbstractUIController<?
 	/**
 	 * @return the controleur
 	 */
-	public CONTROL getControleur() {
+	public C getControleur() {
 		return controleur;
 	}
 
@@ -68,6 +68,6 @@ public abstract class AbstractUIComponent<CONTROL extends AbstractUIController<?
 	/**
 	 * @return création d'un controleur
 	 */
-	public abstract CONTROL createControleur();
+	public abstract C createControleur();
 	
 }

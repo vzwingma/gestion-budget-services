@@ -5,7 +5,7 @@ package com.terrier.finances.gestion.model.business.parametrage;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import org.jasypt.util.text.BasicTextEncryptor;
@@ -26,12 +26,12 @@ import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 public class Utilisateur implements Serializable {
 
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5912920498104708791L;
+	private static final long serialVersionUID = 6535669274718528190L;
 	
-
 	@Id
 	private String id;
 	// Login
@@ -57,11 +57,12 @@ public class Utilisateur implements Serializable {
 	/**
 	 * Préférences
 	 */
-	private Map<UtilisateurPrefsEnum, Object> prefsUtilisateur = new HashMap<>();
+	@Transient
+	private Map<UtilisateurPrefsEnum, Object> prefsUtilisateur = new EnumMap<>(UtilisateurPrefsEnum.class);
 	/**
 	 * Droits
 	 */
-	private Map<UtilisateurDroitsEnum, Boolean> droits = new HashMap<>();
+	private Map<UtilisateurDroitsEnum, Boolean> droits = new EnumMap<>(UtilisateurDroitsEnum.class);
 	
 	
 	/**
@@ -124,7 +125,7 @@ public class Utilisateur implements Serializable {
 	 * @return the preferences
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getPreference(UtilisateurPrefsEnum clePreference, Class<T> typeAttendu) {
+	public <T> T getPreference(UtilisateurPrefsEnum clePreference) {
 		return (T)prefsUtilisateur.get(clePreference);
 	}
 
@@ -187,7 +188,7 @@ public class Utilisateur implements Serializable {
 	public boolean isEnabled(UtilisateurDroitsEnum cleDroit){
 		if(this.droits != null){
 			Boolean droit = this.droits.get(cleDroit);
-			return droit != null ? droit.booleanValue() : false;
+			return droit != null && droit.booleanValue();
 		}
 		return false;
 	}

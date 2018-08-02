@@ -3,7 +3,7 @@ package com.terrier.finances.gestion.ui.controler.common;
 import java.io.Serializable;
 
 import com.terrier.finances.gestion.business.AuthenticationService;
-import com.terrier.finances.gestion.business.BusinessDepensesService;
+import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.business.ParametragesService;
 import com.terrier.finances.gestion.ui.controler.FacadeServices;
 import com.vaadin.ui.AbstractComponent;
@@ -12,16 +12,16 @@ import com.vaadin.ui.AbstractComponent;
  * Controleur d'un composant UI
  * @author vzwingma
  * 
- * @param <COMPONENT> composant associé
+ * @param <P> composant associé
  */
-public abstract class AbstractUIController<COMPONENT extends AbstractComponent> extends AbstractUIService implements Serializable {
+public abstract class AbstractUIController<P extends AbstractComponent> implements AbstractUIService, Serializable {
 
 
 	/**
 	 * Constructeur
 	 * @param composant
 	 */
-	public AbstractUIController(COMPONENT composant){
+	public AbstractUIController(P composant){
 		this.component = composant;
 	}
 	/**
@@ -29,12 +29,8 @@ public abstract class AbstractUIController<COMPONENT extends AbstractComponent> 
 	 */
 	private static final long serialVersionUID = -5842153579328118762L;
 	// Page associée au controleur
-	private COMPONENT component;
+	private P component;
 
-	/**
-	 * Initialisation des composants
-	 */
-	public abstract void initDynamicComponentsOnPage();
 
 	
 	/**
@@ -49,17 +45,15 @@ public abstract class AbstractUIController<COMPONENT extends AbstractComponent> 
 	public void start(){
 		// Enregistrement des controleurs
 		registerControlerToUIComponentManager();
-		// Init
-		initDynamicComponentsOnPage();
-
+		// Ajout des données
 		miseAJourVueDonnees();
 	}
 	
 	/**
 	 * @return service métier dépense
 	 */
-	public BusinessDepensesService getServiceDepense(){
-		return FacadeServices.get().getServiceDepense();
+	public OperationsService getServiceOperations(){
+		return FacadeServices.get().getServiceOperations();
 	}
 	
 	/**
@@ -85,7 +79,7 @@ public abstract class AbstractUIController<COMPONENT extends AbstractComponent> 
 	/**
 	 * @return the page
 	 */
-	public COMPONENT getComponent() {
+	public P getComponent() {
 		return component;
 	}	
 }
