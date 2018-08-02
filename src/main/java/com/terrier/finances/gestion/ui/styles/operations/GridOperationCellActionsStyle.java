@@ -17,6 +17,10 @@ public class GridOperationCellActionsStyle extends GridOperationCellStyle {
 
 	@Override
 	public String apply(LigneDepense depense) {
-		return "v-grid-cell-actions";
+		
+		StringBuilder style = new StringBuilder();
+		style.append(super.apply(depense));
+		style.append(" v-grid-cell-action");
+		return style.toString();
 	}
 }
