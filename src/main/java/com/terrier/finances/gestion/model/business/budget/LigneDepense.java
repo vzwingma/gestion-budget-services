@@ -135,7 +135,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	 * @param ssCategorie the ssCategorie to set
 	 */
 	public void setSsCategorie(CategorieDepense ssCategorie) {
-		LOGGER.trace("> MAJ de la catégorie de la dépense : {}", ssCategorie);
+		LOGGER.trace("> MAJ de la catégorie de l'opération : {}", ssCategorie);
 		this.ssCategorie = ssCategorie;
 	}
 

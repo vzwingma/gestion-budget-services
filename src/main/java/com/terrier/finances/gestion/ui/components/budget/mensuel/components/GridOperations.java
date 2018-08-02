@@ -14,6 +14,7 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBud
 import com.terrier.finances.gestion.ui.components.budget.mensuel.binder.LigneOperationEditorBinder;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.editor.GridEditorListener;
+import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellActionsStyle;
 import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellStyle;
 import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellValeurStyle;
 import com.terrier.finances.gestion.ui.styles.operations.OperationBudgetTypeRenderer;
@@ -160,7 +161,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setWidth(TAILLE_COLONNE_ACTIONS)
 			.setHidable(true)
 			.setResizable(false);
-		c9.setStyleGenerator(new GridOperationCellStyle());
+		c9.setStyleGenerator(new GridOperationCellActionsStyle());
 		c9.setRenderer(new ComponentRenderer());
 		
 		Column<LigneDepense, Date> c10 = addColumn(LigneDepense::getDateMaj);

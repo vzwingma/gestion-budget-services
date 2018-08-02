@@ -68,8 +68,8 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 			LOGGER.trace("Action : Supprimé");
 			etat = null;
 			// Confirmation
-			ConfirmDialog confirm = new ConfirmDialog("Suppression de la dépense", 
-					"Voulez-vous supprimer la dépense ?", "Oui", "Non", this);
+			ConfirmDialog confirm = new ConfirmDialog("Suppression de l'opération", 
+					"Voulez-vous supprimer l'opération ?", "Oui", "Non", this);
 			confirm.setWidth("400px");
 			confirm.setHeight("150px");
 			setPopupModale(confirm);			
@@ -107,7 +107,7 @@ public class ActionsLigneDepenseClickListener extends AbstractComponentListener 
 					.majEtatLigneDepense(budget, actions.getControleur().getIdOperation(), etat, auteur));
 		}
 		catch(DataNotFoundException|BudgetNotFoundException e){
-			Notification.show("La dépense est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
+			Notification.show("l'opération est introuvable ou n'a pas été enregistrée", Type.ERROR_MESSAGE);
 		}
 
 		getControleur(BudgetMensuelController.class).miseAJourVueDonnees();

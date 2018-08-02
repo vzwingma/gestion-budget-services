@@ -6,8 +6,6 @@ package com.terrier.finances.gestion.model.enums;
  *
  */
 public enum UtilisateurPrefsEnum {
-	// ODD Style
-	PREFS_ODD_STYLE,
 	// SELECTION
 	PREFS_STATUT_NLLE_DEPENSE
 }

@@ -72,19 +72,19 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 				else{
 					LOGGER.info("[IHM] Ajout d'une nouvelle dépense");
 					updateBudgetCourantInSession(getServiceOperations().ajoutLigneDepenseEtCalcul(budget.getId(), newOperation, auteur));
-					Notification.show("La dépense a bien été créée", Notification.Type.TRAY_NOTIFICATION);
+					Notification.show("l'opération a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 				}
 				return true;
 			}
 			catch(Exception e){
 				LOGGER.error("Erreur : ", e);
-				Notification.show("Impossible de créer la dépense : " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+				Notification.show("Impossible de créer l'opération : " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
 				return false;
 			}
 		}
 		else{
 			LOGGER.error("Erreur : {}", resultatValidation.getErrorMessage());
-			Notification.show("Impossible de créer la dépense : " + resultatValidation.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
+			Notification.show("Impossible de créer l'opération : " + resultatValidation.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
 			return false;
 		}
 	}
@@ -154,6 +154,9 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		String etatNlleDepense = getUtilisateurCourant().getPreference(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE);
 		if(etatNlleDepense != null){
 			getComponent().getListSelectEtat().setSelectedItem(EtatLigneDepenseEnum.getEnum(etatNlleDepense));
+		}
+		else{
+			getComponent().getListSelectEtat().setSelectedItem(EtatLigneDepenseEnum.PREVUE);
 		}
 		// Périodique
 		getComponent().getCheckBoxPeriodique().setCaption(null);
