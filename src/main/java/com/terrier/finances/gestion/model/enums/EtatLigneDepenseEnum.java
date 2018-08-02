@@ -57,4 +57,11 @@ public enum EtatLigneDepenseEnum {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Enum#toString()
+	 */
+	@Override
+	public String toString(){
+		return getLibelle();
+	}
 }

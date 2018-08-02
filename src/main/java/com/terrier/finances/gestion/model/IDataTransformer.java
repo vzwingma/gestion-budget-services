@@ -15,7 +15,7 @@ import com.terrier.finances.gestion.ui.sessions.UISessionManager;
  * @author vzwingma
  *
  */
-public abstract class IDataTransformer<BO, DTO> {
+public abstract class IDataTransformer<B, D> {
 
 
 	private BasicTextEncryptor encryptor; 
@@ -47,13 +47,13 @@ public abstract class IDataTransformer<BO, DTO> {
 	 * @param dto data object (Mongo)
 	 * @return bo business object
 	 */
-	public abstract BO transformDTOtoBO(DTO dto);
+	public abstract B transformDTOtoBO(D dto);
 	/**
 	 * Transformation d'un BO en TO
 	 * @return dto data object (Mongo)
 	 * @param bo business object
 	 */
-	public abstract DTO transformBOtoDTO(BO bo);
+	public abstract D transformBOtoDTO(B bo);
 	
 
 }

@@ -11,7 +11,7 @@ import com.vaadin.ui.Window;
  * @author vzwingma
  *
  */
-public abstract class AbstractComponentListener extends AbstractUIService {
+public abstract class AbstractComponentListener implements AbstractUIService {
 
 	
 	
@@ -20,7 +20,7 @@ public abstract class AbstractComponentListener extends AbstractUIService {
 	 * @param classNameControleur
 	 * @return controleur correspondant
 	 */
-	public <CTRL extends AbstractUIController<? extends CustomComponent>> CTRL getControleur(Class<CTRL> classNameControleur) {
+	public <C extends AbstractUIController<? extends CustomComponent>> C getControleur(Class<C> classNameControleur) {
 		return getUISession().getControleur(classNameControleur);
 	}
 	
@@ -29,6 +29,7 @@ public abstract class AbstractComponentListener extends AbstractUIService {
 	 * Set popup modale
 	 * @param popupModale enregistre la popup
 	 */
+	@Override
 	public void setPopupModale(Window popupModale){
 		getUISession().setPopupModale(popupModale);
 	}

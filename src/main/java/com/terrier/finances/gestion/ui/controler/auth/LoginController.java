@@ -11,7 +11,6 @@ import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.ui.components.auth.Login;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.BudgetMensuelPage;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.terrier.finances.gestion.ui.listener.auth.LoginConnexionClickListener;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Notification;
 
@@ -39,15 +38,19 @@ public class LoginController extends AbstractUIController<Login>{
 	 */
 	public LoginController(Login composant) {
 		super(composant);
+		
+		initDynamicComponentsOnPage();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.ui.controler.common.AbstractUIController#initDynamicComponentsOnPage()
 	 */
-	@Override
 	public void initDynamicComponentsOnPage() {
 		// Ajout controle
-		getComponent().getButtonConnexion().addClickListener(new LoginConnexionClickListener(this.getComponent()));
+		getComponent().getButtonConnexion().addClickListener(
+			e -> authenticateUser(
+				getComponent().getTextLogin().getValue(), 
+				getComponent().getPasswordField().getValue()));
 		getComponent().getTextLogin().focus();
 	}
 

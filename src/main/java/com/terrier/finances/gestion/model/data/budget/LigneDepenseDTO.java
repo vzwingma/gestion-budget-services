@@ -41,13 +41,10 @@ public class LigneDepenseDTO implements Serializable {
 	// tag comme dernière opération
 	private boolean derniereOperation;
 
-	/**
-	 * Logger
-	 */
-	//private static final Logger LOGGER = LoggerFactory.getLogger(LigneDepenseDTO.class);
-	
 	// Constructeur
-	public LigneDepenseDTO(){}
+	public LigneDepenseDTO(){
+		// Constructeur pour Spring
+	}
 
 
 	/**

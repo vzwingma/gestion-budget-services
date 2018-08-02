@@ -3,21 +3,21 @@
  */
 package com.terrier.finances.gestion.ui.listener.budget.mensuel.creation;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.business.BusinessDepensesService;
-import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.CreerDepenseForm;
-import com.terrier.finances.gestion.ui.controler.budget.mensuel.BudgetMensuelController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.creer.operation.CreerDepenseController;
+import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.BudgetMensuelController;
 import com.terrier.finances.gestion.ui.controler.common.AbstractComponentListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Notification;
 
 /**
  * Validation de la création d'une dépense
@@ -48,49 +48,32 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 		form.getTextFieldValeur().setValue(form.getTextFieldValeur().getValue().replaceAll(",", "."));
 
 		LOGGER.debug("[IHM] Validation du formulaire de création");
-		// Validation
-		if(form.getControleur().validateForm()){
-			// Si oui création
-			TypeDepenseEnum type = (TypeDepenseEnum)form.getListSelectType().getConvertedValue();
-			if(type == null){
-				type = TypeDepenseEnum.DEPENSE;
-			}
-			EtatLigneDepenseEnum etat = (EtatLigneDepenseEnum)form.getListSelectEtat().getConvertedValue();
-			if(etat == null){
-				etat = EtatLigneDepenseEnum.PREVUE;
-			}
+		Optional<TypeDepenseEnum> typeSelected = form.getComboboxType().getSelectedItem();
+		TypeDepenseEnum type = typeSelected.isPresent() ? typeSelected.get() : TypeDepenseEnum.DEPENSE;
 
-			LigneDepense ligneDepense = new LigneDepense(
-					(CategorieDepense)form.getComboBoxSsCategorie().getValue(), 
-					(String)form.getTextFieldDescription().getText(), 
-					type,
-					Float.valueOf(form.getTextFieldValeur().getValue()),
-					etat,
-					form.getCheckBoxPeriodique().getValue());
-			LOGGER.debug("[IHM]  >  {}", ligneDepense);
-			String auteur = getUtilisateurCourant().getLibelle();
-			BudgetMensuel budget = getBudgetMensuelCourant();
-			try{
-				if(BusinessDepensesService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(ligneDepense.getSsCategorie().getId())){
-					LOGGER.info("[IHM] Ajout d'un nouveau transfert intercompte");
-					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneTransfertIntercompte(budget.getId(), ligneDepense, ((String)form.getListSelectComptes().getConvertedValue()), getUtilisateurCourant());
-					Notification.show("Le transfert inter-compte a bien été créée", Notification.Type.TRAY_NOTIFICATION);
-				}
-				else{
-					LOGGER.info("[IHM] Ajout d'une nouvelle dépense");
-					getControleur(BudgetMensuelController.class).getServiceDepense().ajoutLigneDepenseEtCalcul(budget.getId(), ligneDepense, auteur);
-					Notification.show("La dépense a bien été créée", Notification.Type.TRAY_NOTIFICATION);
-				}
-			}
-			catch(Exception e){
-				Notification.show("Impossible de créer la dépense : " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
-			}
+		Optional<EtatLigneDepenseEnum> etatSelected = form.getListSelectEtat().getSelectedItem();
+		EtatLigneDepenseEnum etat = etatSelected.isPresent() ? etatSelected.get() : EtatLigneDepenseEnum.PREVUE;
 
+		Optional<CategorieDepense> categorieSelected = form.getComboBoxSsCategorie().getSelectedItem();
+		Optional<String> descriptionSelected = form.getTextFieldDescription().getSelectedItem();
+
+
+		LigneDepense newOperation = new LigneDepense(
+				categorieSelected.isPresent() ? categorieSelected.get() : null, 
+				descriptionSelected.isPresent() ? descriptionSelected.get() : null, 
+				type,
+				Math.abs(Float.valueOf(form.getTextFieldValeur().getValue())),
+				etat,
+				form.getCheckBoxPeriodique().getValue(),
+				getBudgetMensuelCourant().isActif());
+		LOGGER.debug("[IHM]  >  {}", newOperation);
+		boolean resultat = getControleur(CreerDepenseController.class).validateAndCreate(newOperation, form.getComboboxComptes().getSelectedItem());
+
+		if(resultat){
 			/**
 			 * MAJ des tableaux
 			 */
 			BudgetMensuelController controleur = getControleur(BudgetMensuelController.class);
-			
 			if(event.getButton().getCaption().contains("Fermer")){
 				// Fin du formulaire
 				getUISession().getPopupModale().close();

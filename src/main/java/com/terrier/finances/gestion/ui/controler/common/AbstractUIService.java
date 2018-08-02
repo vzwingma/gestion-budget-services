@@ -14,43 +14,48 @@ import com.vaadin.ui.Window;
  * @author vzwingma
  *
  */
-public abstract class AbstractUIService  {
+public interface AbstractUIService  {
 
 
 	/**
 	 * Set popup modale
 	 * @param popupModale enregistre la popup
 	 */
-	public void setPopupModale(Window popupModale){
+	public default void setPopupModale(Window popupModale){
 		getUISession().setPopupModale(popupModale);
 	}
 
 	/**
 	 * @return l'utilisateur courant
 	 */
-	public Utilisateur getUtilisateurCourant(){
+	public default Utilisateur getUtilisateurCourant(){
 		return getUISession().getUtilisateurCourant();
 	}
-
 
 	/**
 	 * @return le budget mensuel courant
 	 */
-	public BudgetMensuel getBudgetMensuelCourant(){
+	public default void updateBudgetCourantInSession(BudgetMensuel budget){
+		getUISession().setBudgetMensuelCourant(budget);
+	}
+	/**
+	 * @return le budget mensuel courant
+	 */
+	public default BudgetMensuel getBudgetMensuelCourant(){
 		return getUISession().getBudgetMensuelCourant();
 	}
 
 	/**
 	 * @return la session de l'UI
 	 */
-	public UISession getUISession(){
+	public default UISession getUISession(){
 		return UISessionManager.get().getSession();
 	}
 
 	/**
 	 * @return l'id de la session
 	 */
-	public String getIdSession(){
+	public default String getIdSession(){
 		return getUISession().getIdSession();
 	}
 }

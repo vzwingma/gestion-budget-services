@@ -34,5 +34,5 @@ public class SwaggerConfig {
                 .licenseUrl("https://github.com/IBM-Bluemix/news-aggregator/blob/master/LICENSE")
                 .version("2.0")
                 .build();
-    }
+    } 
 }

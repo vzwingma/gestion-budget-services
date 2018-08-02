@@ -136,8 +136,7 @@ public class CompteBancaire implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CompteBancaire [id=").append(id).append(", libelle=").append(libelle).append(", itemIcon=")
-				.append(itemIcon).append(", ordre=").append(ordre).append("]");
+		builder.append("CompteBancaire [id=").append(id).append(", libelle=").append(libelle).append("]");
 		return builder.toString();
 	}
 	

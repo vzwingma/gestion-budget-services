@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
+import com.terrier.finances.gestion.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
@@ -42,7 +43,8 @@ public class ParametragesService {
 	
 	@Autowired
 	private ParametragesDatabaseService dataParams;
-
+	@Autowired
+	private UtilisateurDatabaseService dataUsers;
 	/**
 	 * Liste des catégories
 	 */
@@ -74,20 +76,20 @@ public class ParametragesService {
 	}
 
 	/**
-	 * @param UTCBuildTime the buildTime to set (en UTC)
+	 * @param utcBuildTime the buildTime to set (en UTC)
 	 */
 	@Value("${budget.build.time}")
-	public void setBuildTime(String UTCBuildTime) {
+	public void setBuildTime(String utcBuildTime) {
 		try {
 			SimpleDateFormat sdfutc = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
 			sdfutc.setTimeZone(TimeZone.getTimeZone("UTC"));
-			Date dateBuild = sdfutc.parse(UTCBuildTime);
+			Date dateBuild = sdfutc.parse(utcBuildTime);
 			SimpleDateFormat sdflocale = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
 			sdflocale.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
 			this.buildTime = sdflocale.format(dateBuild);
 
 		} catch (ParseException e) {
-			this.buildTime = UTCBuildTime;
+			this.buildTime = utcBuildTime;
 		}
 	}
 
@@ -129,21 +131,18 @@ public class ParametragesService {
 	/**
 	 * @return liste des catégories
 	 */
-	public List<CategorieDepense> getCategories() throws DataNotFoundException{
+	public List<CategorieDepense> getCategories(){
 		if(listeCategories == null){
 			listeCategories = dataParams.chargeCategories();
 			LOGGER.info("> Chargement des catégories <");
-			for (CategorieDepense categorie : listeCategories) {
-				LOGGER.info("[{}] {}", categorie.isActif() ? "v" : "X", categorie);
-				for (CategorieDepense ssCategorie : categorie.getListeSSCategories()) {
-					LOGGER.info("[{}] 	{}", ssCategorie.isActif() ? "v" : "X", ssCategorie);	
-				}
-			}
+			listeCategories.stream().forEachOrdered(c -> {
+				LOGGER.debug("[{}] {}", c.isActif() ? "v" : "X", c);
+				c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}] 	{}", s.isActif() ? "v" : "X", s));
+			});
 		}
 		return listeCategories;
 	}
-	
-	
+
 
 	/**
 	 * @param idCategorie
@@ -166,10 +165,11 @@ public class ParametragesService {
 	 * @return compteBancaire
 	 * @throws DataNotFoundException
 	 */
-	public CompteBancaire getCompteById(String idCompte) throws DataNotFoundException{
-		return dataParams.chargeCompteParId(idCompte);
+	public CompteBancaire getCompteById(String idCompte, String proprietaire) throws DataNotFoundException{
+		return dataUsers.chargeCompteParId(idCompte, proprietaire);
 	}
-	
+
+
 
 	/**
 	 * Recherche des comptes d'un utilisateur
@@ -178,7 +178,7 @@ public class ParametragesService {
 	 * @throws DataNotFoundException
 	 */
 	public List<CompteBancaire> getComptesUtilisateur(Utilisateur utilisateur) throws DataNotFoundException{
-		return dataParams.chargeComptes(utilisateur);
+		return dataUsers.chargeComptes(utilisateur);
 	}
 	
 	
@@ -187,5 +187,6 @@ public class ParametragesService {
 	 */
 	public void resetData(){
 		dataParams.resetData();
+		dataUsers.resetData();
 	}
 }
