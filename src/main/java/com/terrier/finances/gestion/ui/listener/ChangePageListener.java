@@ -10,6 +10,7 @@ import com.vaadin.ui.Layout;
 
 /**
  * Listener de navigation entre les pages
+ * @deprecated : Pas de changement de page dans que les statistiques ne sont pas initiées
  * @author vzwingma
  *
  */

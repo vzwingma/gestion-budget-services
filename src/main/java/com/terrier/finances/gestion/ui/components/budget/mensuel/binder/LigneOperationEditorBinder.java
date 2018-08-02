@@ -4,6 +4,7 @@
 package com.terrier.finances.gestion.ui.components.budget.mensuel.binder;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,10 +61,10 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 	 * @return binding du type dépense
 	 */
 	public Binding<LigneDepense, TypeDepenseEnum> bindTypeDepense(){
-		cTypes = new ComboBox<TypeDepenseEnum>();
+		cTypes = new ComboBox<>();
 		cTypes.setItems(TypeDepenseEnum.values());
 		return this.forField(cTypes)
-				.withValidator(v -> v != null, "Le Type de dépense ne peut pas être nul")
+				.withValidator(Objects::nonNull, "Le Type de dépense ne peut pas être nul")
 				.withValidator(v -> expectedType.equals(v), "L'opération est une "+expectedType.getId()+". La valeur doit être " + expectedType.getLibelle())
 				.bind(LigneDepense::getTypeDepense, LigneDepense::setTypeDepense);
 	}
@@ -98,7 +99,7 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 	 */
 	public Binding<LigneDepense, CategorieDepense> bindCategories(){
 		cCategories.setEnabled(false);
-		return this.forField(cCategories).withValidator(v -> v != null, "La catégorie est obligatoire").bind(LigneDepense::getCategorie, LigneDepense::setCategorie);
+		return this.forField(cCategories).withValidator(Objects::nonNull, "La catégorie est obligatoire").bind(LigneDepense::getCategorie, LigneDepense::setCategorie);
 	}
 	/**
 	 * @return binding périodique
@@ -108,8 +109,8 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 
 		// Liste des sous catégories 
 		Set<CategorieDepense> sousCategories = setCategories.stream()
-				.map(c -> c.getListeSSCategories())
-				.flatMap(c -> c.stream())
+				.map(CategorieDepense::getListeSSCategories)
+				.flatMap(Set::stream)
 				// Sauf transfert intercompte et réservice
 				.filter(c -> 
 						!OperationsService.ID_SS_CAT_TRANSFERT_INTERCOMPTE.equals(c.getId()) 
@@ -134,7 +135,7 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 			
 		});
 		return this.forField(ssCategories)
-				.withValidator(v -> v != null, "La sous catégorie est obligatoire")
+				.withValidator(Objects::nonNull, "La sous catégorie est obligatoire")
 				.bind(LigneDepense::getSsCategorie, LigneDepense::setSsCategorie);
 	}
 }

@@ -3,12 +3,6 @@
  */
 package com.terrier.finances.gestion.data;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +32,6 @@ public abstract class AbstractDatabaseService {
 	@Autowired
 	private StatusApplicationService statutApplicationService;
 	
-	private ScheduledExecutorService monitorScheduler = Executors.newSingleThreadScheduledExecutor();
 	/**
 	 * Constructeur permettant de définir les composants utilisés en DATA
 	 */
@@ -46,15 +39,12 @@ public abstract class AbstractDatabaseService {
 		LOGGER.info("[INIT] Service {}", this.getClass());
 	}
 
-	@PostConstruct
-	public void monitorDB(){
-		monitorScheduler.scheduleAtFixedRate(() -> updateMongoStatus() , 1, 5, TimeUnit.MINUTES);
-	}
 	
 	/**
 	 * @return opérations MongoDB
 	 */
 	public MongoOperations getMongoOperation(){
+		updateMongoStatus();
 		return mongoTemplate;
 	}
 	

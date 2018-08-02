@@ -23,7 +23,7 @@ public class StatistiquesController extends AbstractUIController<StatistiquesPag
 	 */
 	private static final long serialVersionUID = -6410285178655721867L;
 
-	
+	@Deprecated
 	private ComboBox<CompteBancaire> compte;
 	
 	/**

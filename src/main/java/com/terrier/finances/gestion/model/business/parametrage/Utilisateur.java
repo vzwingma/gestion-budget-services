@@ -58,7 +58,7 @@ public class Utilisateur implements Serializable {
 	 * Préférences
 	 */
 	@Transient
-	private Map<UtilisateurPrefsEnum, Object> prefsUtilisateur = new EnumMap<>(UtilisateurPrefsEnum.class);
+	private transient Map<UtilisateurPrefsEnum, Object> prefsUtilisateur = new EnumMap<>(UtilisateurPrefsEnum.class);
 	/**
 	 * Droits
 	 */
