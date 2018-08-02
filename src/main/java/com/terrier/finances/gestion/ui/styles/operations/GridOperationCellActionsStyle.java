@@ -19,7 +19,9 @@ public class GridOperationCellActionsStyle extends GridOperationCellStyle {
 	public String apply(LigneDepense depense) {
 		
 		StringBuilder style = new StringBuilder();
+		// Ajout de la couleur
 		style.append(super.apply(depense));
+		// et du padding left
 		style.append(" v-grid-cell-action");
 		return style.toString();
 	}

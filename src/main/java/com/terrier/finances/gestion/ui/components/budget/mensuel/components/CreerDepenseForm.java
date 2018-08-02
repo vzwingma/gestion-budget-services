@@ -430,7 +430,6 @@ public class CreerDepenseForm extends AbstractUIComponent<CreerDepenseController
 		textFieldDescription = new ComboBox<>();
 		textFieldDescription.setWidth("370px");
 		textFieldDescription.setRequiredIndicatorVisible(true);
-		textFieldDescription.setStyleName("v-textfield");
 		horizontalLayout3.addComponent(textFieldDescription);	
 		horizontalLayout3.setComponentAlignment(textFieldDescription,
 				new Alignment(33));
