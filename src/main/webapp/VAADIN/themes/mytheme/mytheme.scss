@@ -127,11 +127,16 @@ color: #2c9720;
 text-align:right;
 padding-right:10 px;
 }
-.v-grid-cell-valeur_rouge{
+.v-grid-cell-valeur_rouge {
 color: red;
 text-align:right;
 padding-right:10 px;
 }
+
+.v-grid-cell-action {
+padding-left:5 px;
+}
+
 
 /************************/
 /* 		Tree Grid 		*/ 
