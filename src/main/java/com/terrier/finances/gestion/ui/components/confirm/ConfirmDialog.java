@@ -45,6 +45,7 @@ public final class ConfirmDialog extends Window implements Button.ClickListener 
 		cancelButton.setStyleName("danger");
 		cancelButton.focus();
 		setModal(true);
+		setResizable(false);
 		setContent(buildMainLayout());
 		this.callback = callback;
 

@@ -445,7 +445,7 @@ public class BudgetMensuelPage extends AbstractUIComponent<BudgetMensuelControll
 		// buttonCreate
 		buttonCreate = new Button();
 		buttonCreate.setStyleName("friendly");
-		buttonCreate.setCaption("Créer une nouvelle dépense");
+		buttonCreate.setCaption("Créer une nouvelle opération");
 		buttonCreate.setSizeUndefined();
 		buttonCreate.setTabIndex(2);
 		horizontalLayoutActions.addComponent(buttonCreate);

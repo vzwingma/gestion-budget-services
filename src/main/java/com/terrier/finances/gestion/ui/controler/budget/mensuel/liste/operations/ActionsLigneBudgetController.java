@@ -34,28 +34,28 @@ public class ActionsLigneBudgetController extends AbstractUIController<ActionsLi
 		getComponent().getButtonReel().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonReel().setId("buttonReel");
 		getComponent().getButtonReel().setStyleName("v-button-actions v-button-reel");
-		getComponent().getButtonReel().setDescription("Enregistrement de la dépense");
+		getComponent().getButtonReel().setDescription("Enregistrement de l'opération");
 
 		getComponent().getButtonAnnuler().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonAnnuler().setId("buttonAnnuler");
 		getComponent().getButtonAnnuler().setStyleName("v-button-actions v-button-annuler");
-		getComponent().getButtonAnnuler().setDescription("Annulation de la dépense");
+		getComponent().getButtonAnnuler().setDescription("Annulation de l'opération");
 
 
 		getComponent().getButtonReporter().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonReporter().setId("buttonReporter");
 		getComponent().getButtonReporter().setStyleName("v-button-actions v-button-reporter");
-		getComponent().getButtonReporter().setDescription("Report de la dépense au mois prochain");
+		getComponent().getButtonReporter().setDescription("Report de l'opération au mois prochain");
 
 		getComponent().getButtonPrevue().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonPrevue().setId("buttonPrevue");
 		getComponent().getButtonPrevue().setStyleName("v-button-actions v-button-prevue");
-		getComponent().getButtonPrevue().setDescription("Mise en prévision de la dépense");
+		getComponent().getButtonPrevue().setDescription("Mise en prévision de l'opération");
 
 		getComponent().getButtonSupprimer().addClickListener(new ActionsLigneDepenseClickListener());
 		getComponent().getButtonSupprimer().setId("buttonSupprimer");
 		getComponent().getButtonSupprimer().setStyleName("v-button-actions v-button-supprimer");
-		getComponent().getButtonSupprimer().setDescription("Suppression de la dépense");		
+		getComponent().getButtonSupprimer().setDescription("Suppression de l'opération");		
 	}
 
 

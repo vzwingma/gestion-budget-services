@@ -27,11 +27,12 @@ public class ActionCreerDepenseClickListener extends AbstractComponentListener i
 	 */
 	@Override
 	public void buttonClick(ClickEvent event) {
-		Window sub = new Window("Créer une nouvelle dépense");
+		Window sub = new Window("Créer une nouvelle opération");
 		sub.setWidth("600px");
 		sub.setHeight("350px");
 		sub.setContent(new CreerDepenseForm());
 		sub.setModal(true);
+		sub.setResizable(false);
 		setPopupModale(sub);
 	}
 }
