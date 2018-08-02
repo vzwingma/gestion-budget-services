@@ -155,6 +155,9 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		if(etatNlleDepense != null){
 			getComponent().getListSelectEtat().setSelectedItem(EtatLigneDepenseEnum.getEnum(etatNlleDepense));
 		}
+		else{
+			getComponent().getListSelectEtat().setSelectedItem(EtatLigneDepenseEnum.PREVUE);
+		}
 		// Périodique
 		getComponent().getCheckBoxPeriodique().setCaption(null);
 		getComponent().getCheckBoxPeriodique().setValue(Boolean.FALSE);
