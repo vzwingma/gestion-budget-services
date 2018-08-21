@@ -6,3 +6,6 @@
 /bin/
 /target/
 src/main/external-ressources/openshift-services/
+communs/
+ihm/
+services/
