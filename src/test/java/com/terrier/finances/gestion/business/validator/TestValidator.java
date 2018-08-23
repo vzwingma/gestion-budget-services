@@ -31,7 +31,7 @@ public class TestValidator {
 		operation.setLibelle("TEST LIBELLE");
 		operation.setTypeDepense(TypeDepenseEnum.DEPENSE);
 		operation.setValeur(-123.13f);
-		operation.setValeurS("-123.13");
+		operation.setValeurAbsStringToFloat("-123.13");
 		// Ligne OK
 		ValidationResult r = validator.apply(operation, null);
 		assertEquals(ValidationResult.ok().isError(), r.isError());
@@ -49,7 +49,7 @@ public class TestValidator {
 		operation.setEtat(EtatLigneDepenseEnum.PREVUE);
 		operation.setLibelle("TEST LIBELLE");
 		operation.setTypeDepense(TypeDepenseEnum.DEPENSE);
-		operation.setValeurS("NaN");
+		operation.setValeurAbsStringToFloat("NaN");
 		// Ligne OK
 		ValidationResult r = validator.apply(operation, null);
 		assertEquals(ValidationResult.error("").isError(), r.isError());
@@ -71,7 +71,7 @@ public class TestValidator {
 		operation.setLibelle("TEST LIBELLE");		
 
 		operation.setValeur(-123);
-		operation.setValeurS("-123");
+		operation.setValeurAbsStringToFloat("-123");
 		operation.setTypeDepense(TypeDepenseEnum.DEPENSE);
 		assertEquals(ValidationResult.error("").isError(), validator.apply(operation, null).isError());
 	}
@@ -87,7 +87,7 @@ public class TestValidator {
 		operation.setEtat(EtatLigneDepenseEnum.PREVUE);
 		operation.setLibelle("TEST LIBELLE");	
 		operation.setValeur(123);
-		operation.setValeurS("123");
+		operation.setValeurAbsStringToFloat("123");
 		operation.setTypeDepense(TypeDepenseEnum.CREDIT);
 		assertEquals(ValidationResult.error("").isError(), validator.apply(operation, null).isError());
 	}

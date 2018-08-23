@@ -81,7 +81,7 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
                 	Double d =  Double.valueOf(v.replaceAll(",", "."));
                     return (!Double.isInfinite(d) && !Double.isNaN(d));
                 }, "La valeur est incorrecte")
-				.bind(LigneDepense::getValeurS, LigneDepense::setValeurS);
+				.bind(LigneDepense::getValeurAbsStringFromFloat, LigneDepense::setValeurAbsStringToFloat);
 	}
 
 
