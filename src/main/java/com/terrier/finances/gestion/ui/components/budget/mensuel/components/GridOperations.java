@@ -13,11 +13,13 @@ import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridCompone
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.binder.LigneOperationEditorBinder;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.editor.GridEditorListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.editor.GridOperationsEditorListener;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.editor.GridOperationsMenuCommand;
 import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellActionsStyle;
 import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellStyle;
 import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellValeurStyle;
 import com.terrier.finances.gestion.ui.styles.operations.OperationBudgetTypeRenderer;
+import com.vaadin.contextmenu.GridContextMenu;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.TextRenderer;
@@ -72,14 +74,21 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	@Override
 	public void paramComponentsOnGrid() {
 		
+		/**
+		 *  Editor
+		 */
 		LigneOperationEditorBinder binderLD = new LigneOperationEditorBinder(getControleur().getServiceParams().getCategories());
 		getEditor().setBinder(binderLD);
 		
-		GridEditorListener editorListener = new GridEditorListener(getControleur());
+		GridOperationsEditorListener editorListener = new GridOperationsEditorListener(getControleur());
 		getEditor().addOpenListener(editorListener);
 		getEditor().addSaveListener(editorListener);
 		getEditor().addCancelListener(editorListener);
 		setSelectionMode(SelectionMode.SINGLE);
+		
+		/**
+		 * Columns
+		 */
 		
 		Column<LigneDepense, Date> c = addColumn(LigneDepense::getDateOperation);
 		c.setId(EntetesTableSuiviDepenseEnum.DATE_OPERATION.name())
@@ -186,5 +195,13 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 		// Not editable		
 
 		getEditor().setEnabled(true);
+		
+		/**
+		 * Context Menu
+		 */
+		GridContextMenu<LigneDepense> contextMenu = new GridContextMenu<>(this);
+		GridOperationsMenuCommand menuCommand = new GridOperationsMenuCommand(getControleur());
+		contextMenu.addItem("Marquer comme dernière opération",menuCommand);
+		contextMenu.addGridBodyContextMenuListener(menuCommand);
 	}
 }
