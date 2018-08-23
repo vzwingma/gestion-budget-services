@@ -98,7 +98,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		ligneDepenseClonee.setEtat(EtatLigneDepenseEnum.PREVUE);
 		ligneDepenseClonee.setPeriodique(this.periodique);
 		ligneDepenseClonee.setTypeDepense(this.typeDepense);
-		ligneDepenseClonee.setValeur(this.valeur);
+		ligneDepenseClonee.setValeurAbsStringToFloat(Float.toString(Math.abs(this.valeur)));
 		ligneDepenseClonee.setDerniereOperation(false);
 		return ligneDepenseClonee;
 	}
