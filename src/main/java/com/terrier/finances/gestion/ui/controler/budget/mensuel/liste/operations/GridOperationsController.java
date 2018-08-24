@@ -50,9 +50,15 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	 */
 	public void updateViewGridOnEditableMode(boolean editableMode){
 
-//		// Activation du tableau
-		getComponent().getColumn(EntetesTableSuiviDepenseEnum.TYPE.name()).setHidden(!editableMode);
-		getComponent().getColumn(EntetesTableSuiviDepenseEnum.PERIODIQUE.name()).setHidden(!editableMode);
+//		// Activation du tableau en mode édition
+        getComponent().getColumn(EntetesTableSuiviDepenseEnum.TYPE.name()).setHidden(!editableMode);
+        getComponent().getColumn(EntetesTableSuiviDepenseEnum.PERIODIQUE.name()).setHidden(!editableMode);
+        // Réalignement de la colonne en mode édition
+        getComponent().getColumn(EntetesTableSuiviDepenseEnum.PERIODIQUE.name()).setWidth(editableMode ? GridOperations.TAILLE_COLONNE_TYPE_MENSUEL + 15 : GridOperations.TAILLE_COLONNE_TYPE_MENSUEL);
+        getComponent().getColumn(EntetesTableSuiviDepenseEnum.ACTIONS.name()).setHidden(editableMode);
+        getComponent().getColumn(EntetesTableSuiviDepenseEnum.DATE_MAJ.name()).setHidden(editableMode);
+        
+        //
 		this.budgetControleur.getComponent().getButtonCreate().setVisible(!editableMode);
 	}
 

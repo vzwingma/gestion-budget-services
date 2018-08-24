@@ -8,6 +8,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -165,7 +166,7 @@ public class StatutDependencyObject {
 	 * @return the date
 	 */
 	public String getDate() {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat(DataUtils.DATE_DAY_HOUR_S_PATTERN);
 		return date != null ? sdf.format(this.date.getTime()) : "null";
 	}
 

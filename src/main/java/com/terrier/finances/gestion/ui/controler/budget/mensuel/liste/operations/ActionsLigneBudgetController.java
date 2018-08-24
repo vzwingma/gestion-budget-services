@@ -7,7 +7,7 @@ import com.terrier.finances.gestion.ui.listener.budget.mensuel.boutons.ActionsLi
 import com.vaadin.ui.Button;
 
 /**
- * Controleur du budget mensuel
+ * Controleur des boutons d'actions d'une opération
  * @author vzwingma
  *
  */
