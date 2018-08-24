@@ -63,6 +63,8 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 	 */
 	public Binding<LigneDepense, TypeDepenseEnum> bindTypeDepense(){
 		cTypes = new ComboBox<>();
+		cTypes.setTextInputAllowed(false);
+		cTypes.setEmptySelectionAllowed(false);
 		cTypes.setItems(TypeDepenseEnum.values());
 		return this.forField(cTypes)
 				.withValidator(Objects::nonNull, "Le Type de dépense ne peut pas être nul")

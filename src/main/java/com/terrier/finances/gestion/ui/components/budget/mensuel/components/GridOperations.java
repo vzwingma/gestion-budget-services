@@ -39,7 +39,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	public static final int TAILLE_COLONNE_AUTEUR = 100;
 	public static final int TAILLE_COLONNE_DATE_EDITEE = 150;
 	public static final int TAILLE_COLONNE_ACTIONS = 110;
-	public static final int TAILLE_COLONNE_TYPE_MENSUEL = 65;
+	public static final int TAILLE_COLONNE_TYPE_MENSUEL = 100;
 	public static final int TAILLE_COLONNE_VALEUR = 100;
 	
 	private final SimpleDateFormat dateFormatMaj = new
