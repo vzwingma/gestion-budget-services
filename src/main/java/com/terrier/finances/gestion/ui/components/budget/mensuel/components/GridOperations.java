@@ -7,6 +7,7 @@ import java.util.TimeZone;
 
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.enums.EntetesTableSuiviDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.abstrait.AbstractUIGridComponent;
@@ -42,18 +43,16 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 	public static final int TAILLE_COLONNE_TYPE_MENSUEL = 100;
 	public static final int TAILLE_COLONNE_VALEUR = 100;
 	
-	private final SimpleDateFormat dateFormatMaj = new
-			SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRENCH);
-	private final SimpleDateFormat dateFormatOperations = new SimpleDateFormat("dd/MM/yyyy", Locale.FRENCH);
-	private final TimeZone tzParis = TimeZone.getTimeZone("Europe/Paris");
+	private final SimpleDateFormat dateFormatMaj = new SimpleDateFormat(DataUtils.DATE_DAY_HOUR_PATTERN, Locale.FRENCH);
+	private final SimpleDateFormat dateFormatOperations = new SimpleDateFormat(DataUtils.DATE_DAY_PATTERN, Locale.FRENCH);
 
 	/**
 	 * Constructure : démarrage du controleur
 	 */
 	public GridOperations(){
 		
-		dateFormatMaj.setTimeZone(tzParis);
-		dateFormatOperations.setTimeZone(tzParis);
+		dateFormatMaj.setTimeZone(DataUtils.getTzParis());
+		dateFormatOperations.setTimeZone(DataUtils.getTzParis());
 		// Start controleur
 		startControleur();
 	}

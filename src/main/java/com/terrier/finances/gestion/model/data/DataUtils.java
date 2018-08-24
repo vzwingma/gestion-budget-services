@@ -3,6 +3,8 @@
  */
 package com.terrier.finances.gestion.model.data;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
@@ -11,7 +13,9 @@ import java.time.temporal.ChronoField;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.TimeZone;
 
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 
@@ -22,10 +26,36 @@ import com.terrier.finances.gestion.model.business.budget.LigneDepense;
  */
 public class DataUtils {
 
+	public static final String DATE_DAY_PATTERN = "dd/MM/yyyy";
+	public static final String DATE_DAY_HOUR_PATTERN = DATE_DAY_PATTERN + " HH:mm";
+	public static final String DATE_DAY_HOUR_S_PATTERN = DATE_DAY_HOUR_PATTERN + ":ss";
+	
+	public static final String DATE_FULL_TEXT_PATTERN = "dd MMMM yyyy HH:mm";
+	
+	
 	private DataUtils(){
 		// Constructeur privé pour classe utilitaire
 	}
 
+	public static final TimeZone getTzParis(){
+		return TimeZone.getTimeZone("Europe/Paris");
+	}
+	
+	/**
+	 * @param utcTime
+	 * @return date transformée en local
+	 * @throws ParseException
+	 */
+	public static final String getUtcToLocalTime(String utcTime) throws ParseException{
+		SimpleDateFormat sdfutc = new SimpleDateFormat(DATE_DAY_HOUR_PATTERN, Locale.FRENCH);
+		sdfutc.setTimeZone(TimeZone.getTimeZone("UTC"));
+		Date dateBuild = sdfutc.parse(utcTime);
+		SimpleDateFormat sdflocale = new SimpleDateFormat(DATE_DAY_HOUR_PATTERN, Locale.FRENCH);
+		sdflocale.setTimeZone(DataUtils.getTzParis());
+		return sdflocale.format(dateBuild);
+	}
+	
+	
 	/**
 	 * @return la date actuelle en LocalDate
 	 */
