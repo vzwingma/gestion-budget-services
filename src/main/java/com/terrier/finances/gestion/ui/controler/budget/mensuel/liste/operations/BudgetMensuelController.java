@@ -127,8 +127,8 @@ public class BudgetMensuelController extends AbstractUIController<BudgetMensuelP
 		// Label last connexion
 		Date dateDernierAcces = getUtilisateurCourant().getDernierAcces();
 		if(dateDernierAcces != null){
-			SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.FRENCH);
-			sdf.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
+			SimpleDateFormat sdf = new SimpleDateFormat(DataUtils.DATE_FULL_TEXT_PATTERN, Locale.FRENCH);
+			sdf.setTimeZone(DataUtils.getTzParis());
 			String date = sdf.format(dateDernierAcces.getTime());
 			this.getComponent().getLabelLastConnected().setValue("Dernière connexion : \n" + date);
 		}

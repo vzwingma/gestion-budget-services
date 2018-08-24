@@ -3,6 +3,7 @@
  */
 package com.terrier.finances.gestion.ui.components.budget.mensuel.binder;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -62,6 +63,8 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 	 */
 	public Binding<LigneDepense, TypeDepenseEnum> bindTypeDepense(){
 		cTypes = new ComboBox<>();
+		cTypes.setTextInputAllowed(false);
+		cTypes.setEmptySelectionAllowed(false);
 		cTypes.setItems(TypeDepenseEnum.values());
 		return this.forField(cTypes)
 				.withValidator(Objects::nonNull, "Le Type de dépense ne peut pas être nul")
@@ -92,6 +95,16 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 		return this.bind(new CheckBox(), LigneDepense::isPeriodique, LigneDepense::setPeriodique);
 	}
 
+
+	/**
+	 * @return binding périodique
+	 */
+	public Binding<LigneDepense, Date> bindDate(){
+		TextField valeurDate = new TextField();
+		valeurDate.setEnabled(false);
+		// Pas de validateur. Valeur en readonly
+		return this.forField(valeurDate).withConverter(new DateOperationEditorConverter()).bind(LigneDepense::getDateMaj, LigneDepense::setDateMaj);
+	}
 
 
 	/**
