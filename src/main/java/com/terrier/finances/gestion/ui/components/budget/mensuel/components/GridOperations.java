@@ -181,6 +181,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 			.setResizable(false);
 		c10.setStyleGenerator(new GridOperationCellStyle());
 		c10.setRenderer(new DateRenderer(dateFormatMaj));
+		c10.setEditorBinding(binderLD.bindDate());
 		// Not editable
 		
 		Column<LigneDepense, String> c11 = addColumn(LigneDepense::getAuteur);

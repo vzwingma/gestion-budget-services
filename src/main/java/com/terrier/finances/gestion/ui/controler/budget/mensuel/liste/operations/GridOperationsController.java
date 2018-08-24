@@ -51,8 +51,6 @@ public class GridOperationsController extends AbstractUIController<GridOperation
 	public void updateViewGridOnEditableMode(boolean editableMode){
 
 //		// Activation du tableau
-		getComponent().getColumn(EntetesTableSuiviDepenseEnum.TYPE.name()).setHidden(!editableMode);
-		getComponent().getColumn(EntetesTableSuiviDepenseEnum.PERIODIQUE.name()).setHidden(!editableMode);
 		this.budgetControleur.getComponent().getButtonCreate().setVisible(!editableMode);
 	}
 
