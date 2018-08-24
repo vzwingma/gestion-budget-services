@@ -66,16 +66,16 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	 * Constructeur
 	 * @param ssCategorie Catégorie
 	 * @param libelle libellé
-	 * @param typeDepense type de dépense
-	 * @param valeur valeur
+	 * @param typeDepense type d'opération
+	 * @param absValeur valeur montant en valeur absolue
 	 * @param etat état
 	 */
-	public LigneDepense(CategorieDepense ssCategorie, String libelle, TypeDepenseEnum typeDepense, float valeur, EtatLigneDepenseEnum etat, boolean periodique, boolean budgetActif){
+	public LigneDepense(CategorieDepense ssCategorie, String libelle, TypeDepenseEnum typeDepense, String absValeur, EtatLigneDepenseEnum etat, boolean periodique, boolean budgetActif){
 		this.id = UUID.randomUUID().toString();
 		setSsCategorie(ssCategorie);
 		this.libelle = libelle;
 		this.typeDepense = typeDepense;
-		this.valeur = valeur;
+		setValeurAbsStringToFloat(absValeur);
 		this.etat = etat;
 		this.dateOperation = Calendar.getInstance().getTime();
 		this.periodique = periodique;
@@ -98,7 +98,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		ligneDepenseClonee.setEtat(EtatLigneDepenseEnum.PREVUE);
 		ligneDepenseClonee.setPeriodique(this.periodique);
 		ligneDepenseClonee.setTypeDepense(this.typeDepense);
-		ligneDepenseClonee.setValeur(this.valeur);
+		ligneDepenseClonee.setValeurAbsStringToFloat(Float.toString(Math.abs(this.valeur)));
 		ligneDepenseClonee.setDerniereOperation(false);
 		return ligneDepenseClonee;
 	}
@@ -110,12 +110,6 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		this.id = id;
 	}
 
-	/**
-	 * @param valeur the valeur to set
-	 */
-	public void setValeur(float valeur) {
-		this.valeur = valeur;
-	}
 
 	/**
 	 * @return the id
@@ -181,11 +175,11 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		return valeur;
 	}
 
-	public String getValeurS() {
+	public String getValeurAbsStringFromFloat() {
 		return Float.toString(Math.abs(valeur));
 	}
 
-	public void setValeurS(String valeurS){
+	public void setValeurAbsStringToFloat(String valeurS){
 		if(valeurS != null){
 			this.valeur = Math.abs(Float.parseFloat(valeurS)) * (TypeDepenseEnum.DEPENSE.equals(this.getTypeDepense()) ? -1 : 1);
 		}

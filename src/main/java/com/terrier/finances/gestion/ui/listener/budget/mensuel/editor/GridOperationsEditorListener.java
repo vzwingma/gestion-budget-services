@@ -16,7 +16,7 @@ import com.vaadin.ui.components.grid.EditorSaveListener;
  * @author vzwingma
  *
  */
-public class GridEditorListener implements EditorCancelListener<LigneDepense>, EditorSaveListener<LigneDepense>, EditorOpenListener<LigneDepense> {
+public class GridOperationsEditorListener implements EditorCancelListener<LigneDepense>, EditorSaveListener<LigneDepense>, EditorOpenListener<LigneDepense> {
 
 	//
 	private static final long serialVersionUID = -4092876167681783200L;
@@ -24,7 +24,7 @@ public class GridEditorListener implements EditorCancelListener<LigneDepense>, E
 	// Controleur
 	private GridOperationsController controler;
 
-	public GridEditorListener(GridOperationsController controller) {
+	public GridOperationsEditorListener(GridOperationsController controller) {
 		this.controler = controller;
 	}
 

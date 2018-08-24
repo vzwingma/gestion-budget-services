@@ -10,6 +10,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 
 /**
+ * Bouton de création d'une nouvelle dépense
  * @author vzwingma
  *
  */

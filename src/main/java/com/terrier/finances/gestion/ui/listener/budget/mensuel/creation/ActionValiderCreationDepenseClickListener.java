@@ -62,7 +62,7 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 				categorieSelected.isPresent() ? categorieSelected.get() : null, 
 				descriptionSelected.isPresent() ? descriptionSelected.get() : null, 
 				type,
-				Math.abs(Float.valueOf(form.getTextFieldValeur().getValue())),
+				form.getTextFieldValeur().getValue(),
 				etat,
 				form.getCheckBoxPeriodique().getValue(),
 				getBudgetMensuelCourant().isActif());

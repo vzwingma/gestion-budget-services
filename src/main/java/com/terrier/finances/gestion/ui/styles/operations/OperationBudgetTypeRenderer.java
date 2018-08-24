@@ -46,13 +46,8 @@ public class OperationBudgetTypeRenderer extends TextRenderer {
         	
         	Float f = (Float)value;
         	StringBuilder valeur = new StringBuilder();
-        	if(f < 0){
-        		valeur.append("- ");
-        	}
-        	else{
-        		valeur.append("+ ");
-        	}
-        	valeur.append(String.format("%.2f", f));
+        	valeur.append(f < 0 ? "- " : "+ ");
+        	valeur.append(String.format("%.2f", Math.abs(f)));
 			valeur.append(" €");
             return Json.create(valeur.toString());
         }

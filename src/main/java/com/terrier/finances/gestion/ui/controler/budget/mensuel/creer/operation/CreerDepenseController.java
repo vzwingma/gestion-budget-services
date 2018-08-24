@@ -71,7 +71,7 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 				}
 				else{
 					LOGGER.info("[IHM] Ajout d'une nouvelle dépense");
-					updateBudgetCourantInSession(getServiceOperations().ajoutLigneDepenseEtCalcul(budget.getId(), newOperation, auteur));
+					updateBudgetCourantInSession(getServiceOperations().ajoutOperationEtCalcul(budget.getId(), newOperation, auteur));
 					Notification.show("l'opération a bien été créée", Notification.Type.TRAY_NOTIFICATION);
 				}
 				return true;
