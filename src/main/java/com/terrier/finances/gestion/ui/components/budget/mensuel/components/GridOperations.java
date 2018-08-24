@@ -14,7 +14,7 @@ import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBud
 import com.terrier.finances.gestion.ui.components.budget.mensuel.binder.LigneOperationEditorBinder;
 import com.terrier.finances.gestion.ui.controler.budget.mensuel.liste.operations.GridOperationsController;
 import com.terrier.finances.gestion.ui.listener.budget.mensuel.editor.GridOperationsEditorListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.editor.GridOperationsMenuCommand;
+import com.terrier.finances.gestion.ui.listener.budget.mensuel.editor.GridOperationsRightClickListener;
 import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellActionsStyle;
 import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellStyle;
 import com.terrier.finances.gestion.ui.styles.operations.GridOperationCellValeurStyle;
@@ -200,8 +200,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 		 * Context Menu
 		 */
 		GridContextMenu<LigneDepense> contextMenu = new GridContextMenu<>(this);
-		GridOperationsMenuCommand menuCommand = new GridOperationsMenuCommand(getControleur());
-		contextMenu.addItem("Marquer comme dernière opération",menuCommand);
+		GridOperationsRightClickListener menuCommand = new GridOperationsRightClickListener(getControleur());
 		contextMenu.addGridBodyContextMenuListener(menuCommand);
 	}
 }
