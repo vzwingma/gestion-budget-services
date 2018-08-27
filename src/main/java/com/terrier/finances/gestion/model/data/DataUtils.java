@@ -29,10 +29,10 @@ public class DataUtils {
 	public static final String DATE_DAY_PATTERN = "dd/MM/yyyy";
 	public static final String DATE_DAY_HOUR_PATTERN = DATE_DAY_PATTERN + " HH:mm";
 	public static final String DATE_DAY_HOUR_S_PATTERN = DATE_DAY_HOUR_PATTERN + ":ss";
-	
+
 	public static final String DATE_FULL_TEXT_PATTERN = "dd MMMM yyyy HH:mm";
-	
-	
+
+
 	private DataUtils(){
 		// Constructeur privé pour classe utilitaire
 	}
@@ -40,7 +40,7 @@ public class DataUtils {
 	public static final TimeZone getTzParis(){
 		return TimeZone.getTimeZone("Europe/Paris");
 	}
-	
+
 	/**
 	 * @param utcTime
 	 * @return date transformée en local
@@ -54,8 +54,8 @@ public class DataUtils {
 		sdflocale.setTimeZone(DataUtils.getTzParis());
 		return sdflocale.format(dateBuild);
 	}
-	
-	
+
+
 	/**
 	 * @return la date actuelle en LocalDate
 	 */
@@ -124,12 +124,31 @@ public class DataUtils {
 				else{
 					return date1.before(date2) ? -1 : 1;
 				}
-	        });
+			});
 			Optional<LigneDepense> maxDate = listeOperations.stream().max(comparator);
 			if(maxDate.isPresent() && maxDate.get().getDateOperation() != null){
 				localDateDerniereOperation = asLocalDate(maxDate.get().getDateOperation());
 			}
 		}
 		return localDateDerniereOperation;
+	}
+
+
+	/**
+	 * @param valeurS
+	 * @return la valeur d'un String en double
+	 */
+	public static String getValueFromString(String valeurS){
+
+		if(valeurS != null){
+			valeurS = valeurS.replaceAll(",", ".");
+			try{
+				valeurS = Double.toString(Double.valueOf(valeurS));
+			}
+			catch(Exception e){
+				valeurS = null;
+			}
+		}
+		return valeurS;
 	}
 }

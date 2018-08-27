@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.model.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -58,5 +59,15 @@ public class TestDataUtils {
 		LocalDate cd = DataUtils.getMaxDateListeOperations(depenses);
 		
 		assertEquals(Month.OCTOBER.getValue(), cd.get(ChronoField.MONTH_OF_YEAR));
+	}
+	
+	
+	@Test
+	public void testDoubleFromString(){
+		assertNull(DataUtils.getValueFromString(null));
+		assertNull(DataUtils.getValueFromString("123/0"));
+		assertEquals("123.3", DataUtils.getValueFromString("123.3"));
+		assertEquals("123.3", DataUtils.getValueFromString("123,3"));
+		assertEquals("-123.3", DataUtils.getValueFromString("-123,3"));
 	}
 }
