@@ -1,6 +1,6 @@
 package com.terrier.finances.gestion.ui.sessions;
 
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,8 +33,8 @@ public class UISession {
 
 	private String idSession;
 
-	private Calendar lastAccessTime;
-
+	private Instant lastAccessTime;
+	
 	/**
 	 * Session Manager
 	 * @param idSession idSessions
@@ -42,7 +42,7 @@ public class UISession {
 	public UISession(String idSession){
 		LOGGER.trace("[INIT][{}] Session UI ", idSession);
 		this.idSession = idSession;
-		this.lastAccessTime = Calendar.getInstance();
+		this.lastAccessTime = Instant.now();
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class UISession {
 	 */
 	public <C extends AbstractUIController<? extends AbstractComponent>> void registerUIControler(C controleur) {
 		if(mapControleurs.get(controleur.getClass()) == null){
-			LOGGER.info("[{}] Enregistrement du controleur : {}", this.idSession, controleur);
+			LOGGER.info("[{}] Enregistrement du controleur : {}", this.idSession, controleur.getClass().getSimpleName());
 			mapControleurs.put(controleur.getClass(), controleur);
 		}
 
@@ -149,7 +149,7 @@ public class UISession {
 	/**
 	 * @param lastAccessTime the lastAccessTime to set
 	 */
-	public void setLastAccessTime(Calendar lastAccessTime) {
+	public void setLastAccessTime(Instant lastAccessTime) {
 		this.lastAccessTime = lastAccessTime;
 	}
 
@@ -157,7 +157,7 @@ public class UISession {
 	/**
 	 * @return the lastAccessTime
 	 */
-	public Calendar getLastAccessTime() {
+	public Instant getLastAccessTime() {
 		return lastAccessTime;
 	}
 
