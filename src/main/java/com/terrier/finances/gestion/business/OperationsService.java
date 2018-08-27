@@ -365,7 +365,7 @@ public class OperationsService {
 					ligneDepense.getSsCategorie(), 
 					"[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle(), 
 					TypeDepenseEnum.CREDIT, 
-					Float.toString(Math.abs(ligneDepense.getValeur())), 
+					Double.toString(Math.abs(ligneDepense.getValeur())), 
 					etatDepenseTransfert, 
 					ligneDepense.isPeriodique(), 
 					budgetTransfert.isActif());
@@ -555,7 +555,7 @@ public class OperationsService {
 
 		for (LigneDepense depense : budget.getListeDepenses()) {
 			LOGGER.trace("     > {}", depense);
-			Float depenseVal = depense.getValeur();
+			Double depenseVal = depense.getValeur();
 			budget.getSetLibellesDepensesForAutocomplete().add(depense.getLibelle());
 			/**
 			 *  Calcul par catégorie

@@ -141,7 +141,7 @@ public class GridOperations extends AbstractUIGridComponent<GridOperationsContro
 		// Binding Edition	
 		c6.setEditorBinding(binderLD.bindTypeDepense());
 		
-		Column<LigneDepense, Float> c7 = addColumn(LigneDepense::getValeur);
+		Column<LigneDepense, Double> c7 = addColumn(LigneDepense::getValeur);
 		c7.setId(EntetesTableSuiviDepenseEnum.VALEUR.name())
 			.setCaption(EntetesTableSuiviDepenseEnum.VALEUR.getLibelle())
 			.setWidth(TAILLE_COLONNE_VALEUR)
