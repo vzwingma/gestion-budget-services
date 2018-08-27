@@ -45,8 +45,6 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 	public void buttonClick(ClickEvent event) {
 		CreerDepenseForm form = (CreerDepenseForm)event.getButton().getParent().getParent().getParent().getParent();
 
-		form.getTextFieldValeur().setValue(form.getTextFieldValeur().getValue().replaceAll(",", "."));
-
 		LOGGER.debug("[IHM] Validation du formulaire de création");
 		Optional<TypeDepenseEnum> typeSelected = form.getComboboxType().getSelectedItem();
 		TypeDepenseEnum type = typeSelected.isPresent() ? typeSelected.get() : TypeDepenseEnum.DEPENSE;

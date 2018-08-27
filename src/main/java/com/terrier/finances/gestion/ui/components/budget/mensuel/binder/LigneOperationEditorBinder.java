@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.vaadin.data.Binder;
 import com.vaadin.ui.CheckBox;
@@ -79,12 +80,12 @@ public class LigneOperationEditorBinder extends Binder<LigneDepense> {
 		TextField tValeur = new TextField();
 		// Validation de la valeur
 		return this.forField(tValeur)
-				.withValidator(v -> v != null && v.length() > 0, "La valeur ne doit pas être nulle")
+				.withConverter(DataUtils::getValueFromString, String::valueOf)
+				.withValidator(v -> v != null, "La valeur ne doit pas être nulle ou incorrecte")
                 .withValidator(v -> {
-                	Double d =  Double.valueOf(v.replaceAll(",", "."));
-                    return (!Double.isInfinite(d) && !Double.isNaN(d));
+                    return (!Double.isInfinite(Double.valueOf(v)) && !Double.isNaN(Double.valueOf(v)));
                 }, "La valeur est incorrecte")
-				.bind(LigneDepense::getValeurAbsStringFromFloat, LigneDepense::setValeurAbsStringToFloat);
+				.bind(LigneDepense::getValeurAbsStringFromDouble, LigneDepense::setValeurAbsStringToDouble);
 	}
 
 

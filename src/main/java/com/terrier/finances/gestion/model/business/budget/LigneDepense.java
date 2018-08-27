@@ -11,6 +11,7 @@ import org.springframework.data.annotation.Transient;
 
 import com.terrier.finances.gestion.business.OperationsService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.ActionsLigneBudget;
@@ -39,7 +40,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	// Etat de la ligne
 	private EtatLigneDepenseEnum etat;
 	// Valeur
-	private float valeur;
+	private double valeur;
 	// Date operation
 	private Date dateOperation;
 	// Date mise à jour
@@ -75,7 +76,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		setSsCategorie(ssCategorie);
 		this.libelle = libelle;
 		this.typeDepense = typeDepense;
-		setValeurAbsStringToFloat(absValeur);
+		setValeurAbsStringToDouble(absValeur);
 		this.etat = etat;
 		this.dateOperation = Calendar.getInstance().getTime();
 		this.periodique = periodique;
@@ -98,7 +99,7 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 		ligneDepenseClonee.setEtat(EtatLigneDepenseEnum.PREVUE);
 		ligneDepenseClonee.setPeriodique(this.periodique);
 		ligneDepenseClonee.setTypeDepense(this.typeDepense);
-		ligneDepenseClonee.setValeurAbsStringToFloat(Float.toString(Math.abs(this.valeur)));
+		ligneDepenseClonee.setValeurAbsStringToDouble(Double.toString(Math.abs(this.valeur)));
 		ligneDepenseClonee.setDerniereOperation(false);
 		return ligneDepenseClonee;
 	}
@@ -171,17 +172,18 @@ public class LigneDepense implements Comparable<LigneDepense>, Serializable {
 	/**
 	 * @return the valeur
 	 */
-	public float getValeur() {
+	public double getValeur() {
 		return valeur;
 	}
 
-	public String getValeurAbsStringFromFloat() {
-		return Float.toString(Math.abs(valeur));
+	public String getValeurAbsStringFromDouble() {
+		return Double.toString(Math.abs(valeur));
 	}
 
-	public void setValeurAbsStringToFloat(String valeurS){
+	public void setValeurAbsStringToDouble(String valeurS){
+		valeurS = DataUtils.getValueFromString(valeurS);
 		if(valeurS != null){
-			this.valeur = Math.abs(Float.parseFloat(valeurS)) * (TypeDepenseEnum.DEPENSE.equals(this.getTypeDepense()) ? -1 : 1);
+			this.valeur = Math.abs(Double.parseDouble(valeurS)) * (TypeDepenseEnum.DEPENSE.equals(this.getTypeDepense()) ? -1 : 1);
 		}
 	}
 

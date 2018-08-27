@@ -28,7 +28,7 @@ public class OperationValidator implements Validator<LigneDepense> {
 
 		// Not Null
 		if(operation.getSsCategorie() == null
-				|| operation.getValeurAbsStringFromFloat() == null
+				|| operation.getValeurAbsStringFromDouble() == null
 				|| operation.getLibelle() == null
 				|| operation.getEtat() == null
 				|| operation.getTypeDepense() == null){
@@ -36,8 +36,7 @@ public class OperationValidator implements Validator<LigneDepense> {
 		}
 
 		// Valeur
-		Double d =  Double.valueOf(operation.getValeurAbsStringFromFloat().replaceAll(",", "."));
-		if(Double.isInfinite(d) || Double.isNaN(d)){
+		if(Double.isInfinite(operation.getValeur()) || Double.isNaN(operation.getValeur())){
 			return ValidationResult.error("La valeur est incorrecte");
 		}
 
