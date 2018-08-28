@@ -47,7 +47,7 @@ public class FacadeServices {
 	private AuthenticationService serviceAuth;
 
 	/**
-	 * @return l'instance du manager UI
+	 * @return l'instance de la façade des services
 	 */
 	public static FacadeServices get(){
 		return facadeServices;

@@ -12,9 +12,10 @@ import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.ui.controler.FacadeServices;
+import com.terrier.finances.gestion.business.ParametragesService;
 import com.vaadin.ui.UI;
 
 /**
@@ -35,9 +36,13 @@ public class UserSessionsManager implements Runnable {
 	private ScheduledThreadPoolExecutor pool;
 
 	private static UserSessionsManager sessionManager;
+	
+	@Autowired
+	private ParametragesService serviceParams;
 
 	/**
 	 * @return l'instance de sessions Manager
+	 * Ne doit être utilisé que pour VaadinUI !
 	 */
 	public static UserSessionsManager get(){
 		return UserSessionsManager.sessionManager;
@@ -72,25 +77,18 @@ public class UserSessionsManager implements Runnable {
 	 * @return l'instance du manager UI
 	 */
 	public UserSession getSession(){
-		String idSession = null;
-		if(UI.getCurrent() != null && UI.getCurrent().getSession() != null && UI.getCurrent().getSession().getCsrfToken() != null){
-			idSession = UI.getCurrent().getSession().getCsrfToken();
-		}
-		else{
-			LOGGER.warn("[TEST] ***** id session de test  ***** ");
-			idSession = "TEST";
-		}
+		String idSession = getUIIdSession();
+		// Création d'une nouvelle session si nécessaire
 		sessionsMap.putIfAbsent(idSession, new UserSession(idSession));
 		UserSession session = sessionsMap.get(idSession);
 		session.setLastAccessTime(Instant.now());
-
 		return session;
 	}
 
 	/**
-	 * Déconnexion de l'utilisateur
+	 * @return l'id de session Vaadin
 	 */
-	public void deconnexion(){
+	public String getUIIdSession(){
 		String idSession = null;
 		if(UI.getCurrent() != null && UI.getCurrent().getSession() != null && UI.getCurrent().getSession().getCsrfToken() != null){
 			idSession = UI.getCurrent().getSession().getCsrfToken();
@@ -99,6 +97,15 @@ public class UserSessionsManager implements Runnable {
 			LOGGER.warn("[TEST] ***** id session de test  ***** ");
 			idSession = "TEST";
 		}
+		return idSession;
+	}
+	
+	
+	/**
+	 * Déconnexion de l'utilisateur
+	 */
+	public void deconnexion(){
+		String idSession = getUIIdSession();
 		sessionsMap.get(idSession).deconnexion();
 		sessionsMap.remove(idSession);
 	}
@@ -116,7 +123,7 @@ public class UserSessionsManager implements Runnable {
 	 */
 	@Override
 	public void run() {
-		int sessionValidity = Integer.parseInt(FacadeServices.get().getServiceParams().getUiValiditySessionPeriod());
+		int sessionValidity = Integer.parseInt(this.serviceParams.getUiValiditySessionPeriod());
 		Instant validiteSession = Instant.now();
 		LOGGER.info("Durée de validité d'une session : {} minutes", sessionValidity);
 		validiteSession = validiteSession.minus(sessionValidity, ChronoUnit.MINUTES);

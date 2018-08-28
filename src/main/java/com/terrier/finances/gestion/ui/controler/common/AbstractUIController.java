@@ -2,10 +2,6 @@ package com.terrier.finances.gestion.ui.controler.common;
 
 import java.io.Serializable;
 
-import com.terrier.finances.gestion.business.AuthenticationService;
-import com.terrier.finances.gestion.business.OperationsService;
-import com.terrier.finances.gestion.business.ParametragesService;
-import com.terrier.finances.gestion.ui.controler.FacadeServices;
 import com.vaadin.ui.AbstractComponent;
 
 /**
@@ -49,26 +45,6 @@ public abstract class AbstractUIController<P extends AbstractComponent> implemen
 		miseAJourVueDonnees();
 	}
 	
-	/**
-	 * @return service métier dépense
-	 */
-	public OperationsService getServiceOperations(){
-		return FacadeServices.get().getServiceOperations();
-	}
-	
-	/**
-	 * @return service paramétrage
-	 */
-	public ParametragesService getServiceParams(){
-		return FacadeServices.get().getServiceParams();
-	}
-	
-	/**
-	 * @return service auth
-	 */
-	public AuthenticationService getServiceAuthentification(){
-		return FacadeServices.get().getServiceAuth();
-	}
 	/**
 	 * Register le controleur sur la session IHM
 	 */

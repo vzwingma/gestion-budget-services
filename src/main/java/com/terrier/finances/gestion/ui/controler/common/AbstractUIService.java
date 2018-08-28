@@ -3,14 +3,18 @@
  */
 package com.terrier.finances.gestion.ui.controler.common;
 
+import com.terrier.finances.gestion.business.AuthenticationService;
+import com.terrier.finances.gestion.business.OperationsService;
+import com.terrier.finances.gestion.business.ParametragesService;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
+import com.terrier.finances.gestion.ui.controler.FacadeServices;
 import com.terrier.finances.gestion.ui.sessions.UserSession;
 import com.terrier.finances.gestion.ui.sessions.UserSessionsManager;
 import com.vaadin.ui.Window;
 
 /**
- * Méthodes génériques à tous les composants UI
+ * Méthodes génériques à tous les controleurs UI
  * @author vzwingma
  *
  */
@@ -57,5 +61,27 @@ public interface AbstractUIService  {
 	 */
 	public default String getIdSession(){
 		return getUserSession().getIdSession();
+	}
+	
+
+	/**
+	 * @return service métier dépense
+	 */
+	public default OperationsService getServiceOperations(){
+		return FacadeServices.get().getServiceOperations();
+	}
+	
+	/**
+	 * @return service paramétrage
+	 */
+	public default ParametragesService getServiceParams(){
+		return FacadeServices.get().getServiceParams();
+	}
+	
+	/**
+	 * @return service auth
+	 */
+	public default AuthenticationService getServiceAuthentification(){
+		return FacadeServices.get().getServiceAuth();
 	}
 }
