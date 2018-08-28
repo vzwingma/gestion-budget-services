@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.finances.gestion.business.auth.PasswordEncoder;
+import com.terrier.finances.gestion.utilisateurs.business.PasswordEncoder;
 
 /**
  * @author vzwingma

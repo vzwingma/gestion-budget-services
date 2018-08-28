@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.business.auth;
+package com.terrier.finances.gestion.utilisateurs.business;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;

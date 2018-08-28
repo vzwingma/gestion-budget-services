@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.parametrages.data.ParametragesDatabaseService;
+import com.terrier.finances.gestion.utilisateurs.data.UtilisateurDatabaseService;
 
 /**
  * Service fournissant les paramètres

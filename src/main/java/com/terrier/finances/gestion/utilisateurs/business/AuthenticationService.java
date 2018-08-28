@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.business;
+package com.terrier.finances.gestion.utilisateurs.business;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -11,10 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.business.auth.PasswordEncoder;
-import com.terrier.finances.gestion.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.utilisateurs.data.UtilisateurDatabaseService;
 
 /**
  * Service d'authentification

@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.data;
+package com.terrier.finances.gestion.utilisateurs.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import com.terrier.finances.gestion.data.AbstractDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;

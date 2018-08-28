@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.business.auth;
+package com.terrier.finances.gestion.utilisateurs.business;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
-import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 
 /**

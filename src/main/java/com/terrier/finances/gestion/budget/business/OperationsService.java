@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.budget.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.business.AuthenticationService;
-import com.terrier.finances.gestion.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
@@ -29,6 +27,8 @@ import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.parametrages.business.ParametragesService;
+import com.terrier.finances.gestion.utilisateurs.business.AuthenticationService;
+import com.terrier.finances.gestion.utilisateurs.data.UtilisateurDatabaseService;
 
 /**
  * Service Métier : Operations
