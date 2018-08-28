@@ -17,12 +17,7 @@ import com.terrier.finances.gestion.model.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.ui.components.budget.mensuel.components.CreerDepenseForm;
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.ActionValiderCreationDepenseClickListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionCategorieValueChangeListener;
-import com.terrier.finances.gestion.ui.listener.budget.mensuel.creation.SelectionSousCategorieValueChangeListener;
-import com.terrier.finances.gestion.ui.styles.comptes.ComptesItemCaptionStyle;
 import com.vaadin.data.ValidationResult;
-import com.vaadin.ui.ComboBox.NewItemProvider;
 import com.vaadin.ui.Notification;
 
 /**
@@ -30,7 +25,7 @@ import com.vaadin.ui.Notification;
  * @author vzwingma
  *
  */
-public class CreerDepenseController extends AbstractUIController<CreerDepenseForm> implements NewItemProvider<String> {
+public class CreerDepenseController extends AbstractUIController<CreerDepenseForm> {
 
 
 	// 
@@ -92,9 +87,8 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 
 	/**
 	 * Complétion des éléments du formulaire
-	 * @see com.terrier.finances.gestion.ui.controler.AbstractUIController#miseAJourVueDonnees()
+	 * @see com.terrier.finances.gestion.ui.controler.common.AbstractUIController#miseAJourVueDonnees()
 	 */
-
 	@Override
 	public void miseAJourVueDonnees() {
 
@@ -103,19 +97,13 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		getComponent().getComboBoxCategorie().clear();
 		getComponent().getComboBoxCategorie().setSelectedItem(null);
 		getComponent().getComboBoxCategorie().setItems(getServiceParams().getCategories().stream().sorted((c1, c2) -> c1.getLibelle().compareTo(c2.getLibelle())));
-		getComponent().getComboBoxCategorie().setEmptySelectionAllowed(false);
-		getComponent().getComboBoxCategorie().setTextInputAllowed(false);
 		getComponent().getComboBoxCategorie().setEnabled(true);
-		getComponent().getComboBoxCategorie().addSelectionListener(new SelectionCategorieValueChangeListener(this));
 
 		
 		// Sélection d'une sous catégorie
 		getComponent().getComboBoxSsCategorie().clear();
 		getComponent().getComboBoxSsCategorie().setSelectedItem(null);
-		getComponent().getComboBoxSsCategorie().setEmptySelectionAllowed(false);
-		getComponent().getComboBoxSsCategorie().setTextInputAllowed(false);
 		getComponent().getComboBoxSsCategorie().setEnabled(false);
-		getComponent().getComboBoxSsCategorie().addSelectionListener(new SelectionSousCategorieValueChangeListener(this));
 		
 		
 		// Comptes pour virement intercomptes
@@ -131,7 +119,6 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 			Notification.show("Erreur grave : Impossible de charger les données", Notification.Type.ERROR_MESSAGE);
 			return;
 		}
-		getComponent().getComboboxComptes().setItemCaptionGenerator(new ComptesItemCaptionStyle());
 		getComponent().getComboboxComptes().setTextInputAllowed(false);
 		getComponent().getComboboxComptes().setVisible(false);
 		getComponent().getLayoutCompte().setVisible(false);
@@ -161,29 +148,9 @@ public class CreerDepenseController extends AbstractUIController<CreerDepenseFor
 		// Périodique
 		getComponent().getCheckBoxPeriodique().setCaption(null);
 		getComponent().getCheckBoxPeriodique().setValue(Boolean.FALSE);
-		getComponent().getCheckBoxPeriodique().setDescription("Cocher pour une dépense mensuelle");
 		getComponent().getCheckBoxPeriodique().clear();
 		// Description
 		getComponent().getTextFieldDescription().setItems(getBudgetMensuelCourant().getSetLibellesDepensesForAutocomplete());
-		getComponent().getTextFieldDescription().setNewItemProvider(this);
 		getComponent().getTextFieldDescription().clear();
-		// Bouton
-		getComponent().getButtonValider().addClickListener(new ActionValiderCreationDepenseClickListener());
-		getComponent().getButtonValider().setDescription("Valider l'opération et fermer l'écran de saisie");
-		getComponent().getButtonValiderContinuer().addClickListener(new ActionValiderCreationDepenseClickListener());
-		getComponent().getButtonValiderContinuer().setDescription("Valider l'opération et Créer une nouvelle opération");	
 	}
-
-
-
-	/* (non-Javadoc)
-	 * @see java.util.function.Function#apply(java.lang.Object)
-	 */
-	@Override
-	public Optional<String> apply(String t) {
-		LOGGER.debug("Ajout de la description : {}", t);
-		getComponent().getTextFieldDescription().setSelectedItem(t);
-		return Optional.of(t);
-	}
-
 }
