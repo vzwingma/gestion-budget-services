@@ -21,7 +21,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
-import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
@@ -29,6 +28,7 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense;
+import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
 
 /**
  * @author PVZN02821

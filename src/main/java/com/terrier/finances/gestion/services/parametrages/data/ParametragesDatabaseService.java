@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.data;
+package com.terrier.finances.gestion.services.parametrages.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import com.terrier.finances.gestion.data.AbstractDatabaseService;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 
 /**
