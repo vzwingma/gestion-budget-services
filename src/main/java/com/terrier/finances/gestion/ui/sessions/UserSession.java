@@ -21,15 +21,15 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
 /**
- * Gestionnaire des UI par Session utilisateur
+ * Session Utilisateur
  * @author vzwingma
  *
  */
-public class UISession {
+public class UserSession {
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UISession.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserSession.class);
 
 	private String idSession;
 
@@ -39,7 +39,7 @@ public class UISession {
 	 * Session Manager
 	 * @param idSession idSessions
 	 */
-	public UISession(String idSession){
+	public UserSession(String idSession){
 		LOGGER.trace("[INIT][{}] Session UI ", idSession);
 		this.idSession = idSession;
 		this.lastAccessTime = Instant.now();

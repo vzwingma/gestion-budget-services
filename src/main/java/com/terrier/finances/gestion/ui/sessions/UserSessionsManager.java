@@ -23,24 +23,24 @@ import com.vaadin.ui.UI;
  *
  */
 @Service
-public class UISessionManager implements Runnable {
+public class UserSessionsManager implements Runnable {
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UISessionManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserSessionsManager.class);
 
 	// Gestionnaire des composants UI
-	private ConcurrentHashMap<String, UISession> sessionsMap = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, UserSession> sessionsMap = new ConcurrentHashMap<>();
 
 	private ScheduledThreadPoolExecutor pool;
 
-	private static UISessionManager sessionManager;
+	private static UserSessionsManager sessionManager;
 
 	/**
 	 * @return l'instance de sessions Manager
 	 */
-	public static UISessionManager get(){
-		return UISessionManager.sessionManager;
+	public static UserSessionsManager get(){
+		return UserSessionsManager.sessionManager;
 	}
 	/**
 	 * Démarrage du controle des sessions
@@ -56,8 +56,8 @@ public class UISessionManager implements Runnable {
 	 * Update du session manager
 	 * @param manager UISessionManager
 	 */
-	private static synchronized void setSessionManager(UISessionManager manager){
-		UISessionManager.sessionManager = manager;
+	private static synchronized void setSessionManager(UserSessionsManager manager){
+		UserSessionsManager.sessionManager = manager;
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class UISessionManager implements Runnable {
 	/**
 	 * @return l'instance du manager UI
 	 */
-	public UISession getSession(){
+	public UserSession getSession(){
 		String idSession = null;
 		if(UI.getCurrent() != null && UI.getCurrent().getSession() != null && UI.getCurrent().getSession().getCsrfToken() != null){
 			idSession = UI.getCurrent().getSession().getCsrfToken();
@@ -80,8 +80,8 @@ public class UISessionManager implements Runnable {
 			LOGGER.warn("[TEST] ***** id session de test  ***** ");
 			idSession = "TEST";
 		}
-		sessionsMap.putIfAbsent(idSession, new UISession(idSession));
-		UISession session = sessionsMap.get(idSession);
+		sessionsMap.putIfAbsent(idSession, new UserSession(idSession));
+		UserSession session = sessionsMap.get(idSession);
 		session.setLastAccessTime(Instant.now());
 
 		return session;
@@ -120,8 +120,8 @@ public class UISessionManager implements Runnable {
 		Instant validiteSession = Instant.now();
 		LOGGER.info("Durée de validité d'une session : {} minutes", sessionValidity);
 		validiteSession = validiteSession.minus(sessionValidity, ChronoUnit.MINUTES);
-		for (Iterator<UISession> iterator = sessionsMap.values().iterator(); iterator.hasNext();) {
-			UISession session = iterator.next();
+		for (Iterator<UserSession> iterator = sessionsMap.values().iterator(); iterator.hasNext();) {
+			UserSession session = iterator.next();
 			if(session.getLastAccessTime().isBefore(validiteSession)){
 				LOGGER.warn("La session {} n'a pas été utilisé depuis {}. Déconnexion automatique", session.getIdSession(), validiteSession);
 				iterator.remove();

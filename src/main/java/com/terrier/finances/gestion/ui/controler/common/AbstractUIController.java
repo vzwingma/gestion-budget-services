@@ -73,7 +73,7 @@ public abstract class AbstractUIController<P extends AbstractComponent> implemen
 	 * Register le controleur sur la session IHM
 	 */
 	private void registerControlerToUIComponentManager(){
-		getUISession().registerUIControler(this);
+		getUserSession().registerUIControler(this);
 	}
 	
 	/**

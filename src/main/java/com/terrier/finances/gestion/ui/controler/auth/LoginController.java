@@ -81,11 +81,11 @@ public class LoginController extends AbstractUIController<Login>{
 		Utilisateur utilisateur = getServiceAuthentification().authenticate(
 				login, passwordEnClair);
 		if(utilisateur != null){
-			getUISession().registerUtilisateur(utilisateur);
+			getUserSession().registerUtilisateur(utilisateur);
 			LOGGER.info("Accès autorisé pour {}", login);
 			// MAJ
-			getUISession().getMainLayout().removeAllComponents();
-			getUISession().getMainLayout().addComponent(new BudgetMensuelPage());
+			getUserSession().getMainLayout().removeAllComponents();
+			getUserSession().getMainLayout().addComponent(new BudgetMensuelPage());
 
 		}
 		else{

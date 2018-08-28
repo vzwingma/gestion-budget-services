@@ -37,7 +37,7 @@ public class ChangePageListener extends AbstractComponentListener implements Cli
 	 */
 	@Override
 	public void buttonClick(ClickEvent event) {
-		Layout mainLayout = getUISession().getMainLayout();
+		Layout mainLayout = getUserSession().getMainLayout();
 		
 		mainLayout.removeAllComponents();
 		if(this.pageDestination.equals(StatistiquesPage.class)){

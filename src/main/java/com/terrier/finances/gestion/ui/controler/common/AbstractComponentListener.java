@@ -21,7 +21,7 @@ public abstract class AbstractComponentListener implements AbstractUIService {
 	 * @return controleur correspondant
 	 */
 	public <C extends AbstractUIController<? extends CustomComponent>> C getControleur(Class<C> classNameControleur) {
-		return getUISession().getControleur(classNameControleur);
+		return getUserSession().getControleur(classNameControleur);
 	}
 	
 	
@@ -31,6 +31,6 @@ public abstract class AbstractComponentListener implements AbstractUIService {
 	 */
 	@Override
 	public void setPopupModale(Window popupModale){
-		getUISession().setPopupModale(popupModale);
+		getUserSession().setPopupModale(popupModale);
 	}
 }
