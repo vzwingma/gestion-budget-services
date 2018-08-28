@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
@@ -16,8 +18,8 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.budget.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.budget.model.transformer.DataTransformerLigneDepense;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
-import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.DataUtils;
@@ -26,6 +28,7 @@ import com.terrier.finances.gestion.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.operations.model.LigneOperation;
 import com.terrier.finances.gestion.parametrages.business.ParametragesService;
 import com.terrier.finances.gestion.utilisateurs.business.AuthenticationService;
 import com.terrier.finances.gestion.utilisateurs.data.UtilisateurDatabaseService;
@@ -59,6 +62,8 @@ public class OperationsService {
 	@Autowired
 	private AuthenticationService serviceAuth;
 
+	private DataTransformerLigneDepense transformer = new DataTransformerLigneDepense();
+	
 
 	public static final String ID_SS_CAT_TRANSFERT_INTERCOMPTE = "ed3f6100-5dbd-4b68-860e-0c97ae1bbc63";
 
@@ -274,7 +279,7 @@ public class OperationsService {
 			budget.setNowArgentAvance(0D);
 			budget.setNowCompteReel(0D);
 			budget.setResultatMoisPrecedent(0D);
-			budget.setListeDepenses(new ArrayList<LigneDepense>());
+			budget.setListeOperations(new ArrayList<LigneOperation>());
 			budget.setMargeSecurite(0D);
 			budget.setMargeSecuriteFinMois(0D);
 		}
@@ -322,9 +327,9 @@ public class OperationsService {
 			budget.setMargeSecurite(budgetPrecedent.getMargeSecurite());
 			budget.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
 			budget.setDateMiseAJour(Calendar.getInstance());
-			for (LigneDepense depenseMoisPrecedent : budgetPrecedent.getListeDepenses()) {
+			for (LigneOperation depenseMoisPrecedent : budgetPrecedent.getListeOperations()) {
 				if(depenseMoisPrecedent.isPeriodique() || depenseMoisPrecedent.getEtat().equals(EtatLigneOperationEnum.REPORTEE)){
-					budget.getListeDepenses().add(depenseMoisPrecedent.cloneDepenseToMoisSuivant());	
+					budget.getListeOperations().add(transformer.cloneDepenseToMoisSuivant(depenseMoisPrecedent));	
 				}
 
 			}
@@ -337,14 +342,14 @@ public class OperationsService {
 
 	/**
 	 * Ajout d'une ligne transfert intercompte
-	 * @param ligneDepense ligne de dépense de transfert
+	 * @param ligneOperation ligne de dépense de transfert
 	 * @param compteCrediteur compte créditeur
 	 * @param auteur auteur de l'action
 	 * @throws BudgetNotFoundException erreur budget introuvable
 	 * @throws DataNotFoundException erreur données
 	 * @throws CompteClosedException 
 	 */
-	public BudgetMensuel ajoutLigneTransfertIntercompte(String idBudget, LigneDepense ligneDepense, CompteBancaire compteCrediteur, Utilisateur utilisateur) throws BudgetNotFoundException, DataNotFoundException, CompteClosedException{
+	public BudgetMensuel ajoutLigneTransfertIntercompte(String idBudget, LigneOperation ligneOperation, CompteBancaire compteCrediteur, Utilisateur utilisateur) throws BudgetNotFoundException, DataNotFoundException, CompteClosedException{
 
 		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, this.serviceAuth.getEncryptor(utilisateur));
 		/**
@@ -352,10 +357,10 @@ public class OperationsService {
 		 */
 		BudgetMensuel budgetTransfert = chargerBudgetMensuel(utilisateur, compteCrediteur, budget.getMois(), budget.getAnnee());
 		if(budget.getCompteBancaire().isActif() && budgetTransfert.getCompteBancaire().isActif() && budget.isActif() && budgetTransfert.isActif()){
-			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneDepense);
+			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneOperation);
 
 			// #59 : Cohérence des états
-			EtatLigneOperationEnum etatDepenseCourant = ligneDepense.getEtat();
+			EtatLigneOperationEnum etatDepenseCourant = ligneOperation.getEtat();
 			EtatLigneOperationEnum etatDepenseTransfert = null;
 			switch (etatDepenseCourant) {
 			case ANNULEE:
@@ -371,13 +376,13 @@ public class OperationsService {
 				break;
 			}
 
-			LigneDepense ligneTransfert = new LigneDepense(
-					ligneDepense.getSsCategorie(), 
-					"[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle(), 
+			LigneOperation ligneTransfert = new LigneOperation(
+					ligneOperation.getSsCategorie(), 
+					"[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneOperation.getLibelle(), 
 					TypeOperationEnum.CREDIT, 
-					Double.toString(Math.abs(ligneDepense.getValeur())), 
+					Double.toString(Math.abs(ligneOperation.getValeur())), 
 					etatDepenseTransfert, 
-					ligneDepense.isPeriodique(), 
+					ligneOperation.isPeriodique(), 
 					budgetTransfert.isActif());
 
 			ajoutOperation(budgetTransfert, ligneTransfert, utilisateur.getLibelle());
@@ -385,8 +390,8 @@ public class OperationsService {
 			/**
 			 *  Ajout de la ligne dans le budget courant
 			 */
-			ligneDepense.setLibelle("[vers "+budgetTransfert.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle());
-			return ajoutOperationEtCalcul(idBudget, ligneDepense, utilisateur);
+			ligneOperation.setLibelle("[vers "+budgetTransfert.getCompteBancaire().getLibelle()+"] " + ligneOperation.getLibelle());
+			return ajoutOperationEtCalcul(idBudget, ligneOperation, utilisateur);
 		}
 		else{
 			throw new CompteClosedException(new StringBuilder("Impossible d'ajouter une opération de transfert intercompte : L'un des deux comptes est cloturé"));
@@ -400,11 +405,11 @@ public class OperationsService {
 	 * @param ligneOperation ligne de dépense
 	 * @param auteur auteur de l'action
 	 */
-	private void ajoutOperation(BudgetMensuel budget, LigneDepense ligneOperation, String auteur){
+	private void ajoutOperation(BudgetMensuel budget, LigneOperation ligneOperation, String auteur){
 		LOGGER.info("Ajout d'une Opération : {}", ligneOperation);
 		ligneOperation.setAuteur(auteur);
 		ligneOperation.setDateMaj(Calendar.getInstance().getTime());
-		budget.getListeDepenses().add(ligneOperation);
+		budget.getListeOperations().add(ligneOperation);
 		budget.setDateMiseAJour(Calendar.getInstance());
 	}
 
@@ -415,7 +420,7 @@ public class OperationsService {
 	 * @param auteur auteur de l'action 
 	 * @throws BudgetNotFoundException 
 	 */
-	public BudgetMensuel ajoutOperationEtCalcul(String idBudget, LigneDepense ligneOperation, Utilisateur auteur) throws BudgetNotFoundException{
+	public BudgetMensuel ajoutOperationEtCalcul(String idBudget, LigneOperation ligneOperation, Utilisateur auteur) throws BudgetNotFoundException{
 		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, this.serviceAuth.getEncryptor(auteur));
 		if(budget.isActif() && budget.getCompteBancaire().isActif()){
 			ajoutOperation(budget, ligneOperation, auteur.getLibelle());
@@ -432,16 +437,17 @@ public class OperationsService {
 	 * @param ligneId
 	 * @return {@link LigneDepense} correspondance
 	 */
-	private LigneDepense getLigneDepense(BudgetMensuel budget, String ligneId){
+	private LigneOperation getLigneOperation(BudgetMensuel budget, UUID ligneId){
 		// Recherche de la ligne
-		LigneDepense ligneDepense = null;
-		for (LigneDepense ligne : budget.getListeDepenses()) {
-			if(ligne.getId().equals(ligneId)){
-				ligneDepense = ligne;
-				break;
-			}
+		Optional<LigneOperation> ligneDepense = 
+				budget.getListeOperations()
+				.parallelStream()
+				.filter(ligne -> ligne.getId().equals(ligneId))
+				.findFirst();
+		if(ligneDepense.isPresent()){
+			return ligneDepense.get();
 		}
-		return ligneDepense;
+		return null;
 	}
 
 	/**
@@ -452,15 +458,15 @@ public class OperationsService {
 	 * @throws DataNotFoundException
 	 * @throws BudgetNotFoundException
 	 */
-	public BudgetMensuel majLigneDepense(String idBudget, LigneDepense ligneDepense, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
+	public BudgetMensuel majLigneDepense(String idBudget, LigneOperation ligneDepense, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
 
 		boolean ligneupdated = false;
 		if(ligneDepense != null){
 			BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, this.serviceAuth.getEncryptor(auteur));
 			if(ligneDepense.getEtat() == null){
-				for (Iterator<LigneDepense> iterator = budget.getListeDepenses().iterator(); iterator
+				for (Iterator<LigneOperation> iterator = budget.getListeOperations().iterator(); iterator
 						.hasNext();) {
-					LigneDepense type = iterator.next();
+					LigneOperation type = iterator.next();
 					if(type.getId().equals(ligneDepense.getId())){
 						iterator.remove();
 						ligneupdated = true;
@@ -471,9 +477,9 @@ public class OperationsService {
 				ligneDepense.setDateMaj(Calendar.getInstance().getTime());
 				ligneDepense.setAuteur(auteur.getLibelle());
 				// Mise à jour de la ligne de dépense
-				for (int i = 0; i < budget.getListeDepenses().size(); i++) {
-					if(budget.getListeDepenses().get(i).getId().equals(ligneDepense.getId())){
-						budget.getListeDepenses().set(i, ligneDepense);
+				for (int i = 0; i < budget.getListeOperations().size(); i++) {
+					if(budget.getListeOperations().get(i).getId().equals(ligneDepense.getId())){
+						budget.getListeOperations().set(i, ligneDepense);
 						ligneupdated = true;
 						break;
 					}
@@ -505,21 +511,21 @@ public class OperationsService {
 	 * @throws DataNotFoundException erreur ligne non trouvé
 	 * @throws BudgetNotFoundException not found
 	 */
-	public BudgetMensuel majEtatLigneDepense(BudgetMensuel budget, String ligneId, EtatLigneOperationEnum etat, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
-		LigneDepense ligneDepense = getLigneDepense(budget, ligneId);
+	public BudgetMensuel majEtatLigneOperation(BudgetMensuel budget, UUID ligneId, EtatLigneOperationEnum etat, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
+		LigneOperation ligneOperation = getLigneOperation(budget, ligneId);
 		// Mise à jour de l'état
-		if(ligneDepense != null){
-			ligneDepense.setEtat(etat);
+		if(ligneOperation != null){
+			ligneOperation.setEtat(etat);
 			if(EtatLigneOperationEnum.REALISEE.equals(etat)){
-				ligneDepense.setDateOperation(Calendar.getInstance().getTime());
+				ligneOperation.setDateOperation(Calendar.getInstance().getTime());
 			}
 			else{
-				ligneDepense.setDateOperation(null);
+				ligneOperation.setDateOperation(null);
 			}
 			// Mise à jour de la ligne
-			ligneDepense.setDateMaj(Calendar.getInstance().getTime());
-			ligneDepense.setAuteur(auteur.getLibelle());
-			budget = majLigneDepense(budget.getId(), ligneDepense, auteur);
+			ligneOperation.setDateMaj(Calendar.getInstance().getTime());
+			ligneOperation.setAuteur(auteur.getLibelle());
+			budget = majLigneDepense(budget.getId(), ligneOperation, auteur);
 		}
 		return budget;
 	}	
@@ -530,7 +536,7 @@ public class OperationsService {
 	 * @param ligneId
 	 */
 	public void setLigneDepenseAsDerniereOperation(BudgetMensuel budget, String ligneId, Utilisateur utilisateur){
-		for (LigneDepense ligne : budget.getListeDepenses()) {
+		for (LigneOperation ligne : budget.getListeOperations()) {
 			if(ligne.getId().equals(ligneId)){
 				LOGGER.info("Tag de la ligne {} comme dernière opération", ligne);
 				ligne.setDerniereOperation(true);
@@ -563,49 +569,47 @@ public class OperationsService {
 		LOGGER.info("(Re)Calcul du budget : {}", budget);
 		budget.razCalculs();
 
-		for (LigneDepense depense : budget.getListeDepenses()) {
-			LOGGER.trace("     > {}", depense);
-			Double depenseVal = depense.getValeur();
-			budget.getSetLibellesDepensesForAutocomplete().add(depense.getLibelle());
+		for (LigneOperation operation : budget.getListeOperations()) {
+			LOGGER.trace("     > {}", operation);
+			Double depenseVal = operation.getValeur();
+			budget.getSetLibellesDepensesForAutocomplete().add(operation.getLibelle());
 			/**
 			 *  Calcul par catégorie
 			 */
 			Double[] valeursCat = {0D,0D};
-			if(budget.getTotalParCategories().get(depense.getCategorie()) != null){
-				valeursCat = budget.getTotalParCategories().get(depense.getCategorie());
+			if(budget.getTotalParCategories().get(operation.getCategorie()) != null){
+				valeursCat = budget.getTotalParCategories().get(operation.getCategorie());
 			}
-			if(depense.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
+			if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
 				valeursCat[0] = valeursCat[0] + depenseVal;
 				valeursCat[1] = valeursCat[1] + depenseVal;
 			}
-			else if(depense.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
+			else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
 				valeursCat[1] = valeursCat[1] + depenseVal;
 			}
-			budget.getTotalParCategories().put(depense.getCategorie(), valeursCat);
+			budget.getTotalParCategories().put(operation.getCategorie(), valeursCat);
 
 			/**
 			 *  Calcul par sous catégorie
 			 */
 			Double[] valeurSsCat = {0D,0D};
-			if( budget.getTotalParSSCategories().get(depense.getSsCategorie()) != null){
-				valeurSsCat = budget.getTotalParSSCategories().get(depense.getSsCategorie());
+			if( budget.getTotalParSSCategories().get(operation.getSsCategorie()) != null){
+				valeurSsCat = budget.getTotalParSSCategories().get(operation.getSsCategorie());
 			}
-			if(depense.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
+			if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
 				valeurSsCat[0] = valeurSsCat[0] + depenseVal;
 				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
 			}
-			if(depense.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
+			if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
 				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
 			}
-			budget.getTotalParSSCategories().put(depense.getSsCategorie(), valeurSsCat);
-
-
+			budget.getTotalParSSCategories().put(operation.getSsCategorie(), valeurSsCat);
 
 			// Si réserve : ajout dans le calcul fin de mois
 			// Pour taper dans la réserve : inverser le type de dépense
 			int sens = 1;
-			if(ID_SS_CAT_RESERVE.equals(depense.getSsCategorie().getId())){
-				budget.setMargeSecuriteFinMois(budget.getMargeSecurite() + Double.valueOf(depense.getValeur()));
+			if(ID_SS_CAT_RESERVE.equals(operation.getSsCategorie().getId())){
+				budget.setMargeSecuriteFinMois(budget.getMargeSecurite() + Double.valueOf(operation.getValeur()));
 				sens = -1;
 			}
 
@@ -613,13 +617,13 @@ public class OperationsService {
 			 * Calcul des totaux
 			 */
 
-			if(depense.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
+			if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
 				budget.ajouteANowArgentAvance(sens * depenseVal);
 				budget.ajouteANowCompteReel(sens * depenseVal);
 				budget.ajouteAFinArgentAvance(sens * depenseVal);
 				budget.ajouteAFinCompteReel(sens * depenseVal);				
 			}
-			else if(depense.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
+			else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
 				budget.ajouteAFinArgentAvance(sens * depenseVal);
 				budget.ajouteAFinCompteReel(sens * depenseVal);
 			}

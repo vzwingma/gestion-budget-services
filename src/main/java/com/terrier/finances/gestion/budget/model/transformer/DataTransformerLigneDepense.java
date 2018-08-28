@@ -44,7 +44,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation
 	public LigneOperation transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
 		
 		LigneOperation bo = new LigneOperation(true);
-		bo.setUUID(UUID.fromString(dto.getId()));
+		bo.setId(dto.getId());
 		if(dto.getAuteur() !=null){
 			bo.setAuteur(decryptor.decrypt(dto.getAuteur()));
 		}
@@ -76,7 +76,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation
 		dto.setDateOperation(bo.getDateOperation());
 		dto.setDerniereOperation(bo.isDerniereOperation());
 		dto.setEtat(encryptor.encrypt(bo.getEtat().name()));
-		dto.setId(bo.getUUId().toString());
+		dto.setId(bo.getId());
 		dto.setIdCategorie(bo.getCategorie() != null ? encryptor.encrypt(bo.getCategorie().getId()) : null);
 		dto.setIdSSCategorie(bo.getSsCategorie() != null ? encryptor.encrypt(bo.getSsCategorie().getId()) : null);
 		dto.setLibelle(encryptor.encrypt(bo.getLibelle()));
@@ -127,7 +127,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation
 	 */
 	public LigneOperation cloneDepenseToMoisSuivant(LigneOperation ligneOperation) {
 		LigneOperation ligneOperationClonee = new LigneOperation(ligneOperation.isBudgetActif());
-		ligneOperationClonee.setUUID(UUID.randomUUID());
+		ligneOperationClonee.setId(UUID.randomUUID().toString());
 		ligneOperationClonee.setLibelle(ligneOperation.getLibelle());
 		ligneOperationClonee.setSsCategorie(ligneOperation.getSsCategorie());
 		ligneOperationClonee.setDateMaj(Calendar.getInstance().getTime());
