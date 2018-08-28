@@ -437,7 +437,7 @@ public class OperationsService {
 	 * @param ligneId
 	 * @return {@link LigneDepense} correspondance
 	 */
-	private LigneOperation getLigneOperation(BudgetMensuel budget, UUID ligneId){
+	private LigneOperation getLigneOperation(BudgetMensuel budget, String ligneId){
 		// Recherche de la ligne
 		Optional<LigneOperation> ligneDepense = 
 				budget.getListeOperations()
@@ -511,7 +511,7 @@ public class OperationsService {
 	 * @throws DataNotFoundException erreur ligne non trouvé
 	 * @throws BudgetNotFoundException not found
 	 */
-	public BudgetMensuel majEtatLigneOperation(BudgetMensuel budget, UUID ligneId, EtatLigneOperationEnum etat, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
+	public BudgetMensuel majEtatLigneOperation(BudgetMensuel budget, String ligneId, EtatLigneOperationEnum etat, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
 		LigneOperation ligneOperation = getLigneOperation(budget, ligneId);
 		// Mise à jour de l'état
 		if(ligneOperation != null){
