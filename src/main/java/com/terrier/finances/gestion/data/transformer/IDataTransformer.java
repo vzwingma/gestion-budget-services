@@ -2,13 +2,12 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.model;
+package com.terrier.finances.gestion.data.transformer;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
-import com.terrier.finances.gestion.ui.sessions.UserSessionsManager;
 
 
 /**
@@ -28,13 +27,9 @@ public abstract class IDataTransformer<B, D> {
 		if(this.encryptor == null){
 			if(SecurityContextHolder.getContext().getAuthentication() != null){
 				this.encryptor = ((Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEncryptor();	
-
-
-
-
 			}
 			else{
-				this.encryptor =  UserSessionsManager.get().getSession().getUtilisateurCourant().getEncryptor();
+		//		this.encryptor =  UserSessionsManager.get().getSession().getUtilisateurCourant().getEncryptor();
 			}
 		}
 		return this.encryptor;
