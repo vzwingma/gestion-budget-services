@@ -1,3 +1,4 @@
+
 /**
  * 
  */
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
+import com.terrier.finances.gestion.model.IDataTransformer;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
@@ -55,13 +57,13 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		bo.setLibelle(decryptor.decrypt(dto.getLibelle()));
 		bo.setPeriodique(dto.isPeriodique());
 		bo.setTypeDepense(TypeDepenseEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
-		
-		Float depenseVal =  Math.abs(Float.valueOf(decryptor.decrypt(dto.getValeur())));
-		if(bo.getTypeDepense().equals(TypeDepenseEnum.DEPENSE)){
-				depenseVal = -depenseVal;
-		}
-		
-		bo.setValeur(depenseVal);
+
+		bo.setValeurAbsStringToDouble(decryptor.decrypt(dto.getValeur()));
+
+
+
+
+
 		LOGGER.trace("	[{}] \n > Transformation en BO > [{}]", dto, bo);
 		return bo;
 	}
@@ -89,7 +91,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		dto.setPeriodique(bo.isPeriodique());
 		dto.setTypeDepense(encryptor.encrypt(bo.getTypeDepense().name()));
 		
-		Float depenseVal =  Math.abs(bo.getValeur());
+		Double depenseVal =  Math.abs(bo.getValeur());
 		if(bo.getTypeDepense().equals(TypeDepenseEnum.DEPENSE)){
 				depenseVal = -depenseVal;
 		}

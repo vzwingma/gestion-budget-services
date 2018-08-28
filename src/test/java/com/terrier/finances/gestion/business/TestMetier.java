@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import org.junit.Ignore;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.terrier.finances.gestion.data.DepensesDatabaseService;
 import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
+import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,7 +44,7 @@ public class TestMetier {
 
 	@Test
 	public void testDate(){
-		SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm:ss", Locale.FRENCH);
+		SimpleDateFormat sdf = new SimpleDateFormat(DataUtils.DATE_FULL_TEXT_PATTERN, Locale.FRENCH);
 		LOGGER.info(sdf.format(Calendar.getInstance().getTime()));
 	}
 

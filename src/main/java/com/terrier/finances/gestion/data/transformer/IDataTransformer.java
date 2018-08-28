@@ -1,9 +1,14 @@
+
 /**
  * 
  */
-package com.terrier.finances.gestion.data.transformer;
+package com.terrier.finances.gestion.model;
 
 import org.jasypt.util.text.BasicTextEncryptor;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
+import com.terrier.finances.gestion.ui.sessions.UserSessionsManager;
 
 
 /**
@@ -21,16 +26,20 @@ public abstract class IDataTransformer<B, D> {
 	 */
 	public BasicTextEncryptor getEncryptor(){
 		if(this.encryptor == null){
-//			if(SecurityContextHolder.getContext().getAuthentication() != null){
-//				this.encryptor = ((Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEncryptor();	
-//			}
-//			else{
-//				this.encryptor =  null; // UISessionManager.get().getSession().getUtilisateurCourant().getEncryptor();
-//			}
+			if(SecurityContextHolder.getContext().getAuthentication() != null){
+				this.encryptor = ((Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEncryptor();	
+
+
+
+
+			}
+			else{
+				this.encryptor =  UserSessionsManager.get().getSession().getUtilisateurCourant().getEncryptor();
+			}
 		}
 		return this.encryptor;
 	}
-
+	
 	/**
 	 * @param encryptor the encryptor to set
 	 */
@@ -50,6 +59,6 @@ public abstract class IDataTransformer<B, D> {
 	 * @param bo business object
 	 */
 	public abstract D transformBOtoDTO(B bo);
-
+	
 
 }

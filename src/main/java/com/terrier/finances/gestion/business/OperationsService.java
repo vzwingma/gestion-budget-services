@@ -365,18 +365,18 @@ public class OperationsService {
 					ligneDepense.getSsCategorie(), 
 					"[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle(), 
 					TypeDepenseEnum.CREDIT, 
-					Math.abs(ligneDepense.getValeur()), 
+					Double.toString(Math.abs(ligneDepense.getValeur())), 
 					etatDepenseTransfert, 
 					ligneDepense.isPeriodique(), 
 					budgetTransfert.isActif());
 
-			ajoutLigneDepense(budgetTransfert, ligneTransfert, utilisateur.getLibelle());
+			ajoutOperation(budgetTransfert, ligneTransfert, utilisateur.getLibelle());
 			calculEtSauvegardeBudget(budgetTransfert);
 			/**
 			 *  Ajout de la ligne dans le budget courant
 			 */
 			ligneDepense.setLibelle("[vers "+budgetTransfert.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle());
-			return ajoutLigneDepenseEtCalcul(idBudget, ligneDepense, utilisateur.getLibelle());
+			return ajoutOperationEtCalcul(idBudget, ligneDepense, utilisateur.getLibelle());
 		}
 		else{
 			throw new CompteClosedException(new StringBuilder("Impossible d'ajouter une opération de transfert intercompte : L'un des deux comptes est cloturé"));
@@ -387,28 +387,28 @@ public class OperationsService {
 
 	/**
 	 * Ajout d'une ligne de dépense
-	 * @param ligneDepense ligne de dépense
+	 * @param ligneOperation ligne de dépense
 	 * @param auteur auteur de l'action
 	 */
-	private void ajoutLigneDepense(BudgetMensuel budget, LigneDepense ligneDepense, String auteur){
-		LOGGER.info("Ajout d'une ligne de dépense : {}", ligneDepense);
-		ligneDepense.setAuteur(auteur);
-		ligneDepense.setDateMaj(Calendar.getInstance().getTime());
-		budget.getListeDepenses().add(ligneDepense);
+	private void ajoutOperation(BudgetMensuel budget, LigneDepense ligneOperation, String auteur){
+		LOGGER.info("Ajout d'une Opération : {}", ligneOperation);
+		ligneOperation.setAuteur(auteur);
+		ligneOperation.setDateMaj(Calendar.getInstance().getTime());
+		budget.getListeDepenses().add(ligneOperation);
 		budget.setDateMiseAJour(Calendar.getInstance());
 	}
 
 
 	/**
 	 * Ajout d'une ligne de dépense
-	 * @param ligneDepense ligne de dépense
+	 * @param ligneOperation ligne de dépense
 	 * @param auteur auteur de l'action 
 	 * @throws BudgetNotFoundException 
 	 */
-	public BudgetMensuel ajoutLigneDepenseEtCalcul(String idBudget, LigneDepense ligneDepense, String auteur) throws BudgetNotFoundException{
+	public BudgetMensuel ajoutOperationEtCalcul(String idBudget, LigneDepense ligneOperation, String auteur) throws BudgetNotFoundException{
 		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget);
 		if(budget.isActif() && budget.getCompteBancaire().isActif()){
-			ajoutLigneDepense(budget, ligneDepense, auteur);
+			ajoutOperation(budget, ligneOperation, auteur);
 			// Résultat mensuel
 			budget = calculEtSauvegardeBudget(budget);
 		}
@@ -555,7 +555,7 @@ public class OperationsService {
 
 		for (LigneDepense depense : budget.getListeDepenses()) {
 			LOGGER.trace("     > {}", depense);
-			Float depenseVal = depense.getValeur();
+			Double depenseVal = depense.getValeur();
 			budget.getSetLibellesDepensesForAutocomplete().add(depense.getLibelle());
 			/**
 			 *  Calcul par catégorie
