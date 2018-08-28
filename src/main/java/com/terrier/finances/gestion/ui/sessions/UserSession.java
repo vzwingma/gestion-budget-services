@@ -166,7 +166,7 @@ public class UserSession {
 	 * @return session active
 	 */
 	public boolean isActive(){
-		return utilisateurCourant != null;
+		return utilisateurCourant != null && this.budgetMensuelCourant != null;
 	}
 
 	/**
