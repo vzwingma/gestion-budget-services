@@ -39,9 +39,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
 	 */
 	@Override
-	public LigneDepense transformDTOtoBO(LigneDepenseDTO dto) {
-		
-		BasicTextEncryptor decryptor = getEncryptor();
+	public LigneDepense transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
 		
 		LigneDepense bo = new LigneDepense(true);
 		bo.setId(dto.getId());
@@ -73,9 +71,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoDTO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
 	 */
 	@Override
-	public LigneDepenseDTO transformBOtoDTO(LigneDepense bo) {
-		
-		BasicTextEncryptor encryptor = getEncryptor();
+	public LigneDepenseDTO transformBOtoDTO(LigneDepense bo, BasicTextEncryptor encryptor) {
 		
 		LigneDepenseDTO dto = new LigneDepenseDTO();
 		dto.setAuteur( encryptor.encrypt(bo.getAuteur()));
@@ -106,11 +102,11 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoDTO(java.lang.Object)
 	 */
-	public List<LigneDepenseDTO> transformBOtoDTO(List<LigneDepense> listeBO) {
+	public List<LigneDepenseDTO> transformBOtoDTO(List<LigneDepense> listeBO, BasicTextEncryptor encryptor) {
 		List<LigneDepenseDTO> listeDepensesDTO = new ArrayList<>();
 		if(listeBO != null){
 			for (LigneDepense bo : listeBO) {
-				listeDepensesDTO.add(transformBOtoDTO(bo));
+				listeDepensesDTO.add(transformBOtoDTO(bo, encryptor));
 			}
 		}
 		return listeDepensesDTO;
@@ -121,11 +117,11 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object)
 	 */
-	public List<LigneDepense> transformDTOtoBO(List<LigneDepenseDTO> listeDTO) {
+	public List<LigneDepense> transformDTOtoBO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
 		List<LigneDepense> listeDepensesBO = new ArrayList<>();
 		if(listeDTO != null){
 			for (LigneDepenseDTO dto : listeDTO) {
-				listeDepensesBO.add(transformDTOtoBO(dto));
+				listeDepensesBO.add(transformDTOtoBO(dto, decryptor));
 			}
 		}
 		return listeDepensesBO;

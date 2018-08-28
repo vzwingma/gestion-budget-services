@@ -48,9 +48,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	 * @see com.terrier.finances.gestion.model.AbstractTransformer#transformDTOtoBO(java.lang.Object)
 	 */
 	@Override
-	public BudgetMensuel transformDTOtoBO(BudgetMensuelDTO dto) {
-
-		BasicTextEncryptor decryptor = getEncryptor();
+	public BudgetMensuel transformDTOtoBO(BudgetMensuelDTO dto, BasicTextEncryptor decryptor) {
 		try{
 			BudgetMensuel bo = new BudgetMensuel();
 			bo.setActif(dto.isActif());
@@ -61,7 +59,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 				c.setTime(dto.getDateMiseAJour());
 				bo.setDateMiseAJour(c);
 			}
-			bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses()));
+			bo.setListeDepenses(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses(), decryptor));
 			bo.setMargeSecurite(dto.getMargeSecurite() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecurite())) : 0D);
 			bo.setMargeSecuriteFinMois(dto.getMargeSecuriteFinMois() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecuriteFinMois())) : 0D);
 			bo.setMois(Month.of(dto.getMois() + 1));
@@ -82,7 +80,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 					dto.getTotalParCategories().entrySet()
 					.parallelStream()
 					.forEach(entry -> {
-						CategorieDepense c = getCategorieByEncryptedId(entry.getKey());
+						CategorieDepense c = getCategorieByEncryptedId(entry.getKey(), decryptor);
 						if(c != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
 							for (int i = 0; i < entry.getValue().length; i++) {
@@ -101,7 +99,7 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 					dto.getTotalParSSCategories().entrySet()
 					.parallelStream()
 					.forEach(entry -> {
-						CategorieDepense ssC = getCategorieByEncryptedId(entry.getKey());
+						CategorieDepense ssC = getCategorieByEncryptedId(entry.getKey(), decryptor);
 						if(ssC != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
 							for (int i = 0; i < entry.getValue().length; i++) {
@@ -125,8 +123,8 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	}
 
 
-	private CategorieDepense getCategorieByEncryptedId(String encryptedId){
-		return parametrageService.chargeCategorieParId(getEncryptor().decrypt(encryptedId));
+	private CategorieDepense getCategorieByEncryptedId(String encryptedId, BasicTextEncryptor decryptor){
+		return parametrageService.chargeCategorieParId(decryptor.decrypt(encryptedId));
 	}
 
 
@@ -135,26 +133,23 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 	 * @see com.terrier.finances.gestion.model.AbstractTransformer#transformBOtoDTO(java.lang.Object)
 	 */
 	@Override
-	public BudgetMensuelDTO transformBOtoDTO(BudgetMensuel bo) {
-
-		BasicTextEncryptor encrytor = getEncryptor();
-
+	public BudgetMensuelDTO transformBOtoDTO(BudgetMensuel bo, BasicTextEncryptor encryptor) {
 		BudgetMensuelDTO dto = new BudgetMensuelDTO();
 		dto.setActif(bo.isActif());
 		dto.setAnnee(bo.getAnnee());
 		dto.setCompteBancaire(bo.getCompteBancaire());
 		dto.getCompteBancaire().setListeProprietaires(null);
 		dto.setDateMiseAJour(bo.getDateMiseAJour() != null ? bo.getDateMiseAJour().getTime() : null);
-		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeDepenses()));
-		dto.setMargeSecurite(bo.getMargeSecurite() != null ? encrytor.encrypt(bo.getMargeSecurite().toString()) : null);
-		dto.setMargeSecuriteFinMois(bo.getMargeSecuriteFinMois() != null ?  encrytor.encrypt(bo.getMargeSecuriteFinMois().toString()) : null);
+		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeDepenses(), encryptor));
+		dto.setMargeSecurite(bo.getMargeSecurite() != null ? encryptor.encrypt(bo.getMargeSecurite().toString()) : null);
+		dto.setMargeSecuriteFinMois(bo.getMargeSecuriteFinMois() != null ?  encryptor.encrypt(bo.getMargeSecuriteFinMois().toString()) : null);
 
 		dto.setMois(bo.getMois().getValue() - 1);
-		dto.setResultatMoisPrecedent(bo.getResultatMoisPrecedent() != null ?  encrytor.encrypt(bo.getResultatMoisPrecedent().toString()) : null);
-		dto.setFinArgentAvance( encrytor.encrypt(String.valueOf(bo.getFinArgentAvance())));
-		dto.setFinCompteReel( encrytor.encrypt(String.valueOf(bo.getFinCompteReel())));
-		dto.setNowArgentAvance( encrytor.encrypt(String.valueOf(bo.getNowArgentAvance())));
-		dto.setNowCompteReel( encrytor.encrypt(String.valueOf(bo.getNowCompteReel())));
+		dto.setResultatMoisPrecedent(bo.getResultatMoisPrecedent() != null ?  encryptor.encrypt(bo.getResultatMoisPrecedent().toString()) : null);
+		dto.setFinArgentAvance( encryptor.encrypt(String.valueOf(bo.getFinArgentAvance())));
+		dto.setFinCompteReel( encryptor.encrypt(String.valueOf(bo.getFinCompteReel())));
+		dto.setNowArgentAvance( encryptor.encrypt(String.valueOf(bo.getNowArgentAvance())));
+		dto.setNowCompteReel( encryptor.encrypt(String.valueOf(bo.getNowCompteReel())));
 
 		// Complétion des totaux
 		Map<String, String[]> totalCategorieDTO = new HashMap<>();
@@ -164,9 +159,9 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 			.forEach(entry -> {
 				String[] totauxDTO = new String[entry.getValue().length];
 				for (int i = 0; i < entry.getValue().length; i++) {
-					totauxDTO[i] = entry.getValue()[i] != null ? encrytor.encrypt(entry.getValue()[i].toString()) : null;
+					totauxDTO[i] = entry.getValue()[i] != null ? encryptor.encrypt(entry.getValue()[i].toString()) : null;
 				}
-				totalCategorieDTO.put(encrytor.encrypt(entry.getKey().getId()), totauxDTO);
+				totalCategorieDTO.put(encryptor.encrypt(entry.getKey().getId()), totauxDTO);
 			});
 		}
 		dto.setTotalParCategories(totalCategorieDTO);
@@ -179,9 +174,9 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 			.forEach(entry -> {
 				String[] totauxDTO = new String[entry.getValue().length];
 				for (int i = 0; i < entry.getValue().length; i++) {
-					totauxDTO[i] = entry.getValue()[i] != null ? encrytor.encrypt(entry.getValue()[i].toString()) : null;
+					totauxDTO[i] = entry.getValue()[i] != null ? encryptor.encrypt(entry.getValue()[i].toString()) : null;
 				}
-				totalSsCategorieDTO.put(encrytor.encrypt(entry.getKey().getId()), totauxDTO);
+				totalSsCategorieDTO.put(encryptor.encrypt(entry.getKey().getId()), totauxDTO);
 			});
 		}
 		dto.setTotalParSSCategories(totalSsCategorieDTO);

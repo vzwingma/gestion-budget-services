@@ -2,6 +2,8 @@ package com.terrier.finances.gestion.business;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
@@ -37,6 +39,8 @@ public class AuthenticationService {
 	@Autowired
 	private UtilisateurDatabaseService dataDBParams;
 
+	
+	private Map<Utilisateur, BasicTextEncryptor> encrypters = new HashMap<Utilisateur, BasicTextEncryptor>();
 
 	/**
 	 * Validation login/mdp
@@ -70,8 +74,7 @@ public class AuthenticationService {
 					BasicTextEncryptor decryptorCle = new BasicTextEncryptor();
 					decryptorCle.setPassword(motPasseEnClair);
 					String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getMasterCleChiffrementDonnees());
-
-					utilisateur.getEncryptor().setPassword(cleChiffrementDonnees);
+					updateEncryter(utilisateur, cleChiffrementDonnees);
 				}
 				return utilisateur;
 			}
@@ -106,7 +109,25 @@ public class AuthenticationService {
 		String newHashPassword = PasswordEncoder.generateStrongPasswordHash(newPassword);
 		LOGGER.info("Nouveau hash du mot de passe : {}", newHashPassword);
 		utilisateur.setHashMotDePasse(PasswordEncoder.generateStrongPasswordHash(newPassword));
-		utilisateur.getEncryptor().setPassword(masterKeyClear);
+		updateEncryter(utilisateur, masterKeyClear);
 		dataDBParams.majUtilisateur(utilisateur);
+	}
+	
+	/**
+	 * Injection de la masterkey sur l'encryptor associé à l'utilisateur
+	 * @param utilisateur
+	 * @param masterKeyClear
+	 */
+	private void updateEncryter(Utilisateur utilisateur, String masterKeyClear){
+		encrypters.putIfAbsent(utilisateur, new BasicTextEncryptor());
+		encrypters.get(utilisateur).setPassword(masterKeyClear);	
+	}
+	
+	/**
+	 * @param utilisateur
+	 * @return l'encryptor de l'utilisateur
+	 */
+	public BasicTextEncryptor getEncryptor(Utilisateur utilisateur){
+		return this.encrypters.get(utilisateur);
 	}
 }

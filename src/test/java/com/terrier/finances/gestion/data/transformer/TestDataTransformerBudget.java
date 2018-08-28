@@ -103,13 +103,11 @@ public class TestDataTransformerBudget {
 		
 	}
 	
+	private BasicTextEncryptor e = new BasicTextEncryptor();
 	
 	@Before
 	public void initTransformer() throws DataNotFoundException{
-		BasicTextEncryptor e = new BasicTextEncryptor();
 		e.setPassword("test");
-		transformer.setEncryptor(e);
-		dataTransformerLigneDepense.setEncryptor(e);
 		transformer.setDataTransformerLigneDepense(dataTransformerLigneDepense);
 		transformer.setParametrageService(parametrageMockService);
 		when(parametrageMockService.chargeCategorieParId(anyString())).thenAnswer(new Answer<CategorieDepense>() {
@@ -170,7 +168,7 @@ public class TestDataTransformerBudget {
 		/**
 		 * Transformation en DTO
 		 */
-		BudgetMensuelDTO dto = transformer.transformBOtoDTO(bo);
+		BudgetMensuelDTO dto = transformer.transformBOtoDTO(bo, e);
 		assertNotNull(dto);
 		
 		assertNotEquals(bo.getFinArgentAvance(), dto.getFinArgentAvance());
@@ -182,7 +180,7 @@ public class TestDataTransformerBudget {
 		/**
 		 * Transformation en BO
 		 */
-		BudgetMensuel bo2 = transformer.transformDTOtoBO(dto);
+		BudgetMensuel bo2 = transformer.transformDTOtoBO(dto, e);
 		assertEquals(bo.getFinArgentAvance(), bo2.getFinArgentAvance(), 1);
 		assertEquals(bo.getFinCompteReel(), bo2.getFinCompteReel(), 1);
 		assertEquals(bo.getNowArgentAvance(), bo2.getNowArgentAvance(), 1);

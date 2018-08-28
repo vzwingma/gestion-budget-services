@@ -182,6 +182,5 @@ public class ParametragesService {
 	 */
 	public void resetData(){
 		dataParams.resetData();
-		dataUsers.resetData();
 	}
 }

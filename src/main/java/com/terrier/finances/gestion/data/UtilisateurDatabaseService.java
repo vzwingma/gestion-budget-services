@@ -21,19 +21,11 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
  */
 @Repository
 public class UtilisateurDatabaseService extends AbstractDatabaseService {
-	/**
-	 * Liste des utilisateurs
-	 */
-	private List<Utilisateur> listeUtilisateurs = new ArrayList<>();
-	
-
 
 	/**
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateurDatabaseService.class);
-	
-
 
 	/**
 	 * @return la liste des catégories
@@ -142,11 +134,5 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 			LOGGER.error("Erreur lors du chargement du compte {}", idCompte, e);
 			throw new DataNotFoundException("Erreur lors de la recherche de compte");
 		}
-	}
-	/**
-	 * Suppression des données en mémoire
-	 */
-	public void resetData(){
-		listeUtilisateurs.clear();
 	}
 }
