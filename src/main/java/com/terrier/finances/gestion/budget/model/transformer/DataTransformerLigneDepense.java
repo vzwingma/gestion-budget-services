@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.terrier.finances.gestion.budget.model.LigneDepenseDTO;
-import com.terrier.finances.gestion.model.budget.EtatLigneOperationEnum;
-import com.terrier.finances.gestion.model.budget.TypeOperationEnum;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
+import com.terrier.finances.gestion.model.enums.EtatLigneOperationEnum;
+import com.terrier.finances.gestion.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.parametrages.data.ParametragesDatabaseService;
 
 /**
