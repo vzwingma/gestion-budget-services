@@ -2,7 +2,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.data.transformer;
+package com.terrier.finances.gestion.services.budget.model.transformer;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 

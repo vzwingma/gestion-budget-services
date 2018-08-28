@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.data.transformer;
+package com.terrier.finances.gestion.services.budget.model.transformer;
 
 import java.time.Month;
 import java.util.Calendar;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 
 /**
  * DataTransformer

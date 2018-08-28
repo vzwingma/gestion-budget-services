@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.data.transformer;
+package com.terrier.finances.gestion.services.budget.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -25,8 +25,10 @@ import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget;
+import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense;
 
 /**
  * @author PVZN02821

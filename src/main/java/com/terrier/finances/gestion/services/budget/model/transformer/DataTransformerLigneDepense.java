@@ -2,7 +2,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.data.transformer;
+package com.terrier.finances.gestion.services.budget.model.transformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
 
 import com.terrier.finances.gestion.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
-import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
 import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
+import com.terrier.finances.gestion.services.budget.model.LigneDepenseDTO;
 
 /**
  * DataTransformer

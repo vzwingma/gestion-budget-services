@@ -1,12 +1,14 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.data;
+package com.terrier.finances.gestion.services.budget.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+
+import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 
 /**
  * @author vzwingma
@@ -17,7 +19,7 @@ public class TestDepenseDataService {
 
 	@Test
 	public void testCollectionName(){
-		DepensesDatabaseService service = new DepensesDatabaseService();
+		BudgetDatabaseService service = new BudgetDatabaseService();
 		assertEquals("budget_2015", service.getBudgetCollectionName(2015));
 	}
 
@@ -25,7 +27,7 @@ public class TestDepenseDataService {
 	@Test
 	public void testCollectionNameByIdBudget() throws Exception{
 
-		DepensesDatabaseService service = new DepensesDatabaseService();
+		BudgetDatabaseService service = new BudgetDatabaseService();
 		String annee = service.getBudgetCollectionName("ingdirect_2016_2");
 		assertNotNull(annee);
 		assertEquals("budget_2016", annee);

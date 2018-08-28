@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.data;
+package com.terrier.finances.gestion.services.budget.data;
 
 import java.time.Month;
 import java.util.ArrayList;
@@ -18,13 +18,14 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.terrier.finances.gestion.data.transformer.DataTransformerBudget;
+import com.terrier.finances.gestion.data.AbstractDatabaseService;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.terrier.finances.gestion.model.data.budget.BudgetMensuelDTO;
-import com.terrier.finances.gestion.model.data.budget.LigneDepenseDTO;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budget.model.LigneDepenseDTO;
+import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget;
 
 /**
  * DAO Dépenses vers MongoDB
@@ -32,12 +33,12 @@ import com.terrier.finances.gestion.model.exception.DataNotFoundException;
  *
  */
 @Repository
-public class DepensesDatabaseService extends AbstractDatabaseService {
+public class BudgetDatabaseService extends AbstractDatabaseService {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(DepensesDatabaseService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BudgetDatabaseService.class);
 
 	@Autowired @Qualifier("dataTransformerBudget")
 	private DataTransformerBudget dataTransformerBudget;
