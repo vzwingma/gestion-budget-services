@@ -2,7 +2,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.budget.model.transformer;
+package com.terrier.finances.gestion.budget.model.transformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.terrier.finances.gestion.budget.model.LigneDepenseDTO;
+import com.terrier.finances.gestion.model.budget.EtatLigneOperationEnum;
+import com.terrier.finances.gestion.model.budget.TypeOperationEnum;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
-import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
-import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
-import com.terrier.finances.gestion.services.budget.model.LigneDepenseDTO;
-import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
+import com.terrier.finances.gestion.parametrages.data.ParametragesDatabaseService;
 
 /**
  * DataTransformer
@@ -49,11 +49,11 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		bo.setDateMaj(dto.getDateMaj());
 		bo.setDateOperation(dto.getDateOperation());
 		bo.setDerniereOperation(dto.isDerniereOperation());
-		bo.setEtat(EtatLigneDepenseEnum.valueOf(decryptor.decrypt(dto.getEtat())));
+		bo.setEtat(EtatLigneOperationEnum.valueOf(decryptor.decrypt(dto.getEtat())));
 		bo.setSsCategorie(parametrageService.chargeCategorieParId(decryptor.decrypt(dto.getIdSSCategorie())));
 		bo.setLibelle(decryptor.decrypt(dto.getLibelle()));
 		bo.setPeriodique(dto.isPeriodique());
-		bo.setTypeDepense(TypeDepenseEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
+		bo.setTypeDepense(TypeOperationEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
 
 		bo.setValeurAbsStringToDouble(decryptor.decrypt(dto.getValeur()));
 
@@ -87,7 +87,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		dto.setTypeDepense(encryptor.encrypt(bo.getTypeDepense().name()));
 		
 		Double depenseVal =  Math.abs(bo.getValeur());
-		if(bo.getTypeDepense().equals(TypeDepenseEnum.DEPENSE)){
+		if(bo.getTypeDepense().equals(TypeOperationEnum.DEPENSE)){
 				depenseVal = -depenseVal;
 		}
 		dto.setValeur(encryptor.encrypt(String.valueOf(depenseVal)));

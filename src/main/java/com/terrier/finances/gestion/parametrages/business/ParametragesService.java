@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.parametrages.business;
+package com.terrier.finances.gestion.parametrages.business;
 
 import java.text.ParseException;
 
@@ -19,7 +19,7 @@ import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.DataUtils;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
+import com.terrier.finances.gestion.parametrages.data.ParametragesDatabaseService;
 
 /**
  * Service fournissant les paramètres

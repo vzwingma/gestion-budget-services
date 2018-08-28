@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budget.business;
+package com.terrier.finances.gestion.budget.business;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -14,21 +14,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.terrier.finances.gestion.budget.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.business.AuthenticationService;
 import com.terrier.finances.gestion.data.UtilisateurDatabaseService;
+import com.terrier.finances.gestion.model.budget.EtatLigneOperationEnum;
+import com.terrier.finances.gestion.model.budget.TypeOperationEnum;
 import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
 import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
 import com.terrier.finances.gestion.model.data.DataUtils;
-import com.terrier.finances.gestion.model.enums.EtatLigneDepenseEnum;
-import com.terrier.finances.gestion.model.enums.TypeDepenseEnum;
 import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
 import com.terrier.finances.gestion.model.exception.CompteClosedException;
 import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.services.parametrages.business.ParametragesService;
+import com.terrier.finances.gestion.parametrages.business.ParametragesService;
 
 /**
  * Service Métier : Operations
@@ -323,7 +323,7 @@ public class OperationsService {
 			budget.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
 			budget.setDateMiseAJour(Calendar.getInstance());
 			for (LigneDepense depenseMoisPrecedent : budgetPrecedent.getListeDepenses()) {
-				if(depenseMoisPrecedent.isPeriodique() || depenseMoisPrecedent.getEtat().equals(EtatLigneDepenseEnum.REPORTEE)){
+				if(depenseMoisPrecedent.isPeriodique() || depenseMoisPrecedent.getEtat().equals(EtatLigneOperationEnum.REPORTEE)){
 					budget.getListeDepenses().add(depenseMoisPrecedent.cloneDepenseToMoisSuivant());	
 				}
 
@@ -355,26 +355,26 @@ public class OperationsService {
 			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneDepense);
 
 			// #59 : Cohérence des états
-			EtatLigneDepenseEnum etatDepenseCourant = ligneDepense.getEtat();
-			EtatLigneDepenseEnum etatDepenseTransfert = null;
+			EtatLigneOperationEnum etatDepenseCourant = ligneDepense.getEtat();
+			EtatLigneOperationEnum etatDepenseTransfert = null;
 			switch (etatDepenseCourant) {
 			case ANNULEE:
-				etatDepenseTransfert = EtatLigneDepenseEnum.ANNULEE;
+				etatDepenseTransfert = EtatLigneOperationEnum.ANNULEE;
 				break;
 			case REPORTEE:
-				etatDepenseTransfert = EtatLigneDepenseEnum.REPORTEE;
+				etatDepenseTransfert = EtatLigneOperationEnum.REPORTEE;
 				break;
 			case PREVUE:
 			case REALISEE:
 			default:				
-				etatDepenseTransfert = EtatLigneDepenseEnum.PREVUE;
+				etatDepenseTransfert = EtatLigneOperationEnum.PREVUE;
 				break;
 			}
 
 			LigneDepense ligneTransfert = new LigneDepense(
 					ligneDepense.getSsCategorie(), 
 					"[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneDepense.getLibelle(), 
-					TypeDepenseEnum.CREDIT, 
+					TypeOperationEnum.CREDIT, 
 					Double.toString(Math.abs(ligneDepense.getValeur())), 
 					etatDepenseTransfert, 
 					ligneDepense.isPeriodique(), 
@@ -505,12 +505,12 @@ public class OperationsService {
 	 * @throws DataNotFoundException erreur ligne non trouvé
 	 * @throws BudgetNotFoundException not found
 	 */
-	public BudgetMensuel majEtatLigneDepense(BudgetMensuel budget, String ligneId, EtatLigneDepenseEnum etat, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
+	public BudgetMensuel majEtatLigneDepense(BudgetMensuel budget, String ligneId, EtatLigneOperationEnum etat, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
 		LigneDepense ligneDepense = getLigneDepense(budget, ligneId);
 		// Mise à jour de l'état
 		if(ligneDepense != null){
 			ligneDepense.setEtat(etat);
-			if(EtatLigneDepenseEnum.REALISEE.equals(etat)){
+			if(EtatLigneOperationEnum.REALISEE.equals(etat)){
 				ligneDepense.setDateOperation(Calendar.getInstance().getTime());
 			}
 			else{
@@ -574,11 +574,11 @@ public class OperationsService {
 			if(budget.getTotalParCategories().get(depense.getCategorie()) != null){
 				valeursCat = budget.getTotalParCategories().get(depense.getCategorie());
 			}
-			if(depense.getEtat().equals(EtatLigneDepenseEnum.REALISEE)){
+			if(depense.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
 				valeursCat[0] = valeursCat[0] + depenseVal;
 				valeursCat[1] = valeursCat[1] + depenseVal;
 			}
-			else if(depense.getEtat().equals(EtatLigneDepenseEnum.PREVUE)){
+			else if(depense.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
 				valeursCat[1] = valeursCat[1] + depenseVal;
 			}
 			budget.getTotalParCategories().put(depense.getCategorie(), valeursCat);
@@ -590,11 +590,11 @@ public class OperationsService {
 			if( budget.getTotalParSSCategories().get(depense.getSsCategorie()) != null){
 				valeurSsCat = budget.getTotalParSSCategories().get(depense.getSsCategorie());
 			}
-			if(depense.getEtat().equals(EtatLigneDepenseEnum.REALISEE)){
+			if(depense.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
 				valeurSsCat[0] = valeurSsCat[0] + depenseVal;
 				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
 			}
-			if(depense.getEtat().equals(EtatLigneDepenseEnum.PREVUE)){
+			if(depense.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
 				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
 			}
 			budget.getTotalParSSCategories().put(depense.getSsCategorie(), valeurSsCat);
@@ -613,13 +613,13 @@ public class OperationsService {
 			 * Calcul des totaux
 			 */
 
-			if(depense.getEtat().equals(EtatLigneDepenseEnum.REALISEE)){
+			if(depense.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
 				budget.ajouteANowArgentAvance(sens * depenseVal);
 				budget.ajouteANowCompteReel(sens * depenseVal);
 				budget.ajouteAFinArgentAvance(sens * depenseVal);
 				budget.ajouteAFinCompteReel(sens * depenseVal);				
 			}
-			else if(depense.getEtat().equals(EtatLigneDepenseEnum.PREVUE)){
+			else if(depense.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
 				budget.ajouteAFinArgentAvance(sens * depenseVal);
 				budget.ajouteAFinCompteReel(sens * depenseVal);
 			}

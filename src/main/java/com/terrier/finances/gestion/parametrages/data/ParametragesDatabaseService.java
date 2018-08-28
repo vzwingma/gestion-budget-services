@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.parametrages.data;
+package com.terrier.finances.gestion.parametrages.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.budget.data;
+package com.terrier.finances.gestion.budget.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.budget.data.BudgetDatabaseService;
 
 /**
  * @author vzwingma

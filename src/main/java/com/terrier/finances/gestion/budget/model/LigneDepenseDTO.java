@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budget.model;
+package com.terrier.finances.gestion.budget.model;
 
 import java.io.Serializable;
 import java.util.Date;
