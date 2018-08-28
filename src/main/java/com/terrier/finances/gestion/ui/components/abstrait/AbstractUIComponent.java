@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.finances.gestion.ui.controler.common.AbstractUIController;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
+import com.terrier.finances.gestion.ui.sessions.UserSessionsManager;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 
@@ -34,7 +34,7 @@ public abstract class AbstractUIComponent<C extends AbstractUIController<?>> ext
 	 */
 	public void startControleur(){
 		controleur = createControleur();
-		LOGGER.trace("[{}] Démarrage du controleur {}", UISessionManager.get().getSession().getIdSession(), controleur);
+		LOGGER.trace("[{}] Démarrage du controleur {}", controleur.getIdSession(), controleur);
 		controleur.start();
 		
 	}

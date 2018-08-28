@@ -74,7 +74,7 @@ public class ActionValiderCreationDepenseClickListener extends AbstractComponent
 			BudgetMensuelController controleur = getControleur(BudgetMensuelController.class);
 			if(event.getButton().getCaption().contains("Fermer")){
 				// Fin du formulaire
-				getUISession().getPopupModale().close();
+				getUserSession().getPopupModale().close();
 				controleur.miseAJourVueDonnees();
 			}
 			else{

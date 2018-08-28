@@ -7,7 +7,7 @@ import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.terrier.finances.gestion.model.business.parametrage.Utilisateur;
-import com.terrier.finances.gestion.ui.sessions.UISessionManager;
+import com.terrier.finances.gestion.ui.sessions.UserSessionsManager;
 
 
 /**
@@ -29,7 +29,7 @@ public abstract class IDataTransformer<B, D> {
 				this.encryptor = ((Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEncryptor();	
 			}
 			else{
-				this.encryptor =  UISessionManager.get().getSession().getUtilisateurCourant().getEncryptor();
+				this.encryptor =  UserSessionsManager.get().getSession().getUtilisateurCourant().getEncryptor();
 			}
 		}
 		return this.encryptor;
