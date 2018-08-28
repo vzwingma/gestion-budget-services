@@ -94,8 +94,8 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 				// liste dépenses transformées 
 				.map(budgetDTO -> getDataTransformerBudget().transformDTOtoBO(budgetDTO, decryptor))
 				.forEach(budget -> {
-					if(budget != null && budget.getListeDepenses() != null && !budget.getListeDepenses().isEmpty()){
-						budget.getListeDepenses()
+					if(budget != null && budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()){
+						budget.getListeOperations()
 						.parallelStream()
 						.forEach(operation -> {
 							if(operation != null){

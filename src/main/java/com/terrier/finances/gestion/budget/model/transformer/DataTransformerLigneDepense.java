@@ -5,7 +5,9 @@
 package com.terrier.finances.gestion.budget.model.transformer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
@@ -14,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.terrier.finances.gestion.budget.model.LigneDepenseDTO;
-import com.terrier.finances.gestion.model.business.budget.LigneDepense;
 import com.terrier.finances.gestion.model.enums.EtatLigneOperationEnum;
 import com.terrier.finances.gestion.model.enums.TypeOperationEnum;
+import com.terrier.finances.gestion.operations.model.LigneOperation;
 import com.terrier.finances.gestion.parametrages.data.ParametragesDatabaseService;
 
 /**
@@ -25,7 +27,7 @@ import com.terrier.finances.gestion.parametrages.data.ParametragesDatabaseServic
  *
  */
 @Component("dataTransformerLigneDepense")
-public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, LigneDepenseDTO> {
+public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation, LigneDepenseDTO> {
 
 	/**
 	 * Logger
@@ -39,10 +41,10 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
 	 */
 	@Override
-	public LigneDepense transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
+	public LigneOperation transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
 		
-		LigneDepense bo = new LigneDepense(true);
-		bo.setId(dto.getId());
+		LigneOperation bo = new LigneOperation(true);
+		bo.setUUID(UUID.fromString(dto.getId()));
 		if(dto.getAuteur() !=null){
 			bo.setAuteur(decryptor.decrypt(dto.getAuteur()));
 		}
@@ -56,11 +58,6 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		bo.setTypeDepense(TypeOperationEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
 
 		bo.setValeurAbsStringToDouble(decryptor.decrypt(dto.getValeur()));
-
-
-
-
-
 		LOGGER.trace("	[{}] \n > Transformation en BO > [{}]", dto, bo);
 		return bo;
 	}
@@ -71,7 +68,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoDTO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)
 	 */
 	@Override
-	public LigneDepenseDTO transformBOtoDTO(LigneDepense bo, BasicTextEncryptor encryptor) {
+	public LigneDepenseDTO transformBOtoDTO(LigneOperation bo, BasicTextEncryptor encryptor) {
 		
 		LigneDepenseDTO dto = new LigneDepenseDTO();
 		dto.setAuteur( encryptor.encrypt(bo.getAuteur()));
@@ -79,7 +76,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 		dto.setDateOperation(bo.getDateOperation());
 		dto.setDerniereOperation(bo.isDerniereOperation());
 		dto.setEtat(encryptor.encrypt(bo.getEtat().name()));
-		dto.setId(bo.getId());
+		dto.setId(bo.getUUId().toString());
 		dto.setIdCategorie(bo.getCategorie() != null ? encryptor.encrypt(bo.getCategorie().getId()) : null);
 		dto.setIdSSCategorie(bo.getSsCategorie() != null ? encryptor.encrypt(bo.getSsCategorie().getId()) : null);
 		dto.setLibelle(encryptor.encrypt(bo.getLibelle()));
@@ -102,12 +99,10 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformBOtoDTO(java.lang.Object)
 	 */
-	public List<LigneDepenseDTO> transformBOtoDTO(List<LigneDepense> listeBO, BasicTextEncryptor encryptor) {
+	public List<LigneDepenseDTO> transformBOtoDTO(List<LigneOperation> listeBO, BasicTextEncryptor encryptor) {
 		List<LigneDepenseDTO> listeDepensesDTO = new ArrayList<>();
 		if(listeBO != null){
-			for (LigneDepense bo : listeBO) {
-				listeDepensesDTO.add(transformBOtoDTO(bo, encryptor));
-			}
+			listeBO.stream().forEach(bo -> listeDepensesDTO.add(transformBOtoDTO(bo, encryptor)));
 		}
 		return listeDepensesDTO;
 	}
@@ -117,14 +112,31 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneDepense, 
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object)
 	 */
-	public List<LigneDepense> transformDTOtoBO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
-		List<LigneDepense> listeDepensesBO = new ArrayList<>();
+	public List<LigneOperation> transformDTOtoBO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
+		List<LigneOperation> listeDepensesBO = new ArrayList<>();
 		if(listeDTO != null){
-			for (LigneDepenseDTO dto : listeDTO) {
-				listeDepensesBO.add(transformDTOtoBO(dto, decryptor));
-			}
+			listeDTO.stream().forEach(dto -> listeDepensesBO.add(transformDTOtoBO(dto, decryptor)));
 		}
 		return listeDepensesBO;
 	}
 
+	
+	/**
+	 * @return Ligne dépense clonée
+	 * @throws CloneNotSupportedException
+	 */
+	public LigneOperation cloneDepenseToMoisSuivant(LigneOperation ligneOperation) {
+		LigneOperation ligneOperationClonee = new LigneOperation(ligneOperation.isBudgetActif());
+		ligneOperationClonee.setUUID(UUID.randomUUID());
+		ligneOperationClonee.setLibelle(ligneOperation.getLibelle());
+		ligneOperationClonee.setSsCategorie(ligneOperation.getSsCategorie());
+		ligneOperationClonee.setDateMaj(Calendar.getInstance().getTime());
+		ligneOperationClonee.setDateOperation(null);
+		ligneOperationClonee.setEtat(EtatLigneOperationEnum.PREVUE);
+		ligneOperationClonee.setPeriodique(ligneOperation.isPeriodique());
+		ligneOperationClonee.setTypeDepense(ligneOperation.getTypeDepense());
+		ligneOperationClonee.setValeurAbsStringToDouble(Double.toString(Math.abs(ligneOperation.getValeur())));
+		ligneOperationClonee.setDerniereOperation(false);
+		return ligneOperationClonee;
+	}
 }
