@@ -43,7 +43,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation
 	@Override
 	public LigneOperation transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
 		
-		LigneOperation bo = new LigneOperation(true);
+		LigneOperation bo = new LigneOperation();
 		bo.setId(dto.getId());
 		if(dto.getAuteur() !=null){
 			bo.setAuteur(decryptor.decrypt(dto.getAuteur()));
@@ -126,7 +126,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation
 	 * @throws CloneNotSupportedException
 	 */
 	public LigneOperation cloneDepenseToMoisSuivant(LigneOperation ligneOperation) {
-		LigneOperation ligneOperationClonee = new LigneOperation(ligneOperation.isBudgetActif());
+		LigneOperation ligneOperationClonee = new LigneOperation();
 		ligneOperationClonee.setId(UUID.randomUUID().toString());
 		ligneOperationClonee.setLibelle(ligneOperation.getLibelle());
 		ligneOperationClonee.setSsCategorie(ligneOperation.getSsCategorie());

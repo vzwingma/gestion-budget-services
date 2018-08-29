@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
@@ -382,8 +381,7 @@ public class OperationsService {
 					TypeOperationEnum.CREDIT, 
 					Double.toString(Math.abs(ligneOperation.getValeur())), 
 					etatDepenseTransfert, 
-					ligneOperation.isPeriodique(), 
-					budgetTransfert.isActif());
+					ligneOperation.isPeriodique());
 
 			ajoutOperation(budgetTransfert, ligneTransfert, utilisateur.getLibelle());
 			calculEtSauvegardeBudget(budgetTransfert, utilisateur);
