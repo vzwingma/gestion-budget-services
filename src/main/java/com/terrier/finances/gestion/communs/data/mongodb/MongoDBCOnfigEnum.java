@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.data.mongodb;
+package com.terrier.finances.gestion.communs.data.mongodb;
 
 /**
  * Clé de variable d'environnement

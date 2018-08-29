@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
-import com.terrier.finances.gestion.model.exception.NotModifiedException;
-import com.terrier.finances.gestion.model.exception.UserNotAuthorizedException;
+import com.terrier.finances.gestion.communs.utils.exception.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exception.NotModifiedException;
+import com.terrier.finances.gestion.communs.utils.exception.UserNotAuthorizedException;
 
 /**
  * Gestion des exceptions dans le service REST

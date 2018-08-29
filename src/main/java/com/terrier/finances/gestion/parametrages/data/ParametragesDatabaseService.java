@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.terrier.finances.gestion.data.AbstractDatabaseService;
-import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
+import com.terrier.finances.gestion.communs.data.AbstractDatabaseService;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
 
 /**
  * Service de données en MongoDB fournissant les paramètres

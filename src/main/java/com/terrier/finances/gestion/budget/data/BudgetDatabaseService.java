@@ -21,11 +21,11 @@ import org.springframework.stereotype.Repository;
 import com.terrier.finances.gestion.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.budget.model.LigneDepenseDTO;
 import com.terrier.finances.gestion.budget.model.transformer.DataTransformerBudget;
-import com.terrier.finances.gestion.data.AbstractDatabaseService;
-import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
-import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.terrier.finances.gestion.model.exception.BudgetNotFoundException;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
+import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.data.AbstractDatabaseService;
+import com.terrier.finances.gestion.communs.utils.exception.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
 
 /**
  * DAO Dépenses vers MongoDB

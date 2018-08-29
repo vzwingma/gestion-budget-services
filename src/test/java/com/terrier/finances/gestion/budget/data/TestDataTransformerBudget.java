@@ -24,10 +24,10 @@ import org.mockito.stubbing.Answer;
 import com.terrier.finances.gestion.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.budget.model.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.budget.model.transformer.DataTransformerLigneDepense;
-import com.terrier.finances.gestion.model.business.budget.BudgetMensuel;
-import com.terrier.finances.gestion.model.business.parametrage.CategorieDepense;
-import com.terrier.finances.gestion.model.business.parametrage.CompteBancaire;
-import com.terrier.finances.gestion.model.exception.DataNotFoundException;
+import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
+import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
+import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
 import com.terrier.finances.gestion.parametrages.data.ParametragesDatabaseService;
 
 /**

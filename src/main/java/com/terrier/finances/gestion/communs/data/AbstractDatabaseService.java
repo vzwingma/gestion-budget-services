@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.data;
+package com.terrier.finances.gestion.communs.data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
