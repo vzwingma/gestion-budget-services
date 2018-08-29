@@ -121,6 +121,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation
 	}
 
 	
+	
 	/**
 	 * @return Ligne dépense clonée
 	 * @throws CloneNotSupportedException
