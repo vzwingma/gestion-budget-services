@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
+import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
  * Service d'authentification
@@ -38,8 +40,10 @@ public class AuthenticationService {
 	@Autowired
 	private UtilisateurDatabaseService dataDBParams;
 
-	
-	private Map<Utilisateur, BasicTextEncryptor> encrypters = new HashMap<Utilisateur, BasicTextEncryptor>();
+	/**
+	 * Session coté Business
+	 */
+	private Map<String, UserBusinessSession> businessSessions = new HashMap<String, UserBusinessSession>();
 
 	/**
 	 * Validation login/mdp
@@ -73,7 +77,7 @@ public class AuthenticationService {
 					BasicTextEncryptor decryptorCle = new BasicTextEncryptor();
 					decryptorCle.setPassword(motPasseEnClair);
 					String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getMasterCleChiffrementDonnees());
-					updateEncryter(utilisateur, cleChiffrementDonnees);
+					registerUserBusinessSession(utilisateur, cleChiffrementDonnees);
 				}
 				return utilisateur;
 			}
@@ -108,7 +112,7 @@ public class AuthenticationService {
 		String newHashPassword = PasswordEncoder.generateStrongPasswordHash(newPassword);
 		LOGGER.info("Nouveau hash du mot de passe : {}", newHashPassword);
 		utilisateur.setHashMotDePasse(PasswordEncoder.generateStrongPasswordHash(newPassword));
-		updateEncryter(utilisateur, masterKeyClear);
+		registerUserBusinessSession(utilisateur, masterKeyClear);
 		dataDBParams.majUtilisateur(utilisateur);
 	}
 	
@@ -117,16 +121,27 @@ public class AuthenticationService {
 	 * @param utilisateur
 	 * @param masterKeyClear
 	 */
-	private void updateEncryter(Utilisateur utilisateur, String masterKeyClear){
-		encrypters.putIfAbsent(utilisateur, new BasicTextEncryptor());
-		encrypters.get(utilisateur).setPassword(masterKeyClear);	
+	private void registerUserBusinessSession(Utilisateur utilisateur, String masterKeyClear){
+		this.businessSessions.putIfAbsent(utilisateur.getId(), new UserBusinessSession(utilisateur));
+		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);	
 	}
+	
+	
+	public boolean deconnexionBusinessSession(String idSession){
+		UserBusinessSession userSession = this.businessSessions.get(idSession);
+		if(userSession != null){
+			userSession.deconnexion();
+			this.businessSessions.remove(idSession);
+		}
+		return false;
+	}
+	
 	
 	/**
 	 * @param utilisateur
 	 * @return l'encryptor de l'utilisateur
 	 */
-	public BasicTextEncryptor getEncryptor(Utilisateur utilisateur){
-		return this.encrypters.get(utilisateur);
+	public UserBusinessSession getBusinessSession(String idSession){
+		return this.businessSessions.get(idSession);
 	}
 }

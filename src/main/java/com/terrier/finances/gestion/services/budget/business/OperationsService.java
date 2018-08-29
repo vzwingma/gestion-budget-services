@@ -111,7 +111,7 @@ public class OperationsService {
 	private BudgetMensuel chargerBudgetMensuelSurCompteActif(Utilisateur utilisateur, CompteBancaire compteBancaire, Month mois, int annee) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget du compte actif {} de {}/{}", compteBancaire.getId(), mois, annee);
 
-		BasicTextEncryptor encryptor = serviceAuth.getEncryptor(utilisateur);
+		BasicTextEncryptor encryptor = serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor();
 		
 		BudgetMensuel budgetMensuel = null;
 		try{
@@ -158,7 +158,7 @@ public class OperationsService {
 		LOGGER.debug("Chargement du budget du compte inactif {} de {}/{}", compteBancaire.getId(), mois, annee);
 
 		BudgetMensuel budgetMensuel = null;
-		BasicTextEncryptor encryptor = this.serviceAuth.getEncryptor(utilisateur);
+		BasicTextEncryptor encryptor = serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor();
 		try{
 			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee, encryptor);
 		}
@@ -202,7 +202,7 @@ public class OperationsService {
 	 */
 	public boolean isBudgetUpToDate(String idBudget, Calendar dateToCompare, Utilisateur utilisateur) {
 
-		BasicTextEncryptor encryptor = this.serviceAuth.getEncryptor(utilisateur);
+		BasicTextEncryptor encryptor = serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor();
 		Date dateEnBDD = this.dataDepenses.getDateMiseAJourBudget(idBudget, encryptor);
 		if(dateEnBDD != null){
 			return dateToCompare.getTime().before(dateEnBDD);
@@ -284,7 +284,7 @@ public class OperationsService {
 		}
 
 		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
-		BasicTextEncryptor encryptor = this.serviceAuth.getEncryptor(utilisateur);
+		BasicTextEncryptor encryptor = serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor();
 		String idBudget = this.dataDepenses.sauvegardeBudgetMensuel(budget, encryptor);
 		if(idBudget != null){
 			budget.setId(idBudget);
@@ -350,7 +350,7 @@ public class OperationsService {
 	 */
 	public BudgetMensuel ajoutLigneTransfertIntercompte(String idBudget, LigneOperation ligneOperation, CompteBancaire compteCrediteur, Utilisateur utilisateur) throws BudgetNotFoundException, DataNotFoundException, CompteClosedException{
 
-		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, this.serviceAuth.getEncryptor(utilisateur));
+		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor());
 		/**
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
 		 */
@@ -419,7 +419,7 @@ public class OperationsService {
 	 * @throws BudgetNotFoundException 
 	 */
 	public BudgetMensuel ajoutOperationEtCalcul(String idBudget, LigneOperation ligneOperation, Utilisateur auteur) throws BudgetNotFoundException{
-		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, this.serviceAuth.getEncryptor(auteur));
+		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, serviceAuth.getBusinessSession(auteur.getId()).getEncryptor());
 		if(budget.isActif() && budget.getCompteBancaire().isActif()){
 			ajoutOperation(budget, ligneOperation, auteur.getLibelle());
 			// Résultat mensuel
@@ -460,7 +460,7 @@ public class OperationsService {
 
 		boolean ligneupdated = false;
 		if(ligneDepense != null){
-			BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, this.serviceAuth.getEncryptor(auteur));
+			BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, serviceAuth.getBusinessSession(auteur.getId()).getEncryptor());
 			if(ligneDepense.getEtat() == null){
 				for (Iterator<LigneOperation> iterator = budget.getListeOperations().iterator(); iterator
 						.hasNext();) {
@@ -545,7 +545,7 @@ public class OperationsService {
 		}
 		// Mise à jour du budget
 		budget.setDateMiseAJour(Calendar.getInstance());
-		dataDepenses.sauvegardeBudgetMensuel(budget, this.serviceAuth.getEncryptor(utilisateur));
+		dataDepenses.sauvegardeBudgetMensuel(budget, serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor());
 	}
 
 	/**
@@ -554,7 +554,7 @@ public class OperationsService {
 	 */
 	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, Utilisateur utilisateur){
 		calculBudget(budget);
-		dataDepenses.sauvegardeBudgetMensuel(budget, this.serviceAuth.getEncryptor(utilisateur));
+		dataDepenses.sauvegardeBudgetMensuel(budget, serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor());
 		return budget;
 	}
 
