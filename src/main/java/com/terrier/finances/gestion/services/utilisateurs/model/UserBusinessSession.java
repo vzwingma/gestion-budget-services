@@ -39,6 +39,6 @@ public class UserBusinessSession {
 
 	public void deconnexion(){
 		this.utilisateur = null;
-		this.encryptor.setPassword(null);
+		this.encryptor = null;
 	}
 }

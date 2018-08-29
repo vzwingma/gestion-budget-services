@@ -99,7 +99,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 			queryBudget
 				.addCriteria(Criteria.where("id").is(idCompte));
 			CompteBancaire compte =  getMongoOperation().findOne(queryBudget, CompteBancaire.class);		
-			if(compte.getListeProprietaires().stream().anyMatch(u -> u.getLogin().equals(utilisateur))){
+			if(compte.getListeProprietaires().stream().anyMatch(u -> u.getId().equals(utilisateur))){
 				return compte;
 			}
 			else{
