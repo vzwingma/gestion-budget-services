@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value="/rest/admin")
-@Api(consumes="application/json", protocols="https", value="Administration", tags={"Services"})
+@Api(consumes="application/json", protocols="https", value="Administration", tags={"Administration"})
 public class AdminRestController {
 
 
@@ -77,8 +77,5 @@ public class AdminRestController {
 			LOGGER.error(returnErr);
 			return returnErr;
 		}
-		
-		
-	}
-	
+	}	
 }

@@ -15,7 +15,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableScheduling
 @EnableWebMvc
 @EnableAsync
-@ComponentScan(basePackages = {"com.terrier.finances.gestion.services.admin.api", "com.terrier.finances.gestion.services.statut.api", "com.terrier.finances.gestion.services.communs.rest.config"})
+@ComponentScan(basePackages = {"com.terrier.finances.gestion.services.admin.api", 
+		"com.terrier.finances.gestion.services.statut.api", 
+		"com.terrier.finances.gestion.services.communs.rest.config", 
+		"com.terrier.finances.gestion.services.utilisateurs.api"})
 public class RessourcesConfig implements WebMvcConfigurer{
 
 

@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value="/rest")
-@Api(consumes="application/json", protocols="https", value="Administration", tags={"Services"})
+@Api(consumes="application/json", protocols="https", value="Administration", tags={"Administration"})
 public class StatutRestController {
 
 
