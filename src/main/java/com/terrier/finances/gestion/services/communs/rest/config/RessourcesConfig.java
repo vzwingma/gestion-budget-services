@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.business;
+package com.terrier.finances.gestion.services.communs.rest.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableScheduling
 @EnableWebMvc
 @EnableAsync
-@ComponentScan(basePackages = {"com.terrier.finances.gestion.business.rest",  "com.terrier.finances.gestion.services.communs.rest.config"})
-public class BudgetConfig implements WebMvcConfigurer{
+@ComponentScan(basePackages = {"com.terrier.finances.gestion.services.admin.api", "com.terrier.finances.gestion.services.statut.api", "com.terrier.finances.gestion.services.communs.rest.config"})
+public class RessourcesConfig implements WebMvcConfigurer{
 
 
 	/*

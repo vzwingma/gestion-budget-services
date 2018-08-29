@@ -8,8 +8,6 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import com.terrier.finances.gestion.services.business.BudgetConfig;
-
 
 /**
  * Initialisation de la configuration REST
@@ -20,7 +18,7 @@ public class ApiRestInitializer implements WebApplicationInitializer {
 	public void onStartup(ServletContext container) throws ServletException {
 
 		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-		ctx.register(BudgetConfig.class);
+		ctx.register(RessourcesConfig.class);
 		ctx.setServletContext(container);
 
 		ServletRegistration.Dynamic servlet = container.addServlet(
