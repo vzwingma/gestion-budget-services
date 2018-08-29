@@ -64,8 +64,8 @@ public class AdminRestController {
 	public String password(@PathVariable("login") String login, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
 		LOGGER.info("Changement du mot de passe pour {}", login);
 		
-		Utilisateur utilisateur = authService.authenticate(login, oldpassword);
-		
+		String idUtilisateur = authService.authenticate(login, oldpassword);
+		Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
 		if(utilisateur != null){
 			authService.changePassword(utilisateur, oldpassword, newPassword);
 			String returnOK = "Le mot de passe de "+utilisateur.getLibelle()+ " a bien été modifié : \n " + utilisateur.toFullString();

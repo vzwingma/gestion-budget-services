@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
+import com.terrier.finances.gestion.services.communs.abstrait.AbstractBusinessService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
@@ -24,7 +25,7 @@ import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSess
  *
  */
 @Service
-public class AuthenticationService {
+public class AuthenticationService extends AbstractBusinessService {
 
 	/**
 	 * Logger
@@ -52,7 +53,7 @@ public class AuthenticationService {
 	 * @param motPasseEnClair mdp
 	 * @return si valide
 	 */
-	public Utilisateur authenticate(String login, String motPasseEnClair){
+	public String authenticate(String login, String motPasseEnClair){
 
 		LOGGER.info("Tentative d'authentification de {}", login);
 		Utilisateur utilisateur;
@@ -80,7 +81,7 @@ public class AuthenticationService {
 					String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getMasterCleChiffrementDonnees());
 					registerUserBusinessSession(utilisateur, cleChiffrementDonnees);
 				}
-				return utilisateur;
+				return utilisateur.getId();
 			}
 			else{
 				LOGGER.error("Erreur 1 lors de l'authentification. Mot de passe incorrect");
@@ -141,16 +142,6 @@ public class AuthenticationService {
 		}
 		return false;
 	}
-	
-	
-	/**
-	 * @param utilisateur
-	 * @return l'encryptor de l'utilisateur
-	 */
-	public UserBusinessSession getBusinessSession(String idSession){
-		return this.businessSessions.get(idSession);
-	}
-	
 	
 
 

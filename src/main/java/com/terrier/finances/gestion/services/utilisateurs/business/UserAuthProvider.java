@@ -10,8 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
-import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
-
 /**
  * Gestionnaire de sessions REST
  * @author vzwingma
@@ -37,7 +35,7 @@ public class UserAuthProvider implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) {
 		String username = authentication.getName();
 		String password = (String) authentication.getCredentials();
-		Utilisateur utilisateur = authenticationService.authenticate(username, password);
+		String utilisateur = authenticationService.authenticate(username, password);
 		if (utilisateur == null) {
 			throw new BadCredentialsException("Erreur d'authentification.");
 		}
