@@ -28,9 +28,8 @@ import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundExceptio
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense;
-import com.terrier.finances.gestion.services.parametrages.business.ParametragesService;
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
-import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
+import com.terrier.finances.gestion.services.communs.abstrait.AbstractBusinessService;
+import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
  * Service Métier : Operations
@@ -38,7 +37,7 @@ import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDataba
  *
  */
 @Service
-public class OperationsService {
+public class OperationsService extends AbstractBusinessService {
 
 
 	/**
@@ -51,15 +50,6 @@ public class OperationsService {
 	 */
 	@Autowired
 	private BudgetDatabaseService dataDepenses;
-	@Autowired
-	private UtilisateurDatabaseService dataUsers;
-	/**
-	 * Paramétrages
-	 */
-	@Autowired
-	private ParametragesService serviceParams;
-	@Autowired
-	private AuthenticationService serviceAuth;
 
 	private DataTransformerLigneDepense transformer = new DataTransformerLigneDepense();
 	
@@ -81,23 +71,23 @@ public class OperationsService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	public BudgetMensuel chargerBudgetMensuel(Utilisateur utilisateur, CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
+	public BudgetMensuel chargerBudgetMensuel(String idUtilisateur, CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget {} de {}/{}", compte, mois, annee);
 
-		CompteBancaire compteBancaire = serviceParams.getCompteById(compte.getId(), utilisateur.getLogin());
+		CompteBancaire compteBancaire = getServiceUtilisateurs().getCompteById(compte.getId(), idUtilisateur);
 		if(compteBancaire != null){
 			if(compteBancaire.isActif()){
 				try {
-					return chargerBudgetMensuelSurCompteActif(utilisateur, compteBancaire, mois, annee);
+					return chargerBudgetMensuelSurCompteActif(idUtilisateur, compteBancaire, mois, annee);
 				} catch (CompteClosedException e) {
 					// Rien car géré en aval
 				}
 			}
 			else{
-				return chargerBudgetMensuelSurCompteInactif(utilisateur, compteBancaire, mois, annee);
+				return chargerBudgetMensuelSurCompteInactif(idUtilisateur, compteBancaire, mois, annee);
 			}
 		}
-		throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte).append(" de ").append(utilisateur));
+		throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte).append(" de ").append(idUtilisateur));
 	}
 
 
@@ -108,17 +98,17 @@ public class OperationsService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	private BudgetMensuel chargerBudgetMensuelSurCompteActif(Utilisateur utilisateur, CompteBancaire compteBancaire, Month mois, int annee) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
+	private BudgetMensuel chargerBudgetMensuelSurCompteActif(String idUtilisateur, CompteBancaire compteBancaire, Month mois, int annee) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget du compte actif {} de {}/{}", compteBancaire.getId(), mois, annee);
 
-		BasicTextEncryptor encryptor = serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor();
+		BasicTextEncryptor encryptor = getBusinessSession(idUtilisateur).getEncryptor();
 		
 		BudgetMensuel budgetMensuel = null;
 		try{
 			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee, encryptor);
 		}
 		catch(BudgetNotFoundException e){
-			budgetMensuel = initNewBudget(compteBancaire, utilisateur, mois, annee);
+			budgetMensuel = initNewBudget(compteBancaire, idUtilisateur, mois, annee);
 		}
 		// Maj du budget ssi budget actif
 		if(budgetMensuel != null && budgetMensuel.isActif()){
@@ -138,7 +128,7 @@ public class OperationsService {
 				LOGGER.error("Le budget précédent celui de [{}/{}] est introuvable", mois, annee);
 			}
 			// Résultat mensuel mis à jour
-			calculEtSauvegardeBudget(budgetMensuel, utilisateur);
+			calculEtSauvegardeBudget(budgetMensuel, idUtilisateur);
 			// Ajout de l'autocomplete
 			budgetMensuel.getSetLibellesDepensesForAutocomplete().addAll(this.dataDepenses.chargeLibellesDepenses(compteBancaire.getId(), annee, encryptor));
 		}
@@ -154,18 +144,18 @@ public class OperationsService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	private BudgetMensuel chargerBudgetMensuelSurCompteInactif(Utilisateur utilisateur, CompteBancaire compteBancaire, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
+	private BudgetMensuel chargerBudgetMensuelSurCompteInactif(String idUtilisateur, CompteBancaire compteBancaire, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget du compte inactif {} de {}/{}", compteBancaire.getId(), mois, annee);
 
 		BudgetMensuel budgetMensuel = null;
-		BasicTextEncryptor encryptor = serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor();
+		BasicTextEncryptor encryptor = getBusinessSession(idUtilisateur).getEncryptor();
 		try{
 			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee, encryptor);
 		}
 		catch(BudgetNotFoundException e){
 			Month moisPrecedent = mois.minus(1);
 			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
-			budgetMensuel = chargerBudgetMensuelSurCompteInactif(utilisateur, compteBancaire, moisPrecedent, anneePrecedente);
+			budgetMensuel = chargerBudgetMensuelSurCompteInactif(idUtilisateur, compteBancaire, moisPrecedent, anneePrecedente);
 		}
 		// On reporte l'état inactif du compte sur les anciens budgets
 		budgetMensuel.setCompteBancaire(compteBancaire);
@@ -200,9 +190,9 @@ public class OperationsService {
 	 * @param idBudget identifiant du budget
 	 * @return la date de mise à jour du  budget
 	 */
-	public boolean isBudgetUpToDate(String idBudget, Calendar dateToCompare, Utilisateur utilisateur) {
+	public boolean isBudgetUpToDate(String idBudget, Calendar dateToCompare, String utilisateur) {
 
-		BasicTextEncryptor encryptor = serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor();
+		BasicTextEncryptor encryptor = getBusinessSession(utilisateur).getEncryptor();
 		Date dateEnBDD = this.dataDepenses.getDateMiseAJourBudget(idBudget, encryptor);
 		if(dateEnBDD != null){
 			return dateToCompare.getTime().before(dateEnBDD);
@@ -213,20 +203,6 @@ public class OperationsService {
 		}
 	}
 
-
-
-	/**
-	 * @param idCompte id du compte
-	 * @return etat du compte
-	 */
-	public boolean isCompteActif(String idCompte){
-		try {
-			return dataUsers.isCompteActif(idCompte);
-		} catch (DataNotFoundException e) {
-			return false;
-		}
-
-	}
 
 	/**
 	 * Chargement de l'état du budget du mois courant en consultation
@@ -249,7 +225,7 @@ public class OperationsService {
 	 * @throws BudgetNotFoundException erreur budhet
 	 * @throws DataNotFoundException erreur données
 	 */
-	private BudgetMensuel initNewBudget(CompteBancaire compteBancaire, Utilisateur utilisateur, Month mois, int annee) throws BudgetNotFoundException,CompteClosedException, DataNotFoundException{
+	private BudgetMensuel initNewBudget(CompteBancaire compteBancaire, String idUtilisateur, Month mois, int annee) throws BudgetNotFoundException,CompteClosedException, DataNotFoundException{
 		LOGGER.info("[INIT] Initialisation du budget {} de {}/{}", compteBancaire.getId(), mois, annee);
 		BudgetMensuel budget = new BudgetMensuel();
 		budget.setActif(true);
@@ -269,7 +245,7 @@ public class OperationsService {
 			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 			// Recherche du budget précédent 
 			// Si impossible : BudgetNotFoundException
-			initBudgetFromBudgetPrecedent(budget, chargerBudgetMensuel(utilisateur, compteBancaire, moisPrecedent, anneePrecedente));
+			initBudgetFromBudgetPrecedent(budget, chargerBudgetMensuel(idUtilisateur, compteBancaire, moisPrecedent, anneePrecedente));
 		}
 		else{
 			LOGGER.warn("Le budget {}/{} n'a jamais existé", mois, annee);
@@ -284,7 +260,7 @@ public class OperationsService {
 		}
 
 		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
-		BasicTextEncryptor encryptor = serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor();
+		BasicTextEncryptor encryptor = getBusinessSession(idUtilisateur).getEncryptor();
 		String idBudget = this.dataDepenses.sauvegardeBudgetMensuel(budget, encryptor);
 		if(idBudget != null){
 			budget.setId(idBudget);
@@ -302,12 +278,12 @@ public class OperationsService {
 	 * @throws DataNotFoundException  erreur sur les données
 	 * @throws BudgetNotFoundException budget introuvable
 	 */
-	public BudgetMensuel reinitialiserBudgetMensuel(BudgetMensuel budgetMensuel, Utilisateur utilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
+	public BudgetMensuel reinitialiserBudgetMensuel(BudgetMensuel budgetMensuel, String idUtilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
-		CompteBancaire compteBancaire = serviceParams.getCompteById(budgetMensuel.getCompteBancaire().getId(), utilisateur.getLogin());
+		CompteBancaire compteBancaire = getServiceUtilisateurs().getCompteById(budgetMensuel.getCompteBancaire().getId(), idUtilisateur);
 		if(compteBancaire != null){
 			// S'il y a eu cloture, on ne fait rien
-			return initNewBudget(compteBancaire, utilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
+			return initNewBudget(compteBancaire, idUtilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
 		}
 		else{
 			throw new DataNotFoundException("Le compte bancaire " + budgetMensuel.getCompteBancaire().getId() + " est introuvable");
@@ -348,13 +324,14 @@ public class OperationsService {
 	 * @throws DataNotFoundException erreur données
 	 * @throws CompteClosedException 
 	 */
-	public BudgetMensuel ajoutLigneTransfertIntercompte(String idBudget, LigneOperation ligneOperation, CompteBancaire compteCrediteur, Utilisateur utilisateur) throws BudgetNotFoundException, DataNotFoundException, CompteClosedException{
+	public BudgetMensuel ajoutLigneTransfertIntercompte(String idBudget, LigneOperation ligneOperation, CompteBancaire compteCrediteur, String idUtilisateur) throws BudgetNotFoundException, DataNotFoundException, CompteClosedException{
 
-		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor());
+		UserBusinessSession userSession = getBusinessSession(idUtilisateur);
+		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, userSession.getEncryptor());
 		/**
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
 		 */
-		BudgetMensuel budgetTransfert = chargerBudgetMensuel(utilisateur, compteCrediteur, budget.getMois(), budget.getAnnee());
+		BudgetMensuel budgetTransfert = chargerBudgetMensuel(idUtilisateur, compteCrediteur, budget.getMois(), budget.getAnnee());
 		if(budget.getCompteBancaire().isActif() && budgetTransfert.getCompteBancaire().isActif() && budget.isActif() && budgetTransfert.isActif()){
 			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneOperation);
 
@@ -383,13 +360,13 @@ public class OperationsService {
 					etatDepenseTransfert, 
 					ligneOperation.isPeriodique());
 
-			ajoutOperation(budgetTransfert, ligneTransfert, utilisateur.getLibelle());
-			calculEtSauvegardeBudget(budgetTransfert, utilisateur);
+			ajoutOperation(budgetTransfert, ligneTransfert, userSession.getUtilisateur());
+			calculEtSauvegardeBudget(budgetTransfert, idUtilisateur);
 			/**
 			 *  Ajout de la ligne dans le budget courant
 			 */
 			ligneOperation.setLibelle("[vers "+budgetTransfert.getCompteBancaire().getLibelle()+"] " + ligneOperation.getLibelle());
-			return ajoutOperationEtCalcul(idBudget, ligneOperation, utilisateur);
+			return ajoutOperationEtCalcul(idBudget, ligneOperation, idUtilisateur);
 		}
 		else{
 			throw new CompteClosedException(new StringBuilder("Impossible d'ajouter une opération de transfert intercompte : L'un des deux comptes est cloturé"));
@@ -403,9 +380,9 @@ public class OperationsService {
 	 * @param ligneOperation ligne de dépense
 	 * @param auteur auteur de l'action
 	 */
-	private void ajoutOperation(BudgetMensuel budget, LigneOperation ligneOperation, String auteur){
+	private void ajoutOperation(BudgetMensuel budget, LigneOperation ligneOperation, Utilisateur auteur){
 		LOGGER.info("Ajout d'une Opération : {}", ligneOperation);
-		ligneOperation.setAuteur(auteur);
+		ligneOperation.setAuteur(auteur.getLibelle());
 		ligneOperation.setDateMaj(Calendar.getInstance().getTime());
 		budget.getListeOperations().add(ligneOperation);
 		budget.setDateMiseAJour(Calendar.getInstance());
@@ -415,15 +392,16 @@ public class OperationsService {
 	/**
 	 * Ajout d'une ligne de dépense
 	 * @param ligneOperation ligne de dépense
-	 * @param auteur auteur de l'action 
+	 * @param idUtilisateur auteur de l'action 
 	 * @throws BudgetNotFoundException 
 	 */
-	public BudgetMensuel ajoutOperationEtCalcul(String idBudget, LigneOperation ligneOperation, Utilisateur auteur) throws BudgetNotFoundException{
-		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, serviceAuth.getBusinessSession(auteur.getId()).getEncryptor());
+	public BudgetMensuel ajoutOperationEtCalcul(String idBudget, LigneOperation ligneOperation, String idUtilisateur) throws BudgetNotFoundException{
+		UserBusinessSession userSession = getBusinessSession(idUtilisateur);
+		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, userSession.getEncryptor());
 		if(budget.isActif() && budget.getCompteBancaire().isActif()){
-			ajoutOperation(budget, ligneOperation, auteur.getLibelle());
+			ajoutOperation(budget, ligneOperation, userSession.getUtilisateur());
 			// Résultat mensuel
-			budget = calculEtSauvegardeBudget(budget, auteur);
+			budget = calculEtSauvegardeBudget(budget, idUtilisateur);
 		}
 		else{
 			LOGGER.warn("Impossible créer une nouvelle opération. Le compte est cloturé");
@@ -452,15 +430,16 @@ public class OperationsService {
 	 * Mise à jour d'une ligne de dépense 
 	 * @param idBudget identifiant de budget
 	 * @param ligneDepense ligne de dépense
-	 * @param auteur auteur
+	 * @param idUtilisateur auteur
 	 * @throws DataNotFoundException
 	 * @throws BudgetNotFoundException
 	 */
-	public BudgetMensuel majLigneDepense(String idBudget, LigneOperation ligneDepense, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
+	public BudgetMensuel majLigneDepense(String idBudget, LigneOperation ligneDepense, String idUtilisateur) throws DataNotFoundException, BudgetNotFoundException{
 
 		boolean ligneupdated = false;
 		if(ligneDepense != null){
-			BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, serviceAuth.getBusinessSession(auteur.getId()).getEncryptor());
+			UserBusinessSession auteur = getBusinessSession(idUtilisateur);
+			BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, auteur.getEncryptor());
 			if(ligneDepense.getEtat() == null){
 				for (Iterator<LigneOperation> iterator = budget.getListeOperations().iterator(); iterator
 						.hasNext();) {
@@ -473,7 +452,7 @@ public class OperationsService {
 			}
 			else{
 				ligneDepense.setDateMaj(Calendar.getInstance().getTime());
-				ligneDepense.setAuteur(auteur.getLibelle());
+				ligneDepense.setAuteur(auteur.getUtilisateur().getLibelle());
 				// Mise à jour de la ligne de dépense
 				for (int i = 0; i < budget.getListeOperations().size(); i++) {
 					if(budget.getListeOperations().get(i).getId().equals(ligneDepense.getId())){
@@ -487,7 +466,7 @@ public class OperationsService {
 				// Mise à jour du budget
 				budget.setDateMiseAJour(Calendar.getInstance());
 				// Budget
-				budget = calculEtSauvegardeBudget(budget, auteur);
+				budget = calculEtSauvegardeBudget(budget, idUtilisateur);
 				return budget;
 			}
 			else{
@@ -509,7 +488,7 @@ public class OperationsService {
 	 * @throws DataNotFoundException erreur ligne non trouvé
 	 * @throws BudgetNotFoundException not found
 	 */
-	public BudgetMensuel majEtatLigneOperation(BudgetMensuel budget, String ligneId, EtatLigneOperationEnum etat, Utilisateur auteur) throws DataNotFoundException, BudgetNotFoundException{
+	public BudgetMensuel majEtatLigneOperation(BudgetMensuel budget, String ligneId, EtatLigneOperationEnum etat, String idUtilisateur) throws DataNotFoundException, BudgetNotFoundException{
 		LigneOperation ligneOperation = getLigneOperation(budget, ligneId);
 		// Mise à jour de l'état
 		if(ligneOperation != null){
@@ -522,8 +501,8 @@ public class OperationsService {
 			}
 			// Mise à jour de la ligne
 			ligneOperation.setDateMaj(Calendar.getInstance().getTime());
-			ligneOperation.setAuteur(auteur.getLibelle());
-			budget = majLigneDepense(budget.getId(), ligneOperation, auteur);
+			ligneOperation.setAuteur(getBusinessSession(idUtilisateur).getUtilisateur().getLibelle());
+			budget = majLigneDepense(budget.getId(), ligneOperation, idUtilisateur);
 		}
 		return budget;
 	}	
@@ -533,7 +512,7 @@ public class OperationsService {
 	 * Mise à jour de la ligne comme dernière opération
 	 * @param ligneId
 	 */
-	public void setLigneDepenseAsDerniereOperation(BudgetMensuel budget, String ligneId, Utilisateur utilisateur){
+	public void setLigneDepenseAsDerniereOperation(BudgetMensuel budget, String ligneId, String idUtilisateur){
 		for (LigneOperation ligne : budget.getListeOperations()) {
 			if(ligne.getId().equals(ligneId)){
 				LOGGER.info("Tag de la ligne {} comme dernière opération", ligne);
@@ -545,16 +524,16 @@ public class OperationsService {
 		}
 		// Mise à jour du budget
 		budget.setDateMiseAJour(Calendar.getInstance());
-		dataDepenses.sauvegardeBudgetMensuel(budget, serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor());
+		dataDepenses.sauvegardeBudgetMensuel(budget, getBusinessSession(idUtilisateur).getEncryptor());
 	}
 
 	/**
 	 * Calcul du budget Courant et sauvegarde
 	 * @param budget budget à sauvegarder
 	 */
-	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, Utilisateur utilisateur){
+	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, String utilisateur){
 		calculBudget(budget);
-		dataDepenses.sauvegardeBudgetMensuel(budget, serviceAuth.getBusinessSession(utilisateur.getId()).getEncryptor());
+		dataDepenses.sauvegardeBudgetMensuel(budget, getBusinessSession(utilisateur).getEncryptor());
 		return budget;
 	}
 
@@ -634,7 +613,7 @@ public class OperationsService {
 	 * Lock/unlock d'un budget
 	 * @param budgetActif
 	 */
-	public BudgetMensuel setBudgetActif(BudgetMensuel budgetMensuel, boolean budgetActif, Utilisateur utilisateur){
+	public BudgetMensuel setBudgetActif(BudgetMensuel budgetMensuel, boolean budgetActif, String utilisateur){
 		LOGGER.info("{} du budget {}/{} de {}", budgetActif ? "Réouverture" : "Fermeture", budgetMensuel.getMois(), budgetMensuel.getAnnee(), budgetMensuel.getCompteBancaire().getLibelle());
 		budgetMensuel.setActif(budgetActif);
 		budgetMensuel.setDateMiseAJour(Calendar.getInstance());

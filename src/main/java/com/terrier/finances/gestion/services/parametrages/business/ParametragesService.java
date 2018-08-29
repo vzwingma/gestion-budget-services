@@ -9,13 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
-import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.DataUtils;
 import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
+import com.terrier.finances.gestion.services.communs.abstrait.AbstractBusinessService;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
-import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 
 /**
  * Service fournissant les paramètres
@@ -23,7 +21,7 @@ import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDataba
  *
  */
 @Service
-public class ParametragesService {
+public class ParametragesService extends AbstractBusinessService {
 
 
 	/**
@@ -40,15 +38,12 @@ public class ParametragesService {
 	
 	@Autowired
 	private ParametragesDatabaseService dataParams;
-	@Autowired
-	private UtilisateurDatabaseService dataUsers;
+
 	/**
 	 * Liste des catégories
 	 */
 	private List<CategorieDepense> listeCategories;
 
-	
-	
 	
 	/**
 	 * @return the version
@@ -149,29 +144,7 @@ public class ParametragesService {
 		throw new DataNotFoundException("Catégorie introuvable");
 	}
 	
-	/**
-	 * Recherche du compte par id
-	 * @param idCompte id du compte
-	 * @param utilisateur utilisateur
-	 * @return compteBancaire
-	 * @throws DataNotFoundException
-	 */
-	public CompteBancaire getCompteById(String idCompte, String proprietaire) throws DataNotFoundException{
-		return dataUsers.chargeCompteParId(idCompte, proprietaire);
-	}
 
-
-
-	/**
-	 * Recherche des comptes d'un utilisateur
-	 * @param utilisateur utilisateur
-	 * @return liste des comptes bancaires
-	 * @throws DataNotFoundException
-	 */
-	public List<CompteBancaire> getComptesUtilisateur(Utilisateur utilisateur) throws DataNotFoundException{
-		return dataUsers.chargeComptes(utilisateur);
-	}
-	
 	
 	/**
 	 * Reset des données

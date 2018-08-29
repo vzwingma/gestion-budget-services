@@ -3,8 +3,8 @@ package com.terrier.finances.gestion.services.utilisateurs.business;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
@@ -38,7 +39,7 @@ public class AuthenticationService {
 	 * Paramétrages
 	 */
 	@Autowired
-	private UtilisateurDatabaseService dataDBParams;
+	private UtilisateurDatabaseService dataDBUsers;
 
 	/**
 	 * Session coté Business
@@ -56,7 +57,7 @@ public class AuthenticationService {
 		LOGGER.info("Tentative d'authentification de {}", login);
 		Utilisateur utilisateur;
 		try {
-			utilisateur = dataDBParams.chargeUtilisateur(login);
+			utilisateur = dataDBUsers.chargeUtilisateur(login);
 		} catch (DataNotFoundException e) {
 			utilisateur = null;
 		}
@@ -65,7 +66,7 @@ public class AuthenticationService {
 			// Vérification du mot de passe
 			if(PasswordEncoder.validatePassword(motPasseEnClair, utilisateur.getHashMotDePasse())){
 				// Enregistrement de la date du dernier accès à maintenant
-				dataDBParams.majUtilisateur(utilisateur);
+				dataDBUsers.majUtilisateur(utilisateur);
 				Date dernierAcces = Calendar.getInstance().getTime();
 				utilisateur.setDernierAcces(dernierAcces);
 				if(utilisateur.getMasterCleChiffrementDonnees() == null){
@@ -113,7 +114,7 @@ public class AuthenticationService {
 		LOGGER.info("Nouveau hash du mot de passe : {}", newHashPassword);
 		utilisateur.setHashMotDePasse(PasswordEncoder.generateStrongPasswordHash(newPassword));
 		registerUserBusinessSession(utilisateur, masterKeyClear);
-		dataDBParams.majUtilisateur(utilisateur);
+		dataDBUsers.majUtilisateur(utilisateur);
 	}
 	
 	/**
@@ -127,6 +128,11 @@ public class AuthenticationService {
 	}
 	
 	
+	/**
+	 * Déconnexion de la session Business
+	 * @param idSession
+	 * @return résultat de la déconnexion
+	 */
 	public boolean deconnexionBusinessSession(String idSession){
 		UserBusinessSession userSession = this.businessSessions.get(idSession);
 		if(userSession != null){
@@ -144,4 +150,43 @@ public class AuthenticationService {
 	public UserBusinessSession getBusinessSession(String idSession){
 		return this.businessSessions.get(idSession);
 	}
+	
+	
+
+
+	/**
+	 * @param idCompte id du compte
+	 * @return etat du compte
+	 */
+	public boolean isCompteActif(String idCompte){
+		try {
+			return dataDBUsers.isCompteActif(idCompte);
+		} catch (DataNotFoundException e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * Recherche du compte par id
+	 * @param idCompte id du compte
+	 * @param utilisateur utilisateur
+	 * @return compteBancaire
+	 * @throws DataNotFoundException
+	 */
+	public CompteBancaire getCompteById(String idCompte, String proprietaire) throws DataNotFoundException{
+		return dataDBUsers.chargeCompteParId(idCompte, proprietaire);
+	}
+
+
+
+	/**
+	 * Recherche des comptes d'un utilisateur
+	 * @param utilisateur utilisateur
+	 * @return liste des comptes bancaires
+	 * @throws DataNotFoundException
+	 */
+	public List<CompteBancaire> getComptesUtilisateur(String idUtilisateur) throws DataNotFoundException{
+		return dataDBUsers.chargeComptes(idUtilisateur);
+	}
+	
 }
