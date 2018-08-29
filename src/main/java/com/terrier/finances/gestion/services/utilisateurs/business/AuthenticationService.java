@@ -32,10 +32,6 @@ public class AuthenticationService extends AbstractBusinessService {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
 
-	public AuthenticationService(){
-		LOGGER.info("[INIT] Authentification Service");
-	}
-
 	/**
 	 * Paramétrages
 	 */
@@ -126,6 +122,10 @@ public class AuthenticationService extends AbstractBusinessService {
 	private void registerUserBusinessSession(Utilisateur utilisateur, String masterKeyClear){
 		this.businessSessions.putIfAbsent(utilisateur.getId(), new UserBusinessSession(utilisateur));
 		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);	
+	}
+	
+	public UserBusinessSession getBusinessSession(String idSession){
+		return this.businessSessions.get(idSession);
 	}
 	
 	

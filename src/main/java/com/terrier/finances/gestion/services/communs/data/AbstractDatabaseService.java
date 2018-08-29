@@ -36,7 +36,7 @@ public abstract class AbstractDatabaseService {
 	 * Constructeur permettant de définir les composants utilisés en DATA
 	 */
 	public AbstractDatabaseService(){
-		LOGGER.info("[INIT] Service {}", this.getClass());
+		LOGGER.info("[INIT] Service {}", this.getClass().getSimpleName());
 	}
 
 	

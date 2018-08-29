@@ -1,6 +1,9 @@
 package com.terrier.finances.gestion.services.communs.abstrait;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.services.budget.business.OperationsService;
 import com.terrier.finances.gestion.services.parametrages.business.ParametragesService;
@@ -12,20 +15,31 @@ import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSess
  * @author vzwingma
  *
  */
-public abstract class AbstractBusinessService {
+@Service
+public class AbstractBusinessService {
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBusinessService.class);
+	
+	public AbstractBusinessService(){
+		LOGGER.info("[INIT] Service {}", this.getClass().getSimpleName());
+	}
+	/**
+	 * Constructeur permettant de définir les composants utilisés en DATA
+	 */
 
 	@Autowired
 	private ParametragesService serviceParams;
 	@Autowired
 	private AuthenticationService serviceUtilisateurs;
-
 	@Autowired
 	private OperationsService serviceOperation;
 
 	/**
 	 * @return the serviceParams
 	 */
-	protected ParametragesService getServiceParams() {
+	public ParametragesService getServiceParams() {
 		return serviceParams;
 	}
 
@@ -43,7 +57,7 @@ public abstract class AbstractBusinessService {
 	/**
 	 * @return the serviceAuth
 	 */
-	protected AuthenticationService getServiceUtilisateurs() {
+	public AuthenticationService getServiceUtilisateurs() {
 		return serviceUtilisateurs;
 	}
 
@@ -57,7 +71,7 @@ public abstract class AbstractBusinessService {
 	/**
 	 * @return the serviceOperation
 	 */
-	protected OperationsService getServiceOperation() {
+	public OperationsService getServiceOperation() {
 		return serviceOperation;
 	}
 
