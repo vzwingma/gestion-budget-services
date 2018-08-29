@@ -8,9 +8,9 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.terrier.finances.gestion.business.statut.objects.DependencyName;
-import com.terrier.finances.gestion.business.statut.objects.StatutDependencyObject;
-import com.terrier.finances.gestion.business.statut.objects.StatutStateEnum;
+import com.terrier.finances.gestion.services.statut.model.DependencyName;
+import com.terrier.finances.gestion.services.statut.model.StatutDependencyObject;
+import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
 /**
  * @author vzwingma

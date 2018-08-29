@@ -18,11 +18,11 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.terrier.finances.gestion.budget.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.budget.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.budget.model.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.DataUtils;
+import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/test-spring-config.xml")
