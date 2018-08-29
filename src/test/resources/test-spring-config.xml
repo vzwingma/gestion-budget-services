@@ -8,12 +8,12 @@
 	http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<bean class="com.terrier.finances.gestion.business.TestBudgetConfig" />	
-	<bean class="com.terrier.finances.gestion.data.mongodb.SpringMongoDBConfig" />
-	<bean class="com.terrier.finances.gestion.budget.data.BudgetDatabaseService" />
-	<bean class="com.terrier.finances.gestion.business.statut.StatusApplicationService" />
-	<bean class="com.terrier.finances.gestion.parametrages.data.ParametragesDatabaseService" />
-	<bean class="com.terrier.finances.gestion.budget.model.transformer.DataTransformerLigneDepense" id="dataTransformerLigneDepense" />
-	<bean class="com.terrier.finances.gestion.budget.model.transformer.DataTransformerBudget" id="dataTransformerBudget"/>
+	<bean class="com.terrier.finances.gestion.services.communs.data.mongodb.SpringMongoDBConfig" />
+	<bean class="com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService" />
+	<bean class="com.terrier.finances.gestion.services.statut.business.StatusApplicationService" />
+	<bean class="com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService" />
+	<bean class="com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense" id="dataTransformerLigneDepense" />
+	<bean class="com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget" id="dataTransformerBudget"/>
 	<!-- Properties par Config.properties -->
 	<context:property-placeholder location="classpath:config.properties" ignore-resource-not-found="true" />
 </beans>
