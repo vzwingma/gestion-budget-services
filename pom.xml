@@ -33,7 +33,7 @@
 			<artifactId>communs</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-			
+
 		<!-- SPRING -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -98,6 +98,13 @@
 			<artifactId>javax.servlet.jsp-api</artifactId>
 			<version>2.3.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.test-framework</groupId>
+			<artifactId>jersey-test-framework-core</artifactId>
+			<version>${jersey.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Chiffrement -->
 		<dependency>
 			<groupId>org.jasypt</groupId>
