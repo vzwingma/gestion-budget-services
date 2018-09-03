@@ -122,7 +122,6 @@ public class OperationsService extends AbstractBusinessService {
 				if(budgetPrecedent.isActif()){
 					calculBudget(budgetPrecedent);
 				}
-				// TODO : Et si le budget n'est pas actif ? On ne recacule pas ?
 				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
 			}
 			catch(BudgetNotFoundException e){
@@ -247,9 +246,10 @@ public class OperationsService extends AbstractBusinessService {
 			// Recherche du budget précédent 
 			// Si impossible : BudgetNotFoundException
 			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(idUtilisateur, compteBancaire, moisPrecedent, anneePrecedente);
-            initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 			// #115 : Cloture automatique du mois précédent
 			setBudgetActif(budgetPrecedent, false, idUtilisateur);
+			
+			initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 		}
 		else{
 			LOGGER.warn("Le budget {} n'a jamais existé", compteBancaire.getLibelle());

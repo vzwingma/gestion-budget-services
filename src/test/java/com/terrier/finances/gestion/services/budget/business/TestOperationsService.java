@@ -2,13 +2,9 @@ package com.terrier.finances.gestion.services.budget.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.temporal.ChronoField;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.Before;
@@ -16,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -26,8 +21,6 @@ import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatLigneOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
-import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
 
@@ -90,7 +83,5 @@ public class TestOperationsService {
 	public void testSetBudgetInactif(){
 		BudgetMensuel m = operationsService.setBudgetActif(this.budget, false, "TEST");
 		assertEquals(EtatLigneOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
-	}
-	
-
+	}	
 }
