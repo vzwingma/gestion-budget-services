@@ -55,7 +55,7 @@ public class AbstractBusinessService {
 	 * @return businessSession
 	 */
 	public UserBusinessSession getBusinessSession(String idSession){
-		return getServiceUtilisateurs().getBusinessUserSession(idSession);
+		return getServiceUtilisateurs().getBusinessSession(idSession);
 	}
 	
 	/**

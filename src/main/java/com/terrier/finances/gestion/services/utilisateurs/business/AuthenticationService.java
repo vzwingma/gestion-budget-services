@@ -125,7 +125,8 @@ public class AuthenticationService extends AbstractBusinessService {
 	}
 	
 
-	public UserBusinessSession getBusinessUserSession(String idSession){
+	@Override
+	public UserBusinessSession getBusinessSession(String idSession){
 		return this.businessSessions.get(idSession);
 	}
 	
