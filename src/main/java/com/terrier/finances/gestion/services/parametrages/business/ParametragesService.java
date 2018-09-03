@@ -55,7 +55,7 @@ public class ParametragesService extends AbstractBusinessService {
 	/**
 	 * @param version the version to set
 	 */
-	@Value("${budget.version}")
+	@Value("${budget.version:CURRENT}")
 	public void setVersion(String version) {
 		this.version = version;
 	}
@@ -70,7 +70,7 @@ public class ParametragesService extends AbstractBusinessService {
 	/**
 	 * @param utcBuildTime the buildTime to set (en UTC)
 	 */
-	@Value("${budget.build.time}")
+	@Value("${budget.build.time:NOW}")
 	public void setBuildTime(String utcBuildTime) {
 		try {
 			this.buildTime = DataUtils.getUtcToLocalTime(utcBuildTime);
@@ -93,13 +93,13 @@ public class ParametragesService extends AbstractBusinessService {
 	 * période de rafraichissement des IHM
 	 * @param uiRefreshPeriod
 	 */
-	@Value("${budget.ui.refresh.period}")
+	@Value("${budget.ui.refresh.period:1}")
 	public void setUiRefreshPeriod(String uiRefreshPeriod) {
 		this.uiRefreshPeriod = uiRefreshPeriod;
 	}
 
 	
-	@Value("${budget.ui.session.validity.period}")
+	@Value("${budget.ui.session.validity.period:10}")
 	public void setUiValiditySessionPeriod(String uiValiditySessionPeriod){
 		LOGGER.info("Suivi des sessions utilisateurs. Durée de validité d'une session : {} minutes", uiValiditySessionPeriod);
 		this.uiValiditySessionPeriod = uiValiditySessionPeriod;
