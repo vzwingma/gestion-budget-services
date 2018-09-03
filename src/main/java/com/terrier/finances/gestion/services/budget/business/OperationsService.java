@@ -250,7 +250,6 @@ public class OperationsService extends AbstractBusinessService {
             initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 			// #115 : Cloture automatique du mois précédent
 			setBudgetActif(budgetPrecedent, false, idUtilisateur);
-			dataDepenses.sauvegardeBudgetMensuel(budgetPrecedent, getBusinessSession(idUtilisateur).getEncryptor());
 		}
 		else{
 			LOGGER.warn("Le budget {} n'a jamais existé", compteBancaire.getLibelle());
@@ -543,6 +542,7 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, String utilisateur){
 		calculBudget(budget);
+
 		dataDepenses.sauvegardeBudgetMensuel(budget, getBusinessSession(utilisateur).getEncryptor());
 		return budget;
 	}
@@ -627,6 +627,23 @@ public class OperationsService extends AbstractBusinessService {
 		LOGGER.info("{} du budget {}/{} de {}", budgetActif ? "Réouverture" : "Fermeture", budgetMensuel.getMois(), budgetMensuel.getAnnee(), budgetMensuel.getCompteBancaire().getLibelle());
 		budgetMensuel.setActif(budgetActif);
 		budgetMensuel.setDateMiseAJour(Calendar.getInstance());
+		//#119 : Toutes les opérations en attente sont annulées
+		if(!budgetActif){		
+			budgetMensuel.getListeOperations()
+				.stream()
+				.filter(op -> EtatLigneOperationEnum.PREVUE.equals(op.getEtat()))
+				.forEach(op -> op.setEtat(EtatLigneOperationEnum.ANNULEE));
+		}
 		return calculEtSauvegardeBudget(budgetMensuel, idUtilisateur);
 	}
+
+
+	/**
+	 * @param dataDepenses the dataDepenses to set
+	 */
+	protected void setDataDepenses(BudgetDatabaseService dataDepenses) {
+		this.dataDepenses = dataDepenses;
+	}
+	
+	
 }
