@@ -26,7 +26,7 @@ import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatab
  *
  */
 @Component("dataTransformerBudget")
-public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
+public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
 
 	@Autowired @Qualifier("dataTransformerLigneDepense")
 	private DataTransformerLigneDepense dataTransformerLigneDepense = new DataTransformerLigneDepense();

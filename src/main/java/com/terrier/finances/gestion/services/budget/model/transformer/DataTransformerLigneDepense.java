@@ -27,7 +27,7 @@ import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatab
  *
  */
 @Component("dataTransformerLigneDepense")
-public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation, LigneDepenseDTO> {
+public class DataTransformerLigneDepense implements IDataTransformer<LigneOperation, LigneDepenseDTO> {
 
 	/**
 	 * Logger
