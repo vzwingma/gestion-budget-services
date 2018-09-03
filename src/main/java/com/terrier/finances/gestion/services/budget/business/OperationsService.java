@@ -62,7 +62,7 @@ public class OperationsService extends AbstractBusinessService {
 	public static final String ID_SS_CAT_REMBOURSEMENT = "885e0d9a-6f3c-4002-b521-30169baf7123";
 
 	public static final String ID_SS_CAT_RESERVE = "26a4b966-ffdc-4cb7-8611-a5ba4b518ef5";
-	public static final String ID_SS_CAT_PREVISION_SANTE = "eeb2f9a5-49b4-4c44-86bf-3bd626412d8e";
+
 
 	public static final String ID_CAT_PRELEVEMENTS_MENSUEL = "504beea7-ed52-438a-aced-15e9603b82ab";
 	
