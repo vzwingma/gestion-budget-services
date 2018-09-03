@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.business;
+package com.terrier.finances.gestion.test.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +12,12 @@ import com.mongodb.ServerAddress;
 
 
 @Configuration
-public class TestBudgetConfig {
+public class TestRealBudgetConfig {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(TestBudgetConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TestRealBudgetConfig.class);
 	
 
 	private MongoTemplate getMongoOperationDev() throws Exception{

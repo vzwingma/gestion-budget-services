@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.business;
+package com.terrier.finances.gestion.services.utilisateurs.business;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -45,5 +45,9 @@ public class TestPasswordEncoder {
 
 		String generatedSecuredPasswordHash = PasswordEncoder.generateStrongPasswordHash(originalPassword);
 		LOGGER.debug("Mot de passe : {}", generatedSecuredPasswordHash);
+		String generatedSecuredPasswordHash2 = PasswordEncoder.generateStrongPasswordHash(originalPassword);
+		LOGGER.debug("Mot de passe 2 : {}", generatedSecuredPasswordHash2);
+
+		assertNotEquals(generatedSecuredPasswordHash, generatedSecuredPasswordHash2);
 	}
 }

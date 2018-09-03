@@ -20,22 +20,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.DataUtils;
-import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget;
+import com.terrier.finances.gestion.test.config.TestRealBudgetConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/test-spring-config.xml")
+@ContextConfiguration(classes={TestRealBudgetConfig.class})
 public class TestMetier {
 
-	@Autowired
-	private BudgetDatabaseService service;
+
 
 	@Autowired
-	private TestBudgetConfig config;
-
-	@Autowired
-	DataTransformerBudget dataTransformerBudget = new DataTransformerBudget();
+	private TestRealBudgetConfig config;
 	
 	/**
 	 * Logger
@@ -43,7 +38,7 @@ public class TestMetier {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestMetier.class);
 
 	@Test
-	public void testDate(){
+	public void testVoid(){
 		SimpleDateFormat sdf = new SimpleDateFormat(DataUtils.DATE_FULL_TEXT_PATTERN, Locale.FRENCH);
 		LOGGER.info(sdf.format(Calendar.getInstance().getTime()));
 	}
@@ -51,8 +46,6 @@ public class TestMetier {
 
 	@Ignore
 	public void createNewBudget() throws Exception{
-		assertNotNull(service);
-
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where("id").is("ingdirectV"));
 		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
@@ -70,8 +63,6 @@ public class TestMetier {
 
 	@Ignore
 	public void getCompte() throws Exception{
-		assertNotNull(service);
-
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where("id").is("ingdirectV"));
 		CompteBancaire compte = config.mongoTemplate().findOne(queryBudget, CompteBancaire.class);
