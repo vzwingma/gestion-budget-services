@@ -153,10 +153,8 @@ public class TestDataTransformerBudget {
 		bo.setId("TEST");
 		bo.setActif(false);
 		
-		bo.setFinArgentAvance(123D);
-		bo.setFinCompteReel(121D);
-		bo.setNowArgentAvance(12D);
-		bo.setNowCompteReel(11D);
+		bo.setSoldeFin(123D);
+		bo.setSoldeNow(12D);
 		
 		bo.getTotalParSSCategories().put(ssCat11, new Double[]{11D, 311D});
 		bo.getTotalParSSCategories().put(ssCat12, new Double[]{12D, 312D});
@@ -173,20 +171,16 @@ public class TestDataTransformerBudget {
 		BudgetMensuelDTO dto = transformer.transformBOtoDTO(bo, e);
 		assertNotNull(dto);
 		
-		assertNotEquals(bo.getFinArgentAvance(), dto.getFinArgentAvance());
-		assertNotEquals(bo.getFinCompteReel(), dto.getFinCompteReel());
-		assertNotEquals(bo.getNowArgentAvance(), dto.getNowArgentAvance());
-		assertNotEquals(bo.getNowCompteReel(), dto.getNowCompteReel());
+		assertNotEquals(bo.getSoldeFin(), dto.getFinArgentAvance());
+		assertNotEquals(bo.getSoldeNow(), dto.getNowArgentAvance());
 		
 	
 		/**
 		 * Transformation en BO
 		 */
 		BudgetMensuel bo2 = transformer.transformDTOtoBO(dto, e);
-		assertEquals(bo.getFinArgentAvance(), bo2.getFinArgentAvance(), 1);
-		assertEquals(bo.getFinCompteReel(), bo2.getFinCompteReel(), 1);
-		assertEquals(bo.getNowArgentAvance(), bo2.getNowArgentAvance(), 1);
-		assertEquals(bo.getNowCompteReel(), bo2.getNowCompteReel(), 1);
+		assertEquals(bo.getSoldeFin(), bo2.getSoldeFin(), 1);
+		assertEquals(bo.getSoldeNow(), bo2.getSoldeNow(), 1);
 		
 		assertEquals(bo.getTotalParCategories().get(cat1)[0], bo2.getTotalParCategories().get(cat1)[0], 1);
 		assertEquals(bo.getTotalParCategories().get(cat1)[1], bo2.getTotalParCategories().get(cat1)[1], 1);

@@ -124,7 +124,7 @@ public class OperationsService extends AbstractBusinessService {
 				if(budgetPrecedent.isActif()){
 					calculBudget(budgetPrecedent);
 				}
-				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
+				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin());
 			}
 			catch(BudgetNotFoundException e){
 				LOGGER.error("Le budget précédent celui de [{}/{}] est introuvable", mois, annee);
@@ -255,14 +255,11 @@ public class OperationsService extends AbstractBusinessService {
 		}
 		else{
 			LOGGER.warn("Le budget {} n'a jamais existé", compteBancaire.getLibelle());
-			budget.setFinArgentAvance(0D);
-			budget.setFinCompteReel(0D);
-			budget.setNowArgentAvance(0D);
-			budget.setNowCompteReel(0D);
+			budget.setSoldeFin(0D);
+			budget.setSoldeNow(0D);
 			budget.setResultatMoisPrecedent(0D);
+			budget.setMargeSecurite(0D);			
 			budget.setListeOperations(new ArrayList<LigneOperation>());
-			budget.setMargeSecurite(0D);
-			budget.setMargeSecuriteFinMois(0D);
 		}
 
 		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
@@ -307,7 +304,7 @@ public class OperationsService extends AbstractBusinessService {
 			budget.setCompteBancaire(budgetPrecedent.getCompteBancaire());
 			budget.setMargeSecurite(budgetPrecedent.getMargeSecurite());
 			// #116 : Le résultat du moins précédent est le compte réel, pas le compte avancé
-			budget.setResultatMoisPrecedent(budgetPrecedent.getFinCompteReel());
+			budget.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin());
 			budget.setDateMiseAJour(Calendar.getInstance());
 			if(budgetPrecedent.getListeOperations() != null){
 
@@ -553,72 +550,71 @@ public class OperationsService extends AbstractBusinessService {
 	 * Calcul du résumé
 	 * @param budgetMensuelCourant
 	 */
-	private void calculBudget(BudgetMensuel budget){
+	protected void calculBudget(BudgetMensuel budget){
 
 		LOGGER.info("(Re)Calcul du budget : {}", budget);
 		budget.razCalculs();
 
 		for (LigneOperation operation : budget.getListeOperations()) {
 			LOGGER.trace("     > {}", operation);
-			Double depenseVal = operation.getValeur();
+			Double valeurOperation = operation.getValeur();
 			budget.getSetLibellesDepensesForAutocomplete().add(operation.getLibelle());
-			/**
-			 *  Calcul par catégorie
+			
+			/*
+			 * #121 : La réserve n'est pas une véritable opération. Elle n'est pas prise en compte dans les calculs 
 			 */
-			Double[] valeursCat = {0D,0D};
-			if(budget.getTotalParCategories().get(operation.getCategorie()) != null){
-				valeursCat = budget.getTotalParCategories().get(operation.getCategorie());
-			}
-			if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
-				valeursCat[0] = valeursCat[0] + depenseVal;
-				valeursCat[1] = valeursCat[1] + depenseVal;
-			}
-			else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
-				valeursCat[1] = valeursCat[1] + depenseVal;
-			}
-			budget.getTotalParCategories().put(operation.getCategorie(), valeursCat);
-
-			/**
-			 *  Calcul par sous catégorie
-			 */
-			Double[] valeurSsCat = {0D,0D};
-			if( budget.getTotalParSSCategories().get(operation.getSsCategorie()) != null){
-				valeurSsCat = budget.getTotalParSSCategories().get(operation.getSsCategorie());
-			}
-			if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
-				valeurSsCat[0] = valeurSsCat[0] + depenseVal;
-				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
-			}
-			if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
-				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
-			}
-			budget.getTotalParSSCategories().put(operation.getSsCategorie(), valeurSsCat);
-
-			// Si réserve : ajout dans le calcul fin de mois
-			// Pour taper dans la réserve : inverser le type de dépense
-			int sens = 1;
 			if(ID_SS_CAT_RESERVE.equals(operation.getSsCategorie().getId())){
-				budget.setMargeSecuriteFinMois(budget.getMargeSecurite() + Double.valueOf(operation.getValeur()));
-				sens = -1;
+				int type = TypeOperationEnum.CREDIT.equals(operation.getTypeDepense()) ? 1 : -1;
+				budget.setMargeSecurite(budget.getMargeSecurite() + type * Double.valueOf(operation.getValeur()));
 			}
+			else{
+				/**
+				 *  Calcul par catégorie
+				 */
+				Double[] valeursCat = {0D,0D};
+				if(budget.getTotalParCategories().get(operation.getCategorie()) != null){
+					valeursCat = budget.getTotalParCategories().get(operation.getCategorie());
+				}
+				if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
+					valeursCat[0] = valeursCat[0] + valeurOperation;
+					valeursCat[1] = valeursCat[1] + valeurOperation;
+				}
+				else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
+					valeursCat[1] = valeursCat[1] + valeurOperation;
+				}
+				budget.getTotalParCategories().put(operation.getCategorie(), valeursCat);
 
-			/**
-			 * Calcul des totaux
-			 */
+				/**
+				 *  Calcul par sous catégorie
+				 */
+				Double[] valeurSsCat = {0D,0D};
+				if( budget.getTotalParSSCategories().get(operation.getSsCategorie()) != null){
+					valeurSsCat = budget.getTotalParSSCategories().get(operation.getSsCategorie());
+				}
+				if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
+					valeurSsCat[0] = valeurSsCat[0] + valeurOperation;
+					valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
+				}
+				if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
+					valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
+				}
+				budget.getTotalParSSCategories().put(operation.getSsCategorie(), valeurSsCat);
+				/**
+				 * Calcul des totaux
+				 */
+				if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
+					budget.ajouteASoldeNow(valeurOperation);
+					budget.ajouteASoldeFin(valeurOperation);
+				}
+				else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
+					budget.ajouteASoldeFin(valeurOperation);
+				}
+			}
+			
 
-			if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
-				budget.ajouteANowArgentAvance(sens * depenseVal);
-				budget.ajouteANowCompteReel(sens * depenseVal);
-				budget.ajouteAFinArgentAvance(sens * depenseVal);
-				budget.ajouteAFinCompteReel(sens * depenseVal);				
-			}
-			else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
-				budget.ajouteAFinArgentAvance(sens * depenseVal);
-				budget.ajouteAFinCompteReel(sens * depenseVal);
-			}
 		}
-		LOGGER.debug("Argent avancé : {}  :   {}", budget.getNowArgentAvance(), budget.getFinArgentAvance());
-		LOGGER.debug("Solde réel    : {}  :   {}", budget.getNowCompteReel(), budget.getFinCompteReel());
+		LOGGER.debug("Solde prévue  		| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
+		LOGGER.debug("Solde réel (avec marge)	| {}	| {}",  budget.getSoldeNow() + budget.getMargeSecurite(), budget.getSoldeFin() + budget.getMargeSecurite());
 	}
 
 	/**

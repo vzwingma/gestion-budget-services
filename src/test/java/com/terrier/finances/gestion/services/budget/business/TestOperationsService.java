@@ -60,9 +60,10 @@ public class TestOperationsService {
 	public void initBudget(){
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
-		this.budget.getListeOperations().add(new LigneOperation(new CategorieDepense(), "TEST1", TypeOperationEnum.CREDIT, "123", EtatLigneOperationEnum.PREVUE, false));
-		this.budget.setResultatMoisPrecedent(1234D);
+		this.budget.setResultatMoisPrecedent(0D);
 		this.budget.setMargeSecurite(0D);
+		this.budget.razCalculs();
+		this.budget.getListeOperations().add(new LigneOperation(new CategorieDepense(), "TEST1", TypeOperationEnum.CREDIT, "123", EtatLigneOperationEnum.PREVUE, false));
 		
 		LocalDate now = LocalDate.now();
 		this.budget.setMois(now.getMonth());
@@ -84,4 +85,54 @@ public class TestOperationsService {
 		BudgetMensuel m = operationsService.setBudgetActif(this.budget, false, "TEST");
 		assertEquals(EtatLigneOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
 	}	
+	
+	/**
+	 * Test #121
+	 */
+	@Test
+	public void testCalculBudget(){
+		
+		this.operationsService.calculBudget(budget);
+		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
+
+		assertEquals(0, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
+
+		
+		this.budget.setMargeSecurite(100D);
+		this.operationsService.calculBudget(budget);
+		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
+
+		assertEquals(100, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
+		assertEquals(223, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
+		
+		
+		CategorieDepense reserveCat = new CategorieDepense();
+		reserveCat.setId(OperationsService.ID_SS_CAT_RESERVE);
+		
+		LigneOperation reserve = new LigneOperation(reserveCat, "TESTRESERVE", TypeOperationEnum.CREDIT, "100", EtatLigneOperationEnum.REALISEE, false);
+		this.budget.getListeOperations().add(reserve);
+		this.operationsService.calculBudget(budget);
+		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
+
+		assertEquals(200, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
+		assertEquals(323, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
+
+		// Pour éviter le doublon du recalcul ci dessous
+		this.budget.setMargeSecurite(0D);
+		
+		LigneOperation piocheReserve = new LigneOperation(reserveCat, "PIOCHERESERVE", TypeOperationEnum.DEPENSE, "50", EtatLigneOperationEnum.REALISEE, false);
+		this.budget.getListeOperations().add(piocheReserve);
+		this.operationsService.calculBudget(budget);
+		
+		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
+
+		assertEquals(150, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
+		assertEquals(273, Double.valueOf(this.budget.getSoldeReelFin()).intValue());		
+
+	}
 }
