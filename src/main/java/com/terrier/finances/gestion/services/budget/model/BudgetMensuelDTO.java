@@ -50,7 +50,7 @@ public class BudgetMensuelDTO implements Serializable {
 	 */
 	private String resultatMoisPrecedent;
 
-	private String margeSecurite;
+	private String margeMoisPrecedent;
 
 	/**
 	 * Liste des dépenses
@@ -186,16 +186,16 @@ public class BudgetMensuelDTO implements Serializable {
 	/**
 	 * @return the margeSecurite
 	 */
-	public String getMargeSecurite() {
-		return margeSecurite;
+	public String getMargeMoisPrecedent() {
+		return margeMoisPrecedent;
 	}
 
 
 	/**
 	 * @param margeSecurite the margeSecurite to set
 	 */
-	public void setMargeSecurite(String margeSecurite) {
-		this.margeSecurite = margeSecurite;
+	public void setMargeMoisPrecedent(String margeSecurite) {
+		this.margeMoisPrecedent = margeSecurite;
 	}
 
 

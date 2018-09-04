@@ -60,9 +60,8 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 				bo.setDateMiseAJour(c);
 			}
 			bo.setListeOperations(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses(), decryptor));
-			bo.setMargeSecurite(dto.getMargeSecurite() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecurite())) : 0D);
 			bo.setMois(Month.of(dto.getMois() + 1));
-			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getResultatMoisPrecedent())) : 0D);
+			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getResultatMoisPrecedent())) : 0D, dto.getMargeMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeMoisPrecedent())) : 0D);
 
 			/*
 			 * Budget clos : utilisation des valeurs calculées
@@ -138,10 +137,12 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 		dto.getCompteBancaire().setListeProprietaires(null);
 		dto.setDateMiseAJour(bo.getDateMiseAJour() != null ? bo.getDateMiseAJour().getTime() : null);
 		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeOperations(), encryptor));
-		dto.setMargeSecurite(bo.getMargeSecurite() != null ? encryptor.encrypt(bo.getMargeSecurite().toString()) : null);
 		
 		dto.setMois(bo.getMois().getValue() - 1);
-		dto.setResultatMoisPrecedent(bo.getResultatMoisPrecedent() != null ?  encryptor.encrypt(bo.getResultatMoisPrecedent().toString()) : null);
+		dto.setResultatMoisPrecedent(bo.getMoisPrecedentResultat() != null ?  encryptor.encrypt(bo.getMoisPrecedentResultat().toString()) : null);
+		dto.setMargeMoisPrecedent(bo.getMoisPrecedentMarge() != null ? encryptor.encrypt(bo.getMoisPrecedentMarge().toString()) : null);
+
+		
 		dto.setFinArgentAvance( encryptor.encrypt(String.valueOf(bo.getSoldeFin())));
 		dto.setNowArgentAvance( encryptor.encrypt(String.valueOf(bo.getSoldeNow())));
 

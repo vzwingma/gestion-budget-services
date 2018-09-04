@@ -19,8 +19,9 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
-import com.terrier.finances.gestion.communs.operations.model.enums.EtatLigneOperationEnum;
+import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
+import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.DataUtils;
 import com.terrier.finances.gestion.communs.utils.exception.BudgetNotFoundException;
@@ -55,16 +56,6 @@ public class OperationsService extends AbstractBusinessService {
 	private DataTransformerLigneDepense transformer = new DataTransformerLigneDepense();
 
 
-	public static final String ID_SS_CAT_TRANSFERT_INTERCOMPTE = "ed3f6100-5dbd-4b68-860e-0c97ae1bbc63";
-
-	public static final String ID_SS_CAT_SALAIRE = "d005de34-f768-4e96-8ccd-70399792c48f";
-
-	public static final String ID_SS_CAT_REMBOURSEMENT = "885e0d9a-6f3c-4002-b521-30169baf7123";
-
-	public static final String ID_SS_CAT_RESERVE = "26a4b966-ffdc-4cb7-8611-a5ba4b518ef5";
-
-
-	public static final String ID_CAT_PRELEVEMENTS_MENSUEL = "504beea7-ed52-438a-aced-15e9603b82ab";
 	
 	
 	/**
@@ -124,7 +115,7 @@ public class OperationsService extends AbstractBusinessService {
 				if(budgetPrecedent.isActif()){
 					calculBudget(budgetPrecedent);
 				}
-				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin());
+				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin(), budgetPrecedent.getMarge());
 			}
 			catch(BudgetNotFoundException e){
 				LOGGER.error("Le budget précédent celui de [{}/{}] est introuvable", mois, annee);
@@ -257,8 +248,7 @@ public class OperationsService extends AbstractBusinessService {
 			LOGGER.warn("Le budget {} n'a jamais existé", compteBancaire.getLibelle());
 			budget.setSoldeFin(0D);
 			budget.setSoldeNow(0D);
-			budget.setResultatMoisPrecedent(0D);
-			budget.setMargeSecurite(0D);			
+			budget.setResultatMoisPrecedent(0D, 0D);
 			budget.setListeOperations(new ArrayList<LigneOperation>());
 		}
 
@@ -302,9 +292,8 @@ public class OperationsService extends AbstractBusinessService {
 		if(budget.getCompteBancaire().isActif() && budgetPrecedent.getCompteBancaire().isActif()){
 			calculBudget(budgetPrecedent);
 			budget.setCompteBancaire(budgetPrecedent.getCompteBancaire());
-			budget.setMargeSecurite(budgetPrecedent.getMargeSecurite());
 			// #116 : Le résultat du moins précédent est le compte réel, pas le compte avancé
-			budget.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin());
+			budget.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin(), budgetPrecedent.getMarge());
 			budget.setDateMiseAJour(Calendar.getInstance());
 			if(budgetPrecedent.getListeOperations() != null){
 
@@ -312,7 +301,7 @@ public class OperationsService extends AbstractBusinessService {
 				budget.getListeOperations().addAll(
 						budgetPrecedent.getListeOperations()
 						.stream()
-						.filter(op -> op.isPeriodique() || EtatLigneOperationEnum.REPORTEE.equals(op.getEtat()))
+						.filter(op -> op.isPeriodique() || EtatOperationEnum.REPORTEE.equals(op.getEtat()))
 						.map(op -> transformer.cloneDepenseToMoisSuivant(op))
 						.collect(Collectors.toList()));
 			}
@@ -344,19 +333,19 @@ public class OperationsService extends AbstractBusinessService {
 			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneOperation);
 
 			// #59 : Cohérence des états
-			EtatLigneOperationEnum etatDepenseCourant = ligneOperation.getEtat();
-			EtatLigneOperationEnum etatDepenseTransfert = null;
+			EtatOperationEnum etatDepenseCourant = ligneOperation.getEtat();
+			EtatOperationEnum etatDepenseTransfert = null;
 			switch (etatDepenseCourant) {
 			case ANNULEE:
-				etatDepenseTransfert = EtatLigneOperationEnum.ANNULEE;
+				etatDepenseTransfert = EtatOperationEnum.ANNULEE;
 				break;
 			case REPORTEE:
-				etatDepenseTransfert = EtatLigneOperationEnum.REPORTEE;
+				etatDepenseTransfert = EtatOperationEnum.REPORTEE;
 				break;
 			case PREVUE:
 			case REALISEE:
 			default:				
-				etatDepenseTransfert = EtatLigneOperationEnum.PREVUE;
+				etatDepenseTransfert = EtatOperationEnum.PREVUE;
 				break;
 			}
 
@@ -496,12 +485,12 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException erreur ligne non trouvé
 	 * @throws BudgetNotFoundException not found
 	 */
-	public BudgetMensuel majEtatLigneOperation(BudgetMensuel budget, String ligneId, EtatLigneOperationEnum etat, String idUtilisateur) throws DataNotFoundException, BudgetNotFoundException{
+	public BudgetMensuel majEtatLigneOperation(BudgetMensuel budget, String ligneId, EtatOperationEnum etat, String idUtilisateur) throws DataNotFoundException, BudgetNotFoundException{
 		LigneOperation ligneOperation = getLigneOperation(budget, ligneId);
 		// Mise à jour de l'état
 		if(ligneOperation != null){
 			ligneOperation.setEtat(etat);
-			if(EtatLigneOperationEnum.REALISEE.equals(etat)){
+			if(EtatOperationEnum.REALISEE.equals(etat)){
 				ligneOperation.setDateOperation(Calendar.getInstance().getTime());
 			}
 			else{
@@ -563,11 +552,7 @@ public class OperationsService extends AbstractBusinessService {
 			/*
 			 * #121 : La réserve n'est pas une véritable opération. Elle n'est pas prise en compte dans les calculs 
 			 */
-			if(ID_SS_CAT_RESERVE.equals(operation.getSsCategorie().getId())){
-				int type = TypeOperationEnum.CREDIT.equals(operation.getTypeDepense()) ? 1 : -1;
-				budget.setMargeSecurite(budget.getMargeSecurite() + type * Double.valueOf(operation.getValeur()));
-			}
-			else{
+			if(!IdsCategoriesEnum.RESERVE.getId().equals(operation.getSsCategorie().getId())){
 				/**
 				 *  Calcul par catégorie
 				 */
@@ -575,11 +560,11 @@ public class OperationsService extends AbstractBusinessService {
 				if(budget.getTotalParCategories().get(operation.getCategorie()) != null){
 					valeursCat = budget.getTotalParCategories().get(operation.getCategorie());
 				}
-				if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
+				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
 					valeursCat[0] = valeursCat[0] + valeurOperation;
 					valeursCat[1] = valeursCat[1] + valeurOperation;
 				}
-				else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
+				else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 					valeursCat[1] = valeursCat[1] + valeurOperation;
 				}
 				budget.getTotalParCategories().put(operation.getCategorie(), valeursCat);
@@ -591,22 +576,22 @@ public class OperationsService extends AbstractBusinessService {
 				if( budget.getTotalParSSCategories().get(operation.getSsCategorie()) != null){
 					valeurSsCat = budget.getTotalParSSCategories().get(operation.getSsCategorie());
 				}
-				if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
+				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
 					valeurSsCat[0] = valeurSsCat[0] + valeurOperation;
 					valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
 				}
-				if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
+				if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 					valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
 				}
 				budget.getTotalParSSCategories().put(operation.getSsCategorie(), valeurSsCat);
 				/**
 				 * Calcul des totaux
 				 */
-				if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
+				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
 					budget.ajouteASoldeNow(valeurOperation);
 					budget.ajouteASoldeFin(valeurOperation);
 				}
-				else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
+				else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 					budget.ajouteASoldeFin(valeurOperation);
 				}
 			}
@@ -614,7 +599,7 @@ public class OperationsService extends AbstractBusinessService {
 
 		}
 		LOGGER.debug("Solde prévue  		| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
-		LOGGER.debug("Solde réel (avec marge)	| {}	| {}",  budget.getSoldeNow() + budget.getMargeSecurite(), budget.getSoldeFin() + budget.getMargeSecurite());
+		LOGGER.debug("Solde réel (avec marge)	| {}	| {}",  budget.getSoldeNow() + budget.getMoisPrecedentMarge(), budget.getSoldeFin() + budget.getMoisPrecedentMarge());
 	}
 
 	/**
@@ -629,8 +614,8 @@ public class OperationsService extends AbstractBusinessService {
 		if(!budgetActif){		
 			budgetMensuel.getListeOperations()
 				.stream()
-				.filter(op -> EtatLigneOperationEnum.PREVUE.equals(op.getEtat()))
-				.forEach(op -> op.setEtat(EtatLigneOperationEnum.ANNULEE));
+				.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
+				.forEach(op -> op.setEtat(EtatOperationEnum.ANNULEE));
 		}
 		return calculEtSauvegardeBudget(budgetMensuel, idUtilisateur);
 	}
