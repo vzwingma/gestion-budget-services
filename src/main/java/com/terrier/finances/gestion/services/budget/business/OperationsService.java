@@ -221,6 +221,7 @@ public class OperationsService extends AbstractBusinessService {
 	private BudgetMensuel initNewBudget(CompteBancaire compteBancaire, String idUtilisateur, Month mois, int annee) throws BudgetNotFoundException,CompteClosedException, DataNotFoundException{
 		LOGGER.info("[INIT] Initialisation du budget {} de {}/{}", compteBancaire.getLibelle(), mois, annee);
 		BudgetMensuel budget = new BudgetMensuel();
+		budget.setNewBudget(true);
 		budget.setActif(true);
 		budget.setAnnee(annee);
 		budget.setMois(mois);
