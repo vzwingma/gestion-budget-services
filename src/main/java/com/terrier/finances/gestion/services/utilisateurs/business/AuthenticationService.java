@@ -41,7 +41,7 @@ public class AuthenticationService extends AbstractBusinessService {
 	/**
 	 * Session coté Business
 	 */
-	private Map<String, UserBusinessSession> businessSessions = new HashMap<String, UserBusinessSession>();
+	private Map<String, UserBusinessSession> businessSessions = new HashMap<>();
 
 	/**
 	 * Validation login/mdp
@@ -124,6 +124,8 @@ public class AuthenticationService extends AbstractBusinessService {
 		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);	
 	}
 	
+
+	@Override
 	public UserBusinessSession getBusinessSession(String idSession){
 		return this.businessSessions.get(idSession);
 	}

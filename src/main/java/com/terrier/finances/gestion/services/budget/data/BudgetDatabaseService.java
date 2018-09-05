@@ -308,16 +308,14 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 */
 	public List<LigneDepenseDTO> chargerLignesDepenses(String idBudget) throws DataNotFoundException{
 		LOGGER.info("Chargement du budget {} ", idBudget);
-		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("id").is(idBudget));
-		BudgetMensuelDTO budgetDTO = null;
+		Query queryBudget = new Query().addCriteria(Criteria.where("id").is(idBudget));
 		try{
-			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(idBudget));
-			if(budgetDTO != null){
+			BudgetMensuelDTO budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(idBudget));
+			if(budgetDTO != null && budgetDTO.getListeDepenses() != null){
 				return budgetDTO.getListeDepenses();
 			}
 			else{
-				throw new DataNotFoundException("Aucune données trouvées");	
+				throw new DataNotFoundException("Aucune donnée trouvée");	
 			}
 		}
 		catch(Exception e){

@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
@@ -18,8 +19,9 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
-import com.terrier.finances.gestion.communs.operations.model.enums.EtatLigneOperationEnum;
+import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
+import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.DataUtils;
 import com.terrier.finances.gestion.communs.utils.exception.BudgetNotFoundException;
@@ -52,18 +54,10 @@ public class OperationsService extends AbstractBusinessService {
 	private BudgetDatabaseService dataDepenses;
 
 	private DataTransformerLigneDepense transformer = new DataTransformerLigneDepense();
+
+
 	
-
-	public static final String ID_SS_CAT_TRANSFERT_INTERCOMPTE = "ed3f6100-5dbd-4b68-860e-0c97ae1bbc63";
-
-	public static final String ID_SS_CAT_SALAIRE = "d005de34-f768-4e96-8ccd-70399792c48f";
-
-	public static final String ID_SS_CAT_REMBOURSEMENT = "885e0d9a-6f3c-4002-b521-30169baf7123";
-
-	public static final String ID_SS_CAT_RESERVE = "26a4b966-ffdc-4cb7-8611-a5ba4b518ef5";
-	public static final String ID_SS_CAT_PREVISION_SANTE = "eeb2f9a5-49b4-4c44-86bf-3bd626412d8e";
-
-
+	
 	/**
 	 * Chargement du budget du mois courant
 	 * @param compte compte 
@@ -102,7 +96,7 @@ public class OperationsService extends AbstractBusinessService {
 		LOGGER.debug("Chargement du budget du compte actif {} de {}/{}", compteBancaire.getId(), mois, annee);
 
 		BasicTextEncryptor encryptor = getBusinessSession(idUtilisateur).getEncryptor();
-		
+
 		BudgetMensuel budgetMensuel = null;
 		try{
 			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee, encryptor);
@@ -121,8 +115,7 @@ public class OperationsService extends AbstractBusinessService {
 				if(budgetPrecedent.isActif()){
 					calculBudget(budgetPrecedent);
 				}
-				// TODO : Et si le budget n'est pas actif ? On ne recacule pas ?
-				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
+				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin(), budgetPrecedent.getMarge());
 			}
 			catch(BudgetNotFoundException e){
 				LOGGER.error("Le budget précédent celui de [{}/{}] est introuvable", mois, annee);
@@ -226,8 +219,9 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException erreur données
 	 */
 	private BudgetMensuel initNewBudget(CompteBancaire compteBancaire, String idUtilisateur, Month mois, int annee) throws BudgetNotFoundException,CompteClosedException, DataNotFoundException{
-		LOGGER.info("[INIT] Initialisation du budget {} de {}/{}", compteBancaire.getId(), mois, annee);
+		LOGGER.info("[INIT] Initialisation du budget {} de {}/{}", compteBancaire.getLibelle(), mois, annee);
 		BudgetMensuel budget = new BudgetMensuel();
+		budget.setNewBudget(true);
 		budget.setActif(true);
 		budget.setAnnee(annee);
 		budget.setMois(mois);
@@ -245,18 +239,18 @@ public class OperationsService extends AbstractBusinessService {
 			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 			// Recherche du budget précédent 
 			// Si impossible : BudgetNotFoundException
-			initBudgetFromBudgetPrecedent(budget, chargerBudgetMensuel(idUtilisateur, compteBancaire, moisPrecedent, anneePrecedente));
+			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(idUtilisateur, compteBancaire, moisPrecedent, anneePrecedente);
+			// #115 : Cloture automatique du mois précédent
+			setBudgetActif(budgetPrecedent, false, idUtilisateur);
+			
+			initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 		}
 		else{
-			LOGGER.warn("Le budget {}/{} n'a jamais existé", mois, annee);
-			budget.setFinArgentAvance(0D);
-			budget.setFinCompteReel(0D);
-			budget.setNowArgentAvance(0D);
-			budget.setNowCompteReel(0D);
-			budget.setResultatMoisPrecedent(0D);
+			LOGGER.warn("Le budget {} n'a jamais existé", compteBancaire.getLibelle());
+			budget.setSoldeFin(0D);
+			budget.setSoldeNow(0D);
+			budget.setResultatMoisPrecedent(0D, 0D);
 			budget.setListeOperations(new ArrayList<LigneOperation>());
-			budget.setMargeSecurite(0D);
-			budget.setMargeSecuriteFinMois(0D);
 		}
 
 		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
@@ -299,14 +293,18 @@ public class OperationsService extends AbstractBusinessService {
 		if(budget.getCompteBancaire().isActif() && budgetPrecedent.getCompteBancaire().isActif()){
 			calculBudget(budgetPrecedent);
 			budget.setCompteBancaire(budgetPrecedent.getCompteBancaire());
-			budget.setMargeSecurite(budgetPrecedent.getMargeSecurite());
-			budget.setResultatMoisPrecedent(budgetPrecedent.getFinArgentAvance());
+			// #116 : Le résultat du moins précédent est le compte réel, pas le compte avancé
+			budget.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin(), budgetPrecedent.getMarge());
 			budget.setDateMiseAJour(Calendar.getInstance());
-			for (LigneOperation depenseMoisPrecedent : budgetPrecedent.getListeOperations()) {
-				if(depenseMoisPrecedent.isPeriodique() || depenseMoisPrecedent.getEtat().equals(EtatLigneOperationEnum.REPORTEE)){
-					budget.getListeOperations().add(transformer.cloneDepenseToMoisSuivant(depenseMoisPrecedent));	
-				}
+			if(budgetPrecedent.getListeOperations() != null){
 
+				// Recopie de toutes les opérations périodiques, et reportées
+				budget.getListeOperations().addAll(
+						budgetPrecedent.getListeOperations()
+						.stream()
+						.filter(op -> op.isPeriodique() || EtatOperationEnum.REPORTEE.equals(op.getEtat()))
+						.map(op -> transformer.cloneDepenseToMoisSuivant(op))
+						.collect(Collectors.toList()));
 			}
 		}
 		else{
@@ -336,19 +334,19 @@ public class OperationsService extends AbstractBusinessService {
 			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneOperation);
 
 			// #59 : Cohérence des états
-			EtatLigneOperationEnum etatDepenseCourant = ligneOperation.getEtat();
-			EtatLigneOperationEnum etatDepenseTransfert = null;
+			EtatOperationEnum etatDepenseCourant = ligneOperation.getEtat();
+			EtatOperationEnum etatDepenseTransfert = null;
 			switch (etatDepenseCourant) {
 			case ANNULEE:
-				etatDepenseTransfert = EtatLigneOperationEnum.ANNULEE;
+				etatDepenseTransfert = EtatOperationEnum.ANNULEE;
 				break;
 			case REPORTEE:
-				etatDepenseTransfert = EtatLigneOperationEnum.REPORTEE;
+				etatDepenseTransfert = EtatOperationEnum.REPORTEE;
 				break;
 			case PREVUE:
 			case REALISEE:
 			default:				
-				etatDepenseTransfert = EtatLigneOperationEnum.PREVUE;
+				etatDepenseTransfert = EtatOperationEnum.PREVUE;
 				break;
 			}
 
@@ -488,12 +486,12 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException erreur ligne non trouvé
 	 * @throws BudgetNotFoundException not found
 	 */
-	public BudgetMensuel majEtatLigneOperation(BudgetMensuel budget, String ligneId, EtatLigneOperationEnum etat, String idUtilisateur) throws DataNotFoundException, BudgetNotFoundException{
+	public BudgetMensuel majEtatLigneOperation(BudgetMensuel budget, String ligneId, EtatOperationEnum etat, String idUtilisateur) throws DataNotFoundException, BudgetNotFoundException{
 		LigneOperation ligneOperation = getLigneOperation(budget, ligneId);
 		// Mise à jour de l'état
 		if(ligneOperation != null){
 			ligneOperation.setEtat(etat);
-			if(EtatLigneOperationEnum.REALISEE.equals(etat)){
+			if(EtatOperationEnum.REALISEE.equals(etat)){
 				ligneOperation.setDateOperation(Calendar.getInstance().getTime());
 			}
 			else{
@@ -533,6 +531,7 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, String utilisateur){
 		calculBudget(budget);
+
 		dataDepenses.sauvegardeBudgetMensuel(budget, getBusinessSession(utilisateur).getEncryptor());
 		return budget;
 	}
@@ -541,82 +540,94 @@ public class OperationsService extends AbstractBusinessService {
 	 * Calcul du résumé
 	 * @param budgetMensuelCourant
 	 */
-	private void calculBudget(BudgetMensuel budget){
+	protected void calculBudget(BudgetMensuel budget){
 
 		LOGGER.info("(Re)Calcul du budget : {}", budget);
 		budget.razCalculs();
 
 		for (LigneOperation operation : budget.getListeOperations()) {
 			LOGGER.trace("     > {}", operation);
-			Double depenseVal = operation.getValeur();
+			Double valeurOperation = operation.getValeur();
 			budget.getSetLibellesDepensesForAutocomplete().add(operation.getLibelle());
-			/**
-			 *  Calcul par catégorie
+			
+			/*
+			 * #121 : La réserve n'est pas une véritable opération. Elle n'est pas prise en compte dans les calculs 
 			 */
-			Double[] valeursCat = {0D,0D};
-			if(budget.getTotalParCategories().get(operation.getCategorie()) != null){
-				valeursCat = budget.getTotalParCategories().get(operation.getCategorie());
-			}
-			if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
-				valeursCat[0] = valeursCat[0] + depenseVal;
-				valeursCat[1] = valeursCat[1] + depenseVal;
-			}
-			else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
-				valeursCat[1] = valeursCat[1] + depenseVal;
-			}
-			budget.getTotalParCategories().put(operation.getCategorie(), valeursCat);
+			if(!IdsCategoriesEnum.RESERVE.getId().equals(operation.getSsCategorie().getId())){
+				/**
+				 *  Calcul par catégorie
+				 */
+				Double[] valeursCat = {0D,0D};
+				if(budget.getTotalParCategories().get(operation.getCategorie()) != null){
+					valeursCat = budget.getTotalParCategories().get(operation.getCategorie());
+				}
+				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+					valeursCat[0] = valeursCat[0] + valeurOperation;
+					valeursCat[1] = valeursCat[1] + valeurOperation;
+				}
+				else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+					valeursCat[1] = valeursCat[1] + valeurOperation;
+				}
+				budget.getTotalParCategories().put(operation.getCategorie(), valeursCat);
 
-			/**
-			 *  Calcul par sous catégorie
-			 */
-			Double[] valeurSsCat = {0D,0D};
-			if( budget.getTotalParSSCategories().get(operation.getSsCategorie()) != null){
-				valeurSsCat = budget.getTotalParSSCategories().get(operation.getSsCategorie());
+				/**
+				 *  Calcul par sous catégorie
+				 */
+				Double[] valeurSsCat = {0D,0D};
+				if( budget.getTotalParSSCategories().get(operation.getSsCategorie()) != null){
+					valeurSsCat = budget.getTotalParSSCategories().get(operation.getSsCategorie());
+				}
+				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+					valeurSsCat[0] = valeurSsCat[0] + valeurOperation;
+					valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
+				}
+				if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+					valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
+				}
+				budget.getTotalParSSCategories().put(operation.getSsCategorie(), valeurSsCat);
+				/**
+				 * Calcul des totaux
+				 */
+				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+					budget.ajouteASoldeNow(valeurOperation);
+					budget.ajouteASoldeFin(valeurOperation);
+				}
+				else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+					budget.ajouteASoldeFin(valeurOperation);
+				}
 			}
-			if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
-				valeurSsCat[0] = valeurSsCat[0] + depenseVal;
-				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
-			}
-			if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
-				valeurSsCat[1] = valeurSsCat[1] + depenseVal;
-			}
-			budget.getTotalParSSCategories().put(operation.getSsCategorie(), valeurSsCat);
+			
 
-			// Si réserve : ajout dans le calcul fin de mois
-			// Pour taper dans la réserve : inverser le type de dépense
-			int sens = 1;
-			if(ID_SS_CAT_RESERVE.equals(operation.getSsCategorie().getId())){
-				budget.setMargeSecuriteFinMois(budget.getMargeSecurite() + Double.valueOf(operation.getValeur()));
-				sens = -1;
-			}
-
-			/**
-			 * Calcul des totaux
-			 */
-
-			if(operation.getEtat().equals(EtatLigneOperationEnum.REALISEE)){
-				budget.ajouteANowArgentAvance(sens * depenseVal);
-				budget.ajouteANowCompteReel(sens * depenseVal);
-				budget.ajouteAFinArgentAvance(sens * depenseVal);
-				budget.ajouteAFinCompteReel(sens * depenseVal);				
-			}
-			else if(operation.getEtat().equals(EtatLigneOperationEnum.PREVUE)){
-				budget.ajouteAFinArgentAvance(sens * depenseVal);
-				budget.ajouteAFinCompteReel(sens * depenseVal);
-			}
 		}
-		LOGGER.debug("Argent avancé : {}  :   {}", budget.getNowArgentAvance(), budget.getFinArgentAvance());
-		LOGGER.debug("Solde réel    : {}  :   {}", budget.getNowCompteReel(), budget.getFinCompteReel());
+		LOGGER.debug("Solde prévu	| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
+		LOGGER.debug("Solde réel (avec marge)| {}	| {}",  budget.getSoldeNow() + budget.getMarge(), budget.getSoldeFin() + budget.getMarge());
 	}
 
 	/**
 	 * Lock/unlock d'un budget
 	 * @param budgetActif
 	 */
-	public BudgetMensuel setBudgetActif(BudgetMensuel budgetMensuel, boolean budgetActif, String utilisateur){
+	public BudgetMensuel setBudgetActif(BudgetMensuel budgetMensuel, boolean budgetActif, String idUtilisateur){
 		LOGGER.info("{} du budget {}/{} de {}", budgetActif ? "Réouverture" : "Fermeture", budgetMensuel.getMois(), budgetMensuel.getAnnee(), budgetMensuel.getCompteBancaire().getLibelle());
 		budgetMensuel.setActif(budgetActif);
 		budgetMensuel.setDateMiseAJour(Calendar.getInstance());
-		return calculEtSauvegardeBudget(budgetMensuel, utilisateur);
+		//#119 : Toutes les opérations en attente sont annulées
+		if(!budgetActif){		
+			budgetMensuel.getListeOperations()
+				.stream()
+				.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
+				.forEach(op -> op.setEtat(EtatOperationEnum.ANNULEE));
+		}
+		return calculEtSauvegardeBudget(budgetMensuel, idUtilisateur);
 	}
+
+
+	/**
+	 * @param dataDepenses the dataDepenses to set
+	 */
+	protected void setDataDepenses(BudgetDatabaseService dataDepenses) {
+		this.dataDepenses = dataDepenses;
+	}
+	
+	
 }

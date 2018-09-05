@@ -3,6 +3,8 @@ package com.terrier.finances.gestion.services.parametrages.business;
 import java.text.ParseException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,7 @@ public class ParametragesService extends AbstractBusinessService {
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(ParametragesService.class);
-	
+
 	@Autowired
 	private ParametragesDatabaseService dataParams;
 
@@ -44,7 +46,15 @@ public class ParametragesService extends AbstractBusinessService {
 	 */
 	private List<CategorieDepense> listeCategories;
 
-	
+	@PostConstruct
+	public void chargeCategories(){
+		listeCategories = dataParams.chargeCategories();
+		LOGGER.info("> Chargement des catégories <");
+		listeCategories.stream().forEachOrdered(c -> {
+			LOGGER.debug("[{}] {}", c.isActif() ? "v" : "X", c);
+			c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}]		{}", s.isActif() ? "v" : "X", s));
+		});
+	}
 	/**
 	 * @return the version
 	 */
@@ -55,7 +65,7 @@ public class ParametragesService extends AbstractBusinessService {
 	/**
 	 * @param version the version to set
 	 */
-	@Value("${budget.version}")
+	@Value("${budget.version:CURRENT}")
 	public void setVersion(String version) {
 		this.version = version;
 	}
@@ -70,7 +80,7 @@ public class ParametragesService extends AbstractBusinessService {
 	/**
 	 * @param utcBuildTime the buildTime to set (en UTC)
 	 */
-	@Value("${budget.build.time}")
+	@Value("${budget.build.time:NOW}")
 	public void setBuildTime(String utcBuildTime) {
 		try {
 			this.buildTime = DataUtils.getUtcToLocalTime(utcBuildTime);
@@ -79,34 +89,34 @@ public class ParametragesService extends AbstractBusinessService {
 		}
 	}
 
-	
-	
+
+
 	/**
 	 * @return période de rafraichissement des IHM
 	 */
 	public String getUiRefreshPeriod() {
 		return uiRefreshPeriod;
 	}
-	
-	
+
+
 	/**
 	 * période de rafraichissement des IHM
 	 * @param uiRefreshPeriod
 	 */
-	@Value("${budget.ui.refresh.period}")
+	@Value("${budget.ui.refresh.period:1}")
 	public void setUiRefreshPeriod(String uiRefreshPeriod) {
 		this.uiRefreshPeriod = uiRefreshPeriod;
 	}
 
-	
-	@Value("${budget.ui.session.validity.period}")
+
+	@Value("${budget.ui.session.validity.period:10}")
 	public void setUiValiditySessionPeriod(String uiValiditySessionPeriod){
 		LOGGER.info("Suivi des sessions utilisateurs. Durée de validité d'une session : {} minutes", uiValiditySessionPeriod);
 		this.uiValiditySessionPeriod = uiValiditySessionPeriod;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @return the uiValiditySessionPeriod
 	 */
@@ -118,14 +128,6 @@ public class ParametragesService extends AbstractBusinessService {
 	 * @return liste des catégories
 	 */
 	public List<CategorieDepense> getCategories(){
-		if(listeCategories == null){
-			listeCategories = dataParams.chargeCategories();
-			LOGGER.info("> Chargement des catégories <");
-			listeCategories.stream().forEachOrdered(c -> {
-				LOGGER.debug("[{}] {}", c.isActif() ? "v" : "X", c);
-				c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}] 	{}", s.isActif() ? "v" : "X", s));
-			});
-		}
 		return listeCategories;
 	}
 
@@ -143,9 +145,9 @@ public class ParametragesService extends AbstractBusinessService {
 		}
 		throw new DataNotFoundException("Catégorie introuvable");
 	}
-	
 
-	
+
+
 	/**
 	 * Reset des données
 	 */

@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
-import com.terrier.finances.gestion.communs.operations.model.enums.EtatLigneOperationEnum;
+import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.services.budget.model.LigneDepenseDTO;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
@@ -27,7 +27,7 @@ import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatab
  *
  */
 @Component("dataTransformerLigneDepense")
-public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation, LigneDepenseDTO> {
+public class DataTransformerLigneDepense implements IDataTransformer<LigneOperation, LigneDepenseDTO> {
 
 	/**
 	 * Logger
@@ -51,7 +51,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation
 		bo.setDateMaj(dto.getDateMaj());
 		bo.setDateOperation(dto.getDateOperation());
 		bo.setDerniereOperation(dto.isDerniereOperation());
-		bo.setEtat(EtatLigneOperationEnum.valueOf(decryptor.decrypt(dto.getEtat())));
+		bo.setEtat(EtatOperationEnum.valueOf(decryptor.decrypt(dto.getEtat())));
 		bo.setSsCategorie(parametrageService.chargeCategorieParId(decryptor.decrypt(dto.getIdSSCategorie())));
 		bo.setLibelle(decryptor.decrypt(dto.getLibelle()));
 		bo.setPeriodique(dto.isPeriodique());
@@ -133,7 +133,7 @@ public class DataTransformerLigneDepense extends IDataTransformer<LigneOperation
 		ligneOperationClonee.setSsCategorie(ligneOperation.getSsCategorie());
 		ligneOperationClonee.setDateMaj(Calendar.getInstance().getTime());
 		ligneOperationClonee.setDateOperation(null);
-		ligneOperationClonee.setEtat(EtatLigneOperationEnum.PREVUE);
+		ligneOperationClonee.setEtat(EtatOperationEnum.PREVUE);
 		ligneOperationClonee.setPeriodique(ligneOperation.isPeriodique());
 		ligneOperationClonee.setTypeDepense(ligneOperation.getTypeDepense());
 		ligneOperationClonee.setValeurAbsStringToDouble(Double.toString(Math.abs(ligneOperation.getValeur())));

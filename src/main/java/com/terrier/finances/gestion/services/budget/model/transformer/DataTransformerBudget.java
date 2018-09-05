@@ -26,7 +26,7 @@ import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatab
  *
  */
 @Component("dataTransformerBudget")
-public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
+public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
 
 	@Autowired @Qualifier("dataTransformerLigneDepense")
 	private DataTransformerLigneDepense dataTransformerLigneDepense = new DataTransformerLigneDepense();
@@ -60,19 +60,15 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 				bo.setDateMiseAJour(c);
 			}
 			bo.setListeOperations(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses(), decryptor));
-			bo.setMargeSecurite(dto.getMargeSecurite() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecurite())) : 0D);
-			bo.setMargeSecuriteFinMois(dto.getMargeSecuriteFinMois() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeSecuriteFinMois())) : 0D);
 			bo.setMois(Month.of(dto.getMois() + 1));
-			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getResultatMoisPrecedent())) : 0D);
+			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getResultatMoisPrecedent())) : 0D, dto.getMargeMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeMoisPrecedent())) : 0D);
 
 			/*
 			 * Budget clos : utilisation des valeurs calculées
 			 */
 			if(!bo.isActif()){
-				bo.setNowArgentAvance(dto.getNowArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getNowArgentAvance())) : 0);
-				bo.setNowCompteReel(dto.getNowCompteReel() != null ? Double.valueOf(decryptor.decrypt(dto.getNowCompteReel())): 0);
-				bo.setFinArgentAvance(dto.getFinArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getFinArgentAvance())): 0);
-				bo.setFinCompteReel(dto.getFinCompteReel() != null ? Double.valueOf(decryptor.decrypt(dto.getFinCompteReel())):0);
+				bo.setSoldeNow(dto.getNowArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getNowArgentAvance())) : 0);
+				bo.setSoldeFin(dto.getFinArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getFinArgentAvance())): 0);
 				// Complétion des totaux
 				Map<CategorieDepense, Double[]> totalCategorieBO = new HashMap<>();
 
@@ -141,15 +137,14 @@ public class DataTransformerBudget extends IDataTransformer<BudgetMensuel, Budge
 		dto.getCompteBancaire().setListeProprietaires(null);
 		dto.setDateMiseAJour(bo.getDateMiseAJour() != null ? bo.getDateMiseAJour().getTime() : null);
 		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeOperations(), encryptor));
-		dto.setMargeSecurite(bo.getMargeSecurite() != null ? encryptor.encrypt(bo.getMargeSecurite().toString()) : null);
-		dto.setMargeSecuriteFinMois(bo.getMargeSecuriteFinMois() != null ?  encryptor.encrypt(bo.getMargeSecuriteFinMois().toString()) : null);
-
+		
 		dto.setMois(bo.getMois().getValue() - 1);
-		dto.setResultatMoisPrecedent(bo.getResultatMoisPrecedent() != null ?  encryptor.encrypt(bo.getResultatMoisPrecedent().toString()) : null);
-		dto.setFinArgentAvance( encryptor.encrypt(String.valueOf(bo.getFinArgentAvance())));
-		dto.setFinCompteReel( encryptor.encrypt(String.valueOf(bo.getFinCompteReel())));
-		dto.setNowArgentAvance( encryptor.encrypt(String.valueOf(bo.getNowArgentAvance())));
-		dto.setNowCompteReel( encryptor.encrypt(String.valueOf(bo.getNowCompteReel())));
+		dto.setResultatMoisPrecedent(bo.getMoisPrecedentResultat() != null ?  encryptor.encrypt(bo.getMoisPrecedentResultat().toString()) : null);
+		dto.setMargeMoisPrecedent(bo.getMoisPrecedentMarge() != null ? encryptor.encrypt(bo.getMoisPrecedentMarge().toString()) : null);
+
+		
+		dto.setFinArgentAvance( encryptor.encrypt(String.valueOf(bo.getSoldeFin())));
+		dto.setNowArgentAvance( encryptor.encrypt(String.valueOf(bo.getSoldeNow())));
 
 		// Complétion des totaux
 		Map<String, String[]> totalCategorieDTO = new HashMap<>();

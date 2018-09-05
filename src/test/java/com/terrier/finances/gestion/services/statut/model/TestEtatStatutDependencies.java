@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.business.statut;
+package com.terrier.finances.gestion.services.statut.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

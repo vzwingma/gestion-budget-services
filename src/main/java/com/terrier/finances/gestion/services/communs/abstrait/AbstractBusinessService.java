@@ -50,6 +50,10 @@ public class AbstractBusinessService {
 		this.serviceParams = serviceParams;
 	}
 
+	/**
+	 * @param idSession
+	 * @return businessSession
+	 */
 	public UserBusinessSession getBusinessSession(String idSession){
 		return getServiceUtilisateurs().getBusinessSession(idSession);
 	}

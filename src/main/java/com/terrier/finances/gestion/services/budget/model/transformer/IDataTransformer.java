@@ -12,23 +12,7 @@ import org.jasypt.util.text.BasicTextEncryptor;
  * @author vzwingma
  *
  */
-public abstract class IDataTransformer<B, D> {
-
-	/**
-	 * @return l'encryptor de l'utilisateur courant
-	
-	public BasicTextEncryptor getEncryptor(){
-		if(this.encryptor == null){
-			if(SecurityContextHolder.getContext().getAuthentication() != null){
-				this.encryptor = ((Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEncryptor();	
-			}
-			else{
-				this.encryptor =  UserSessionsManager.get().getSession().getUtilisateurCourant().getEncryptor();
-			}
-		}
-		return this.encryptor;
-	}
-	 */
+public interface IDataTransformer<B, D> {
 
 
 	/**
@@ -36,13 +20,13 @@ public abstract class IDataTransformer<B, D> {
 	 * @param dto data object (Mongo)
 	 * @return bo business object
 	 */
-	public abstract B transformDTOtoBO(D dto, BasicTextEncryptor decryptor);
+	public B transformDTOtoBO(D dto, BasicTextEncryptor decryptor);
 	/**
 	 * Transformation d'un BO en TO
 	 * @return dto data object (Mongo)
 	 * @param bo business object
 	 */
-	public abstract D transformBOtoDTO(B bo, BasicTextEncryptor encryptor);
+	public D transformBOtoDTO(B bo, BasicTextEncryptor encryptor);
 	
 
 }
