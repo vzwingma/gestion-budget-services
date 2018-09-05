@@ -311,7 +311,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		Query queryBudget = new Query().addCriteria(Criteria.where("id").is(idBudget));
 		try{
 			BudgetMensuelDTO budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(idBudget));
-			if(budgetDTO != null){
+			if(budgetDTO != null && budgetDTO.getListeDepenses() != null){
 				return budgetDTO.getListeDepenses();
 			}
 			else{

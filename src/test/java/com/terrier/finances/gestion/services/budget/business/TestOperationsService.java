@@ -18,9 +18,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
-import com.terrier.finances.gestion.communs.operations.model.enums.EtatLigneOperationEnum;
+import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
+import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
 
@@ -60,9 +61,9 @@ public class TestOperationsService {
 	public void initBudget(){
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
-		this.budget.getListeOperations().add(new LigneOperation(new CategorieDepense(), "TEST1", TypeOperationEnum.CREDIT, "123", EtatLigneOperationEnum.PREVUE, false));
-		this.budget.setResultatMoisPrecedent(1234D);
-		this.budget.setMargeSecurite(0D);
+		this.budget.setResultatMoisPrecedent(0D, 0D);
+		this.budget.razCalculs();
+		this.budget.getListeOperations().add(new LigneOperation(new CategorieDepense(), "TEST1", TypeOperationEnum.CREDIT, "123", EtatOperationEnum.PREVUE, false));
 		
 		LocalDate now = LocalDate.now();
 		this.budget.setMois(now.getMonth());
@@ -82,6 +83,56 @@ public class TestOperationsService {
 	@Test
 	public void testSetBudgetInactif(){
 		BudgetMensuel m = operationsService.setBudgetActif(this.budget, false, "TEST");
-		assertEquals(EtatLigneOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
+		assertEquals(EtatOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
 	}	
+	
+	/**
+	 * Test #121
+	 */
+	@Test
+	public void testCalculBudget(){
+		
+		this.operationsService.calculBudget(budget);
+		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
+
+		assertEquals(0, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
+
+		
+		this.budget.setResultatMoisPrecedent(0D, 100D);
+		this.operationsService.calculBudget(budget);
+		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
+
+		assertEquals(100, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
+		assertEquals(223, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
+		
+		
+		CategorieDepense reserveCat = new CategorieDepense();
+		reserveCat.setId(IdsCategoriesEnum.RESERVE.getId());
+		
+		LigneOperation reserve = new LigneOperation(reserveCat, "TESTRESERVE", TypeOperationEnum.CREDIT, "100", EtatOperationEnum.REALISEE, false);
+		this.budget.getListeOperations().add(reserve);
+		this.operationsService.calculBudget(budget);
+		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
+
+		assertEquals(200, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
+		assertEquals(323, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
+
+		// Pour éviter le doublon du recalcul ci dessous
+		this.budget.setResultatMoisPrecedent(0D, 0D);
+		
+		LigneOperation piocheReserve = new LigneOperation(reserveCat, "PIOCHERESERVE", TypeOperationEnum.DEPENSE, "50", EtatOperationEnum.REALISEE, false);
+		this.budget.getListeOperations().add(piocheReserve);
+		this.operationsService.calculBudget(budget);
+		
+		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
+
+		assertEquals(150, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
+		assertEquals(273, Double.valueOf(this.budget.getSoldeReelFin()).intValue());		
+
+	}
 }

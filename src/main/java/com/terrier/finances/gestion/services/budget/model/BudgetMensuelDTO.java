@@ -50,8 +50,7 @@ public class BudgetMensuelDTO implements Serializable {
 	 */
 	private String resultatMoisPrecedent;
 
-	private String margeSecurite;
-	private String margeSecuriteFinMois;
+	private String margeMoisPrecedent;
 
 	/**
 	 * Liste des dépenses
@@ -63,9 +62,7 @@ public class BudgetMensuelDTO implements Serializable {
 	 * Totaux
 	 */
 	private String nowArgentAvance;
-	private String nowCompteReel;
 	private String finArgentAvance;
-	private String finCompteReel;
 
 	private Map<String, String[]> totalParCategories = new HashMap<>();
 	private Map<String, String[]> totalParSSCategories = new HashMap<>();
@@ -99,26 +96,12 @@ public class BudgetMensuelDTO implements Serializable {
 	}
 
 	/**
-	 * @return the nowCompteReel
-	 */
-	public String getNowCompteReel() {
-		return nowCompteReel;
-	}
-
-
-	/**
 	 * @return the finArgentAvance
 	 */
 	public String getFinArgentAvance() {
 		return finArgentAvance;
 	}
 
-	/**
-	 * @return the finCompteReel
-	 */
-	public String getFinCompteReel() {
-		return finCompteReel;
-	}
 
 	/**
 	 * @return the mois
@@ -176,38 +159,12 @@ public class BudgetMensuelDTO implements Serializable {
 		this.nowArgentAvance = nowArgentAvance;
 	}
 
-
-
-
-	/**
-	 * @param nowCompteReel the nowCompteReel to set
-	 */
-	public void setNowCompteReel(String nowCompteReel) {
-		this.nowCompteReel = nowCompteReel;
-	}
-
-
-
-
 	/**
 	 * @param finArgentAvance the finArgentAvance to set
 	 */
 	public void setFinArgentAvance(String finArgentAvance) {
 		this.finArgentAvance = finArgentAvance;
 	}
-
-
-
-
-	/**
-	 * @param finCompteReel the finCompteReel to set
-	 */
-	public void setFinCompteReel(String finCompteReel) {
-		this.finCompteReel = finCompteReel;
-	}
-
-
-
 
 	/**
 	 * @return the listeDepenses
@@ -229,16 +186,16 @@ public class BudgetMensuelDTO implements Serializable {
 	/**
 	 * @return the margeSecurite
 	 */
-	public String getMargeSecurite() {
-		return margeSecurite;
+	public String getMargeMoisPrecedent() {
+		return margeMoisPrecedent;
 	}
 
 
 	/**
 	 * @param margeSecurite the margeSecurite to set
 	 */
-	public void setMargeSecurite(String margeSecurite) {
-		this.margeSecurite = margeSecurite;
+	public void setMargeMoisPrecedent(String margeSecurite) {
+		this.margeMoisPrecedent = margeSecurite;
 	}
 
 
@@ -255,23 +212,6 @@ public class BudgetMensuelDTO implements Serializable {
 	 */
 	public void setDateMiseAJour(Date dateMiseAJour) {
 		this.dateMiseAJour = dateMiseAJour;
-	}
-
-
-
-	/**
-	 * @return the margeSecuriteFinMois
-	 */
-	public String getMargeSecuriteFinMois() {
-		return margeSecuriteFinMois;
-	}
-
-
-	/**
-	 * @param margeSecuriteFinMois the margeSecuriteFinMois to set
-	 */
-	public void setMargeSecuriteFinMois(String margeSecuriteFinMois) {
-		this.margeSecuriteFinMois = margeSecuriteFinMois;
 	}
 
 
