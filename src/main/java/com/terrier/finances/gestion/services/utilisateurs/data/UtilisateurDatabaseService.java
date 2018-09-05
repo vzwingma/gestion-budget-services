@@ -46,7 +46,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 
 
 	/**
-	 * @return la liste des catégories
+	 * Met à jour l'utilisateur en BDD
 	 */
 	public void majUtilisateur(Utilisateur utilisateur){
 		try{

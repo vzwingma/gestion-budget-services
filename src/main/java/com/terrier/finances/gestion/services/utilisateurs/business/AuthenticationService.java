@@ -1,7 +1,6 @@
 package com.terrier.finances.gestion.services.utilisateurs.business;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,10 +61,6 @@ public class AuthenticationService extends AbstractBusinessService {
 		if(utilisateur != null){
 			// Vérification du mot de passe
 			if(PasswordEncoder.validatePassword(motPasseEnClair, utilisateur.getHashMotDePasse())){
-				// Enregistrement de la date du dernier accès à maintenant
-				dataDBUsers.majUtilisateur(utilisateur);
-				Date dernierAcces = Calendar.getInstance().getTime();
-				utilisateur.setDernierAcces(dernierAcces);
 				if(utilisateur.getMasterCleChiffrementDonnees() == null){
 					LOGGER.error("Erreur 3 lors de l'authentification. Master key introuvable");
 					return null;
@@ -77,6 +72,11 @@ public class AuthenticationService extends AbstractBusinessService {
 					String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getMasterCleChiffrementDonnees());
 					registerUserBusinessSession(utilisateur, cleChiffrementDonnees);
 				}
+				// Enregistrement de la date du dernier accès à maintenant
+				LocalDateTime dernierAcces = utilisateur.getDernierAcces();
+				utilisateur.setDernierAcces(LocalDateTime.now());
+				dataDBUsers.majUtilisateur(utilisateur);
+				utilisateur.setDernierAcces(dernierAcces);
 				return utilisateur.getId();
 			}
 			else{
