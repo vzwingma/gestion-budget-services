@@ -31,17 +31,17 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value="/rest")
 @Api(consumes="application/json", protocols="https", value="Administration", tags={"Administration"})
-public class StatutRestController {
+public class StatutAPIController {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(StatutRestController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatutAPIController.class);
 
 	
 	@Autowired
-	private StatusApplicationService statusApplicationService;
+	protected StatusApplicationService statusApplicationService;
 
 	@PostConstruct
 	public void initApplication(){
@@ -72,4 +72,6 @@ public class StatutRestController {
 		LOGGER.info("stopApplication");
 		statusApplicationService.updateDependencyStatut(DependencyName.REST_SERVICE, StatutStateEnum.DEGRADE);
 	}
+	
+	
 }

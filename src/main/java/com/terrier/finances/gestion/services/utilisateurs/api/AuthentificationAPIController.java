@@ -6,7 +6,6 @@ package com.terrier.finances.gestion.services.utilisateurs.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,13 +29,13 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value="/rest/authentification")
 @Api(consumes="application/json", protocols="https", value="Authentification", tags={"Authentification"})
-public class AuthentificationRestController {
+public class AuthentificationAPIController {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthentificationRestController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthentificationAPIController.class);
 
 	@Autowired
 	private AuthenticationService authService;
