@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginRestObject;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthResponseRestObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
@@ -73,5 +75,30 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			return getEntity(response);
 		}
 		throw new UserNotAuthorizedException();
+	}
+	
+	/**
+	 * Authentification
+	 * @param login login de l'utilisateur
+	 * @param motPasse motPasse
+	 * @return résultat de l'opération
+	 */
+	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Déconnexion d'un utilisateur")
+	@ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Déconnexion réussie"),
+            @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+            @ApiResponse(code = 404, message = "Session introuvable")
+    })
+	@ApiImplicitParams(value={
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idSession", required=true, value="Id de l'utilisateur", paramType="path"),
+	})
+	
+	@PostMapping(value=BudgetApiUrlEnum.AUTH_DISCONNECT+"/{idSession}")
+	public ResponseEntity<?> disconnect(@PathVariable("idSession") String idSession) throws DataNotFoundException{
+		LOGGER.info("[API] Disconnect : {}", idSession);
+		if(authService.deconnexionBusinessSession(idSession)){
+			return ResponseEntity.ok().build();
+		}
+		throw new DataNotFoundException("Impossible de déconnecter l'utilisateur : " + idSession);
 	}
 }

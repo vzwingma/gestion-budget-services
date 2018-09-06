@@ -23,6 +23,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginRestObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
@@ -42,7 +43,8 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestUtilisateursAPI.class);
 
-	
+	@Autowired
+	private AuthenticationService service;
 	@Autowired
 	private UtilisateurDatabaseService mockDataDBUsers;
 
@@ -87,5 +89,36 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 				.andExpect(header().exists("Content-Type"))
 				.andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON.toString()))
 				.andExpect(content().string("{\"idUtilisateur\":\"test\"}"));
+	}	
+	
+	
+
+	@Test
+	public void testDisconnect() throws Exception {
+		// Fail
+		getMockAPI().perform(
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_DISCONNECT_FULL))
+		.andExpect(status().is4xxClientError());
+
+
+		Utilisateur userOK = new Utilisateur();
+		userOK.setId("345345");
+		userOK.setLogin("Test");
+		service.registerUserBusinessSession(userOK, "test");
+		
+		LOGGER.info("Disconnect Failed");
+		getMockAPI().perform(
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_DISCONNECT_FULL + "/123123")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isNotFound());
+		
+		LOGGER.info("Disconnect OK");
+		getMockAPI().perform(
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_DISCONNECT_FULL + "/345345")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk());
+		
 	}	
 }

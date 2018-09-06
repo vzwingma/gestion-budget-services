@@ -119,7 +119,8 @@ public class AuthenticationService extends AbstractBusinessService {
 	 * @param utilisateur
 	 * @param masterKeyClear
 	 */
-	private void registerUserBusinessSession(Utilisateur utilisateur, String masterKeyClear){
+	public void registerUserBusinessSession(Utilisateur utilisateur, String masterKeyClear){
+		LOGGER.debug("Enregistrement de la BusinessSession [{}]", utilisateur.getId());
 		this.businessSessions.putIfAbsent(utilisateur.getId(), new UserBusinessSession(utilisateur));
 		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);	
 	}
@@ -140,7 +141,7 @@ public class AuthenticationService extends AbstractBusinessService {
 		UserBusinessSession userSession = this.businessSessions.get(idSession);
 		if(userSession != null){
 			userSession.deconnexion();
-			this.businessSessions.remove(idSession);
+			return this.businessSessions.remove(idSession) != null;
 		}
 		return false;
 	}
