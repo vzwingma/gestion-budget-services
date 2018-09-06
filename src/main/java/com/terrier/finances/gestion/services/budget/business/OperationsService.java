@@ -24,9 +24,9 @@ import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperation
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.DataUtils;
-import com.terrier.finances.gestion.communs.utils.exception.BudgetNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exception.CompteClosedException;
-import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense;

@@ -1,5 +1,7 @@
 package com.terrier.finances.gestion.services.communs.abstrait;
 
+import javax.annotation.PreDestroy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,5 +88,8 @@ public class AbstractBusinessService {
 		this.serviceOperation = serviceOperation;
 	}
 	
-	
+	@PreDestroy
+	public void endApp(){
+		LOGGER.info("[END] Service {}", this.getClass().getSimpleName());
+	}
 }
