@@ -1,63 +1,51 @@
 package com.terrier.finances.gestion.services.statut.api;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import javax.ws.rs.core.MediaType;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrl;
 import com.terrier.finances.gestion.services.statut.business.StatusApplicationService;
+import com.terrier.finances.gestion.test.config.AbstractTestAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
 import com.terrier.finances.gestion.test.config.TestRealAuthServices;
 
+/**
+ * Test de l'API Statut
+ * @author vzwingma
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
 @ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
-public class TestStatutAPI {
-
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(TestStatutAPI.class);
-
-	private MockMvc mockMvc;
+public class TestStatutAPI extends AbstractTestAPI {
 
 	@Autowired
-	private WebApplicationContext wac;
-
-	private StatusApplicationService mockStatutService = Mockito.mock(StatusApplicationService.class);
-	@Autowired
-	private StatutAPIController statutControleur;
+	private StatusApplicationService statusApplicationService;
 	
 	@Before
-	public void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-		statutControleur.statusApplicationService = mockStatutService;
+	public void initControleur(){
+		statusApplicationService.initApplication();
 	}
 
 	@Test
-	public void testAuthenticate() throws Exception {
-		// Fail
-		mockMvc.perform(
-				get("/rest/statut")
+	public void testStatut() throws Exception {
+		// Statut OK
+		getMockAPI().perform(
+				get(BudgetApiUrl.ROOT_URL + BudgetApiUrl.STATUT_BASE_URL)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk());
+		.andExpect(status().isOk())
+		.andDo(MockMvcResultHandlers.log())
+		.andExpect(content().string(containsString("\"nom\":\"APPLICATION\"")));
 	}	
-	
-
-	
 }

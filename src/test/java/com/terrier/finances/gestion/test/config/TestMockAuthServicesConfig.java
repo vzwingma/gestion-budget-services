@@ -4,7 +4,6 @@ import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.terrier.finances.gestion.services.statut.business.StatusApplicationService;
 import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
 
 /**
@@ -15,7 +14,7 @@ import com.terrier.finances.gestion.services.utilisateurs.business.Authenticatio
 @Configuration
 public class TestMockAuthServicesConfig {
 
-    private StatusApplicationService mockStatutService = Mockito.mock(StatusApplicationService.class);
+
     private AuthenticationService mockAuthService = Mockito.mock(AuthenticationService.class);
 
 
@@ -23,17 +22,6 @@ public class TestMockAuthServicesConfig {
 		return this.mockAuthService;
 	}
 
-	
-	@Bean StatusApplicationService mockStatutService(){
-		return this.mockStatutService;
-	}
-	
-	/**
-	 * @return the mockAuthService
-	 */
-	public StatusApplicationService getMockStatutService() {
-		return mockStatutService;
-	}
 	
     /**
      * @return the mockAuthService
