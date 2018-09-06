@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.services.communs.api.converters;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +13,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 
 /**
  * Message Converter pour les échanges entre l'IHM et les services via API
@@ -20,17 +20,18 @@ import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
  *
  * @param <T>
  */
-public class BudgetRestObjectMessageConverter<T extends AbstractAPIObjectModel> implements HttpMessageConverter<T> {
+public class LocalDateTimeMessageConverter implements HttpMessageConverter<LocalDateTime> {
 	
 	
 	private ObjectMapper mapper = new ObjectMapper();
-	
+
 	/* (non-Javadoc)
 	 * @see org.springframework.http.converter.HttpMessageConverter#canRead(java.lang.Class, org.springframework.http.MediaType)
 	 */
 	@Override
 	public boolean canRead(Class<?> clazz, MediaType mediaType) {
-		return MediaType.APPLICATION_JSON.equals(mediaType) && clazz.isAssignableFrom(AbstractAPIObjectModel.class);
+		System.err.println(clazz + "########" + clazz.isAssignableFrom(LocalDateTime.class));
+		return clazz.isAssignableFrom(LocalDateTime.class);
 	}
 
 	/* (non-Javadoc)
@@ -38,7 +39,7 @@ public class BudgetRestObjectMessageConverter<T extends AbstractAPIObjectModel> 
 	 */
 	@Override
 	public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-		return MediaType.APPLICATION_JSON.equals(mediaType) && clazz.isAssignableFrom(AbstractAPIObjectModel.class);
+		return clazz.isAssignableFrom(LocalDateTime.class);
 	}
 
 	/* (non-Javadoc)
@@ -46,14 +47,14 @@ public class BudgetRestObjectMessageConverter<T extends AbstractAPIObjectModel> 
 	 */
 	@Override
 	public List<MediaType> getSupportedMediaTypes() {
-		return Arrays.asList(MediaType.APPLICATION_JSON);
+		return Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.http.converter.HttpMessageConverter#read(java.lang.Class, org.springframework.http.HttpInputMessage)
 	 */
 	@Override
-	public T read(Class<? extends T> clazz, HttpInputMessage inputMessage)
+	public LocalDateTime read(Class<? extends LocalDateTime> clazz, HttpInputMessage inputMessage)
 			throws IOException, HttpMessageNotReadableException {
 		return mapper.readValue(inputMessage.getBody(), clazz);
 	}
@@ -62,9 +63,9 @@ public class BudgetRestObjectMessageConverter<T extends AbstractAPIObjectModel> 
 	 * @see org.springframework.http.converter.HttpMessageConverter#write(java.lang.Object, org.springframework.http.MediaType, org.springframework.http.HttpOutputMessage)
 	 */
 	@Override
-	public void write(T t, MediaType contentType, HttpOutputMessage outputMessage)
+	public void write(LocalDateTime t, MediaType contentType, HttpOutputMessage outputMessage)
 			throws IOException, HttpMessageNotWritableException {
 		mapper.writeValue(outputMessage.getBody(), t);
-		
 	}
+	
 }

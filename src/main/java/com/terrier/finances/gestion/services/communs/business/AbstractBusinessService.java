@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.services.budget.business.OperationsService;
 import com.terrier.finances.gestion.services.parametrages.business.ParametragesService;
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
+import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
@@ -34,7 +34,7 @@ public class AbstractBusinessService {
 	@Autowired
 	private ParametragesService serviceParams;
 	@Autowired
-	private AuthenticationService serviceUtilisateurs;
+	private UtilisateursService serviceUtilisateurs;
 	@Autowired
 	private OperationsService serviceOperation;
 
@@ -63,14 +63,14 @@ public class AbstractBusinessService {
 	/**
 	 * @return the serviceAuth
 	 */
-	public AuthenticationService getServiceUtilisateurs() {
+	public UtilisateursService getServiceUtilisateurs() {
 		return serviceUtilisateurs;
 	}
 
 	/**
 	 * @param serviceUtilisateurs the serviceAuth to set
 	 */
-	public void setServiceUtilisateurs(AuthenticationService serviceUtilisateurs) {
+	public void setServiceUtilisateurs(UtilisateursService serviceUtilisateurs) {
 		this.serviceUtilisateurs = serviceUtilisateurs;
 	}
 

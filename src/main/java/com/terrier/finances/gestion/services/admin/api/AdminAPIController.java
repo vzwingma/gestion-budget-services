@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
+import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -38,7 +38,7 @@ public class AdminAPIController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdminAPIController.class);
 
 	@Autowired
-	private AuthenticationService authService;
+	private UtilisateursService authService;
 
 	/**
 	 * Changement du mot de passe

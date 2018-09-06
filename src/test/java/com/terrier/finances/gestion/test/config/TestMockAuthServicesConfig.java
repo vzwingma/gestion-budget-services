@@ -4,7 +4,7 @@ import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
+import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 /**
  * Mock de l'authentification
@@ -15,10 +15,10 @@ import com.terrier.finances.gestion.services.utilisateurs.business.Authenticatio
 public class TestMockAuthServicesConfig {
 
 
-    private AuthenticationService mockAuthService = Mockito.mock(AuthenticationService.class);
+    private UtilisateursService mockAuthService = Mockito.mock(UtilisateursService.class);
 
 
-	@Bean AuthenticationService mockAuthService(){
+	@Bean UtilisateursService mockAuthService(){
 		return this.mockAuthService;
 	}
 
@@ -26,7 +26,7 @@ public class TestMockAuthServicesConfig {
     /**
      * @return the mockAuthService
      */
-    public AuthenticationService getMockAuthService() {
+    public UtilisateursService getMockAuthService() {
         return mockAuthService;
     }
     

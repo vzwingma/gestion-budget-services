@@ -23,7 +23,7 @@ public class UserAuthProvider implements AuthenticationProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthProvider.class);
 
 	@Autowired
-	private AuthenticationService authenticationService;
+	private UtilisateursService authenticationService;
 		
 
 

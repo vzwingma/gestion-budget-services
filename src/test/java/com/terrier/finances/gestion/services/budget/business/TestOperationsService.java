@@ -23,7 +23,7 @@ import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperation
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
+import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 import com.terrier.finances.gestion.test.config.TestMockAuthServicesConfig;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
@@ -46,7 +46,7 @@ public class TestOperationsService {
 
 	@Autowired
 	@Qualifier("mockAuthService")
-	private AuthenticationService authenticationService;
+	private UtilisateursService authenticationService;
 
 	private BudgetMensuel budget;
 

@@ -35,7 +35,7 @@ public class RestCorsFilter implements Filter {
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		LOGGER.info("[REST] Init FilterConfig [{}]", filterConfig);
+		LOGGER.info("[API] Init FilterConfig [{}]", filterConfig);
 	}
 
 	/* (non-Javadoc)

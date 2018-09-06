@@ -3,12 +3,16 @@
  */
 package com.terrier.finances.gestion.services.utilisateurs.api;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +27,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginRestObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
+import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
@@ -44,7 +48,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestUtilisateursAPI.class);
 
 	@Autowired
-	private AuthenticationService service;
+	private UtilisateursService service;
 	@Autowired
 	private UtilisateurDatabaseService mockDataDBUsers;
 
@@ -52,7 +56,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	public void testAuthenticate() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_AUTHENTICATE_FULL)
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().is4xxClientError());
@@ -71,7 +75,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		LOGGER.info("Authentification Failed de {}", json(auth));
 		
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_AUTHENTICATE_FULL)
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(auth) ))
@@ -81,7 +85,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		AuthLoginRestObject auth2 = new AuthLoginRestObject("Test", "test");
 		LOGGER.info("Authentification OK de {}", json(auth2));
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_AUTHENTICATE_FULL)
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)
 					.accept(MediaType.APPLICATION_JSON)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json(auth2) ))
@@ -97,7 +101,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	public void testDisconnect() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_DISCONNECT_FULL))
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_DISCONNECT_FULL))
 		.andExpect(status().is4xxClientError());
 
 
@@ -108,17 +112,42 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		
 		LOGGER.info("Disconnect Failed");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_DISCONNECT_FULL + "/123123")
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_DISCONNECT_FULL + "/123123")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		
 		LOGGER.info("Disconnect OK");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_DISCONNECT_FULL + "/345345")
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_DISCONNECT_FULL + "/345345")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk());
+		
+	}	
+	
+	
+
+
+	@Test
+	public void testLastTime() throws Exception {
+		// Fail
+		getMockAPI().perform(
+				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL))
+		.andExpect(status().is4xxClientError());
+
+		Utilisateur userOK = new Utilisateur();
+		userOK.setId("345345");
+		userOK.setLogin("Test");
+		userOK.setDernierAcces(LocalDateTime.now());
+		service.registerUserBusinessSession(userOK, "test");
+		
+		getMockAPI().perform(
+				get(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL + "/345345")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().string(containsString("\"month\":\""+LocalDateTime.now().getMonth().toString()+"\"")));
 		
 	}	
 }

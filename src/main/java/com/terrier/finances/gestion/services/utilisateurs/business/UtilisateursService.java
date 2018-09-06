@@ -24,12 +24,12 @@ import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSess
  *
  */
 @Service
-public class AuthenticationService extends AbstractBusinessService {
+public class UtilisateursService extends AbstractBusinessService {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateursService.class);
 
 	/**
 	 * Paramétrages
@@ -125,6 +125,17 @@ public class AuthenticationService extends AbstractBusinessService {
 		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);	
 	}
 	
+	
+	/**
+	 * @param idSession
+	 * @return date de dernier accès
+	 */
+	public LocalDateTime getLastAccessDate(String idSession){
+		if(this.businessSessions.get(idSession) != null){
+			return this.businessSessions.get(idSession).getUtilisateur().getDernierAcces();
+		}
+		return null;
+	}
 
 	@Override
 	public UserBusinessSession getBusinessSession(String idSession){
