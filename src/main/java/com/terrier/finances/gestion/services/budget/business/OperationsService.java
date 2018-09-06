@@ -30,7 +30,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense;
-import com.terrier.finances.gestion.services.communs.abstrait.AbstractBusinessService;
+import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**

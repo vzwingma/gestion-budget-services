@@ -7,6 +7,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
@@ -83,6 +84,8 @@ public class TestAuthentificationAPI extends AbstractTestsAPI  {
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json(auth2) ))
 				.andExpect(status().isOk())
+				.andExpect(header().exists("Content-Type"))
+				.andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON.toString()))
 				.andExpect(content().string("{\"login\":\"Test\",\"motDePasse\":\"test\",\"idUtilisateur\":\"test\"}"));
 	}	
 }

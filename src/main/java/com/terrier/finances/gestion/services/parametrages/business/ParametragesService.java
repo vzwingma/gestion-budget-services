@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
 import com.terrier.finances.gestion.communs.utils.data.DataUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.communs.abstrait.AbstractBusinessService;
+import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
 
 /**

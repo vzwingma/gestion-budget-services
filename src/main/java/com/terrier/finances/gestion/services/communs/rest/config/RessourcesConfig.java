@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.terrier.finances.gestion.communs.abstrait.BudgetRestObjectMessageConverter;
+import com.terrier.finances.gestion.services.communs.rest.converters.BudgetRestObjectMessageConverter;
 
 
 @Configuration
@@ -19,6 +19,7 @@ import com.terrier.finances.gestion.communs.abstrait.BudgetRestObjectMessageConv
 @ComponentScan(basePackages = {
 		"com.terrier.finances.gestion.services.admin.api",
 		"com.terrier.finances.gestion.services.statut.api",
+		"com.terrier.finances.gestion.services.utilisateurs.api",
 		"com.terrier.finances.gestion.services.communs.rest.config"		
 		})
 public class RessourcesConfig implements WebMvcConfigurer{

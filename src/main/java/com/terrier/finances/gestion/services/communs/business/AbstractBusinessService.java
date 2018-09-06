@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.abstrait;
+package com.terrier.finances.gestion.services.communs.business;
 
 import javax.annotation.PreDestroy;
 

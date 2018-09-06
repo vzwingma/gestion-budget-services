@@ -8,7 +8,7 @@ import javax.annotation.PreDestroy;
 
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.services.communs.abstrait.AbstractBusinessService;
+import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 import com.terrier.finances.gestion.services.statut.model.api.StatutDependencyRestObject;
