@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.statut.business.StatusApplicationService;
-import com.terrier.finances.gestion.test.config.AbstractTestAPI;
+import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
 import com.terrier.finances.gestion.test.config.TestRealAuthServices;
 
@@ -27,7 +27,7 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
-public class TestStatutAPI extends AbstractTestAPI {
+public class TestStatutAPI extends AbstractTestsAPI {
 
 	@Autowired
 	private StatusApplicationService statusApplicationService;

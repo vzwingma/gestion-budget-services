@@ -23,7 +23,7 @@ import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthentificationRestObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
-import com.terrier.finances.gestion.test.config.AbstractTestAPI;
+import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
 import com.terrier.finances.gestion.test.config.TestRealAuthServices;
 
@@ -34,7 +34,7 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
-public class TestAuthentificationAPI extends AbstractTestAPI  {
+public class TestAuthentificationAPI extends AbstractTestsAPI  {
 
 	/**
 	 * Logger

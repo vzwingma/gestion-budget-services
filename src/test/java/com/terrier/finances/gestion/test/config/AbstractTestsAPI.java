@@ -4,7 +4,6 @@
 package com.terrier.finances.gestion.test.config;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,7 +26,7 @@ import com.terrier.finances.gestion.services.communs.rest.config.RessourcesConfi
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={RessourcesConfig.class})
-public abstract class AbstractTestAPI {
+public abstract class AbstractTestsAPI {
 
 	private MockMvc mockMvc;
 
