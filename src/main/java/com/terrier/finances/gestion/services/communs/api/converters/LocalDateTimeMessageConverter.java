@@ -17,8 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Message Converter pour les échanges entre l'IHM et les services via API
  * @author vzwingma
- *
- * @param <T>
  */
 public class LocalDateTimeMessageConverter implements HttpMessageConverter<LocalDateTime> {
 	
@@ -30,7 +28,6 @@ public class LocalDateTimeMessageConverter implements HttpMessageConverter<Local
 	 */
 	@Override
 	public boolean canRead(Class<?> clazz, MediaType mediaType) {
-		System.err.println(clazz + "########" + clazz.isAssignableFrom(LocalDateTime.class));
 		return clazz.isAssignableFrom(LocalDateTime.class);
 	}
 
