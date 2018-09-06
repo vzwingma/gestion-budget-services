@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(basePackages = {
-		"com.terrier.finances.gestion.services.utilisateurs.business"})	
+		"com.terrier.finances.gestion.services.utilisateurs"})	
 public class TestRealAuthServices {
 
 }

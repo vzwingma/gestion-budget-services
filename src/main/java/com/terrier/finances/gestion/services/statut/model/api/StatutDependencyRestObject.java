@@ -1,5 +1,5 @@
 
-package com.terrier.finances.gestion.services.statut.model;
+package com.terrier.finances.gestion.services.statut.model.api;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,8 +9,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.terrier.finances.gestion.communs.utils.data.DataUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.terrier.finances.gestion.communs.abstrait.AbstractRestObjectModel;
+import com.terrier.finances.gestion.communs.utils.data.DataUtils;
+import com.terrier.finances.gestion.services.statut.model.DependencyName;
+import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -21,8 +24,12 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @JsonInclude(Include.NON_EMPTY)
+public class StatutDependencyRestObject extends AbstractRestObjectModel {
 
-public class StatutDependencyObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1827692312560112158L;
 
 	// Nom 
 	@ApiModelProperty(notes = "Nom de l'application ou de la dépendance", required=true)
@@ -40,7 +47,7 @@ public class StatutDependencyObject {
 	
 	// Liste des dépendances
 	@ApiModelProperty(notes = "Liste des dépendances", required=true, dataType="StatutDependencyObject")
-	private List<StatutDependencyObject> dependances = new ArrayList<>();
+	private List<StatutDependencyRestObject> dependances = new ArrayList<>();
 	
 	// Date de la mise à jour
 	@ApiModelProperty(notes = "Date du statut", required=true)
@@ -50,7 +57,7 @@ public class StatutDependencyObject {
 	 * Création d'une dépendance
 	 * @param nom
 	 */
-	public StatutDependencyObject(DependencyName nom){
+	public StatutDependencyRestObject(DependencyName nom){
 		this.nom = nom;
 		this.statusObject = StatutStateEnum.INCONNU;
 		this.statusCompile = StatutStateEnum.INCONNU;
@@ -71,7 +78,7 @@ public class StatutDependencyObject {
 			dependencyFound = true;
 		}
 		else if(dependances != null && !dependances.isEmpty()){
-			for (StatutDependencyObject statutDependencyObject : dependances) {
+			for (StatutDependencyRestObject statutDependencyObject : dependances) {
 				dependencyFound = statutDependencyObject.updateStatusModule(nom, statut);
 				if(dependencyFound){
 					break;
@@ -92,12 +99,12 @@ public class StatutDependencyObject {
 	 */
 	public void addDependency(DependencyName dependance, DependencyName parent){
 		if(parent != null && this.nom.equals(parent)){
-			StatutDependencyObject nlleDependance = new StatutDependencyObject(dependance);
+			StatutDependencyRestObject nlleDependance = new StatutDependencyRestObject(dependance);
 			nlleDependance.updateStatusModule(dependance, StatutStateEnum.INCONNU);
 			this.dependances.add(nlleDependance);
 		}
 		else if(this.dependances != null && !this.dependances.isEmpty()){
-			for (StatutDependencyObject statutDependencyObject : dependances) {
+			for (StatutDependencyRestObject statutDependencyObject : dependances) {
 				statutDependencyObject.addDependency(dependance, parent);
 			}
 		}
@@ -111,7 +118,7 @@ public class StatutDependencyObject {
 		// Parcours de tous les status aggrégé des dépendances
 		int statutAggrege = 0;
 		if(dependances != null && !dependances.isEmpty()){
-			for (StatutDependencyObject statutDependencyObject : dependances) {
+			for (StatutDependencyRestObject statutDependencyObject : dependances) {
 				if(statutDependencyObject.getStatusCompile().ordinal() >= statutAggrege){
 					statutAggrege = statutDependencyObject.getStatusCompile().ordinal();
 				}
@@ -144,14 +151,14 @@ public class StatutDependencyObject {
 	/**
 	 * @return the dependances
 	 */
-	public List<StatutDependencyObject> getDependances() {
+	public List<StatutDependencyRestObject> getDependances() {
 		return dependances;
 	}
 
 	/**
 	 * @param dependances the dependances to set
 	 */
-	public void setDependances(List<StatutDependencyObject> dependances) {
+	public void setDependances(List<StatutDependencyRestObject> dependances) {
 		this.dependances = dependances;
 	}
 
@@ -197,7 +204,7 @@ public class StatutDependencyObject {
 		builder.append("StatutDependencyObject [nom=").append(nom).append(", statusObject=").append(statusObject)
 				.append(", statusCompile=").append(statusCompile).append(", dependances=[");
 		if(dependances!= null && !dependances.isEmpty()){
-			for (StatutDependencyObject statutDependencyObject : dependances) {
+			for (StatutDependencyRestObject statutDependencyObject : dependances) {
 				builder.append(statutDependencyObject.toString()).append(", ");
 			}
 		}

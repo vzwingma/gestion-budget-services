@@ -4,6 +4,7 @@
 package com.terrier.finances.gestion.test.config;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,6 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.terrier.finances.gestion.communs.abstrait.AbstractRestObjectModel;
 import com.terrier.finances.gestion.services.communs.rest.config.RessourcesConfig;
 
 /**
@@ -42,5 +46,17 @@ public abstract class AbstractTestAPI {
 		return mockMvc;
 	}
 	
+	/**
+	 * 
+	 * @param restObject
+	 * @return objet en JSON
+	 */
+	public static String json(AbstractRestObjectModel restObject){
+		try {
+			return new ObjectMapper().writeValueAsString(restObject);
+		} catch (JsonProcessingException e) {
+			return null;
+		}
+	}
 	
 }

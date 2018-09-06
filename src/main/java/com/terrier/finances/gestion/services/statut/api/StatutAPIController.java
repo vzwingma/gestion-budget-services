@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrl;
+import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.statut.business.StatusApplicationService;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
-import com.terrier.finances.gestion.services.statut.model.StatutDependencyObject;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
+import com.terrier.finances.gestion.services.statut.model.api.StatutDependencyRestObject;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,8 +32,8 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping(value=BudgetApiUrl.ROOT_URL)
-@Api(consumes="application/json", protocols="https", value="Administration", tags={"Administration"})
+@RequestMapping(value=BudgetApiUrlEnum.ROOT_BASE)
+@Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Administration", tags={"Administration"})
 public class StatutAPIController {
 
 
@@ -55,15 +55,15 @@ public class StatutAPIController {
 	 * Appel PING
 	 * @return résultat du ping
 	 */
-	@ApiOperation(httpMethod="GET", produces=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Statut de l'opération", response=StatutDependencyObject.class)
+	@ApiOperation(httpMethod="GET", produces=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Statut de l'opération", response=StatutDependencyRestObject.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Statut de l'application"),
             @ApiResponse(code = 401, message = "L'opération doit être identifiée"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Ressource introuvable")
     }) 
-	@GetMapping(value=BudgetApiUrl.STATUT_BASE_URL)
-	public @ResponseBody StatutDependencyObject ping(){
+	@GetMapping(value=BudgetApiUrlEnum.STATUT_BASE)
+	public @ResponseBody StatutDependencyRestObject ping(){
 		LOGGER.info("Appel statut : {}", this.statusApplicationService.getStatutApplication());
 		return this.statusApplicationService.getStatutApplication();
 	}

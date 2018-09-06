@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.services.communs.abstrait.AbstractBusinessService;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
-import com.terrier.finances.gestion.services.statut.model.StatutDependencyObject;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
+import com.terrier.finances.gestion.services.statut.model.api.StatutDependencyRestObject;
 
 /**
  * Retourne le statut de l'application
@@ -22,11 +22,11 @@ import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 public class StatusApplicationService extends AbstractBusinessService {
 
 	// Statut de l'application
-	private StatutDependencyObject statutApplication;
+	private StatutDependencyRestObject statutApplication;
 	
 	@PostConstruct
 	public void initApplication(){
-		this.statutApplication = new StatutDependencyObject(DependencyName.APPLICATION);
+		this.statutApplication = new StatutDependencyRestObject(DependencyName.APPLICATION);
 		this.statutApplication.updateStatusModule(DependencyName.APPLICATION, StatutStateEnum.OK);
 		this.statutApplication.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION);
 		this.statutApplication.addDependency(DependencyName.REST_SERVICE, DependencyName.APPLICATION);
@@ -44,7 +44,7 @@ public class StatusApplicationService extends AbstractBusinessService {
 	/**
 	 * @return the statutApplication
 	 */
-	public StatutDependencyObject getStatutApplication() {
+	public StatutDependencyRestObject getStatutApplication() {
 
 
 		return statutApplication;

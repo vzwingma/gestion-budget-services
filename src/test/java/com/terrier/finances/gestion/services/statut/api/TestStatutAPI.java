@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrl;
+import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.statut.business.StatusApplicationService;
 import com.terrier.finances.gestion.test.config.AbstractTestAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
@@ -41,7 +41,7 @@ public class TestStatutAPI extends AbstractTestAPI {
 	public void testStatut() throws Exception {
 		// Statut OK
 		getMockAPI().perform(
-				get(BudgetApiUrl.ROOT_URL + BudgetApiUrl.STATUT_BASE_URL)
+				get(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.STATUT_BASE)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

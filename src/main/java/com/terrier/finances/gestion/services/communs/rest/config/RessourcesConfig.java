@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.terrier.finances.gestion.services.statut.api.StatutMessageConverter;
+import com.terrier.finances.gestion.communs.abstrait.BudgetRestObjectMessageConverter;
 
 
 @Configuration
@@ -27,8 +27,7 @@ public class RessourcesConfig implements WebMvcConfigurer{
 	 */
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-		configurer.ignoreAcceptHeader(true).defaultContentType(
-				MediaType.APPLICATION_JSON);
+		configurer.ignoreAcceptHeader(true).defaultContentType(MediaType.APPLICATION_JSON);
 	}
 
 
@@ -37,7 +36,7 @@ public class RessourcesConfig implements WebMvcConfigurer{
 	 */
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new StatutMessageConverter());
+		converters.add(new BudgetRestObjectMessageConverter<>());
 		WebMvcConfigurer.super.configureMessageConverters(converters);
 	}
 

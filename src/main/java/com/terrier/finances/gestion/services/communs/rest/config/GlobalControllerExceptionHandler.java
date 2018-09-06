@@ -31,26 +31,25 @@ class GlobalControllerExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)  // 404
     @ExceptionHandler(BudgetNotFoundException.class)
     public void handleBudgetNotFoundException() {
-        LOGGER.error("Erreur Interne : Budget non trouvé");
+        LOGGER.error("Erreur : Budget non trouvé");
     }
     
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+    @ResponseStatus(HttpStatus.NOT_FOUND)  // 404
     @ExceptionHandler(DataNotFoundException.class)
     public void handleDataNotFoundException() {
-    	 LOGGER.error("Erreur Interne : Données introuvables");
+    	 LOGGER.error("Erreur : Données introuvables");
     }
     
     
     @ResponseStatus(HttpStatus.NOT_MODIFIED)  // 204
     @ExceptionHandler(NotModifiedException.class)
-    public void handlNotModifiedException() {
+    public void handleNotModifiedException() {
     	 LOGGER.info("Non modifiée");
     }
     
     @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
     @ExceptionHandler(UserNotAuthorizedException.class)
-    public void handlException() {
-    	 LOGGER.error("Erreur Interne : Accès non autorisé");
+    public void handleException() {
+    	 LOGGER.error("Erreur : Accès non autorisé");
     }
-    
 }
