@@ -68,7 +68,7 @@ public class AdminRestController {
 		Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
 		if(utilisateur != null){
 			authService.changePassword(utilisateur, oldpassword, newPassword);
-			String returnOK = "Le mot de passe de "+utilisateur.getLibelle()+ " a bien été modifié : \n " + utilisateur.toFullString();
+			String returnOK = "Le mot de passe de "+utilisateur.getLogin()+ " a bien été modifié : \n " + utilisateur.toFullString();
 			LOGGER.error(returnOK);
 			return returnOK;
 		}
