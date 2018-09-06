@@ -98,11 +98,11 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	
 	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT+"/{idSession}")
 	public ResponseEntity<?> disconnect(@PathVariable("idSession") String idSession) throws DataNotFoundException{
-		LOGGER.info("[API] Disconnect : {}", idSession);
 		if(authService.deconnexionBusinessSession(idSession)){
+			LOGGER.info("[API][idUser={}] Disconnect : true", idSession);
 			return ResponseEntity.ok().build();
 		}
-		throw new DataNotFoundException("Impossible de déconnecter l'utilisateur : " + idSession);
+		throw new DataNotFoundException("[API][idUser="+idSession+"] Impossible de déconnecter l'utilisateur");
 	}
 	
 	/**
@@ -123,10 +123,12 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	
 	@GetMapping(value=BudgetApiUrlEnum.USERS_ACCESS_DATE+"/{idSession}")
 	public ResponseEntity<LocalDateTime> lastAccessDate(@PathVariable("idSession") String idSession) throws DataNotFoundException{
-		LOGGER.info("[API] LastAccessTime : {}", idSession);
+		
 		if(authService.getBusinessSession(idSession) != null){
-			return ResponseEntity.ok(authService.getBusinessSession(idSession).getUtilisateur().getDernierAcces());
+			LocalDateTime lastAccess = authService.getBusinessSession(idSession).getUtilisateur().getDernierAcces();
+			LOGGER.info("[API][idUser={}] LastAccessTime : {}", idSession, lastAccess);
+			return ResponseEntity.ok(lastAccess);
 		}
-		throw new DataNotFoundException("Impossible de trouver l'utilisateur : " + idSession);
+		throw new DataNotFoundException("[API][idUser="+idSession+"] Impossible de trouver l'utilisateur");
 	}
 }
