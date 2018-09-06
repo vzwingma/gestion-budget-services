@@ -36,13 +36,13 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.AUTH_BASE)
 @Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Authentification", tags={"Authentification"})
-public class AuthentificationAPIController extends AbstractAPIController {
+public class UtilisateursAPIController extends AbstractAPIController {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthentificationAPIController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateursAPIController.class);
 
 	@Autowired
 	private AuthenticationService authService;
@@ -74,7 +74,4 @@ public class AuthentificationAPIController extends AbstractAPIController {
 		}
 		throw new UserNotAuthorizedException();
 	}
-	
-	
-
 }

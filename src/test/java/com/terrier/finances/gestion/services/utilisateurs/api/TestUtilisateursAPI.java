@@ -35,12 +35,12 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
-public class TestAuthentificationAPI extends AbstractTestsAPI  {
+public class TestUtilisateursAPI extends AbstractTestsAPI  {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(TestAuthentificationAPI.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TestUtilisateursAPI.class);
 
 	
 	@Autowired
@@ -86,6 +86,6 @@ public class TestAuthentificationAPI extends AbstractTestsAPI  {
 				.andExpect(status().isOk())
 				.andExpect(header().exists("Content-Type"))
 				.andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON.toString()))
-				.andExpect(content().string("{\"login\":\"Test\",\"motDePasse\":\"test\",\"idUtilisateur\":\"test\"}"));
+				.andExpect(content().string("{\"idUtilisateur\":\"test\"}"));
 	}	
 }

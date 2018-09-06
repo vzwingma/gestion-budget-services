@@ -20,7 +20,7 @@ import com.terrier.finances.gestion.services.communs.api.converters.BudgetRestOb
 		"com.terrier.finances.gestion.services.admin.api",
 		"com.terrier.finances.gestion.services.statut.api",
 		"com.terrier.finances.gestion.services.utilisateurs.api",
-		"com.terrier.finances.gestion.services.communs.rest.config"		
+		"com.terrier.finances.gestion.services.communs.api.config"		
 		})
 public class RessourcesConfig implements WebMvcConfigurer{
 	/*
