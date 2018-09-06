@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthentificationRestObject;
+import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginRestObject;
+import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthResponseRestObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.rest.AbstractAPIController;
@@ -52,7 +53,7 @@ public class AuthentificationAPIController extends AbstractAPIController {
 	 * @param motPasse motPasse
 	 * @return résultat de l'opération
 	 */
-	@ApiOperation(httpMethod="POST", produces=MediaType.APPLICATION_JSON_VALUE, protocols="HTTPS", value="Authentification d'un utilisateur", response=AuthentificationRestObject.class)
+	@ApiOperation(httpMethod="POST", produces=MediaType.APPLICATION_JSON_VALUE, protocols="HTTPS", value="Authentification d'un utilisateur", response=AuthResponseRestObject.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Authentification réussie"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
@@ -63,12 +64,13 @@ public class AuthentificationAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="motPasse", required=true, value="Mot de passe de l'utilisateur", paramType="body"),
 	})
 	@PostMapping(value=BudgetApiUrlEnum.AUTH_AUTHENTICATE, consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody ResponseEntity<AuthentificationRestObject> authenticate(@RequestBody AuthentificationRestObject auth) throws UserNotAuthorizedException{
+	public @ResponseBody ResponseEntity<AuthResponseRestObject> authenticate(@RequestBody AuthLoginRestObject auth) throws UserNotAuthorizedException{
 		LOGGER.info("[API] Authenticate : {}", auth);
 		String idUtilisateur = authService.authenticate(auth.getLogin(), auth.getMotDePasse());
 		if(idUtilisateur != null){
-			auth.setIdUtilisateur(idUtilisateur);
-			return getEntity(auth);
+			AuthResponseRestObject response = new AuthResponseRestObject();
+			response.setIdUtilisateur(idUtilisateur);
+			return getEntity(response);
 		}
 		throw new UserNotAuthorizedException();
 	}
