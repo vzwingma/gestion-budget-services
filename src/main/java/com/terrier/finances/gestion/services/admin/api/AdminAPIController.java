@@ -29,13 +29,13 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value="/rest/admin")
 @Api(consumes="application/json", protocols="https", value="Administration", tags={"Administration"})
-public class AdminRestController {
+public class AdminAPIController {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AdminRestController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AdminAPIController.class);
 
 	@Autowired
 	private AuthenticationService authService;

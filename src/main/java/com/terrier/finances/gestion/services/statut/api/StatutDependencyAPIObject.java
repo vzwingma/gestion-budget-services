@@ -1,5 +1,5 @@
 
-package com.terrier.finances.gestion.services.statut.model.api;
+package com.terrier.finances.gestion.services.statut.api;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.terrier.finances.gestion.communs.abstrait.AbstractRestObjectModel;
+import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.utils.data.DataUtils;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @JsonInclude(Include.NON_EMPTY)
-public class StatutDependencyRestObject extends AbstractRestObjectModel {
+public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 
 	/**
 	 * 
@@ -47,7 +47,7 @@ public class StatutDependencyRestObject extends AbstractRestObjectModel {
 	
 	// Liste des dépendances
 	@ApiModelProperty(notes = "Liste des dépendances", required=true, dataType="StatutDependencyObject")
-	private List<StatutDependencyRestObject> dependances = new ArrayList<>();
+	private List<StatutDependencyAPIObject> dependances = new ArrayList<>();
 	
 	// Date de la mise à jour
 	@ApiModelProperty(notes = "Date du statut", required=true)
@@ -57,7 +57,7 @@ public class StatutDependencyRestObject extends AbstractRestObjectModel {
 	 * Création d'une dépendance
 	 * @param nom
 	 */
-	public StatutDependencyRestObject(DependencyName nom){
+	public StatutDependencyAPIObject(DependencyName nom){
 		this.nom = nom;
 		this.statusObject = StatutStateEnum.INCONNU;
 		this.statusCompile = StatutStateEnum.INCONNU;
@@ -78,7 +78,7 @@ public class StatutDependencyRestObject extends AbstractRestObjectModel {
 			dependencyFound = true;
 		}
 		else if(dependances != null && !dependances.isEmpty()){
-			for (StatutDependencyRestObject statutDependencyObject : dependances) {
+			for (StatutDependencyAPIObject statutDependencyObject : dependances) {
 				dependencyFound = statutDependencyObject.updateStatusModule(nom, statut);
 				if(dependencyFound){
 					break;
@@ -99,12 +99,12 @@ public class StatutDependencyRestObject extends AbstractRestObjectModel {
 	 */
 	public void addDependency(DependencyName dependance, DependencyName parent){
 		if(parent != null && this.nom.equals(parent)){
-			StatutDependencyRestObject nlleDependance = new StatutDependencyRestObject(dependance);
+			StatutDependencyAPIObject nlleDependance = new StatutDependencyAPIObject(dependance);
 			nlleDependance.updateStatusModule(dependance, StatutStateEnum.INCONNU);
 			this.dependances.add(nlleDependance);
 		}
 		else if(this.dependances != null && !this.dependances.isEmpty()){
-			for (StatutDependencyRestObject statutDependencyObject : dependances) {
+			for (StatutDependencyAPIObject statutDependencyObject : dependances) {
 				statutDependencyObject.addDependency(dependance, parent);
 			}
 		}
@@ -118,7 +118,7 @@ public class StatutDependencyRestObject extends AbstractRestObjectModel {
 		// Parcours de tous les status aggrégé des dépendances
 		int statutAggrege = 0;
 		if(dependances != null && !dependances.isEmpty()){
-			for (StatutDependencyRestObject statutDependencyObject : dependances) {
+			for (StatutDependencyAPIObject statutDependencyObject : dependances) {
 				if(statutDependencyObject.getStatusCompile().ordinal() >= statutAggrege){
 					statutAggrege = statutDependencyObject.getStatusCompile().ordinal();
 				}
@@ -151,14 +151,14 @@ public class StatutDependencyRestObject extends AbstractRestObjectModel {
 	/**
 	 * @return the dependances
 	 */
-	public List<StatutDependencyRestObject> getDependances() {
+	public List<StatutDependencyAPIObject> getDependances() {
 		return dependances;
 	}
 
 	/**
 	 * @param dependances the dependances to set
 	 */
-	public void setDependances(List<StatutDependencyRestObject> dependances) {
+	public void setDependances(List<StatutDependencyAPIObject> dependances) {
 		this.dependances = dependances;
 	}
 
@@ -204,7 +204,7 @@ public class StatutDependencyRestObject extends AbstractRestObjectModel {
 		builder.append("StatutDependencyObject [nom=").append(nom).append(", statusObject=").append(statusObject)
 				.append(", statusCompile=").append(statusCompile).append(", dependances=[");
 		if(dependances!= null && !dependances.isEmpty()){
-			for (StatutDependencyRestObject statutDependencyObject : dependances) {
+			for (StatutDependencyAPIObject statutDependencyObject : dependances) {
 				builder.append(statutDependencyObject.toString()).append(", ");
 			}
 		}

@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.rest.config;
+package com.terrier.finances.gestion.services.communs.api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

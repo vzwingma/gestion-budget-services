@@ -18,7 +18,7 @@ import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginRestO
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthResponseRestObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.communs.rest.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
 
 import io.swagger.annotations.Api;

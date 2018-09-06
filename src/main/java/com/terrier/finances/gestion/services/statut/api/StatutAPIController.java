@@ -17,11 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.services.communs.rest.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.statut.business.StatusApplicationService;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
-import com.terrier.finances.gestion.services.statut.model.api.StatutDependencyRestObject;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,7 +56,7 @@ public class StatutAPIController extends AbstractAPIController {
 	 * Appel PING
 	 * @return résultat du ping
 	 */
-	@ApiOperation(httpMethod="GET", produces=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Statut de l'opération", response=StatutDependencyRestObject.class)
+	@ApiOperation(httpMethod="GET", produces=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Statut de l'opération", response=StatutDependencyAPIObject.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Statut de l'application"),
             @ApiResponse(code = 401, message = "L'opération doit être identifiée"),
@@ -65,7 +64,7 @@ public class StatutAPIController extends AbstractAPIController {
             @ApiResponse(code = 404, message = "Ressource introuvable")
     }) 
 	@GetMapping(value=BudgetApiUrlEnum.STATUT_BASE)
-	public @ResponseBody ResponseEntity<StatutDependencyRestObject> ping(){
+	public @ResponseBody ResponseEntity<StatutDependencyAPIObject> ping(){
 		LOGGER.info("[API] Appel statut : {}", this.statusApplicationService.getStatutApplication());
 		return getEntity(this.statusApplicationService.getStatutApplication());
 	}

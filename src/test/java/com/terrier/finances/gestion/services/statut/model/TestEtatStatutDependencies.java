@@ -8,9 +8,9 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import com.terrier.finances.gestion.services.statut.api.StatutDependencyAPIObject;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
-import com.terrier.finances.gestion.services.statut.model.api.StatutDependencyRestObject;
 
 /**
  * @author vzwingma
@@ -21,7 +21,7 @@ public class TestEtatStatutDependencies {
 	
 	@Test
 	public void testDependencies(){
-		StatutDependencyRestObject statutRoot = new StatutDependencyRestObject(DependencyName.APPLICATION);
+		StatutDependencyAPIObject statutRoot = new StatutDependencyAPIObject(DependencyName.APPLICATION);
 		
 		assertNotNull(statutRoot);
 		assertNotNull(statutRoot.getDate());

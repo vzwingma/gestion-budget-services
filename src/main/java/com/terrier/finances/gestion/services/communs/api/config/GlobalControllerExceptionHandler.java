@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.rest.config;
+package com.terrier.finances.gestion.services.communs.api.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

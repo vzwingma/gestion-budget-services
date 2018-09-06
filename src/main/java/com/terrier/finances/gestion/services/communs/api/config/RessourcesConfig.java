@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.rest.config;
+package com.terrier.finances.gestion.services.communs.api.config;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.terrier.finances.gestion.services.communs.rest.converters.BudgetRestObjectMessageConverter;
+import com.terrier.finances.gestion.services.communs.api.converters.BudgetRestObjectMessageConverter;
 
 
 @Configuration

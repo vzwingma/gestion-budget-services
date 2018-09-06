@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.rest.config;
+package com.terrier.finances.gestion.services.communs.api.config;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

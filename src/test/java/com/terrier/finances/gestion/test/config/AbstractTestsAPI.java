@@ -15,8 +15,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terrier.finances.gestion.communs.abstrait.AbstractRestObjectModel;
-import com.terrier.finances.gestion.services.communs.rest.config.RessourcesConfig;
+import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
+import com.terrier.finances.gestion.services.communs.api.config.RessourcesConfig;
 
 /**
  * Classe abstraite des tests d'API
@@ -50,7 +50,7 @@ public abstract class AbstractTestsAPI {
 	 * @param restObject
 	 * @return objet en JSON
 	 */
-	public static String json(AbstractRestObjectModel restObject){
+	public static String json(AbstractAPIObjectModel restObject){
 		try {
 			return new ObjectMapper().writeValueAsString(restObject);
 		} catch (JsonProcessingException e) {

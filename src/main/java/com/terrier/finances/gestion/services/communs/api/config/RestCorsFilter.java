@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.communs.rest.config;
+package com.terrier.finances.gestion.services.communs.api.config;
 
 import java.io.IOException;
 
