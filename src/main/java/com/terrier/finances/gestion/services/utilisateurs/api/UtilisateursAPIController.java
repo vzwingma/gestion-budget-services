@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurPrefsEnum;
+import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthResponseAPIObject;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPrefsAPIObject;
@@ -78,7 +79,9 @@ public class UtilisateursAPIController extends AbstractAPIController {
 		String idUtilisateur = authService.authenticate(auth.getLogin(), auth.getMotDePasse());
 		if(idUtilisateur != null){
 			AuthResponseAPIObject response = new AuthResponseAPIObject();
+			Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
 			response.setIdUtilisateur(idUtilisateur);
+			response.setDroits(utilisateur.getDroits());
 			return getEntity(response);
 		}
 		throw new UserNotAuthorizedException();

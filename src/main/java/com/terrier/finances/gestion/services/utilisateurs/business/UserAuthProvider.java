@@ -35,12 +35,12 @@ public class UserAuthProvider implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) {
 		String username = authentication.getName();
 		String password = (String) authentication.getCredentials();
-		String utilisateur = authenticationService.authenticate(username, password);
-		if (utilisateur == null) {
+		String idUtilisateur = authenticationService.authenticate(username, password);
+		if (idUtilisateur == null) {
 			throw new BadCredentialsException("Erreur d'authentification.");
 		}
 		LOGGER.info("[SEC] AuthToken : [{}]", username);
-		return new UsernamePasswordAuthenticationToken(utilisateur, password, AuthorityUtils.createAuthorityList("ROLE_REST_USER"));
+		return new UsernamePasswordAuthenticationToken(idUtilisateur, password, AuthorityUtils.createAuthorityList("ROLE_REST_USER"));
 	}
 
 	/* (non-Javadoc)
