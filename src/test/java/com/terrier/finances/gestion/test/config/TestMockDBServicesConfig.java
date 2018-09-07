@@ -14,6 +14,7 @@ import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDataba
 @ComponentScan(basePackages = {
 		"com.terrier.finances.gestion.services.statut",
 		"com.terrier.finances.gestion.services.budget.business", 
+		"com.terrier.finances.gestion.services.comptes.business",		
 		"com.terrier.finances.gestion.services.parametrages.business",
 		"com.terrier.finances.gestion.services.budget.model.transformer"})	
 public class TestMockDBServicesConfig {

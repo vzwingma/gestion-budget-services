@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.terrier.finances.gestion.services.communs.api.converters.BudgetRestObjectMessageConverter;
+import com.terrier.finances.gestion.services.communs.api.converters.APIObjectMessageConverter;
 
 
 @Configuration
@@ -38,7 +38,7 @@ public class RessourcesConfig implements WebMvcConfigurer{
 	 */
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new BudgetRestObjectMessageConverter<>());
+		converters.add(new APIObjectMessageConverter<>());
 		WebMvcConfigurer.super.configureMessageConverters(converters);
 	}
 

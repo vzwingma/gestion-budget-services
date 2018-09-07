@@ -92,10 +92,10 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 				.andExpect(status().isOk())
 				.andExpect(header().exists("Content-Type"))
 				.andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON.toString()))
-				.andExpect(content().string("{\"idUtilisateur\":\"test\"}"));
+				.andExpect(content().string("{\"idUtilisateur\":\"test\",\"droits\":{}}"));
 	}	
 	
-	
+
 
 	@Test
 	public void testDisconnect() throws Exception {
@@ -147,7 +147,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().string(containsString("\"month\":\""+LocalDateTime.now().getMonth().toString()+"\"")));
+		.andExpect(content().string(containsString("\"lastAccessTime\"")));
 		
 	}	
 }

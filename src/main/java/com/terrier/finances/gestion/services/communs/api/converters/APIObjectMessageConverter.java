@@ -20,9 +20,8 @@ import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
  *
  * @param <T>
  */
-public class BudgetRestObjectMessageConverter<T extends AbstractAPIObjectModel> implements HttpMessageConverter<T> {
-	
-	
+public class APIObjectMessageConverter<T extends AbstractAPIObjectModel> implements HttpMessageConverter<T> {
+
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	/* (non-Javadoc)
@@ -30,7 +29,7 @@ public class BudgetRestObjectMessageConverter<T extends AbstractAPIObjectModel> 
 	 */
 	@Override
 	public boolean canRead(Class<?> clazz, MediaType mediaType) {
-		return MediaType.APPLICATION_JSON.equals(mediaType) && clazz.isAssignableFrom(AbstractAPIObjectModel.class);
+		return isAbstractAPIObjectModel(clazz, mediaType);
 	}
 
 	/* (non-Javadoc)
@@ -38,7 +37,12 @@ public class BudgetRestObjectMessageConverter<T extends AbstractAPIObjectModel> 
 	 */
 	@Override
 	public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-		return MediaType.APPLICATION_JSON.equals(mediaType) && clazz.isAssignableFrom(AbstractAPIObjectModel.class);
+		return isAbstractAPIObjectModel(clazz, mediaType);
+		
+	}
+	
+	private boolean isAbstractAPIObjectModel(Class<?> clazz, MediaType mediaType){
+		return MediaType.APPLICATION_JSON.equals(mediaType) && AbstractAPIObjectModel.class.isAssignableFrom(clazz);
 	}
 
 	/* (non-Javadoc)

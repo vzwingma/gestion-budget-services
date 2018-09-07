@@ -2,7 +2,6 @@ package com.terrier.finances.gestion.services.utilisateurs.business;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jasypt.util.text.BasicTextEncryptor;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
@@ -19,7 +17,7 @@ import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDataba
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
- * Service d'authentification
+ * Service Utilisateurs
  * @author vzwingma
  *
  */
@@ -32,7 +30,7 @@ public class UtilisateursService extends AbstractBusinessService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateursService.class);
 
 	/**
-	 * Paramétrages
+	 * Utilisateurs
 	 */
 	@Autowired
 	private UtilisateurDatabaseService dataDBUsers;
@@ -162,40 +160,5 @@ public class UtilisateursService extends AbstractBusinessService {
 	}
 	
 
-
-	/**
-	 * @param idCompte id du compte
-	 * @return etat du compte
-	 */
-	public boolean isCompteActif(String idCompte){
-		try {
-			return dataDBUsers.isCompteActif(idCompte);
-		} catch (DataNotFoundException e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * Recherche du compte par id
-	 * @param idCompte id du compte
-	 * @param utilisateur utilisateur
-	 * @return compteBancaire
-	 * @throws DataNotFoundException
-	 */
-	public CompteBancaire getCompteById(String idCompte, String proprietaire) throws DataNotFoundException{
-		return dataDBUsers.chargeCompteParId(idCompte, proprietaire);
-	}
-
-
-
-	/**
-	 * Recherche des comptes d'un utilisateur
-	 * @param utilisateur utilisateur
-	 * @return liste des comptes bancaires
-	 * @throws DataNotFoundException
-	 */
-	public List<CompteBancaire> getComptesUtilisateur(String idUtilisateur) throws DataNotFoundException{
-		return dataDBUsers.chargeComptes(idUtilisateur);
-	}
 	
 }
