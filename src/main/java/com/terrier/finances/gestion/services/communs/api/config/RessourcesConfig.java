@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.terrier.finances.gestion.services.communs.api.converters.BudgetRestObjectMessageConverter;
-import com.terrier.finances.gestion.services.communs.api.converters.LocalDateTimeMessageConverter;
 
 
 @Configuration
@@ -20,6 +19,7 @@ import com.terrier.finances.gestion.services.communs.api.converters.LocalDateTim
 @ComponentScan(basePackages = {
 		"com.terrier.finances.gestion.services.admin.api",
 		"com.terrier.finances.gestion.services.statut.api",
+		"com.terrier.finances.gestion.services.comptes.api",
 		"com.terrier.finances.gestion.services.utilisateurs.api",
 		"com.terrier.finances.gestion.services.communs.api.config"		
 		})
@@ -38,7 +38,6 @@ public class RessourcesConfig implements WebMvcConfigurer{
 	 */
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new LocalDateTimeMessageConverter());
 		converters.add(new BudgetRestObjectMessageConverter<>());
 		WebMvcConfigurer.super.configureMessageConverters(converters);
 	}
