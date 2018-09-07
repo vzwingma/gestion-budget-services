@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
-import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginRestObject;
+import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
@@ -70,7 +70,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		
 		
 		// AuthFailed
-		AuthLoginRestObject auth = new AuthLoginRestObject("Test", "mdpTest");
+		AuthLoginAPIObject auth = new AuthLoginAPIObject("Test", "mdpTest");
 		
 		LOGGER.info("Authentification Failed de {}", json(auth));
 		
@@ -82,7 +82,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		.andExpect(status().isForbidden());
 		
 		// AuthOK
-		AuthLoginRestObject auth2 = new AuthLoginRestObject("Test", "test");
+		AuthLoginAPIObject auth2 = new AuthLoginAPIObject("Test", "test");
 		LOGGER.info("Authentification OK de {}", json(auth2));
 		getMockAPI().perform(
 				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)

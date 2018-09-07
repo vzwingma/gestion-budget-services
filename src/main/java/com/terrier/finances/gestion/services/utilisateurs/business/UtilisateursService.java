@@ -121,8 +121,12 @@ public class UtilisateursService extends AbstractBusinessService {
 	 */
 	public void registerUserBusinessSession(Utilisateur utilisateur, String masterKeyClear){
 		LOGGER.debug("Enregistrement de la BusinessSession [{}]", utilisateur.getId());
+		if(this.businessSessions.containsKey(utilisateur.getId())){
+			deconnexionBusinessSession(utilisateur.getId());
+		}
 		this.businessSessions.putIfAbsent(utilisateur.getId(), new UserBusinessSession(utilisateur));
-		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);	
+		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);
+			
 	}
 	
 	
