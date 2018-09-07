@@ -47,8 +47,8 @@ public class ComptesService extends AbstractBusinessService {
 	 * @return compteBancaire
 	 * @throws DataNotFoundException
 	 */
-	public CompteBancaire getCompteById(String idCompte, String proprietaire) throws DataNotFoundException{
-		CompteBancaire compte = dataDBUsers.chargeCompteParId(idCompte, proprietaire);
+	public CompteBancaire getCompteById(String idCompte, String idUtilisateur) throws DataNotFoundException{
+		CompteBancaire compte = dataDBUsers.chargeCompteParId(idCompte, idUtilisateur);
 		if(compte != null){
 			return compte;
 		}
