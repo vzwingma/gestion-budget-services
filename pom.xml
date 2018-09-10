@@ -1,16 +1,47 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.terrier.finances</groupId>
-		<artifactId>gestion-budget</artifactId>
-		<version>7.0.0-SNAPSHOT</version>
-	</parent>
 	<groupId>com.terrier.finances.budget</groupId>
 	<artifactId>services</artifactId>
+	<version>7.0.0-SNAPSHOT</version>
+
 	<packaging>jar</packaging>
-	<name>Services</name>
+	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<spring.version>5.0.7.RELEASE</spring.version>
+		<mongo.data.version>3.8.0</mongo.data.version>
+		<spring.security.version>5.0.7.RELEASE</spring.security.version>
+		<vaadin.version>8.5.1</vaadin.version>
+		<jackson.version>2.9.6</jackson.version>
+		<jersey.version>2.26</jersey.version>
+		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+	</properties>
+
+	<issueManagement>
+		<url>https://github.com/vzwingma/gestion-budget-services/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+	<scm>
+		<url>https://github.com/vzwingma/gestion-budget-services/tree/webapp</url>
+		<connection>scm:git:git://github.com/vzwingma/gestion-budget-services.git</connection>
+		<developerConnection>scm:git:git@github.com:vzwingma/gestion-budget-services.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	<developers>
+		<developer>
+			<email>vincent.zwingmann@gmail.com</email>
+			<name>Vincent Zwingmann</name>
+			<url>https://github.com/vzwingma</url>
+			<id>vzwingma</id>
+		</developer>
+	</developers>
 
 	<build>
 		<plugins>
@@ -21,6 +52,45 @@
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.0</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
+
+							<dataFile>target/jacoco.exec</dataFile>
+							<!-- Sets the output directory for the code coverage report. -->
+							<outputDirectory>target/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<systemPropertyVariables>
+						<jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -134,5 +204,40 @@
 			<artifactId>swagger-ui</artifactId>
 			<version>3.13.4</version>
 		</dependency>
+		<!-- LOG -->
+		<!-- slf4j dependency -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.11</version>
+		</dependency>
+		<!-- Tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
+		</dependency>		
 	</dependencies>
 </project>
