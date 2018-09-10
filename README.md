@@ -1,5 +1,9 @@
 ## Module Services de l'application Gestion du budget
-[![GitHub version](https://badge.fury.io/gh/vzwingma%2Fgestion-budget-services.svg)](https://badge.fury.io/gh/vzwingma%2Fgestion-budget-services)
+[IHM](https://github.com/vzwingma/gestion-budget) [![GitHub version](https://badge.fury.io/gh/vzwingma%2Fgestion-budget.svg)](https://badge.fury.io/gh/vzwingma%2Fgestion-budget)
+
+[Communs](https://github.com/vzwingma/gestion-budget-communs) [![GitHub version](https://badge.fury.io/gh/vzwingma%2Fgestion-budget-communs.svg)](https://badge.fury.io/gh/vzwingma%2Fgestion-budget-communs)
+
+[Services](https://github.com/vzwingma/gestion-budget-services) [![GitHub version](https://badge.fury.io/gh/vzwingma%2Fgestion-budget-services.svg)](https://badge.fury.io/gh/vzwingma%2Fgestion-budget-services)
 
 ### Statut
 
