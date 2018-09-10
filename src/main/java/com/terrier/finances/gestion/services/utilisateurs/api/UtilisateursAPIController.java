@@ -45,7 +45,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_BASE)
-@Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Authentification", tags={"Authentification"})
+@Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Utilisateurs", tags={"Utilisateurs"})
 public class UtilisateursAPIController extends AbstractAPIController {
 
 
