@@ -8,8 +8,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import com.terrier.finances.gestion.services.statut.api.StatutDependencyAPIObject;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
-import com.terrier.finances.gestion.services.statut.model.StatutDependencyObject;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
 /**
@@ -21,7 +21,7 @@ public class TestEtatStatutDependencies {
 	
 	@Test
 	public void testDependencies(){
-		StatutDependencyObject statutRoot = new StatutDependencyObject(DependencyName.APPLICATION);
+		StatutDependencyAPIObject statutRoot = new StatutDependencyAPIObject(DependencyName.APPLICATION);
 		
 		assertNotNull(statutRoot);
 		assertNotNull(statutRoot.getDate());
