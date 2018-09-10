@@ -6,12 +6,11 @@ package com.terrier.finances.gestion.services.statut.business;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
+import com.terrier.finances.gestion.services.statut.api.StatutDependencyAPIObject;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
-import com.terrier.finances.gestion.services.statut.model.StatutDependencyObject;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
 /**
@@ -20,21 +19,14 @@ import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
  *
  */
 @Service
-public class StatusApplicationService {
+public class StatusApplicationService extends AbstractBusinessService {
 
 	// Statut de l'application
-	private StatutDependencyObject statutApplication;
-	
-
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(StatusApplicationService.class);
+	private StatutDependencyAPIObject statutApplication;
 	
 	@PostConstruct
 	public void initApplication(){
-		LOGGER.info("initApplication");
-		this.statutApplication = new StatutDependencyObject(DependencyName.APPLICATION);
+		this.statutApplication = new StatutDependencyAPIObject(DependencyName.APPLICATION);
 		this.statutApplication.updateStatusModule(DependencyName.APPLICATION, StatutStateEnum.OK);
 		this.statutApplication.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION);
 		this.statutApplication.addDependency(DependencyName.REST_SERVICE, DependencyName.APPLICATION);
@@ -52,7 +44,7 @@ public class StatusApplicationService {
 	/**
 	 * @return the statutApplication
 	 */
-	public StatutDependencyObject getStatutApplication() {
+	public StatutDependencyAPIObject getStatutApplication() {
 
 
 		return statutApplication;
@@ -61,7 +53,6 @@ public class StatusApplicationService {
 	
 	@PreDestroy
 	public void stopApplication(){
-		LOGGER.info("stopApplication");
 		this.statutApplication.updateStatusModule(DependencyName.APPLICATION, StatutStateEnum.FATAL);
 	}
 }
