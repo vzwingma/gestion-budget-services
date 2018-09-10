@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,7 +23,9 @@ import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperation
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
+import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
+import com.terrier.finances.gestion.test.config.TestMockAuthServicesConfig;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
 
 /**
@@ -31,21 +34,23 @@ import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={TestMockDBServicesConfig.class})
+@ContextConfiguration(classes={TestMockDBServicesConfig.class, TestMockAuthServicesConfig.class})
 public class TestOperationsService {
 
+
 	@Autowired
-	private TestMockDBServicesConfig mocksConfig;
-	
-	
+	private TestMockAuthServicesConfig mocksAuthConfig;
+
 	@Autowired
 	private OperationsService operationsService;
-	
 
+	@Autowired
+	@Qualifier("mockAuthService")
+	private UtilisateursService authenticationService;
 
 	private BudgetMensuel budget;
-	
-	
+
+
 	/**
 	 * Surcharge de l'authservice
 	 */
@@ -53,10 +58,10 @@ public class TestOperationsService {
 	public void initBusinessSession(){
 		UserBusinessSession mockUser = Mockito.mock(UserBusinessSession.class);
 		when(mockUser.getEncryptor()).thenReturn(new BasicTextEncryptor());
-		when(mocksConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
-		this.operationsService.setServiceUtilisateurs(mocksConfig.getMockAuthService());
+		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
+		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
 	}
-	
+
 	@Before
 	public void initBudget(){
 		this.budget = new BudgetMensuel();
@@ -64,7 +69,7 @@ public class TestOperationsService {
 		this.budget.setResultatMoisPrecedent(0D, 0D);
 		this.budget.razCalculs();
 		this.budget.getListeOperations().add(new LigneOperation(new CategorieDepense(), "TEST1", TypeOperationEnum.CREDIT, "123", EtatOperationEnum.PREVUE, false));
-		
+
 		LocalDate now = LocalDate.now();
 		this.budget.setMois(now.getMonth());
 		this.budget.setAnnee(now.getYear());
@@ -75,8 +80,8 @@ public class TestOperationsService {
 		compte.setOrdre(0);
 		this.budget.setCompteBancaire(compte);
 	}
-	
-	
+
+
 	/**
 	 * Test #119
 	 */
@@ -85,13 +90,13 @@ public class TestOperationsService {
 		BudgetMensuel m = operationsService.setBudgetActif(this.budget, false, "TEST");
 		assertEquals(EtatOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
 	}	
-	
+
 	/**
 	 * Test #121
 	 */
 	@Test
 	public void testCalculBudget(){
-		
+
 		this.operationsService.calculBudget(budget);
 		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
 		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
@@ -99,7 +104,7 @@ public class TestOperationsService {
 		assertEquals(0, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
 		assertEquals(123, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
 
-		
+
 		this.budget.setResultatMoisPrecedent(0D, 100D);
 		this.operationsService.calculBudget(budget);
 		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
@@ -107,11 +112,11 @@ public class TestOperationsService {
 
 		assertEquals(100, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
 		assertEquals(223, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
-		
-		
+
+
 		CategorieDepense reserveCat = new CategorieDepense();
 		reserveCat.setId(IdsCategoriesEnum.RESERVE.getId());
-		
+
 		LigneOperation reserve = new LigneOperation(reserveCat, "TESTRESERVE", TypeOperationEnum.CREDIT, "100", EtatOperationEnum.REALISEE, false);
 		this.budget.getListeOperations().add(reserve);
 		this.operationsService.calculBudget(budget);
@@ -123,11 +128,11 @@ public class TestOperationsService {
 
 		// Pour éviter le doublon du recalcul ci dessous
 		this.budget.setResultatMoisPrecedent(0D, 0D);
-		
+
 		LigneOperation piocheReserve = new LigneOperation(reserveCat, "PIOCHERESERVE", TypeOperationEnum.DEPENSE, "50", EtatOperationEnum.REALISEE, false);
 		this.budget.getListeOperations().add(piocheReserve);
 		this.operationsService.calculBudget(budget);
-		
+
 		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
 		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
 

@@ -24,13 +24,13 @@ import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperation
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.DataUtils;
-import com.terrier.finances.gestion.communs.utils.exception.BudgetNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exception.CompteClosedException;
-import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense;
-import com.terrier.finances.gestion.services.communs.abstrait.AbstractBusinessService;
+import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
@@ -68,7 +68,7 @@ public class OperationsService extends AbstractBusinessService {
 	public BudgetMensuel chargerBudgetMensuel(String idUtilisateur, CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget {} de {}/{}", compte, mois, annee);
 
-		CompteBancaire compteBancaire = getServiceUtilisateurs().getCompteById(compte.getId(), idUtilisateur);
+		CompteBancaire compteBancaire = getServiceComptes().getCompteById(compte.getId(), idUtilisateur);
 		if(compteBancaire != null){
 			if(compteBancaire.isActif()){
 				try {
@@ -274,7 +274,7 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public BudgetMensuel reinitialiserBudgetMensuel(BudgetMensuel budgetMensuel, String idUtilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
-		CompteBancaire compteBancaire = getServiceUtilisateurs().getCompteById(budgetMensuel.getCompteBancaire().getId(), idUtilisateur);
+		CompteBancaire compteBancaire = getServiceComptes().getCompteById(budgetMensuel.getCompteBancaire().getId(), idUtilisateur);
 		if(compteBancaire != null){
 			// S'il y a eu cloture, on ne fait rien
 			return initNewBudget(compteBancaire, idUtilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
@@ -599,7 +599,7 @@ public class OperationsService extends AbstractBusinessService {
 			
 
 		}
-		LOGGER.debug("Solde prévu	| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
+		LOGGER.debug("Solde prévu		| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
 		LOGGER.debug("Solde réel (avec marge)| {}	| {}",  budget.getSoldeNow() + budget.getMarge(), budget.getSoldeFin() + budget.getMarge());
 	}
 

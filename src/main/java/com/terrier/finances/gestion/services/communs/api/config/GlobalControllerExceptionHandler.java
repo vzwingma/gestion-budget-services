@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.rest.config;
+package com.terrier.finances.gestion.services.communs.api.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.terrier.finances.gestion.communs.utils.exception.BudgetNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exception.NotModifiedException;
-import com.terrier.finances.gestion.communs.utils.exception.UserNotAuthorizedException;
+import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.NotModifiedException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 
 /**
  * Gestion des exceptions dans le service REST
@@ -31,26 +31,25 @@ class GlobalControllerExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)  // 404
     @ExceptionHandler(BudgetNotFoundException.class)
     public void handleBudgetNotFoundException() {
-        LOGGER.error("Erreur Interne : Budget non trouvé");
+        LOGGER.error("Erreur : Budget non trouvé");
     }
     
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+    @ResponseStatus(HttpStatus.NOT_FOUND)  // 404
     @ExceptionHandler(DataNotFoundException.class)
     public void handleDataNotFoundException() {
-    	 LOGGER.error("Erreur Interne : Données introuvables");
+    	 LOGGER.error("Erreur : Données introuvables");
     }
     
     
     @ResponseStatus(HttpStatus.NOT_MODIFIED)  // 204
     @ExceptionHandler(NotModifiedException.class)
-    public void handlNotModifiedException() {
+    public void handleNotModifiedException() {
     	 LOGGER.info("Non modifiée");
     }
     
     @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
     @ExceptionHandler(UserNotAuthorizedException.class)
-    public void handlException() {
-    	 LOGGER.error("Erreur Interne : Accès non autorisé");
+    public void handleException() {
+    	 LOGGER.error("Erreur : Accès non autorisé");
     }
-    
 }

@@ -8,21 +8,17 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
-import com.terrier.finances.gestion.services.statut.business.StatusApplicationService;
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 
 @Configuration
-@ComponentScan(basePackages = {"com.terrier.finances.gestion.services.budget.business", 
-								"com.terrier.finances.gestion.services.parametrages.business",
-								"com.terrier.finances.gestion.services.budget.model.transformer"})	
+@ComponentScan(basePackages = {
+		"com.terrier.finances.gestion.services.statut",
+		"com.terrier.finances.gestion.services.budget.business", 
+		"com.terrier.finances.gestion.services.comptes.business",		
+		"com.terrier.finances.gestion.services.parametrages.business",
+		"com.terrier.finances.gestion.services.budget.model.transformer"})	
 public class TestMockDBServicesConfig {
 
-	
-	
-	private StatusApplicationService mockStatutService = Mockito.mock(StatusApplicationService.class);
-	private AuthenticationService mockAuthService = Mockito.mock(AuthenticationService.class);
-	
 	private MongoTemplate mockDBTemplate = Mockito.mock(MongoTemplate.class);
 	private BudgetDatabaseService mockBudgetDBService = Mockito.mock(BudgetDatabaseService.class);
 	private UtilisateurDatabaseService mockUserDBService = Mockito.mock(UtilisateurDatabaseService.class);
@@ -36,18 +32,9 @@ public class TestMockDBServicesConfig {
 		return this.mockUserDBService;
 	}
 	
-	@Bean AuthenticationService mockAuthService(){
-		return this.mockAuthService;
-	}
-	
-	
 	@Bean
 	public MongoTemplate mockMongoTemplate(){
 		return this.mockDBTemplate;
-	}
-	
-	@Bean StatusApplicationService mockStatutService(){
-		return this.mockStatutService;
 	}
 	
 	@Bean ParametragesDatabaseService mockParamsDBService(){
@@ -74,13 +61,4 @@ public class TestMockDBServicesConfig {
 	public ParametragesDatabaseService getMockParamsDBService() {
 		return mockParamsDBService;
 	}
-
-	/**
-	 * @return the mockAuthService
-	 */
-	public AuthenticationService getMockAuthService() {
-		return mockAuthService;
-	}
-	
-	
 }

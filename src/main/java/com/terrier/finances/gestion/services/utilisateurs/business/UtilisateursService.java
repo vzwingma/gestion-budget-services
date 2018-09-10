@@ -2,7 +2,6 @@ package com.terrier.finances.gestion.services.utilisateurs.business;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jasypt.util.text.BasicTextEncryptor;
@@ -11,28 +10,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
-import com.terrier.finances.gestion.communs.utils.exception.DataNotFoundException;
-import com.terrier.finances.gestion.services.communs.abstrait.AbstractBusinessService;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
- * Service d'authentification
+ * Service Utilisateurs
  * @author vzwingma
  *
  */
 @Service
-public class AuthenticationService extends AbstractBusinessService {
+public class UtilisateursService extends AbstractBusinessService {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateursService.class);
 
 	/**
-	 * Paramétrages
+	 * Utilisateurs
 	 */
 	@Autowired
 	private UtilisateurDatabaseService dataDBUsers;
@@ -119,11 +117,27 @@ public class AuthenticationService extends AbstractBusinessService {
 	 * @param utilisateur
 	 * @param masterKeyClear
 	 */
-	private void registerUserBusinessSession(Utilisateur utilisateur, String masterKeyClear){
+	public void registerUserBusinessSession(Utilisateur utilisateur, String masterKeyClear){
+		LOGGER.debug("Enregistrement de la BusinessSession [{}]", utilisateur.getId());
+		if(this.businessSessions.containsKey(utilisateur.getId())){
+			deconnexionBusinessSession(utilisateur.getId());
+		}
 		this.businessSessions.putIfAbsent(utilisateur.getId(), new UserBusinessSession(utilisateur));
-		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);	
+		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);
+			
 	}
 	
+	
+	/**
+	 * @param idSession
+	 * @return date de dernier accès
+	 */
+	public LocalDateTime getLastAccessDate(String idSession){
+		if(this.businessSessions.get(idSession) != null){
+			return this.businessSessions.get(idSession).getUtilisateur().getDernierAcces();
+		}
+		return null;
+	}
 
 	@Override
 	public UserBusinessSession getBusinessSession(String idSession){
@@ -140,46 +154,11 @@ public class AuthenticationService extends AbstractBusinessService {
 		UserBusinessSession userSession = this.businessSessions.get(idSession);
 		if(userSession != null){
 			userSession.deconnexion();
-			this.businessSessions.remove(idSession);
+			return this.businessSessions.remove(idSession) != null;
 		}
 		return false;
 	}
 	
 
-
-	/**
-	 * @param idCompte id du compte
-	 * @return etat du compte
-	 */
-	public boolean isCompteActif(String idCompte){
-		try {
-			return dataDBUsers.isCompteActif(idCompte);
-		} catch (DataNotFoundException e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * Recherche du compte par id
-	 * @param idCompte id du compte
-	 * @param utilisateur utilisateur
-	 * @return compteBancaire
-	 * @throws DataNotFoundException
-	 */
-	public CompteBancaire getCompteById(String idCompte, String proprietaire) throws DataNotFoundException{
-		return dataDBUsers.chargeCompteParId(idCompte, proprietaire);
-	}
-
-
-
-	/**
-	 * Recherche des comptes d'un utilisateur
-	 * @param utilisateur utilisateur
-	 * @return liste des comptes bancaires
-	 * @throws DataNotFoundException
-	 */
-	public List<CompteBancaire> getComptesUtilisateur(String idUtilisateur) throws DataNotFoundException{
-		return dataDBUsers.chargeComptes(idUtilisateur);
-	}
 	
 }

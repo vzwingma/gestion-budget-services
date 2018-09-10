@@ -1,4 +1,6 @@
-package com.terrier.finances.gestion.services.communs.abstrait;
+package com.terrier.finances.gestion.services.communs.business;
+
+import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.services.budget.business.OperationsService;
+import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 import com.terrier.finances.gestion.services.parametrages.business.ParametragesService;
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
+import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
@@ -32,9 +35,11 @@ public class AbstractBusinessService {
 	@Autowired
 	private ParametragesService serviceParams;
 	@Autowired
-	private AuthenticationService serviceUtilisateurs;
+	private UtilisateursService serviceUtilisateurs;
 	@Autowired
-	private OperationsService serviceOperation;
+	private OperationsService serviceOperations;
+	@Autowired
+	private ComptesService serviceComptes;
 
 	/**
 	 * @return the serviceParams
@@ -61,30 +66,49 @@ public class AbstractBusinessService {
 	/**
 	 * @return the serviceAuth
 	 */
-	public AuthenticationService getServiceUtilisateurs() {
+	public UtilisateursService getServiceUtilisateurs() {
 		return serviceUtilisateurs;
 	}
 
 	/**
 	 * @param serviceUtilisateurs the serviceAuth to set
 	 */
-	public void setServiceUtilisateurs(AuthenticationService serviceUtilisateurs) {
+	public void setServiceUtilisateurs(UtilisateursService serviceUtilisateurs) {
 		this.serviceUtilisateurs = serviceUtilisateurs;
 	}
 
 	/**
 	 * @return the serviceOperation
 	 */
-	public OperationsService getServiceOperation() {
-		return serviceOperation;
+	public OperationsService getServiceOperations() {
+		return serviceOperations;
 	}
 
 	/**
 	 * @param serviceOperation the serviceOperation to set
 	 */
-	public void setServiceOperation(OperationsService serviceOperation) {
-		this.serviceOperation = serviceOperation;
+	public void setServiceOperations(OperationsService serviceOperation) {
+		this.serviceOperations = serviceOperation;
 	}
 	
 	
+	
+	/**
+	 * @return the serviceComptes
+	 */
+	public ComptesService getServiceComptes() {
+		return serviceComptes;
+	}
+
+	/**
+	 * @param serviceComptes the serviceComptes to set
+	 */
+	public void setServiceComptes(ComptesService serviceComptes) {
+		this.serviceComptes = serviceComptes;
+	}
+
+	@PreDestroy
+	public void endApp(){
+		LOGGER.info("[END] Service {}", this.getClass().getSimpleName());
+	}
 }

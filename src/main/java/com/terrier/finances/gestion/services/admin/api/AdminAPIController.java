@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
-import com.terrier.finances.gestion.services.utilisateurs.business.AuthenticationService;
+import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -28,17 +28,17 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value="/rest/admin")
-@Api(consumes="application/json", protocols="https", value="Administration", tags={"Services"})
-public class AdminRestController {
+@Api(consumes="application/json", protocols="https", value="Administration", tags={"Administration"})
+public class AdminAPIController {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AdminRestController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AdminAPIController.class);
 
 	@Autowired
-	private AuthenticationService authService;
+	private UtilisateursService authService;
 
 	/**
 	 * Changement du mot de passe
@@ -77,8 +77,5 @@ public class AdminRestController {
 			LOGGER.error(returnErr);
 			return returnErr;
 		}
-		
-		
-	}
-	
+	}	
 }

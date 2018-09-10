@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.test.config;
+package com.terrier.finances.gestion.business;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
