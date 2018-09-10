@@ -97,7 +97,7 @@
 				<configuration>
 					<skip>true</skip>
 				</configuration>
-			</plugin>			
+			</plugin>
 		</plugins>
 	</build>
 	<profiles>
@@ -312,4 +312,27 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>oss-snapshot</id>
+			<url>https://oss.sonatype.org/content/groups/public</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>oss-stage</id>
+			<url>https://oss.sonatype.org/content/groups/staging</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>
