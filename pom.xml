@@ -1,10 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.terrier.finances.budget</groupId>
+	<groupId>io.github.vzwingma.finances.budget</groupId>
 	<artifactId>services</artifactId>
 	<version>7.0.0-SNAPSHOT</version>
-
 	<packaging>war</packaging>
 	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
@@ -42,7 +41,6 @@
 			<id>vzwingma</id>
 		</developer>
 	</developers>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -93,6 +91,13 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>			
 		</plugins>
 	</build>
 	<profiles>
@@ -166,9 +171,9 @@
 	<dependencies>
 		<!-- Communs -->
 		<dependency>
-			<groupId>com.terrier.finances.budget</groupId>
+			<groupId>io.github.vzwingma.finances.budget</groupId>
 			<artifactId>communs</artifactId>
-			<version>${project.version}</version>
+			<version>7.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SPRING -->
@@ -307,10 +312,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>local-maven-repo</id>
-			<url>file:///${project.basedir}/local-maven-repo</url>
-		</repository>
-	</repositories>
 </project>
