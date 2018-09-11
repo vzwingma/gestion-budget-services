@@ -25,7 +25,7 @@ public abstract class AbstractAPIController {
 	protected <T extends AbstractAPIObjectModel> ResponseEntity<T> getEntity(T restObjectModel){
 		final HttpHeaders httpHeaders= new HttpHeaders();
 	    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-	    return new ResponseEntity<T>(restObjectModel, httpHeaders, HttpStatus.OK);
+	    return new ResponseEntity<>(restObjectModel, httpHeaders, HttpStatus.OK);
 	}
 	
 	
@@ -36,6 +36,6 @@ public abstract class AbstractAPIController {
 	protected <M extends AbstractAPIObjectModel> ResponseEntity<List<M>> getEntities(List<M> restObjectModel){
 		final HttpHeaders httpHeaders= new HttpHeaders();
 	    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-	    return new ResponseEntity<List<M>>(restObjectModel, httpHeaders, HttpStatus.OK);
+	    return new ResponseEntity<>(restObjectModel, httpHeaders, HttpStatus.OK);
 	}
 }

@@ -6,6 +6,7 @@ package com.terrier.finances.gestion.services.admin.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,8 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.ADMIN_BASE)
-@Api(consumes="application/json", protocols="https", value="Administration", tags={"Administration"})
+@Api(protocols="https", value="Administration", tags={"Administration"},
+	consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 public class AdminAPIController {
 
 
@@ -61,7 +63,7 @@ public class AdminAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="newpassword", required=true, value="Nouveau mot de passe de l'utilisateur", paramType="path")
 	})
 	
-	@GetMapping(value=BudgetApiUrlEnum.ADMIN_PASSWORD + "/{login}/{oldpassword}/{newpassword}")
+	@GetMapping(value=BudgetApiUrlEnum.ADMIN_ACCESS + "/{login}/{oldpassword}/{newpassword}")
 	public String password(@PathVariable("login") String login, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
 		LOGGER.info("Changement du mot de passe pour {}", login);
 		

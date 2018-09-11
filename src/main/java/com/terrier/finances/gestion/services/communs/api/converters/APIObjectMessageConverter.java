@@ -8,8 +8,6 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
@@ -58,7 +56,7 @@ public class APIObjectMessageConverter<T extends AbstractAPIObjectModel> impleme
 	 */
 	@Override
 	public T read(Class<? extends T> clazz, HttpInputMessage inputMessage)
-			throws IOException, HttpMessageNotReadableException {
+			throws IOException {
 		return mapper.readValue(inputMessage.getBody(), clazz);
 	}
 
@@ -67,7 +65,7 @@ public class APIObjectMessageConverter<T extends AbstractAPIObjectModel> impleme
 	 */
 	@Override
 	public void write(T t, MediaType contentType, HttpOutputMessage outputMessage)
-			throws IOException, HttpMessageNotWritableException {
+			throws IOException {
 		mapper.writeValue(outputMessage.getBody(), t);
 		
 	}

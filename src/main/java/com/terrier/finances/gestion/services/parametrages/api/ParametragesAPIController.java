@@ -32,7 +32,8 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.PARAMS_BASE)
-@Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Parametrages", tags={"Parametrages"})
+@Api(protocols="https", value="Parametrages", tags={"Parametrages"},
+		consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 public class ParametragesAPIController extends AbstractAPIController {
 
 

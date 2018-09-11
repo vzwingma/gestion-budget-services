@@ -104,10 +104,10 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	})
 	
 	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT+"/{idUtilisateur}")
-	public ResponseEntity<?> disconnect(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
+	public ResponseEntity<String> disconnect(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
 		if(authService.deconnexionBusinessSession(idUtilisateur)){
 			LOGGER.info("[API][idUser={}] Disconnect : true", idUtilisateur);
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok().body("");
 		}
 		throw new DataNotFoundException("[API][idUser="+idUtilisateur+"] Impossible de déconnecter l'utilisateur");
 	}
