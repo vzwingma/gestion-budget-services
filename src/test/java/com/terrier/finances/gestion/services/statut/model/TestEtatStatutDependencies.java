@@ -34,7 +34,7 @@ public class TestEtatStatutDependencies {
 		assertEquals(StatutStateEnum.OK, statutRoot.getStatusObject());
 		
 		// Ajout d'une dépendance inconnue
-		statutRoot.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION);
+		statutRoot.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION, "APP");
 		assertEquals(StatutStateEnum.INCONNU, statutRoot.getDependances().get(0).getStatusObject());
 		// La dépendance globale redevient inconnue
 		assertEquals(StatutStateEnum.INCONNU, statutRoot.getStatusCompile());
@@ -45,7 +45,7 @@ public class TestEtatStatutDependencies {
 		assertEquals(StatutStateEnum.OK, statutRoot.getStatusCompile());
 		
 		// Ajout d'une dépendance à la BDD (n'est pas correct mais c'est pour le test)
-		statutRoot.addDependency(DependencyName.REST_SERVICE, DependencyName.DATABASE);
+		statutRoot.addDependency(DependencyName.REST_SERVICE, DependencyName.DATABASE, "REST");
 		assertEquals(StatutStateEnum.INCONNU, statutRoot.getDependances().get(0).getStatusCompile());
 		assertEquals(StatutStateEnum.OK, statutRoot.getDependances().get(0).getStatusObject());
 		assertEquals(StatutStateEnum.INCONNU, statutRoot.getDependances().get(0).getDependances().get(0).getStatusCompile());

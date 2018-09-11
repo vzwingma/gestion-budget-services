@@ -33,7 +33,7 @@ public abstract class AbstractAPIController {
 	 * @param restObjectModel 
 	 * @return l'entity correspondante en JSON
 	 */
-	protected <M extends AbstractAPIObjectModel> ResponseEntity<List<M>> getEntity(List<M> restObjectModel){
+	protected <M extends AbstractAPIObjectModel> ResponseEntity<List<M>> getEntities(List<M> restObjectModel){
 		final HttpHeaders httpHeaders= new HttpHeaders();
 	    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 	    return new ResponseEntity<List<M>>(restObjectModel, httpHeaders, HttpStatus.OK);

@@ -67,7 +67,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST+"/{idUtilisateur}")
 	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
 		LOGGER.info("[API][idUser={}] getComptes", idUtilisateur);
-		return getEntity(comptesService.getComptesUtilisateur(idUtilisateur));
+		return getEntities(comptesService.getComptesUtilisateur(idUtilisateur));
 	}
 	
 	/**
