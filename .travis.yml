@@ -59,8 +59,7 @@ before_deploy:
 deploy:
 # Déploiement des releaes sur tag : snapshot ou version 
   - provider: releases
-    api-key:
-      secure: RQZitfoBm2ICLJovBDW1efW9eTHlw668UW8wHJBMEJwh7MkdT9R76Y8Ki1TysiyFy7TIXaavqQ6+StT5QTNB7zajeqrZgRxKYrs7Pumh8E7Kvad13Ee5CAwCASEpb/HHzHW+tL1SHSt+5DrEIZgLM9wWglK0zOtT8RitNpnw/hWf/UM0PXQfgh2MNUlOz6n9KB9TXolD9qdTKV2n/bBWzyoMLno0e3LTUDqtzfm4X/Rd4euoiy04EMHBxDooTNDhw5Vq8RLNC0FcWiz8+GfTb4tc6wt2vzp5OT77Y1WMz6Ysrd+8f4Yeod8+8/kS9NcrUEE4yir8d5OHwGVfbJ91hoMKb2ZXC86pPXQZLKRw50IGql3laI9JT1+slsKc0esmyy6AMIfkSSzLmkNHUv8NzlUJ/Kw0e+cGAkrhks2AzQnGioHxUCNGeRztNfZYqvtaLjibvRZLOZvn802elO9lGuGTo46if3OCscLAtiecWBfy5/kr4ksI3WbVtBmZSuaKK10sjXAvj/Bd9UJj3q1vuOnuT2Fszc7HmRtORPpuLEZyJjBxD9400yG17/uRMGi0d+7zzlLbqOZaHQnKccvq2/2IVW198Y8p/yT+cOQrvdXIc/edNB603BILp8/TA+taF+2iTq+i+fDh9HFPNFwaf0+Dv3NSFQLEYB9eSWaSXG0=
+    api-key: $GITHUB_API_KEY
     skip_cleanup: true
     overwrite: true
     file: /home/travis/build/vzwingma/gestion-budget-services/target/webapps/services.war
