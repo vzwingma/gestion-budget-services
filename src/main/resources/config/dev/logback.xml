@@ -7,27 +7,7 @@
 		</encoder>
 	</appender>
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>D://EnvDevs//Perso//budget.log</file>
-		<append>false</append>
-		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
-			by default -->
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%L - %msg%n
-			</pattern>
-		</encoder>
-	</appender>
-	<appender name="FILE-SERVICES" class="ch.qos.logback.core.FileAppender">
-		<file>D://EnvDevs//Perso//budget-services.log</file>
-		<append>false</append>
-		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
-			by default -->
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%L - %msg%n
-			</pattern>
-		</encoder>
-	</appender>
-	<appender name="FILE-IHM" class="ch.qos.logback.core.FileAppender">
-		<file>D://EnvDevs//Perso//budget-ihm.log</file>
+		<file>D://EnvDevs//Perso//services.log</file>
 		<append>false</append>
 		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
 			by default -->
@@ -43,22 +23,13 @@
 	<logger name="org.quartz" level="INFO" />
 
 
-	<!-- COMMUNS -->
-	<logger name="com.terrier.finances.gestion.communs" level="DEBUG" additivity="false">
+	<!-- Budget -->
+	<logger name="com.terrier.financess" level="DEBUG" additivity="false">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />		
 	</logger>	
-	<!-- IHM -->
-	<logger name="com.terrier.finances.gestion.ui" level="DEBUG" additivity="false">
-		<appender-ref ref="CONSOLE" />
-		<appender-ref ref="FILE-IHM" />
-	</logger>
-	<!-- services -->
-	<logger name="com.terrier.finances.gestion.services" level="DEBUG" additivity="false">
-		<appender-ref ref="CONSOLE" />
-		<appender-ref ref="FILE-SERVICES" />
-	</logger>
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
 	</root>
 </configuration>
