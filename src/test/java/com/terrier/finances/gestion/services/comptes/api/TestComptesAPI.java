@@ -40,7 +40,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	public void testGetComptes() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.COMPTES_LIST_FULL))
+				post(BudgetApiUrlEnum.COMPTES_LIST_FULL))
 		.andExpect(status().is4xxClientError());
 
 		
@@ -64,13 +64,13 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		
 		// Comptes KO
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.COMPTES_LIST_FULL + "/123123")
+				get(BudgetApiUrlEnum.COMPTES_LIST_FULL + "/123123")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		// Comptes OK		
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.COMPTES_LIST_FULL + "/345345")
+				get(BudgetApiUrlEnum.COMPTES_LIST_FULL + "/345345")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
@@ -83,7 +83,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	public void testCompte() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_DISCONNECT_FULL))
+				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL))
 		.andExpect(status().is4xxClientError());
 
 		CompteBancaire c1 = new CompteBancaire();
@@ -95,13 +95,13 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		
 		// Compte KO
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.COMPTES_ID_FULL + "/111" + "/123123")
+				get(BudgetApiUrlEnum.COMPTES_ID_FULL + "/111" + "/123123")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.COMPTES_ID_FULL + "/111" + "/345345")
+				get(BudgetApiUrlEnum.COMPTES_ID_FULL + "/111" + "/345345")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

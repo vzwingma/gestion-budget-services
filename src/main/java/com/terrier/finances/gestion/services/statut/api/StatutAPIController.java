@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping(value=BudgetApiUrlEnum.ROOT_BASE)
+@RequestMapping(value=BudgetApiUrlEnum.ADMIN_BASE)
 @Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Administration", tags={"Administration"})
 public class StatutAPIController extends AbstractAPIController {
 
@@ -63,7 +63,7 @@ public class StatutAPIController extends AbstractAPIController {
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Ressource introuvable")
     }) 
-	@GetMapping(value=BudgetApiUrlEnum.STATUT_BASE)
+	@GetMapping(value=BudgetApiUrlEnum.ADMIN_STATUT)
 	public @ResponseBody ResponseEntity<StatutDependencyAPIObject> ping(){
 		LOGGER.info("[API] Appel statut : {}", this.statusApplicationService.getStatutApplication());
 		return getEntity(this.statusApplicationService.getStatutApplication());

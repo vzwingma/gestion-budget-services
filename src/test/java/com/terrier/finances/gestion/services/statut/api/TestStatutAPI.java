@@ -41,7 +41,7 @@ public class TestStatutAPI extends AbstractTestsAPI {
 	public void testStatut() throws Exception {
 		// Statut OK
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.STATUT_BASE)
+				get(BudgetApiUrlEnum.ADMIN_BASE + BudgetApiUrlEnum.ADMIN_STATUT)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

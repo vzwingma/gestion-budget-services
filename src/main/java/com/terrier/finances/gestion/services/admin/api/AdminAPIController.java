@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
+import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.swagger.annotations.Api;
@@ -27,7 +28,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping(value="/rest/admin")
+@RequestMapping(value=BudgetApiUrlEnum.ADMIN_BASE)
 @Api(consumes="application/json", protocols="https", value="Administration", tags={"Administration"})
 public class AdminAPIController {
 
@@ -60,7 +61,7 @@ public class AdminAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="newpassword", required=true, value="Nouveau mot de passe de l'utilisateur", paramType="path")
 	})
 	
-	@GetMapping(value="/v1/password/{login}/{oldpassword}/{newpassword}")
+	@GetMapping(value=BudgetApiUrlEnum.ADMIN_PASSWORD + "/{login}/{oldpassword}/{newpassword}")
 	public String password(@PathVariable("login") String login, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
 		LOGGER.info("Changement du mot de passe pour {}", login);
 		
