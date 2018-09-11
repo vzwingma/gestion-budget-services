@@ -51,7 +51,7 @@ public class TestParametrageDBServices {
 		assertNotNull(cats);
 		assertEquals(1, cats.size());
 		assertEquals("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", cats.iterator().next().getId());
-		assertEquals("467496e4-9059-4b9b-8773-21f230c8c5c6", cats.iterator().next().getListeIdsSSCategories().iterator().next());
+		assertEquals("467496e4-9059-4b9b-8773-21f230c8c5c6", cats.iterator().next().getListeSSCategories().iterator().next().getId());
 	}
 	
 

@@ -77,8 +77,6 @@ public class TestDataTransformerBudget {
 		cat1.setCategorie(true);
 		cat1.setId("CAT1");
 		cat1.setLibelle("CATEGORIE 1");
-		cat1.getListeIdsSSCategories().add("SS CAT11");
-		cat1.getListeIdsSSCategories().add("SS CAT12");
 		cat1.getListeSSCategories().add(ssCat11);
 		cat1.getListeSSCategories().add(ssCat12);
 		
@@ -100,12 +98,8 @@ public class TestDataTransformerBudget {
 		cat2.setCategorie(true);
 		cat2.setId("CAT2");
 		cat2.setLibelle("CATEGORIE 2");
-		cat2.getListeIdsSSCategories().add("SS CAT21");
-		cat2.getListeIdsSSCategories().add("SS CAT22");
 		cat2.getListeSSCategories().add(ssCat21);
 		cat2.getListeSSCategories().add(ssCat22);
-		
-		
 	}
 	
 	private BasicTextEncryptor e = new BasicTextEncryptor();
