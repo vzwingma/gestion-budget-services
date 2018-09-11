@@ -1,6 +1,6 @@
 package com.terrier.finances.gestion.services.parametrages.api;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
@@ -31,9 +31,7 @@ public class TestParametragesAPI extends AbstractTestsAPI  {
 	public void testGetCategories() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL))
-		.andExpect(status().is4xxClientError());
-
-		
+				get(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL))
+		.andExpect(status().isOk());
 	}
 }

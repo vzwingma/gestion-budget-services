@@ -35,15 +35,10 @@ public class ParametragesService extends AbstractBusinessService {
 	@Autowired
 	private ParametragesDatabaseService dataParams;
 
-	/**
-	 * Liste des catégories
-	 */
-	private List<CategorieDepense> listeCategories;
-
 	@PostConstruct
 	public void chargeCategories(){
-		listeCategories = dataParams.chargeCategories();
-		LOGGER.info("> Chargement des catégories <");
+		List<CategorieDepense> listeCategories = dataParams.chargeCategories();
+		LOGGER.info("> Chargement des {} catégories <", listeCategories.size());
 		listeCategories.stream().forEachOrdered(c -> {
 			LOGGER.debug("[{}] {}", c.isActif() ? "v" : "X", c);
 			c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}]		{}", s.isActif() ? "v" : "X", s));
@@ -71,7 +66,7 @@ public class ParametragesService extends AbstractBusinessService {
 	 * @return liste des catégories
 	 */
 	public List<CategorieDepense> getCategories(){
-		return listeCategories;
+		return dataParams.chargeCategories();
 	}
 
 
