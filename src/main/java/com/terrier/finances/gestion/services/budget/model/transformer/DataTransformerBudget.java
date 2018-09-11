@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
 
@@ -70,13 +70,13 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 				bo.setSoldeNow(dto.getNowArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getNowArgentAvance())) : 0);
 				bo.setSoldeFin(dto.getFinArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getFinArgentAvance())): 0);
 				// Complétion des totaux
-				Map<CategorieDepense, Double[]> totalCategorieBO = new HashMap<>();
+				Map<CategorieOperation, Double[]> totalCategorieBO = new HashMap<>();
 
 				if(dto.getTotalParCategories() != null){
 					dto.getTotalParCategories().entrySet()
 					.parallelStream()
 					.forEach(entry -> {
-						CategorieDepense c = getCategorieByEncryptedId(entry.getKey(), decryptor);
+						CategorieOperation c = getCategorieByEncryptedId(entry.getKey(), decryptor);
 						if(c != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
 							for (int i = 0; i < entry.getValue().length; i++) {
@@ -90,12 +90,12 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 
 
 				// Complétion des totaux ss catégorie
-				Map<CategorieDepense, Double[]> totalSsCategorieBO = new HashMap<>();
+				Map<CategorieOperation, Double[]> totalSsCategorieBO = new HashMap<>();
 				if(dto.getTotalParSSCategories() != null){
 					dto.getTotalParSSCategories().entrySet()
 					.parallelStream()
 					.forEach(entry -> {
-						CategorieDepense ssC = getCategorieByEncryptedId(entry.getKey(), decryptor);
+						CategorieOperation ssC = getCategorieByEncryptedId(entry.getKey(), decryptor);
 						if(ssC != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
 							for (int i = 0; i < entry.getValue().length; i++) {
@@ -119,7 +119,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	}
 
 
-	private CategorieDepense getCategorieByEncryptedId(String encryptedId, BasicTextEncryptor decryptor){
+	private CategorieOperation getCategorieByEncryptedId(String encryptedId, BasicTextEncryptor decryptor){
 		return parametrageService.chargeCategorieParId(decryptor.decrypt(encryptedId));
 	}
 

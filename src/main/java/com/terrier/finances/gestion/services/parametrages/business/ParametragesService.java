@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
@@ -37,7 +37,7 @@ public class ParametragesService extends AbstractBusinessService {
 
 	@PostConstruct
 	public void chargeCategories(){
-		List<CategorieDepense> listeCategories = dataParams.chargeCategories();
+		List<CategorieOperation> listeCategories = dataParams.chargeCategories();
 		LOGGER.info("> Chargement des {} catégories <", listeCategories.size());
 		listeCategories.stream().forEachOrdered(c -> {
 			LOGGER.debug("[{}] {}", c.isActif() ? "v" : "X", c);
@@ -65,7 +65,7 @@ public class ParametragesService extends AbstractBusinessService {
 	/**
 	 * @return liste des catégories
 	 */
-	public List<CategorieDepense> getCategories(){
+	public List<CategorieOperation> getCategories(){
 		return dataParams.chargeCategories();
 	}
 
@@ -74,9 +74,9 @@ public class ParametragesService extends AbstractBusinessService {
 	 * @param idCategorie
 	 * @return la catégorie ou la sous catégorie correspondante à l'id
 	 */
-	public CategorieDepense getCategorieById(String idCategorie) throws DataNotFoundException{
+	public CategorieOperation getCategorieById(String idCategorie) throws DataNotFoundException{
 		LOGGER.trace("Recherche de la catégorie : {}", idCategorie);
-		CategorieDepense ssCategorieDepense = dataParams.chargeCategorieParId(idCategorie);
+		CategorieOperation ssCategorieDepense = dataParams.chargeCategorieParId(idCategorie);
 		if(ssCategorieDepense != null){
 			LOGGER.trace(">> : {}", ssCategorieDepense);
 			return ssCategorieDepense;

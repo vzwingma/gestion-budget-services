@@ -21,7 +21,7 @@ import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
@@ -68,7 +68,7 @@ public class TestOperationsService {
 		this.budget.setActif(true);
 		this.budget.setResultatMoisPrecedent(0D, 0D);
 		this.budget.razCalculs();
-		this.budget.getListeOperations().add(new LigneOperation(new CategorieDepense(), "TEST1", TypeOperationEnum.CREDIT, "123", EtatOperationEnum.PREVUE, false));
+		this.budget.getListeOperations().add(new LigneOperation(new CategorieOperation(), "TEST1", TypeOperationEnum.CREDIT, "123", EtatOperationEnum.PREVUE, false));
 
 		LocalDate now = LocalDate.now();
 		this.budget.setMois(now.getMonth());
@@ -114,7 +114,7 @@ public class TestOperationsService {
 		assertEquals(223, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
 
 
-		CategorieDepense reserveCat = new CategorieDepense();
+		CategorieOperation reserveCat = new CategorieOperation();
 		reserveCat.setId(IdsCategoriesEnum.RESERVE.getId());
 
 		LigneOperation reserve = new LigneOperation(reserveCat, "TESTRESERVE", TypeOperationEnum.CREDIT, "100", EtatOperationEnum.REALISEE, false);

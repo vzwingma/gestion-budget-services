@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
@@ -55,7 +55,7 @@ public class ParametragesAPIController extends AbstractAPIController {
             @ApiResponse(code = 404, message = "Session introuvable")
     })
 	@GetMapping(value=BudgetApiUrlEnum.PARAMS_CATEGORIES)
-	public @ResponseBody ResponseEntity<List<CategorieDepense>> getCategories() throws DataNotFoundException{
+	public @ResponseBody ResponseEntity<List<CategorieOperation>> getCategories() throws DataNotFoundException{
 		LOGGER.info("[API] getCategories");
 		return getEntities(paramsServices.getCategories());
 	}

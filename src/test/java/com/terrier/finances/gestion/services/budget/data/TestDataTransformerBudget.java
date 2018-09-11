@@ -23,7 +23,7 @@ import org.mockito.stubbing.Answer;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget;
@@ -47,29 +47,32 @@ public class TestDataTransformerBudget {
 	@Spy
 	private DataTransformerLigneDepense dataTransformerLigneDepense;
 	
-	private static CategorieDepense cat1;
-	private static CategorieDepense cat2;
-	private static CategorieDepense ssCat11;
-	private static CategorieDepense ssCat12;
-	private static CategorieDepense ssCat21;
-	private static CategorieDepense ssCat22;	
+	private static CategorieOperation cat1;
+	private static CategorieOperation cat2;
+	private static CategorieOperation ssCat11;
+	private static CategorieOperation ssCat12;
+	private static CategorieOperation ssCat21;
+	private static CategorieOperation ssCat22;	
 	
 	static {
-		ssCat11 = new CategorieDepense();
+		
+		cat1 = new CategorieOperation();
+		
+		ssCat11 = new CategorieOperation();
 		ssCat11.setActif(true);
 		ssCat11.setCategorie(false);
 		ssCat11.setId("SS CAT11");
 		ssCat11.setLibelle("SS CATEGORIE 11");
-		ssCat11.setIdCategorieParente("CAT1");
+		ssCat11.setCategorieParente(cat1);
 		
-		ssCat12 = new CategorieDepense();
+		ssCat12 = new CategorieOperation();
 		ssCat12.setActif(true);
 		ssCat12.setCategorie(false);
 		ssCat12.setId("SS CAT12");
 		ssCat12.setLibelle("SS CATEGORIE 12");
-		ssCat12.setIdCategorieParente("CAT1");
+		ssCat12.setCategorieParente(cat1);
 		
-		cat1 = new CategorieDepense();
+		
 		cat1.setActif(true);
 		cat1.setCategorie(true);
 		cat1.setId("CAT1");
@@ -80,19 +83,19 @@ public class TestDataTransformerBudget {
 		cat1.getListeSSCategories().add(ssCat12);
 		
 		
-		ssCat21 = new CategorieDepense();
+		ssCat21 = new CategorieOperation();
 		ssCat21.setActif(true);
 		ssCat21.setCategorie(false);
 		ssCat21.setId("SS CAT21");
 		ssCat21.setLibelle("SS CATEGORIE 21");
 		
-		ssCat22 = new CategorieDepense();
+		ssCat22 = new CategorieOperation();
 		ssCat22.setActif(true);
 		ssCat22.setCategorie(false);
 		ssCat22.setId("SS CAT22");
 		ssCat22.setLibelle("SS CATEGORIE 22");
 		
-		cat2 = new CategorieDepense();
+		cat2 = new CategorieOperation();
 		cat2.setActif(true);
 		cat2.setCategorie(true);
 		cat2.setId("CAT2");
@@ -112,13 +115,13 @@ public class TestDataTransformerBudget {
 		e.setPassword("test");
 		transformer.setDataTransformerLigneDepense(dataTransformerLigneDepense);
 		transformer.setParametrageService(parametrageMockService);
-		when(parametrageMockService.chargeCategorieParId(anyString())).thenAnswer(new Answer<CategorieDepense>() {
+		when(parametrageMockService.chargeCategorieParId(anyString())).thenAnswer(new Answer<CategorieOperation>() {
 
 			/* (non-Javadoc)
 			 * @see org.mockito.stubbing.Answer#answer(org.mockito.invocation.InvocationOnMock)
 			 */
 			@Override
-			public CategorieDepense answer(InvocationOnMock invocation) throws Throwable {
+			public CategorieOperation answer(InvocationOnMock invocation) throws Throwable {
 				String param = (String)invocation.getArguments()[0];
 				switch (param) {
 				case "CAT1":
