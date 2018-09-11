@@ -28,10 +28,10 @@ public abstract class AbstractDatabaseService {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	
+
 	@Autowired
 	private StatusApplicationService statutApplicationService;
-	
+
 	/**
 	 * Constructeur permettant de définir les composants utilisés en DATA
 	 */
@@ -39,7 +39,7 @@ public abstract class AbstractDatabaseService {
 		LOGGER.info("[INIT] Service {}", this.getClass().getSimpleName());
 	}
 
-	
+
 	/**
 	 * @return opérations MongoDB
 	 */
@@ -47,14 +47,16 @@ public abstract class AbstractDatabaseService {
 		updateMongoStatus();
 		return mongoTemplate;
 	}
-	
-	
+
+
 	/**
 	 * 
 	 */
 	private void updateMongoStatus(){
-        StatutStateEnum statutDB = mongoTemplate.getDb().getName() != null ? StatutStateEnum.OK : StatutStateEnum.FATAL;
-        LOGGER.trace("Statut DB : {} -> {}", mongoTemplate.getDb().getName(), statutDB);        
-		statutApplicationService.updateDependencyStatut(DependencyName.DATABASE, statutDB);
+		if(mongoTemplate != null && statutApplicationService != null){
+			StatutStateEnum statutDB = mongoTemplate.getDb().getName() != null ? StatutStateEnum.OK : StatutStateEnum.FATAL;
+			LOGGER.trace("Statut DB : {} -> {}", mongoTemplate.getDb().getName(), statutDB);        
+			statutApplicationService.updateDependencyStatut(DependencyName.DATABASE, statutDB);
+		}
 	}
 }
