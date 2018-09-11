@@ -1,6 +1,5 @@
 package com.terrier.finances.gestion.services.parametrages.business;
 
-import java.text.ParseException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
-import com.terrier.finances.gestion.communs.utils.data.DataUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
@@ -27,16 +25,12 @@ public class ParametragesService extends AbstractBusinessService {
 
 
 	/**
-	 * Info de version de l'application 
-	 */
-	private String version;
-	private String buildTime;
-
-	private String uiValiditySessionPeriod;
-	/**
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(ParametragesService.class);
+
+	private String uiValiditySessionPeriod;
+
 
 	@Autowired
 	private ParametragesDatabaseService dataParams;
@@ -54,39 +48,6 @@ public class ParametragesService extends AbstractBusinessService {
 			LOGGER.debug("[{}] {}", c.isActif() ? "v" : "X", c);
 			c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}]		{}", s.isActif() ? "v" : "X", s));
 		});
-	}
-	/**
-	 * @return the version
-	 */
-	public String getVersion() {
-		return version;
-	}
-
-	/**
-	 * @param version the version to set
-	 */
-	@Value("${budget.version:CURRENT}")
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	/**
-	 * @return the buildTime
-	 */
-	public String getBuildTime() {
-		return buildTime;
-	}
-
-	/**
-	 * @param utcBuildTime the buildTime to set (en UTC)
-	 */
-	@Value("${budget.build.time:NOW}")
-	public void setBuildTime(String utcBuildTime) {
-		try {
-			this.buildTime = DataUtils.getUtcToLocalTime(utcBuildTime);
-		} catch (ParseException e) {
-			this.buildTime = utcBuildTime;
-		}
 	}
 
 

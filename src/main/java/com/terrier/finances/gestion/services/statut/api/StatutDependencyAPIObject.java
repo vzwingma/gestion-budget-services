@@ -34,6 +34,9 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	// Nom 
 	@ApiModelProperty(notes = "Nom de l'application ou de la dépendance", required=true)
 	private DependencyName nom;
+	// Nom 
+	@ApiModelProperty(notes = "Description de l'application ou de la dépendance", required=false)
+	private String description;
 	
 	// Status du module
 	@JsonIgnore
@@ -97,15 +100,16 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	 * @param dependance dépendance à ajouter
 	 * @param parent objet statut parent
 	 */
-	public void addDependency(DependencyName dependance, DependencyName parent){
+	public void addDependency(DependencyName dependance, DependencyName parent, String description){
 		if(parent != null && this.nom.equals(parent)){
 			StatutDependencyAPIObject nlleDependance = new StatutDependencyAPIObject(dependance);
+			nlleDependance.setDescription(description);
 			nlleDependance.updateStatusModule(dependance, StatutStateEnum.INCONNU);
 			this.dependances.add(nlleDependance);
 		}
 		else if(this.dependances != null && !this.dependances.isEmpty()){
 			for (StatutDependencyAPIObject statutDependencyObject : dependances) {
-				statutDependencyObject.addDependency(dependance, parent);
+				statutDependencyObject.addDependency(dependance, parent, description);
 			}
 		}
 		updateStatusCompile();
@@ -192,6 +196,22 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	 */
 	public StatutStateEnum getStatusCompile() {
 		return statusCompile;
+	}
+
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 

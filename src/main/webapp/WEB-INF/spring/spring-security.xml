@@ -11,11 +11,11 @@
 	<context:component-scan base-package="com.terrier.finances.gestion" />
 	
 	<security:http auto-config='true' use-expressions='false'>
-		<security:intercept-url pattern="/rest/utilisateur" 	access="ROLE_ANONYMOUS, ROLE_REST_USER" />
-		<security:intercept-url pattern="/rest/budget/**" 		access="ROLE_ANONYMOUS, ROLE_REST_USER" />
-		<security:intercept-url pattern="/rest/depenses/**" 	access="ROLE_ANONYMOUS, ROLE_REST_USER" />
-		<security:intercept-url pattern="/rest/categories/**" 	access="ROLE_ANONYMOUS, ROLE_REST_USER" />
-		<security:intercept-url pattern="/rest/ping" 			access="ROLE_ANONYMOUS" />
+		<security:intercept-url pattern="/admin/**" 		access="ROLE_ANONYMOUS, ROLE_REST_USER" />
+		<security:intercept-url pattern="/comptes/**" 		access="ROLE_ANONYMOUS, ROLE_REST_USER" />
+		<security:intercept-url pattern="/utilisateurs/**" 	access="ROLE_ANONYMOUS, ROLE_REST_USER" />
+		<security:intercept-url pattern="/parametrages/**" 	access="ROLE_ANONYMOUS, ROLE_REST_USER" />
+		<security:intercept-url pattern="/admin/v1/statut"	access="ROLE_ANONYMOUS" />
 		<security:http-basic />
 		<security:csrf disabled="true"/>
 	</security:http>
