@@ -31,7 +31,7 @@ public class ParametragesService extends AbstractBusinessService {
 	 */
 	private String version;
 	private String buildTime;
-	private String uiRefreshPeriod;
+
 	private String uiValiditySessionPeriod;
 	/**
 	 * Logger
@@ -89,24 +89,6 @@ public class ParametragesService extends AbstractBusinessService {
 		}
 	}
 
-
-
-	/**
-	 * @return période de rafraichissement des IHM
-	 */
-	public String getUiRefreshPeriod() {
-		return uiRefreshPeriod;
-	}
-
-
-	/**
-	 * période de rafraichissement des IHM
-	 * @param uiRefreshPeriod
-	 */
-	@Value("${budget.ui.refresh.period:1}")
-	public void setUiRefreshPeriod(String uiRefreshPeriod) {
-		this.uiRefreshPeriod = uiRefreshPeriod;
-	}
 
 
 	@Value("${budget.ui.session.validity.period:10}")
