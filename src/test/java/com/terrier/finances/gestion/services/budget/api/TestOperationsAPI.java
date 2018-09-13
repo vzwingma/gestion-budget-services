@@ -5,12 +5,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Month;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -165,8 +165,15 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
 		serviceUser.registerUserBusinessSession(user, "ms");
-		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTKO"), any())).thenReturn(new Date());
-		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTOK"), any())).thenReturn(new Date(0));
+		
+		Calendar futur = Calendar.getInstance();
+		futur.add(Calendar.HOUR_OF_DAY, 1);
+		
+		Calendar passe = Calendar.getInstance();
+		passe.add(Calendar.HOUR_OF_DAY, -1);
+		
+		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTKO"), any())).thenReturn(futur.getTime());
+		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTOK"), any())).thenReturn(passe.getTime());
 		
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO").replace("{idUtilisateur}", "userTest") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		LOGGER.info("is Actif : {}", urlActif);
@@ -177,5 +184,53 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(get(urlActif))
 			.andExpect(status().isOk());
+	}
+	
+	
+
+	/**
+	 * Test buget
+	 * @throws Exception
+	 */
+	@Test
+	public void testLockBudget() throws Exception{
+		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST").replace("{idUtilisateur}", "userTest");
+		getMockAPI().perform(post(urlActif))
+			.andExpect(status().is4xxClientError());
+
+		Utilisateur user = new Utilisateur();
+		user.setId("userTest");
+		serviceUser.registerUserBusinessSession(user, "ms");
+		
+		BudgetMensuel bo = new BudgetMensuel();
+		CompteBancaire c1 = new CompteBancaire();
+		c1.setActif(true);
+		c1.setId("C1");
+		c1.setLibelle("Libelle1");
+		c1.setOrdre(1);		
+		bo.setCompteBancaire(c1);
+		bo.setMois(Month.JANUARY);
+		bo.setAnnee(2018);
+		bo.setActif(false);
+		bo.setId("BUDGETTEST");
+		bo.setSoldeFin(0D);
+		bo.setSoldeNow(1000D);
+		bo.setDateMiseAJour(Calendar.getInstance());
+		bo.setResultatMoisPrecedent(0D, 100D);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTKO"), any())).thenReturn(bo);
+		bo.setActif(true);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"), any())).thenReturn(bo);
+		
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO").replace("{idUtilisateur}", "userTest") + "?actif=true";
+		LOGGER.info("is Actif : {}", urlActif);
+		getMockAPI().perform(post(urlActif))
+			.andExpect(status().isOk())
+			.andExpect(content().string(containsString("\"actif\":true")));
+		
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK").replace("{idUtilisateur}", "userTest") + "?actif=false";
+		LOGGER.info("is Actif : {}", urlActif);
+		getMockAPI().perform(post(urlActif))
+		.andExpect(status().isOk())
+		.andExpect(content().string(containsString("\"actif\":false")));
 	}
 }

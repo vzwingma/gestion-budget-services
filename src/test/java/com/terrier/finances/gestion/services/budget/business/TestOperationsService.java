@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.services.budget.business;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +24,8 @@ import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperation
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
+import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 import com.terrier.finances.gestion.test.config.TestMockAuthServicesConfig;
@@ -41,6 +44,9 @@ public class TestOperationsService {
 	@Autowired
 	private TestMockAuthServicesConfig mocksAuthConfig;
 
+	@Autowired
+	private BudgetDatabaseService mockDBBudget;
+	
 	@Autowired
 	private OperationsService operationsService;
 
@@ -86,8 +92,9 @@ public class TestOperationsService {
 	 * Test #119
 	 */
 	@Test
-	public void testSetBudgetInactif(){
-		BudgetMensuel m = operationsService.setBudgetActif(this.budget, false, "TEST");
+	public void testSetBudgetInactif() throws BudgetNotFoundException {
+		when(mockDBBudget.chargeBudgetMensuelById(anyString(), any())).thenReturn(this.budget);
+		BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, "TEST");
 		assertEquals(EtatOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
 	}	
 

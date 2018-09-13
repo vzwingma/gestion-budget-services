@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,7 +71,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@RequestParam("annee") Integer annee, 
 			@RequestParam("idUtilisateur") String idUtilisateur) throws BudgetNotFoundException, DataNotFoundException {
 		LOGGER.info("[API][idUser={}][idCompte={}] getBudget {}/{}", idUtilisateur, idCompte, mois, annee);
-		
+
 		if(mois != null && annee != null){
 			try{
 				Month month = Month.of(mois);
@@ -82,9 +83,9 @@ public class OperationsAPIController extends AbstractAPIController {
 		}
 		throw new BudgetNotFoundException("Erreur dans les paramètres en entrée");
 	}
-	
-	
-	
+
+
+
 
 	/**
 	 * Retourne le statut du budget
@@ -110,9 +111,9 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idBudget") String idBudget, 
 			@PathVariable("idUtilisateur") String idUtilisateur,
 			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif,  @RequestParam(value="uptodateto", required=false) Long uptodateto) throws BudgetNotFoundException {
-		
+
 		LOGGER.info("[API][idBudget={}] actif ? : {}, uptodateto ? {}",idBudget, isActif, uptodateto );
-		
+
 		if(isActif){
 			boolean isBudgetActif = operationService.isBudgetMensuelActif(idBudget);
 			LOGGER.info("[API][idBudget={}] isActif ? : {}",idBudget, isBudgetActif );
@@ -134,5 +135,37 @@ public class OperationsAPIController extends AbstractAPIController {
 			}
 		}
 		return ResponseEntity.notFound().build();
+	}
+
+
+
+	/**
+	 * Met à jour le statut du budget
+	 * @param idBudget id du compte
+	 * @return statut du budget 
+	 * @throws BudgetNotFoundException erreur données non trouvées
+	 * @throws DataNotFoundException erreur données non trouvées
+	 */
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Etat d'un budget mensuel : 2 paramètres {actif} ou {uptodate}")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Opération réussie"),
+			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+			@ApiResponse(code = 404, message = "Données introuvables"),
+			@ApiResponse(code = 500, message = "Opération en échec")
+	})
+	@ApiImplicitParams(value={
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="actif", required=false, value="Etat actif du compte", paramType="query"),
+	})	
+	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
+	public ResponseEntity<BudgetMensuel> setBudgetActif(
+			@PathVariable("idBudget") String idBudget, 
+			@PathVariable("idUtilisateur") String idUtilisateur,
+			@RequestParam(value="actif") Boolean setActif) throws BudgetNotFoundException {
+
+		LOGGER.info("[API][idBudget={}] set Actif : {}",idBudget, setActif );
+		BudgetMensuel budgetActif = operationService.setBudgetActif(idBudget, setActif, idUtilisateur);
+		return getEntity(budgetActif);
 	}
 }

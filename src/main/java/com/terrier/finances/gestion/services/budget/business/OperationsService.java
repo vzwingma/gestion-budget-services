@@ -220,7 +220,7 @@ public class OperationsService extends AbstractBusinessService {
 			// Si impossible : BudgetNotFoundException
 			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(idUtilisateur, compteBancaire.getId(), moisPrecedent, anneePrecedente);
 			// #115 : Cloture automatique du mois précédent
-			setBudgetActif(budgetPrecedent, false, idUtilisateur);
+			setBudgetActif(budgetPrecedent.getId(), false, idUtilisateur);
 			
 			initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 		}
@@ -584,20 +584,25 @@ public class OperationsService extends AbstractBusinessService {
 
 	/**
 	 * Lock/unlock d'un budget
-	 * @param budgetActif
+	 * @param budgetActif etat du budget
+	 * @throws BudgetNotFoundException  erreur budget introuvable
 	 */
-	public BudgetMensuel setBudgetActif(BudgetMensuel budgetMensuel, boolean budgetActif, String idUtilisateur){
-		LOGGER.info("{} du budget {}/{} de {}", budgetActif ? "Réouverture" : "Fermeture", budgetMensuel.getMois(), budgetMensuel.getAnnee(), budgetMensuel.getCompteBancaire().getLibelle());
-		budgetMensuel.setActif(budgetActif);
-		budgetMensuel.setDateMiseAJour(Calendar.getInstance());
-		//#119 : Toutes les opérations en attente sont annulées
-		if(!budgetActif){		
-			budgetMensuel.getListeOperations()
-				.stream()
-				.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
-				.forEach(op -> op.setEtat(EtatOperationEnum.ANNULEE));
+	public BudgetMensuel setBudgetActif(String idBudgetMensuel, boolean budgetActif, String idUtilisateur) throws BudgetNotFoundException{
+		LOGGER.info("{} du budget {} de {}", budgetActif ? "Réouverture" : "Fermeture", idBudgetMensuel, idUtilisateur);
+		if(getBusinessSession(idUtilisateur) != null){
+			BudgetMensuel budgetMensuel = dataDepenses.chargeBudgetMensuelById(idBudgetMensuel, getBusinessSession(idUtilisateur).getEncryptor());
+			budgetMensuel.setActif(budgetActif);
+			budgetMensuel.setDateMiseAJour(Calendar.getInstance());
+			//#119 : Toutes les opérations en attente sont annulées
+			if(!budgetActif){		
+				budgetMensuel.getListeOperations()
+					.stream()
+					.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
+					.forEach(op -> op.setEtat(EtatOperationEnum.ANNULEE));
+			}
+			return calculEtSauvegardeBudget(budgetMensuel, idUtilisateur);
 		}
-		return calculEtSauvegardeBudget(budgetMensuel, idUtilisateur);
+		return null;
 	}
 
 
