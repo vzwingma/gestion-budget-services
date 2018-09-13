@@ -3,6 +3,7 @@
  */
 package com.terrier.finances.gestion.services.comptes.api;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.comptes.model.api.IntervallesCompteAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.communs.utils.data.DataUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
@@ -80,7 +83,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Opération réussie"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
-            @ApiResponse(code = 404, message = "Session introuvable")
+            @ApiResponse(code = 404, message = "Données introuvables")
     })
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
@@ -90,5 +93,35 @@ public class ComptesAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
 		LOGGER.info("[API][idUser={}][idCompte={}] getCompte", idUtilisateur, idCompte);
 		return getEntity(comptesService.getCompteById(idCompte, idUtilisateur));
+	}
+	
+	
+	/**
+	 * Retourne le compte
+	 * @param idCompte id du compte
+	 * @return compte associé
+	 * @throws DataNotFoundException erreur données non trouvées
+	 */
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Intervalles des budgets pour un compte")
+	@ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Opération réussie"),
+            @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+            @ApiResponse(code = 404, message = "Données introuvables")
+    })
+	@ApiImplicitParams(value={
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
+	})	
+	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES+"/{idCompte}")
+	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte) throws DataNotFoundException{
+		LOGGER.info("[API][idCompte={}] getIntervallesBudgetsCompte", idCompte);
+		
+		LocalDate[] intervalles = comptesService.getIntervallesBudgets(idCompte);
+		if(intervalles != null && intervalles.length >= 2){
+			IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
+			intervallesAPI.setDatePremierBudget(DataUtils.getLongFromLocalDate(intervalles[0]));
+			intervallesAPI.setDateDernierBudget(DataUtils.getLongFromLocalDate(intervalles[1]));
+			return getEntity(intervallesAPI);	
+		}
+		throw new DataNotFoundException("Impossible de trouver l'intervalle de budgets pour le compte " + idCompte);
 	}
 }

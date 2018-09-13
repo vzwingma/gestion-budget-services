@@ -262,7 +262,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @param compte id du compte
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
-	public BudgetMensuelDTO[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
+	public BudgetMensuelDTO[] getPremierDernierBudgets(String compte) throws DataNotFoundException{
 		Query query1erBudget = new Query();
 		query1erBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
 		query1erBudget.with(new Sort(Sort.Direction.ASC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.ASC, ATTRIBUT_MOIS));
@@ -281,7 +281,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 				}				
 			}
 
-			LOGGER.debug("Premier budget trouvé : {}", premierbudget);
+			LOGGER.debug("Premier budget trouvé -> {}", premierbudget);
 
 
 			BudgetMensuelDTO dernierbudget = null;
@@ -291,7 +291,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 					break;
 				}				
 			}
-			LOGGER.debug("Dernier budget trouvé : -> {}", dernierbudget);
+			LOGGER.debug("Dernier budget trouvé -> {}", dernierbudget);
 			return new BudgetMensuelDTO[]{premierbudget, dernierbudget};
 		}
 		catch(Exception e){

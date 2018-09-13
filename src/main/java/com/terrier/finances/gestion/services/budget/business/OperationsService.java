@@ -28,7 +28,6 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
@@ -52,6 +51,7 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	@Autowired
 	private BudgetDatabaseService dataDepenses;
+
 
 	private DataTransformerLigneDepense transformer = new DataTransformerLigneDepense();
 
@@ -157,26 +157,6 @@ public class OperationsService extends AbstractBusinessService {
 		return budgetMensuel;
 	}
 
-	/**
-	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
-	 * @param utilisateur utilisateur
-	 * @param compte id du compte
-	 * @return la date du premier budget décrit pour cet utilisateur
-	 */
-	public LocalDate[] getDatePremierDernierBudgets(String compte) throws DataNotFoundException{
-
-		BudgetMensuelDTO[] premierDernierBudgets = this.dataDepenses.getDatePremierDernierBudgets(compte);
-
-		LocalDate premier = DataUtils.localDateFirstDayOfMonth();
-		if(premierDernierBudgets[0] != null){
-			premier = premier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[0].getMois() + 1L).with(ChronoField.YEAR, premierDernierBudgets[0].getAnnee());
-		}
-		LocalDate dernier = DataUtils.localDateFirstDayOfMonth();
-		if(premierDernierBudgets[1] != null){
-			dernier = dernier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[1].getMois() + 1L).with(ChronoField.YEAR, premierDernierBudgets[1].getAnnee()).plusMonths(1);
-		}
-		return new LocalDate[]{premier, dernier};
-	}
 
 	/**
 	 * Charge la date de mise à jour du budget
@@ -228,7 +208,7 @@ public class OperationsService extends AbstractBusinessService {
 		budget.setCompteBancaire(compteBancaire);
 		budget.setDateMiseAJour(Calendar.getInstance());
 		// Init si dans le futur par rapport au démarrage
-		LocalDate datePremierBudget = getDatePremierDernierBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
+		LocalDate datePremierBudget = getServiceComptes().getIntervallesBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
 
 		LocalDate dateCourante = DataUtils.localDateFirstDayOfMonth(mois, annee);
 

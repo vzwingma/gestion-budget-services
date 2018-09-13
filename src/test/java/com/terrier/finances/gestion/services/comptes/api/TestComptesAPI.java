@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.services.comptes.api;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,6 +21,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
@@ -33,6 +36,8 @@ public class TestComptesAPI extends AbstractTestsAPI {
 
 	@Autowired
 	private UtilisateurDatabaseService mockDataDBUsers;
+	@Autowired
+	private BudgetDatabaseService mockDataDBBudget;
 	
 
 
@@ -107,4 +112,27 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		.andExpect(status().isOk())
 		.andExpect(content().string("{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true}"));;		
 	}	
+	
+	
+	@Test
+	public void testIntervalles() throws Exception {
+		
+		getMockAPI().perform(
+				get(BudgetApiUrlEnum.COMPTES_INTERVALLES_FULL + "/TEST"))
+		.andExpect(status().is4xxClientError());
+		
+		BudgetMensuelDTO debut = new BudgetMensuelDTO();
+		debut.setAnnee(2018);
+		debut.setMois(1);
+		
+		BudgetMensuelDTO fin = new BudgetMensuelDTO();
+		fin.setAnnee(2018);
+		fin.setMois(2);
+
+		when(mockDataDBBudget.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuelDTO[]{ debut, fin});
+		getMockAPI().perform(
+				get(BudgetApiUrlEnum.COMPTES_INTERVALLES_FULL + "/TEST"))
+			.andExpect(status().isOk())
+			.andExpect(content().string("{\"datePremierBudget\":17563,\"dateDernierBudget\":17622}"));
+	}
 }
