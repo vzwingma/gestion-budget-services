@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-import com.terrier.finances.gestion.communs.utils.data.DataUtils;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
@@ -178,7 +178,7 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	 * @return the date
 	 */
 	public String getDate() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DataUtils.DATE_DAY_HOUR_S_PATTERN);
+		SimpleDateFormat sdf = new SimpleDateFormat(BudgetDateTimeUtils.DATE_DAY_HOUR_S_PATTERN);
 		return date != null ? sdf.format(this.date.getTime()) : "null";
 	}
 

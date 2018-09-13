@@ -176,7 +176,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 		}
 		dto.setTotalParSSCategories(totalSsCategorieDTO);
 
-		dto.setId(bo.getId());
+		dto.setId();
 		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
 		return dto;
 	}

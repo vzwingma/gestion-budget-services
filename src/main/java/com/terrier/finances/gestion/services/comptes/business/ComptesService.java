@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
-import com.terrier.finances.gestion.communs.utils.data.DataUtils;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
@@ -94,11 +94,11 @@ public class ComptesService extends AbstractBusinessService {
 		if(premierDernierBudgets != null && premierDernierBudgets.length >= 2){
 
 
-			LocalDate premier = DataUtils.localDateFirstDayOfMonth();
+			LocalDate premier = BudgetDateTimeUtils.localDateFirstDayOfMonth();
 			if(premierDernierBudgets[0] != null){
 				premier = premier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[0].getMois() + 1L).with(ChronoField.YEAR, premierDernierBudgets[0].getAnnee());
 			}
-			LocalDate dernier = DataUtils.localDateFirstDayOfMonth();
+			LocalDate dernier = BudgetDateTimeUtils.localDateFirstDayOfMonth();
 			if(premierDernierBudgets[1] != null){
 				dernier = dernier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[1].getMois() + 1L).with(ChronoField.YEAR, premierDernierBudgets[1].getAnnee()).plusMonths(1);
 			}

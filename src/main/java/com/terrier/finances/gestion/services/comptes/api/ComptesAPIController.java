@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.comptes.model.api.IntervallesCompteAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.communs.utils.data.DataUtils;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
@@ -111,8 +111,8 @@ public class ComptesAPIController extends AbstractAPIController {
 		LocalDate[] intervalles = comptesService.getIntervallesBudgets(idCompte);
 		if(intervalles != null && intervalles.length >= 2){
 			IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
-			intervallesAPI.setDatePremierBudget(DataUtils.getLongFromLocalDate(intervalles[0]));
-			intervallesAPI.setDateDernierBudget(DataUtils.getLongFromLocalDate(intervalles[1]));
+			intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[0]));
+			intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[1]));
 			return getEntity(intervallesAPI);	
 		}
 		throw new DataNotFoundException("Impossible de trouver l'intervalle de budgets pour le compte " + idCompte);

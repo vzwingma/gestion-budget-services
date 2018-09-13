@@ -23,7 +23,7 @@ import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperation
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
-import com.terrier.finances.gestion.communs.utils.data.DataUtils;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
@@ -179,13 +179,12 @@ public class OperationsService extends AbstractBusinessService {
 
 	/**
 	 * Chargement de l'état du budget du mois courant en consultation
-	 * @param compte compte 
-	 * @param mois mois 
-	 * @param annee année
+	 * @param idBudget id budget
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
+	 * @throws BudgetNotFoundException budget introuvable
 	 */
-	public boolean isBudgetMensuelActif(CompteBancaire compte, Month mois, int annee){
-		return this.dataDepenses.isBudgetActif(compte, mois, annee);
+	public boolean isBudgetMensuelActif(String idBudget) throws BudgetNotFoundException{
+		return this.dataDepenses.isBudgetActif(idBudget);
 	}
 
 
@@ -210,7 +209,7 @@ public class OperationsService extends AbstractBusinessService {
 		// Init si dans le futur par rapport au démarrage
 		LocalDate datePremierBudget = getServiceComptes().getIntervallesBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
 
-		LocalDate dateCourante = DataUtils.localDateFirstDayOfMonth(mois, annee);
+		LocalDate dateCourante = BudgetDateTimeUtils.localDateFirstDayOfMonth(mois, annee);
 
 		if(dateCourante.isAfter(datePremierBudget)){
 			// MAJ Calculs à partir du mois précédent

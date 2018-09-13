@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,28 +57,61 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Données introuvables")
 	})
 	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="mois", required=true, value="No de mois", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="No de l'année", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path")			
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="query"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="mois", required=true, value="No de mois", paramType="query"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="No de l'année", paramType="query"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="query")			
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_QUERY)
 	public  @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
 			@RequestParam("idCompte") String idCompte, 
-			@RequestParam("mois") String mois, 
-			@RequestParam("annee") String annee, 
+			@RequestParam("mois") Integer mois, 
+			@RequestParam("annee") Integer annee, 
 			@RequestParam("idUtilisateur") String idUtilisateur) throws BudgetNotFoundException, DataNotFoundException {
 		LOGGER.info("[API][idUser={}][idCompte={}] getBudget {}/{}", idUtilisateur, idCompte, mois, annee);
 		
 		if(mois != null && annee != null){
 			try{
-				Month month = Month.of(Integer.parseInt(mois));
-				return getEntity(operationService.chargerBudgetMensuel(idUtilisateur, idCompte, month, Integer.parseInt(annee)));
+				Month month = Month.of(mois);
+				return getEntity(operationService.chargerBudgetMensuel(idUtilisateur, idCompte, month, annee));
 			}
 			catch(NumberFormatException e){
 				throw new DataNotFoundException("Erreur dans les paramètres en entrée");
 			}
 		}
 		throw new BudgetNotFoundException("Erreur dans les paramètres en entrée");
+	}
+	
+	
+	
+
+	/**
+	 * Retourne le statut du budget
+	 * @param idBudget id du compte
+	 * @return statut du budget 
+	 * @throws BudgetNotFoundException erreur données non trouvées
+	 * @throws DataNotFoundException erreur données non trouvées
+	 */
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Budget mensuel d'un compte d'un utilisateur")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Budget actif"),
+			@ApiResponse(code = 204, message = "Budget inactif"),
+			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+			@ApiResponse(code = 404, message = "Données introuvables")
+	})
+	@ApiImplicitParams(value={
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="actif", required=true, value="Etat actif du compte", paramType="query"),
+	})	
+	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
+	public ResponseEntity<Boolean> isBudgetActif(@PathVariable("idBudget") String idBudget, @RequestParam("actif") Boolean isActif) throws BudgetNotFoundException {
+		boolean isBudgetActif = operationService.isBudgetMensuelActif(idBudget);
+		LOGGER.info("[API][idBudget={}] isActif ? : {}",idBudget, isBudgetActif );
+		if(isBudgetActif){
+			return ResponseEntity.ok(true);
+		}
+		else{
+			return ResponseEntity.noContent().build();
+		}
 	}
 }

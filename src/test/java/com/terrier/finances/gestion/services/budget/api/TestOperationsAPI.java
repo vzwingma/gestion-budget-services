@@ -2,7 +2,6 @@ package com.terrier.finances.gestion.services.budget.api;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -49,7 +48,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 	@Autowired
 	private UtilisateursService serviceUser;
-	
+
 	@Test
 	public void testGetBudget() throws Exception {
 		// Fail
@@ -72,12 +71,12 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 				get(urlWrongCompte))
 		.andExpect(status().is4xxClientError());
 	}
-	
-	
-	
+
+
+
 	@Test
 	public void testGetBudgetOK() throws Exception {
-		
+
 		// Budget
 		CompteBancaire c1 = new CompteBancaire();
 		c1.setActif(true);
@@ -91,8 +90,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		budget.setMois(Month.JANUARY.getValue());
 		budget.setAnnee(2018);
 		budget.setActif(false);
-		budget.setId("BUDGETTEST");
-		when(mockDataDBBudget.chargeBudgetMensuelDTO(any(), eq(Month.JANUARY), eq(2018))).thenReturn(budget);
+		budget.setId();
+		when(mockDataDBBudget.chargeBudgetMensuelDTO(any())).thenReturn(budget);
 		BudgetMensuel bo = new BudgetMensuel();
 		bo.setCompteBancaire(c1);
 		bo.setMois(Month.JANUARY);
@@ -104,16 +103,16 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo.setDateMiseAJour(Calendar.getInstance());
 		bo.setResultatMoisPrecedent(0D, 100D);
 		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
-		
-		
+
+
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
 		serviceUser.registerUserBusinessSession(user, "clear");
-		
+
 		// OK
-		
+
 		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=compteTest&mois=1&annee=2018&idUtilisateur=userTest";
 		LOGGER.info("Good Compte : {}", urlGoodCompte);
 
@@ -123,4 +122,28 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		.andExpect(content().string(containsString("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false")));
 	}
 
+
+	/**
+	 * Test buget
+	 * @throws Exception
+	 */
+	@Test
+	public void testBudgetActif() throws Exception{
+		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST");
+		getMockAPI().perform(get(urlActif))
+			.andExpect(status().is4xxClientError());
+		
+		when(mockDataDBBudget.isBudgetActif(eq("TESTKO"))).thenReturn(Boolean.FALSE);
+		when(mockDataDBBudget.isBudgetActif(eq("TESTOK"))).thenReturn(Boolean.TRUE);
+		
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
+		LOGGER.info("is Actif : {}", urlActif);
+		getMockAPI().perform(get(urlActif))
+			.andExpect(status().isNoContent());
+		
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?actif=true";
+		LOGGER.info("is Actif : {}", urlActif);
+		getMockAPI().perform(get(urlActif))
+			.andExpect(status().isOk());
+	}
 }

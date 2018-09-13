@@ -23,7 +23,7 @@ import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIOb
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthResponseAPIObject;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPrefsAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.communs.utils.data.DataUtils;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
@@ -129,7 +129,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			LOGGER.info("[API][idUser={}] LastAccessTime : {}", idUtilisateur, lastAccess);
 			UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
 			prefs.setIdUtilisateur(idUtilisateur);
-			prefs.setLastAccessTime(DataUtils.getLongFromLocalDateTime(lastAccess));
+			prefs.setLastAccessTime(BudgetDateTimeUtils.getLongFromLocalDateTime(lastAccess));
 			return getEntity(prefs);
 		}
 		throw new DataNotFoundException("[API][idUser="+idUtilisateur+"] Impossible de trouver l'utilisateur");

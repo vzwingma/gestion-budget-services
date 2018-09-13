@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.communs.utils.data.DataUtils;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.statut.api.StatutDependencyAPIObject;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
@@ -78,7 +78,7 @@ public class StatusApplicationService extends AbstractBusinessService {
 	@Value("${budget.build.time:NOW}")
 	public void setBuildTime(String utcBuildTime) {
 		try {
-			this.buildTime = DataUtils.getUtcToLocalTime(utcBuildTime);
+			this.buildTime = BudgetDateTimeUtils.getUtcToLocalTime(utcBuildTime);
 		} catch (ParseException e) {
 			this.buildTime = utcBuildTime;
 		}

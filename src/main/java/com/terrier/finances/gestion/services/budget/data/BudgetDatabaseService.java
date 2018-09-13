@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
@@ -47,7 +48,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	private static final String ATTRIBUT_COMPTE_ID = "compteBancaire.id";
 	private static final String ATTRIBUT_ANNEE = "annee";
 	private static final String ATTRIBUT_MOIS = "mois";
-	
+
 	/**
 	 * @param annee année
 	 * @return le nom de la collection
@@ -141,21 +142,16 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 
 	/**
 	 * Activité Budget
-	 * @param compte
-	 * @param mois
-	 * @param annee
+	 * @param idBudget id budget
 	 * @return budget actif
+	 * @throws BudgetNotFoundException budget introuvable
 	 */
-	public boolean isBudgetActif(CompteBancaire compte, Month mois, int annee){
+	public boolean isBudgetActif(String idBudget) throws BudgetNotFoundException{
 
 		boolean actif = false;
-		try {
-			BudgetMensuelDTO budgetMensuel = chargeBudgetMensuelDTO(compte, mois, annee);
-			actif = budgetMensuel != null && budgetMensuel.isActif();
-		} catch (BudgetNotFoundException e) {
-			actif = false;
-		}
-		LOGGER.debug("Activité du budget {} de {}/{} : {}", compte, mois, annee, actif);
+		BudgetMensuelDTO budgetMensuel = chargeBudgetMensuelDTO(idBudget);
+		actif = budgetMensuel != null && budgetMensuel.isActif();
+		LOGGER.debug("Activité du budget {} : {}", idBudget, actif);
 		return actif;
 	}
 
@@ -205,19 +201,19 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @param annee année
 	 * @return budget mensuel du compte pour le mois et l'année
 	 */
-	public BudgetMensuelDTO chargeBudgetMensuelDTO(CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException{
-		LOGGER.info("Chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee);
-		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and(ATTRIBUT_MOIS).is(mois.getValue() - 1).and(ATTRIBUT_ANNEE).is(annee));
+	public BudgetMensuelDTO chargeBudgetMensuelDTO(String idBudget) throws BudgetNotFoundException{
+		LOGGER.info("Chargement du budget {}", idBudget);
 		BudgetMensuelDTO budgetDTO = null;
+		String annee = null;
 		try{
-			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
+			annee = BudgetDataUtils.getAnneeFromBudgetId(idBudget);
+			budgetDTO = getMongoOperation().findById(idBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee, e);
+			LOGGER.error("Erreur lors du chargement du budget du compte {}", idBudget, e);
 		}
 		if(budgetDTO == null){
-			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee).toString());
+			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget ").append(idBudget).append(" sur l'année ").append(annee).toString());
 		}
 		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
 		return budgetDTO;
