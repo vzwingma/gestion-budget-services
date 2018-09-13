@@ -6,8 +6,6 @@ package com.terrier.finances.gestion.services.statut.api;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,11 +35,6 @@ import io.swagger.annotations.ApiResponses;
 @Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Administration", tags={"Administration"})
 public class StatutAPIController extends AbstractAPIController {
 
-
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(StatutAPIController.class);
 
 	
 	@Autowired

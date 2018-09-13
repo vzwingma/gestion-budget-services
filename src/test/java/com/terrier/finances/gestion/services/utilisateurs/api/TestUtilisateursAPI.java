@@ -100,10 +100,10 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	@Test
 	public void testDisconnect() throws Exception {
 		// Fail
+		String path = BudgetApiUrlEnum.USERS_DISCONNECT_FULL.replace("{idUtilisateur}", "123123");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL))
+				post(path))
 		.andExpect(status().is4xxClientError());
-
 
 		Utilisateur userOK = new Utilisateur();
 		userOK.setId("345345");
@@ -112,17 +112,18 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		
 		LOGGER.info("Disconnect Failed");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL + "/123123")
+				post(path)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		
 		LOGGER.info("Disconnect OK");
+		path = BudgetApiUrlEnum.USERS_DISCONNECT_FULL.replace("{idUtilisateur}", "345345");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL + "/345345")
+				post(path)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk());
+		.andExpect(status().isNoContent());
 		
 	}	
 	
@@ -131,9 +132,11 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 
 	@Test
 	public void testLastTime() throws Exception {
+		String path = BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL.replace("{idUtilisateur}", "345345");
+		
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL))
+				post(path))
 		.andExpect(status().is4xxClientError());
 
 		Utilisateur userOK = new Utilisateur();
@@ -143,7 +146,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		service.registerUserBusinessSession(userOK, "test");
 		
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL + "/345345")
+				get(path)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

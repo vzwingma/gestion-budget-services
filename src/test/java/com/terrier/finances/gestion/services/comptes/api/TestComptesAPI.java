@@ -86,9 +86,10 @@ public class TestComptesAPI extends AbstractTestsAPI {
 
 	@Test
 	public void testCompte() throws Exception {
-		// Fail
+		// Fail*
+		String path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "AAA").replace("{idUtilisateur}", "111");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL))
+				post(path))
 		.andExpect(status().is4xxClientError());
 
 		CompteBancaire c1 = new CompteBancaire();
@@ -98,15 +99,18 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		c1.setOrdre(1);
 		when(mockDataDBUsers.chargeCompteParId(eq("111"), eq("345345"))).thenReturn(c1);
 		
+		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111").replace("{idUtilisateur}", "123123");
+		
 		// Compte KO
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.COMPTES_ID_FULL + "/111" + "/123123")
+				get(path)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		
+		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111").replace("{idUtilisateur}", "345345");
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.COMPTES_ID_FULL + "/111" + "/345345")
+				get(path)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
@@ -116,9 +120,8 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	
 	@Test
 	public void testIntervalles() throws Exception {
-		
-		getMockAPI().perform(
-				get(BudgetApiUrlEnum.COMPTES_INTERVALLES_FULL + "/TEST"))
+		String path = BudgetApiUrlEnum.COMPTES_INTERVALLES_FULL.replace("{idCompte}", "TEST");
+		getMockAPI().perform(get(path))
 		.andExpect(status().is4xxClientError());
 		
 		BudgetMensuelDTO debut = new BudgetMensuelDTO();
@@ -131,7 +134,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 
 		when(mockDataDBBudget.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuelDTO[]{ debut, fin});
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.COMPTES_INTERVALLES_FULL + "/TEST"))
+				get(path))
 			.andExpect(status().isOk())
 			.andExpect(content().string("{\"datePremierBudget\":17563,\"dateDernierBudget\":17622}"));
 	}

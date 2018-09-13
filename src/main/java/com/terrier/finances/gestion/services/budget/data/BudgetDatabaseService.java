@@ -132,7 +132,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 			LOGGER.error("Erreur lors du chargement du budget mensuel", e);
 		}
 		if(budgetDTO == null){
-			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee));
+			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee).toString());
 		}
 		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
 		return dataTransformerBudget.transformDTOtoBO(budgetDTO, decryptor);
@@ -195,7 +195,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 			LOGGER.error("Erreur lors du chargement du budget d'id {}", idBudget, e);
 		}
 		if(budgetDTO == null){
-			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget ").append(idBudget));
+			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget ").append(idBudget).toString());
 		}
 		return  dataTransformerBudget.transformDTOtoBO(budgetDTO, decryptor);
 	}
@@ -217,7 +217,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 			LOGGER.error("Erreur lors du chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee, e);
 		}
 		if(budgetDTO == null){
-			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee));
+			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee).toString());
 		}
 		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
 		return budgetDTO;

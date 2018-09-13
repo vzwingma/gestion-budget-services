@@ -5,6 +5,8 @@ package com.terrier.finances.gestion.test.config;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,6 +30,13 @@ import com.terrier.finances.gestion.services.communs.api.config.RessourcesConfig
 @ContextConfiguration(classes={RessourcesConfig.class})
 public abstract class AbstractTestsAPI {
 
+	/**
+	 * Logger
+	 */
+	protected final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	/*
+	 * Client API mock
+	 */
 	private MockMvc mockMvc;
 
 	@Autowired

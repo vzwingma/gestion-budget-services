@@ -65,10 +65,10 @@ public class OperationsService extends AbstractBusinessService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	public BudgetMensuel chargerBudgetMensuel(String idUtilisateur, CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
-		LOGGER.debug("Chargement du budget {} de {}/{}", compte, mois, annee);
+	public BudgetMensuel chargerBudgetMensuel(String idUtilisateur, String idCompte, Month mois, int annee) throws BudgetNotFoundException, DataNotFoundException{
+		LOGGER.debug("Chargement du budget {} de {}/{}", idCompte, mois, annee);
 
-		CompteBancaire compteBancaire = getServiceComptes().getCompteById(compte.getId(), idUtilisateur);
+		CompteBancaire compteBancaire = getServiceComptes().getCompteById(idCompte, idUtilisateur);
 		if(compteBancaire != null){
 			if(compteBancaire.isActif()){
 				try {
@@ -81,7 +81,7 @@ public class OperationsService extends AbstractBusinessService {
 				return chargerBudgetMensuelSurCompteInactif(idUtilisateur, compteBancaire, mois, annee);
 			}
 		}
-		throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte).append(" de ").append(idUtilisateur));
+		throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(idCompte).append(" de ").append(idUtilisateur).toString());
 	}
 
 
@@ -219,7 +219,7 @@ public class OperationsService extends AbstractBusinessService {
 			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 			// Recherche du budget précédent 
 			// Si impossible : BudgetNotFoundException
-			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(idUtilisateur, compteBancaire, moisPrecedent, anneePrecedente);
+			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(idUtilisateur, compteBancaire.getId(), moisPrecedent, anneePrecedente);
 			// #115 : Cloture automatique du mois précédent
 			setBudgetActif(budgetPrecedent, false, idUtilisateur);
 			
@@ -309,7 +309,7 @@ public class OperationsService extends AbstractBusinessService {
 		/**
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
 		 */
-		BudgetMensuel budgetTransfert = chargerBudgetMensuel(idUtilisateur, compteCrediteur, budget.getMois(), budget.getAnnee());
+		BudgetMensuel budgetTransfert = chargerBudgetMensuel(idUtilisateur, compteCrediteur.getId(), budget.getMois(), budget.getAnnee());
 		if(budget.getCompteBancaire().isActif() && budgetTransfert.getCompteBancaire().isActif() && budget.isActif() && budgetTransfert.isActif()){
 			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneOperation);
 

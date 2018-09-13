@@ -5,8 +5,6 @@ package com.terrier.finances.gestion.services.parametrages.api;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,10 +35,6 @@ import io.swagger.annotations.ApiResponses;
 public class ParametragesAPIController extends AbstractAPIController {
 
 
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ParametragesAPIController.class);
 
 	@Autowired
 	private ParametragesService paramsServices;

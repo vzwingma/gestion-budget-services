@@ -6,8 +6,6 @@ package com.terrier.finances.gestion.services.comptes.api;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +31,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
+ * API Comptes
  * @author vzwingma
  *
  */
@@ -41,12 +40,6 @@ import io.swagger.annotations.ApiResponses;
 @Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Comptes", tags={"Comptes"})
 public class ComptesAPIController extends AbstractAPIController {
 
-
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ComptesAPIController.class);
-	
 
 	@Autowired
 	private ComptesService comptesService;
@@ -89,7 +82,7 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
 	})	
-	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID+"/{idCompte}/{idUtilisateur}")
+	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID)
 	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
 		LOGGER.info("[API][idUser={}][idCompte={}] getCompte", idUtilisateur, idCompte);
 		return getEntity(comptesService.getCompteById(idCompte, idUtilisateur));
@@ -111,7 +104,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 	})	
-	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES+"/{idCompte}")
+	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES)
 	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte) throws DataNotFoundException{
 		LOGGER.info("[API][idCompte={}] getIntervallesBudgetsCompte", idCompte);
 		

@@ -20,6 +20,7 @@ import com.terrier.finances.gestion.services.communs.api.converters.APIObjectMes
 		"com.terrier.finances.gestion.services.admin.api",
 		"com.terrier.finances.gestion.services.statut.api",
 		"com.terrier.finances.gestion.services.comptes.api",
+		"com.terrier.finances.gestion.services.budget.api",
 		"com.terrier.finances.gestion.services.utilisateurs.api",
 		"com.terrier.finances.gestion.services.parametrages.api",
 		"com.terrier.finances.gestion.services.communs.api.config"		

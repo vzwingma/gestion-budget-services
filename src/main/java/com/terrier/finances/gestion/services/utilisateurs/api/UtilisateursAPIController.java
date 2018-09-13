@@ -6,8 +6,6 @@ package com.terrier.finances.gestion.services.utilisateurs.api;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,11 +46,6 @@ import io.swagger.annotations.ApiResponses;
 @Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Utilisateurs", tags={"Utilisateurs"})
 public class UtilisateursAPIController extends AbstractAPIController {
 
-
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateursAPIController.class);
 
 	@Autowired
 	private UtilisateursService authService;
@@ -103,11 +96,11 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
 	})
 	
-	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT+"/{idUtilisateur}")
+	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT)
 	public ResponseEntity<String> disconnect(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
 		if(authService.deconnexionBusinessSession(idUtilisateur)){
 			LOGGER.info("[API][idUser={}] Disconnect : true", idUtilisateur);
-			return ResponseEntity.ok().body("");
+			return ResponseEntity.noContent().build();
 		}
 		throw new DataNotFoundException("[API][idUser="+idUtilisateur+"] Impossible de déconnecter l'utilisateur");
 	}
@@ -128,7 +121,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
 	})
 	
-	@GetMapping(value=BudgetApiUrlEnum.USERS_ACCESS_DATE+"/{idUtilisateur}")
+	@GetMapping(value=BudgetApiUrlEnum.USERS_ACCESS_DATE)
 	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
 		
 		if(authService.getBusinessSession(idUtilisateur) != null){
@@ -160,7 +153,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
 	})
 	
-	@GetMapping(value=BudgetApiUrlEnum.USERS_PREFS+"/{idUtilisateur}")
+	@GetMapping(value=BudgetApiUrlEnum.USERS_PREFS)
 	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
 		
 		if(authService.getBusinessSession(idUtilisateur) != null){
