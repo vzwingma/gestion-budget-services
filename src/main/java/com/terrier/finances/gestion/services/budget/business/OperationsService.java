@@ -163,12 +163,12 @@ public class OperationsService extends AbstractBusinessService {
 	 * @param idBudget identifiant du budget
 	 * @return la date de mise à jour du  budget
 	 */
-	public boolean isBudgetUpToDate(String idBudget, Calendar dateToCompare, String utilisateur) {
+	public boolean isBudgetUpToDate(String idBudget, Date dateSurIHM, String utilisateur) {
 
 		BasicTextEncryptor encryptor = getBusinessSession(utilisateur).getEncryptor();
 		Date dateEnBDD = this.dataDepenses.getDateMiseAJourBudget(idBudget, encryptor);
 		if(dateEnBDD != null){
-			return dateToCompare.getTime().before(dateEnBDD);
+			return dateSurIHM.after(dateEnBDD);
 		}
 		else{
 			LOGGER.error("[REFRESH] Impossible de trouver la date de mise à jour du budget. Annulation du traitement de rafraichissement");

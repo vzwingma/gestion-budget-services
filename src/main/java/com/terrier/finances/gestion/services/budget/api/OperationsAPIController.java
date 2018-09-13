@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.services.budget.api;
 
 import java.time.Month;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -92,7 +93,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws BudgetNotFoundException erreur données non trouvées
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Budget mensuel d'un compte d'un utilisateur")
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Etat d'un budget mensuel : 2 paramètres {actif} ou {uptodate}")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Budget actif"),
 			@ApiResponse(code = 204, message = "Budget inactif"),
@@ -101,17 +102,37 @@ public class OperationsAPIController extends AbstractAPIController {
 	})
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="actif", required=true, value="Etat actif du compte", paramType="query"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="actif", required=false, value="Etat actif du compte", paramType="query"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="uptodateto", required=false, value="Activité du budget par rapport à la date en paramètres (en ms)", paramType="query"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
-	public ResponseEntity<Boolean> isBudgetActif(@PathVariable("idBudget") String idBudget, @RequestParam("actif") Boolean isActif) throws BudgetNotFoundException {
-		boolean isBudgetActif = operationService.isBudgetMensuelActif(idBudget);
-		LOGGER.info("[API][idBudget={}] isActif ? : {}",idBudget, isBudgetActif );
-		if(isBudgetActif){
-			return ResponseEntity.ok(true);
+	public ResponseEntity<Boolean> isBudgetActif(
+			@PathVariable("idBudget") String idBudget, 
+			@PathVariable("idUtilisateur") String idUtilisateur,
+			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif,  @RequestParam(value="uptodateto", required=false) Long uptodateto) throws BudgetNotFoundException {
+		
+		LOGGER.info("[API][idBudget={}] actif ? : {}, uptodateto ? {}",idBudget, isActif, uptodateto );
+		
+		if(isActif){
+			boolean isBudgetActif = operationService.isBudgetMensuelActif(idBudget);
+			LOGGER.info("[API][idBudget={}] isActif ? : {}",idBudget, isBudgetActif );
+			if(isBudgetActif){
+				return ResponseEntity.ok(true);
+			}
+			else{
+				return ResponseEntity.noContent().build();
+			}
 		}
-		else{
-			return ResponseEntity.noContent().build();
+		else if(uptodateto != null){
+			boolean isUpToDate = operationService.isBudgetUpToDate(idBudget, new Date(uptodateto), idUtilisateur);
+			LOGGER.info("[API][idBudget={}] isUpToDateto {} ? : {}",idBudget, uptodateto, isUpToDate );
+			if(isUpToDate){
+				return ResponseEntity.ok(true);
+			}
+			else{
+				return ResponseEntity.noContent().build();
+			}
 		}
+		return ResponseEntity.notFound().build();
 	}
 }
