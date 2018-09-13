@@ -510,7 +510,6 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, String utilisateur){
 		calculBudget(budget);
-
 		dataDepenses.sauvegardeBudgetMensuel(budget, getBusinessSession(utilisateur).getEncryptor());
 		return budget;
 	}

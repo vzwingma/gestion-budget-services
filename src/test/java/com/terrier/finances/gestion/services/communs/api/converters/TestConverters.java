@@ -1,21 +1,37 @@
 package com.terrier.finances.gestion.services.communs.api.converters;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.time.Month;
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.mock.http.MockHttpInputMessage;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
+import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
+import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 
 /**
  * Test de converters
@@ -48,4 +64,73 @@ public class TestConverters {
 		assertTrue(converter.canRead(CompteBancaire.class, MediaType.APPLICATION_JSON));
 		assertTrue(converter.canWrite(CompteBancaire.class, MediaType.APPLICATION_JSON));
 	}
+	
+	
+	
+	@Test
+	public void testUpdateBudget() throws Exception {
+
+		// Budget
+		CompteBancaire c1 = new CompteBancaire();
+		c1.setActif(true);
+		c1.setId("C1");
+		c1.setLibelle("Libelle1");
+		c1.setOrdre(1);
+
+		BudgetMensuel bo = new BudgetMensuel();
+		bo.setCompteBancaire(c1);
+		bo.setMois(Month.JANUARY);
+		bo.setAnnee(2018);
+		bo.setActif(false);
+		bo.setId("BUDGETTEST");
+		bo.setSoldeFin(0D);
+		bo.setSoldeNow(1000D);
+		Calendar c = Calendar.getInstance();
+		bo.setDateMiseAJour(c);
+		bo.setResultatMoisPrecedent(0D, 100D);
+		
+		CategorieOperation cat = new CategorieOperation();
+		cat.setCategorie(true);
+		cat.setId("Test");
+		cat.setLibelle("Test");
+		bo.getTotalParCategories().put(cat, new Double[]{ 100D, 200D});
+		
+		CategorieOperation ssCat = new CategorieOperation();
+		ssCat.setCategorie(false);
+		ssCat.setId("Test");
+		ssCat.setLibelle("Test");
+		bo.getTotalParSSCategories().put(ssCat, new Double[]{ 100D, 200D});
+
+		
+		Utilisateur user = new Utilisateur();
+		user.setId("userTest");
+		user.setLibelle("userTest");
+		user.setLogin("userTest");
+		
+		APIObjectMessageConverter<AbstractAPIObjectModel> converter = new APIObjectMessageConverter<>();
+		assertTrue(converter.canRead(BudgetMensuel.class, MediaType.APPLICATION_JSON));
+		
+		assertTrue(converter.canWrite(BudgetMensuel.class, MediaType.APPLICATION_JSON));
+		assertTrue(converter.canRead(BudgetMensuel.class, MediaType.APPLICATION_JSON));
+		
+		HttpOutputMessage out = new MockHttpOutputMessage();
+		converter.write(bo, MediaType.APPLICATION_JSON, out);
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":"+c.getTimeInMillis()+",\"compteBancaire\":{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},\"moisPrecedentResultat\":0.0,\"moisPrecedentMarge\":100.0,\"totalParCategories\":{\"Test\":[100.0,200.0]},\"totalParSSCategories\":{\"Test\":[100.0,200.0]},\"soldeNow\":0.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
+		
+		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
+		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);
+		assertTrue(modelRead instanceof BudgetMensuel);
+		
+		BudgetMensuel boRead = (BudgetMensuel)modelRead;
+		assertEquals(bo.getId(), boRead.getId());
+		assertEquals(bo.getMarge(), boRead.getMarge());
+		assertEquals(bo.getSoldeReelFin(), boRead.getSoldeReelFin(), 1);
+		assertEquals(bo.getSoldeReelNow(), boRead.getSoldeReelNow(), 1);
+		
+		assertEquals(1, boRead.getTotalParCategories().size());
+		assertEquals("Test", boRead.getTotalParCategories().keySet().iterator().next().getId());
+		assertEquals(1, boRead.getTotalParSSCategories().size());
+		assertEquals("Test", boRead.getTotalParSSCategories().keySet().iterator().next().getId());
+	}
 }
+

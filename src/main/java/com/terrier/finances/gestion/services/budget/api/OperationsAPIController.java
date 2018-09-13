@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -86,6 +87,33 @@ public class OperationsAPIController extends AbstractAPIController {
 
 
 
+	/**
+	 * Mise à jour du budget
+	 * @param idBudget id du budget
+	 * @param idUtilisateur idUtilisateur
+	 * @param budget budget
+	 * @return budget mis à jour
+	 * @throws DataNotFoundException
+	 */
+	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Mise à jour d'un budget")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Budget mis à jour"),
+			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+			@ApiResponse(code = 404, message = "Données introuvables")
+	})
+	@ApiImplicitParams(value={
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
+	})	
+	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ID)
+	public @ResponseBody ResponseEntity<BudgetMensuel> updateBudget(@PathVariable("idBudget") String idBudget, @PathVariable("idUtilisateur") String idUtilisateur, @RequestBody BudgetMensuel budget) throws DataNotFoundException{
+		LOGGER.info("[API][idBudget={}] updateBudget",idBudget);
+		if(budget != null && idBudget != null && idBudget.equals(budget.getId())){
+			BudgetMensuel budgetUpdated = operationService.calculEtSauvegardeBudget(budget, idUtilisateur);
+			return getEntity(budgetUpdated);
+		}
+		throw new DataNotFoundException("Impossible de mettre à jour le budget");
+	}
+
 
 	/**
 	 * Retourne le statut du budget
@@ -146,7 +174,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws BudgetNotFoundException erreur données non trouvées
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Etat d'un budget mensuel : 2 paramètres {actif} ou {uptodate}")
+	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Etat d'un budget mensuel : 2 paramètres {actif} ou {uptodate}")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération réussie"),
 			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),

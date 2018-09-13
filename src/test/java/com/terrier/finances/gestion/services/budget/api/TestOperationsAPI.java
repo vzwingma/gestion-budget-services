@@ -15,6 +15,7 @@ import java.util.Calendar;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -124,6 +125,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	}
 
 
+
+
 	/**
 	 * Test buget
 	 * @throws Exception
@@ -153,7 +156,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	
 
 	/**
-	 * Test buget
+	 * Test budget
 	 * @throws Exception
 	 */
 	@Test
@@ -232,5 +235,57 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		getMockAPI().perform(post(urlActif))
 		.andExpect(status().isOk())
 		.andExpect(content().string(containsString("\"actif\":false")));
+	}
+	
+	
+	@Test
+	public void testUpdateBudget() throws Exception {
+
+		// Budget
+		CompteBancaire c1 = new CompteBancaire();
+		c1.setActif(true);
+		c1.setId("C1");
+		c1.setLibelle("Libelle1");
+		c1.setOrdre(1);
+
+		BudgetMensuel bo = new BudgetMensuel();
+		bo.setCompteBancaire(c1);
+		bo.setMois(Month.JANUARY);
+		bo.setAnnee(2018);
+		bo.setActif(false);
+		bo.setId("BUDGETTEST");
+		bo.setSoldeFin(0D);
+		bo.setSoldeNow(1000D);
+		bo.setDateMiseAJour(Calendar.getInstance());
+		bo.setResultatMoisPrecedent(0D, 100D);
+		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo), any())).thenReturn(bo.getId());
+
+
+		Utilisateur user = new Utilisateur();
+		user.setId("userTest");
+		user.setLibelle("userTest");
+		user.setLogin("userTest");
+		serviceUser.registerUserBusinessSession(user, "clear");
+
+
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId()+"XXX").replace("{idUtilisateur}", "userTest");
+		LOGGER.info("Bad Budget : {}", urlBadBudget);
+
+		getMockAPI().perform(
+				post(urlBadBudget)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json(bo)))
+		.andExpect(status().is4xxClientError());
+		// OK
+
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId()).replace("{idUtilisateur}", "userTest");
+		LOGGER.info("Good Budget : {}", urlGoodCompte);
+
+		getMockAPI().perform(
+				post(urlGoodCompte)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json(bo)))
+		.andExpect(status().isOk())
+		.andExpect(content().string(containsString("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false")));
 	}
 }
