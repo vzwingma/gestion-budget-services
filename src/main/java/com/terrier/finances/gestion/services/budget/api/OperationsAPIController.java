@@ -73,7 +73,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@RequestParam("mois") Integer mois, 
 			@RequestParam("annee") Integer annee, 
 			@RequestParam("idUtilisateur") String idUtilisateur) throws BudgetNotFoundException, DataNotFoundException {
-		LOGGER.info("[API][idUser={}][idCompte={}] getBudget {}/{}", idUtilisateur, idCompte, mois, annee);
+		logger.info("[API][idUser={}][idCompte={}] getBudget {}/{}", idUtilisateur, idCompte, mois, annee);
 
 		if(mois != null && annee != null){
 			try{
@@ -108,7 +108,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	})	
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ID)
 	public @ResponseBody ResponseEntity<BudgetMensuel> updateBudget(@PathVariable("idBudget") String idBudget, @PathVariable("idUtilisateur") String idUtilisateur, @RequestBody BudgetMensuel budget) throws DataNotFoundException{
-		LOGGER.info("[API][idBudget={}] updateBudget",idBudget);
+		logger.info("[API][idBudget={}] updateBudget",idBudget);
 		if(budget != null && idBudget != null && idBudget.equals(budget.getId())){
 			BudgetMensuel budgetUpdated = operationService.calculEtSauvegardeBudget(budget, idUtilisateur);
 			return getEntity(budgetUpdated);
@@ -137,7 +137,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	})	
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
 	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
-		LOGGER.info("[API][idBudget={}] reinitialisation",idBudget);
+		logger.info("[API][idBudget={}] reinitialisation",idBudget);
 		if(idBudget != null){
 			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, idUtilisateur);
 			return getEntity(budgetUpdated);
@@ -169,11 +169,11 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idUtilisateur") String idUtilisateur,
 			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif,  @RequestParam(value="uptodateto", required=false) Long uptodateto) throws BudgetNotFoundException {
 
-		LOGGER.info("[API][idBudget={}] actif ? : {}, uptodateto ? {}",idBudget, isActif, uptodateto );
+		logger.info("[API][idBudget={}] actif ? : {}, uptodateto ? {}",idBudget, isActif, uptodateto );
 
 		if(isActif){
 			boolean isBudgetActif = operationService.isBudgetMensuelActif(idBudget);
-			LOGGER.info("[API][idBudget={}] isActif ? : {}",idBudget, isBudgetActif );
+			logger.info("[API][idBudget={}] isActif ? : {}",idBudget, isBudgetActif );
 			if(isBudgetActif){
 				return ResponseEntity.ok(true);
 			}
@@ -183,7 +183,7 @@ public class OperationsAPIController extends AbstractAPIController {
 		}
 		else if(uptodateto != null){
 			boolean isUpToDate = operationService.isBudgetUpToDate(idBudget, new Date(uptodateto), idUtilisateur);
-			LOGGER.info("[API][idBudget={}] isUpToDateto {} ? : {}",idBudget, uptodateto, isUpToDate );
+			logger.info("[API][idBudget={}] isUpToDateto {} ? : {}",idBudget, uptodateto, isUpToDate );
 			if(isUpToDate){
 				return ResponseEntity.ok(true);
 			}
@@ -221,7 +221,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idUtilisateur") String idUtilisateur,
 			@RequestParam(value="actif") Boolean setActif) throws BudgetNotFoundException {
 
-		LOGGER.info("[API][idBudget={}] set Actif : {}",idBudget, setActif );
+		logger.info("[API][idBudget={}] set Actif : {}",idBudget, setActif );
 		BudgetMensuel budgetActif = operationService.setBudgetActif(idBudget, setActif, idUtilisateur);
 		return getEntity(budgetActif);
 	}

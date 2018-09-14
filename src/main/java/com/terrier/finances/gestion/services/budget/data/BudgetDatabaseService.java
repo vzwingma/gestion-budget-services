@@ -352,13 +352,4 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	public DataTransformerBudget getDataTransformerBudget() {
 		return dataTransformerBudget;
 	}
-
-
-
-	/**
-	 * @param dataTransformerBudget the dataTransformerBudget to set
-	 */
-	public void setDataTransformerBudget(DataTransformerBudget dataTransformerBudget) {
-		this.dataTransformerBudget = dataTransformerBudget;
-	}
 }

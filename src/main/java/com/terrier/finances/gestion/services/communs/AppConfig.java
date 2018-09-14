@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 		"com.terrier.finances.gestion.services.statut.business",
 		"com.terrier.finances.gestion.services.utilisateurs.business"})
 @PropertySource(value={"classpath:config.properties"}, ignoreResourceNotFound = true)
-public class ServicesConfig {
+public class AppConfig {
 
 	
 }

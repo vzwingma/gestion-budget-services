@@ -58,7 +58,7 @@ public class StatutAPIController extends AbstractAPIController {
     }) 
 	@GetMapping(value=BudgetApiUrlEnum.ADMIN_STATUT)
 	public @ResponseBody ResponseEntity<StatutDependencyAPIObject> ping(){
-		LOGGER.info("[API] Appel statut : {}", this.statusApplicationService.getStatutApplication());
+		logger.info("[API] Appel statut : {}", this.statusApplicationService.getStatutApplication());
 		return getEntity(this.statusApplicationService.getStatutApplication());
 	}
 	

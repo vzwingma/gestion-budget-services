@@ -68,7 +68,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	})
 	@PostMapping(value=BudgetApiUrlEnum.USERS_AUTHENTICATE, consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ResponseEntity<AuthResponseAPIObject> authenticate(@RequestBody AuthLoginAPIObject auth) throws UserNotAuthorizedException{
-		LOGGER.trace("[API][idUser=?] Authenticate : {}", auth);
+		logger.trace("[API][idUser=?] Authenticate : {}", auth);
 		String idUtilisateur = authService.authenticate(auth.getLogin(), auth.getMotDePasse());
 		if(idUtilisateur != null){
 			AuthResponseAPIObject response = new AuthResponseAPIObject();
@@ -99,7 +99,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT)
 	public ResponseEntity<String> disconnect(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
 		if(authService.deconnexionBusinessSession(idUtilisateur)){
-			LOGGER.info("[API][idUser={}] Disconnect : true", idUtilisateur);
+			logger.info("[API][idUser={}] Disconnect : true", idUtilisateur);
 			return ResponseEntity.noContent().build();
 		}
 		throw new DataNotFoundException("[API][idUser="+idUtilisateur+"] Impossible de déconnecter l'utilisateur");
@@ -126,7 +126,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 		
 		if(authService.getBusinessSession(idUtilisateur) != null){
 			LocalDateTime lastAccess = authService.getBusinessSession(idUtilisateur).getUtilisateur().getDernierAcces();
-			LOGGER.info("[API][idUser={}] LastAccessTime : {}", idUtilisateur, lastAccess);
+			logger.info("[API][idUser={}] LastAccessTime : {}", idUtilisateur, lastAccess);
 			UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
 			prefs.setIdUtilisateur(idUtilisateur);
 			prefs.setLastAccessTime(BudgetDateTimeUtils.getLongFromLocalDateTime(lastAccess));
@@ -158,7 +158,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 		
 		if(authService.getBusinessSession(idUtilisateur) != null){
 			Map<UtilisateurPrefsEnum, String> prefsUtilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur().getPrefsUtilisateur();
-			LOGGER.info("[API][idUser={}] Preferences Utilisateur : {}", idUtilisateur, prefsUtilisateur);
+			logger.info("[API][idUser={}] Preferences Utilisateur : {}", idUtilisateur, prefsUtilisateur);
 			UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
 			prefs.setIdUtilisateur(idUtilisateur);
 			prefs.setPreferences(prefsUtilisateur);

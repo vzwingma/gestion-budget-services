@@ -78,16 +78,17 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		comptes.add(c2);
 		when(mockDataDBUsers.chargeComptes(eq("345345"))).thenReturn(comptes);
 
-		
+		String path = BudgetApiUrlEnum.COMPTES_LIST_FULL.replace("{idUtilisateur}", "123123");
 		// Comptes KO
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.COMPTES_LIST_FULL + "/123123")
+				get(path)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		// Comptes OK		
+		path = BudgetApiUrlEnum.COMPTES_LIST_FULL.replace("{idUtilisateur}", "345345");
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.COMPTES_LIST_FULL + "/345345")
+				get(path)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

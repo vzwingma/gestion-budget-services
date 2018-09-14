@@ -22,7 +22,7 @@ public abstract class AbstractAPIController {
 	/**
 	 * Logger
 	 */
-	protected final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * @param restObjectModel 

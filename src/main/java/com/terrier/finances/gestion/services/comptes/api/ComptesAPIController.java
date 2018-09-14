@@ -63,9 +63,9 @@ public class ComptesAPIController extends AbstractAPIController {
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
 	})	
-	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST+"/{idUtilisateur}")
+	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST)
 	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
-		LOGGER.info("[API][idUser={}] getComptes", idUtilisateur);
+		logger.info("[API][idUser={}] getComptes", idUtilisateur);
 		return getEntities(comptesService.getComptesUtilisateur(idUtilisateur));
 	}
 
@@ -87,7 +87,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID)
 	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
-		LOGGER.info("[API][idUser={}][idCompte={}] getCompte", idUtilisateur, idCompte);
+		logger.info("[API][idUser={}][idCompte={}] getCompte", idUtilisateur, idCompte);
 		return getEntity(comptesService.getCompteById(idCompte, idUtilisateur));
 	}
 
@@ -109,7 +109,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES)
 	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte) throws DataNotFoundException{
-		LOGGER.info("[API][idCompte={}] getIntervallesBudgetsCompte", idCompte);
+		logger.info("[API][idCompte={}] getIntervallesBudgetsCompte", idCompte);
 
 		LocalDate[] intervalles = comptesService.getIntervallesBudgets(idCompte);
 		if(intervalles != null && intervalles.length >= 2){
@@ -142,7 +142,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	})		
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES)
 	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@PathVariable("idUtilisateur") String idUtilisateur, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee){
-		LOGGER.info("[API][idCompte={}] get Libellés Opérations : {}", idCompte, annee);
+		logger.info("[API][idCompte={}] get Libellés Opérations : {}", idCompte, annee);
 		Set<String> libelles = comptesService.getLibellesOperations(idUtilisateur, idCompte, annee);
 		if(libelles != null && !libelles.isEmpty()){
 			LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();
