@@ -57,7 +57,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	public void testGetComptes() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.COMPTES_LIST_FULL))
+				post(BudgetApiUrlEnum.COMPTES_LIST_FULL.replace("{idUtilisateur}", "123123")))
 		.andExpect(status().is4xxClientError());
 
 		

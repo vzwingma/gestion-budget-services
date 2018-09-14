@@ -69,7 +69,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	@PostMapping(value=BudgetApiUrlEnum.USERS_AUTHENTICATE, consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ResponseEntity<AuthResponseAPIObject> authenticate(@RequestBody AuthLoginAPIObject auth) throws UserNotAuthorizedException{
 		logger.trace("[API][idUser=?] Authenticate : {}", auth);
-		String idUtilisateur = authService.authenticate(auth.getLogin(), auth.getMotDePasse());
+		String idUtilisateur = authService.authenticateDeprecated(auth.getLogin(), auth.getMotDePasse());
 		if(idUtilisateur != null){
 			AuthResponseAPIObject response = new AuthResponseAPIObject();
 			Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();

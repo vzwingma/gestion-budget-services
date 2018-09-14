@@ -46,7 +46,8 @@ public class UtilisateursService extends AbstractBusinessService {
 	 * @param motPasseEnClair mdp
 	 * @return si valide
 	 */
-	public String authenticate(String login, String motPasseEnClair){
+	@Deprecated
+	public String authenticateDeprecated(String login, String motPasseEnClair){
 
 		LOGGER.info("Tentative d'authentification de {}", login);
 		Utilisateur utilisateur;
@@ -75,6 +76,8 @@ public class UtilisateursService extends AbstractBusinessService {
 				utilisateur.setDernierAcces(LocalDateTime.now());
 				dataDBUsers.majUtilisateur(utilisateur);
 				utilisateur.setDernierAcces(dernierAcces);
+				
+				
 				return utilisateur.getId();
 			}
 			else{

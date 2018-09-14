@@ -67,7 +67,7 @@ public class AdminAPIController {
 	public String password(@PathVariable("login") String login, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
 		LOGGER.info("Changement du mot de passe pour {}", login);
 		
-		String idUtilisateur = authService.authenticate(login, oldpassword);
+		String idUtilisateur = authService.authenticateDeprecated(login, oldpassword);
 		Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
 		if(utilisateur != null){
 			authService.changePassword(utilisateur, oldpassword, newPassword);
