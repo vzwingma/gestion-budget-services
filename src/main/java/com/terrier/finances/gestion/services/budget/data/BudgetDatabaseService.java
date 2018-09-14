@@ -64,10 +64,10 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 */
 	protected String getBudgetCollectionName(String idBudget){
 		if(idBudget != null){
-			String[] idParts = idBudget.split("_");
-			StringBuilder collectionName = new StringBuilder(COLLECTION_BUDGET).append(idParts[1]);
+			int annee = BudgetDataUtils.getAnneeFromBudgetId(idBudget);
+			String collectionName = new StringBuilder(COLLECTION_BUDGET).append(annee).toString();
 			LOGGER.debug("Utilisation de la collection [{}]", collectionName);
-			return  collectionName.toString();	
+			return  collectionName;	
 		}
 		LOGGER.error("Erreur lors de la recheche du nom de la collection associée à [{}]", idBudget);
 
@@ -202,18 +202,16 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @return budget mensuel du compte pour le mois et l'année
 	 */
 	public BudgetMensuelDTO chargeBudgetMensuelDTO(String idBudget) throws BudgetNotFoundException{
-		LOGGER.info("Chargement du budget {}", idBudget);
+		LOGGER.info("Chargement du budget [{}]", idBudget);
 		BudgetMensuelDTO budgetDTO = null;
-		String annee = null;
 		try{
-			annee = Integer.toString(BudgetDataUtils.getAnneeFromBudgetId(idBudget));
-			budgetDTO = getMongoOperation().findById(idBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
+			budgetDTO = getMongoOperation().findById(idBudget, BudgetMensuelDTO.class, getBudgetCollectionName(idBudget));
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement du budget du compte {}", idBudget, e);
 		}
 		if(budgetDTO == null){
-			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget ").append(idBudget).append(" sur l'année ").append(annee).toString());
+			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget ").append(idBudget).toString());
 		}
 		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
 		return budgetDTO;
