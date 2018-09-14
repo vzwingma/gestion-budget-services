@@ -43,7 +43,7 @@ public class ParametragesAPIController extends AbstractAPIController {
 	 * @return la liste des catégories d'opérations
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Catégories d'opérations")
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Liste des catégories d'opérations")
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Opération réussie"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),

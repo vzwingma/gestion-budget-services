@@ -55,7 +55,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws BudgetNotFoundException erreur données non trouvées
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Budget mensuel d'un compte d'un utilisateur")
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Recherche d'un budget mensuel pour un compte d'un utilisateur")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération réussie"),
 			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
@@ -151,7 +151,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws BudgetNotFoundException erreur données non trouvées
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Etat d'un budget mensuel : 2 paramètres {actif} ou {uptodate}")
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Retourne l'un des états d'un budget mensuel : {actif} ou {uptodate}", notes="{actif} : indique si le budget est actif ou pas. {uptodate} indique si le budget a été mis à jour en BDD par rapport à la date passée en paramètre")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Budget actif"),
 			@ApiResponse(code = 204, message = "Budget inactif"),
@@ -203,7 +203,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws BudgetNotFoundException erreur données non trouvées
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Etat d'un budget mensuel : 2 paramètres {actif} ou {uptodate}")
+	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Mise à jour de l'état d'un budget mensuel (ouvert/cloturé)")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération réussie"),
 			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
