@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.services.comptes.api;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -9,7 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,14 +23,21 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
 import com.terrier.finances.gestion.test.config.TestRealAuthServices;
 
+/**
+ * Test de l'API compte
+ * @author vzwingma
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
@@ -38,7 +48,9 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	private UtilisateurDatabaseService mockDataDBUsers;
 	@Autowired
 	private BudgetDatabaseService mockDataDBBudget;
-	
+
+	@Autowired
+	private UtilisateursService serviceUser;
 
 
 	@Test
@@ -137,5 +149,31 @@ public class TestComptesAPI extends AbstractTestsAPI {
 				get(path))
 			.andExpect(status().isOk())
 			.andExpect(content().string("{\"datePremierBudget\":17563,\"dateDernierBudget\":17622}"));
+	}
+	
+	
+	
+	/**
+	 * Tests libellés
+	 * @throws Exception
+	 */
+	@Test
+	public void testLibelles() throws Exception {
+		String path = BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES_FULL.replace("{idCompte}", "TEST").replace("{idUtilisateur}", "TEEST") + "?annee=2019";
+		getMockAPI().perform(get(path))
+		.andExpect(status().isNoContent());
+		
+		Utilisateur user = new Utilisateur();
+		user.setId("TEEST");
+		serviceUser.registerUserBusinessSession(user, "null");
+		
+		Set<String> libelles = new HashSet<>();
+		libelles.add("OPE1");
+		libelles.add("OPE2");
+		when(mockDataDBBudget.chargeLibellesOperations(eq("TEST"), eq(2019), any())).thenReturn(libelles);
+		
+		getMockAPI().perform(get(path))
+		.andExpect(status().isOk())
+		.andExpect(content().string("{\"idCompte\":\"TEST\",\"libellesOperations\":[\"OPE1\",\"OPE2\"]}"));
 	}
 }

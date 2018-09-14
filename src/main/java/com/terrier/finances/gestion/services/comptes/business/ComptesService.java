@@ -2,8 +2,11 @@ package com.terrier.finances.gestion.services.comptes.business;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -107,5 +110,19 @@ public class ComptesService extends AbstractBusinessService {
 		else{
 			throw new DataNotFoundException("Données introuvables pour le compte " + idCompte);
 		}
+	}
+	
+	/**
+	 * @param idUtilisateur
+	 * @param idCompte
+	 * @param annee
+	 * @return liste des libelles opérations
+	 */
+	public Set<String> getLibellesOperations(String idUtilisateur, String idCompte, int annee){
+		if(getBusinessSession(idUtilisateur) != null){
+			BasicTextEncryptor decryptor = getBusinessSession(idUtilisateur).getEncryptor();
+			return this.dataDepenses.chargeLibellesOperations(idCompte, annee, decryptor);
+		}
+		return new HashSet<>();
 	}
 }

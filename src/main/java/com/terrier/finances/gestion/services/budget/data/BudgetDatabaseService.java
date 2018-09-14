@@ -81,7 +81,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @param idCompte id du compte
 	 * @return liste des libellés
 	 */
-	public Set<String> chargeLibellesDepenses(String idCompte, int annee, BasicTextEncryptor decryptor) {
+	public Set<String> chargeLibellesOperations(String idCompte, int annee, BasicTextEncryptor decryptor) {
 		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte).and(ATTRIBUT_ANNEE).is(annee));

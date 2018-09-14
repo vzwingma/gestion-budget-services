@@ -7,9 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.time.Month;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.http.HttpInputMessage;

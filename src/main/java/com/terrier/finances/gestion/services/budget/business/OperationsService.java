@@ -122,14 +122,11 @@ public class OperationsService extends AbstractBusinessService {
 			}
 			// Résultat mensuel mis à jour
 			calculEtSauvegardeBudget(budgetMensuel, idUtilisateur);
-			// Ajout de l'autocomplete
-			budgetMensuel.getSetLibellesDepensesForAutocomplete().addAll(this.dataDepenses.chargeLibellesDepenses(compteBancaire.getId(), annee, encryptor));
 		}
 		return budgetMensuel;
 	}
 
-
-
+	
 	/**
 	 * Chargement du budget du mois courant pour le compte inactif
 	 * @param compte compte 
@@ -526,8 +523,6 @@ public class OperationsService extends AbstractBusinessService {
 		for (LigneOperation operation : budget.getListeOperations()) {
 			LOGGER.trace("     > {}", operation);
 			Double valeurOperation = operation.getValeur();
-			budget.getSetLibellesDepensesForAutocomplete().add(operation.getLibelle());
-			
 			/*
 			 * #121 : La réserve n'est pas une véritable opération. Elle n'est pas prise en compte dans les calculs 
 			 */
@@ -611,6 +606,4 @@ public class OperationsService extends AbstractBusinessService {
 	protected void setDataDepenses(BudgetDatabaseService dataDepenses) {
 		this.dataDepenses = dataDepenses;
 	}
-	
-	
 }

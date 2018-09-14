@@ -5,6 +5,7 @@ package com.terrier.finances.gestion.services.comptes.api;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,11 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.comptes.model.api.IntervallesCompteAPIObject;
+import com.terrier.finances.gestion.communs.operations.model.api.LibellesOperationsAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
@@ -43,7 +46,7 @@ public class ComptesAPIController extends AbstractAPIController {
 
 	@Autowired
 	private ComptesService comptesService;
-	
+
 
 	/**
 	 * Retour la liste des comptes
@@ -53,10 +56,10 @@ public class ComptesAPIController extends AbstractAPIController {
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Comptes d'un utilisateur")
 	@ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Opération réussie"),
-            @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
-            @ApiResponse(code = 404, message = "Session introuvable")
-    })
+			@ApiResponse(code = 200, message = "Opération réussie"),
+			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+			@ApiResponse(code = 404, message = "Session introuvable")
+	})
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
 	})	
@@ -65,7 +68,7 @@ public class ComptesAPIController extends AbstractAPIController {
 		LOGGER.info("[API][idUser={}] getComptes", idUtilisateur);
 		return getEntities(comptesService.getComptesUtilisateur(idUtilisateur));
 	}
-	
+
 	/**
 	 * Retourne le compte
 	 * @param idCompte id du compte
@@ -74,10 +77,10 @@ public class ComptesAPIController extends AbstractAPIController {
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Compte d'un utilisateur")
 	@ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Opération réussie"),
-            @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
-            @ApiResponse(code = 404, message = "Données introuvables")
-    })
+			@ApiResponse(code = 200, message = "Opération réussie"),
+			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+			@ApiResponse(code = 404, message = "Données introuvables")
+	})
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
@@ -87,8 +90,8 @@ public class ComptesAPIController extends AbstractAPIController {
 		LOGGER.info("[API][idUser={}][idCompte={}] getCompte", idUtilisateur, idCompte);
 		return getEntity(comptesService.getCompteById(idCompte, idUtilisateur));
 	}
-	
-	
+
+
 	/**
 	 * Retourne le compte
 	 * @param idCompte id du compte
@@ -97,17 +100,17 @@ public class ComptesAPIController extends AbstractAPIController {
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Intervalles des budgets pour un compte")
 	@ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Opération réussie"),
-            @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
-            @ApiResponse(code = 404, message = "Données introuvables")
-    })
+			@ApiResponse(code = 200, message = "Opération réussie"),
+			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+			@ApiResponse(code = 404, message = "Données introuvables")
+	})
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES)
 	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte) throws DataNotFoundException{
 		LOGGER.info("[API][idCompte={}] getIntervallesBudgetsCompte", idCompte);
-		
+
 		LocalDate[] intervalles = comptesService.getIntervallesBudgets(idCompte);
 		if(intervalles != null && intervalles.length >= 2){
 			IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
@@ -117,4 +120,37 @@ public class ComptesAPIController extends AbstractAPIController {
 		}
 		throw new DataNotFoundException("Impossible de trouver l'intervalle de budgets pour le compte " + idCompte);
 	}
+
+
+	/**
+	 * Liste des libellés des opérations d'un compte (tout mois confondu)
+	 * @param idUtilisateur id Utilisateur
+	 * @param idCompte idCompte
+	 * @param annee année
+	 */
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Libelles des opérations des budgets de l'année pour un compte")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Opération réussie"),
+			@ApiResponse(code = 204, message = "Aucune donnée"),
+			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+			@ApiResponse(code = 404, message = "Données introuvables")
+	})
+	@ApiImplicitParams(value={
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
+	})		
+	@GetMapping(value=BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES)
+	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@PathVariable("idUtilisateur") String idUtilisateur, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee){
+		LOGGER.info("[API][idCompte={}] get Libellés Opérations : {}", idCompte, annee);
+		Set<String> libelles = comptesService.getLibellesOperations(idUtilisateur, idCompte, annee);
+		if(libelles != null && !libelles.isEmpty()){
+			LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();
+			libellesO.setIdCompte(idCompte);
+			libellesO.setLibellesOperations(libelles);
+			return getEntity(libellesO);
+		}
+		return ResponseEntity.noContent().build();
+	}
+
 }
