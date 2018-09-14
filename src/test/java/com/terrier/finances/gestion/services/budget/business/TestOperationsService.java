@@ -121,8 +121,7 @@ public class TestOperationsService {
 		assertEquals(223, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
 
 
-		CategorieOperation reserveCat = new CategorieOperation();
-		reserveCat.setId(IdsCategoriesEnum.RESERVE.getId());
+		CategorieOperation reserveCat = new CategorieOperation(IdsCategoriesEnum.RESERVE);
 
 		LigneOperation reserve = new LigneOperation(reserveCat, "TESTRESERVE", TypeOperationEnum.CREDIT, "100", EtatOperationEnum.REALISEE, false);
 		this.budget.getListeOperations().add(reserve);
