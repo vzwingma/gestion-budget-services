@@ -10,17 +10,32 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
+import com.terrier.finances.gestion.communs.api.converter.CategorieOperationsKeyDeserializer;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 
 /**
  * Message Converter pour les échanges entre l'IHM et les services via API
  * @author vzwingma
  *
- * @param <T>
+ * @param <T> modèle d'objet métier
  */
 public class APIObjectMessageConverter<T extends AbstractAPIObjectModel> implements HttpMessageConverter<T> {
 
 	private ObjectMapper mapper = new ObjectMapper();
+	
+	
+	/**
+	 * Constructeur
+	 */
+	public APIObjectMessageConverter() {
+		mapper = new ObjectMapper();
+		SimpleModule simpleModule = new SimpleModule();
+		simpleModule.addKeyDeserializer(CategorieOperation.class, new CategorieOperationsKeyDeserializer());
+		mapper.registerModule(simpleModule);
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.http.converter.HttpMessageConverter#canRead(java.lang.Class, org.springframework.http.MediaType)

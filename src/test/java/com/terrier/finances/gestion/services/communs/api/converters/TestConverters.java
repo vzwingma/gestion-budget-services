@@ -1,21 +1,15 @@
 package com.terrier.finances.gestion.services.communs.api.converters;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
 import java.time.Month;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.http.HttpInputMessage;
@@ -31,7 +25,6 @@ import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
-import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 
 /**
  * Test de converters
@@ -66,9 +59,11 @@ public class TestConverters {
 	}
 	
 	
+
+	
 	
 	@Test
-	public void testUpdateBudget() throws Exception {
+	public void testConvertBudget() throws Exception {
 
 		// Budget
 		CompteBancaire c1 = new CompteBancaire();
@@ -91,14 +86,14 @@ public class TestConverters {
 		
 		CategorieOperation cat = new CategorieOperation();
 		cat.setCategorie(true);
-		cat.setId("Test");
-		cat.setLibelle("Test");
+		cat.setId("IdTest");
+		cat.setLibelle("LibelleTest");
 		bo.getTotalParCategories().put(cat, new Double[]{ 100D, 200D});
 		
 		CategorieOperation ssCat = new CategorieOperation();
 		ssCat.setCategorie(false);
-		ssCat.setId("Test");
-		ssCat.setLibelle("Test");
+		ssCat.setId("IdTest");
+		ssCat.setLibelle("LibelleTest");
 		bo.getTotalParSSCategories().put(ssCat, new Double[]{ 100D, 200D});
 
 		
@@ -108,14 +103,12 @@ public class TestConverters {
 		user.setLogin("userTest");
 		
 		APIObjectMessageConverter<AbstractAPIObjectModel> converter = new APIObjectMessageConverter<>();
-		assertTrue(converter.canRead(BudgetMensuel.class, MediaType.APPLICATION_JSON));
-		
 		assertTrue(converter.canWrite(BudgetMensuel.class, MediaType.APPLICATION_JSON));
 		assertTrue(converter.canRead(BudgetMensuel.class, MediaType.APPLICATION_JSON));
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":"+c.getTimeInMillis()+",\"compteBancaire\":{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},\"moisPrecedentResultat\":0.0,\"moisPrecedentMarge\":100.0,\"totalParCategories\":{\"Test\":[100.0,200.0]},\"totalParSSCategories\":{\"Test\":[100.0,200.0]},\"soldeNow\":0.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":"+c.getTimeInMillis()+",\"compteBancaire\":{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},\"moisPrecedentResultat\":0.0,\"moisPrecedentMarge\":100.0,\"totalParCategories\":{\"{\\\"id\\\":\\\"IdTest\\\",\\\"libelle\\\":\\\"LibelleTest\\\",\\\"actif\\\":false,\\\"listeSSCategories\\\":[],\\\"categorie\\\":true}\":[100.0,200.0]},\"totalParSSCategories\":{\"{\\\"id\\\":\\\"IdTest\\\",\\\"libelle\\\":\\\"LibelleTest\\\",\\\"actif\\\":false,\\\"listeSSCategories\\\":[],\\\"categorie\\\":false}\":[100.0,200.0]},\"soldeNow\":0.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);
@@ -128,9 +121,50 @@ public class TestConverters {
 		assertEquals(bo.getSoldeReelNow(), boRead.getSoldeReelNow(), 1);
 		
 		assertEquals(1, boRead.getTotalParCategories().size());
-		assertEquals("Test", boRead.getTotalParCategories().keySet().iterator().next().getId());
+		assertEquals("IdTest", boRead.getTotalParCategories().keySet().iterator().next().getId());
 		assertEquals(1, boRead.getTotalParSSCategories().size());
-		assertEquals("Test", boRead.getTotalParSSCategories().keySet().iterator().next().getId());
+		assertEquals("IdTest", boRead.getTotalParSSCategories().keySet().iterator().next().getId());
 	}
+	
+	
+	@Test
+	public void testConvertMap() throws IOException{
+		// Budget
+		BudgetMensuel bo = new BudgetMensuel();
+		bo.setId("BUDGETTEST");
+		bo.setSoldeFin(0D);
+		bo.setSoldeNow(1000D);
+		
+		CategorieOperation cat = new CategorieOperation();
+		cat.setCategorie(true);
+		cat.setId("IdTest");
+		cat.setLibelle("LibelleTest");
+		bo.getTotalParCategories().put(cat, new Double[]{ 100D, 200D});
+		
+		CategorieOperation ssCat = new CategorieOperation();
+		ssCat.setCategorie(false);
+		ssCat.setId("IdTest");
+		ssCat.setLibelle("LibelleTest");
+		bo.getTotalParSSCategories().put(ssCat, new Double[]{ 100D, 200D});
+		
+		APIObjectMessageConverter<AbstractAPIObjectModel> converter = new APIObjectMessageConverter<>();
+		assertTrue(converter.canRead(BudgetMensuel.class, MediaType.APPLICATION_JSON));
+		assertTrue(converter.canWrite(BudgetMensuel.class, MediaType.APPLICATION_JSON));
+		
+		HttpOutputMessage out = new MockHttpOutputMessage();
+		converter.write(bo, MediaType.APPLICATION_JSON, out);
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":null,\"annee\":0,\"actif\":false,\"dateMiseAJour\":null,\"compteBancaire\":null,\"moisPrecedentResultat\":null,\"moisPrecedentMarge\":0.0,\"totalParCategories\":{\"{\\\"id\\\":\\\"IdTest\\\",\\\"libelle\\\":\\\"LibelleTest\\\",\\\"actif\\\":false,\\\"listeSSCategories\\\":[],\\\"categorie\\\":true}\":[100.0,200.0]},\"totalParSSCategories\":{\"{\\\"id\\\":\\\"IdTest\\\",\\\"libelle\\\":\\\"LibelleTest\\\",\\\"actif\\\":false,\\\"listeSSCategories\\\":[],\\\"categorie\\\":false}\":[100.0,200.0]},\"soldeNow\":1000.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
+		
+		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
+		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);
+		assertTrue(modelRead instanceof BudgetMensuel);
+		
+		BudgetMensuel boRead = (BudgetMensuel)modelRead;
+		assertEquals(1, boRead.getTotalParCategories().size());
+		assertEquals("IdTest", boRead.getTotalParCategories().keySet().iterator().next().getId());
+		assertEquals(1, boRead.getTotalParSSCategories().size());
+		assertEquals("IdTest", boRead.getTotalParSSCategories().keySet().iterator().next().getId());
+	}
+	
 }
 
