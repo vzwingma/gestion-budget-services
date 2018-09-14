@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.NotModifiedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
@@ -45,6 +46,12 @@ class GlobalControllerExceptionHandler {
     @ExceptionHandler(NotModifiedException.class)
     public void handleNotModifiedException() {
     	 LOGGER.info("Non modifiée");
+    }
+    
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)  // 405
+    @ExceptionHandler(CompteClosedException.class)
+    public void handleClosedException() {
+    	 LOGGER.error("Erreur : Compte clos");
     }
     
     @ResponseStatus(HttpStatus.FORBIDDEN)  // 403

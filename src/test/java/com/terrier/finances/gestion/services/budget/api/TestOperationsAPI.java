@@ -2,8 +2,10 @@ package com.terrier.finances.gestion.services.budget.api;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -124,6 +126,57 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		.andExpect(content().string(containsString("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false")));
 	}
 
+
+
+
+
+	@Test
+	public void testReinitbudget() throws Exception {
+
+		// Budget
+		CompteBancaire c1 = new CompteBancaire();
+		c1.setActif(true);
+		c1.setId("compteTest");
+		c1.setLibelle("Libelle1");
+		c1.setOrdre(1);
+		when(mockDataDBUsers.chargeCompteParId(eq("compteTest"), eq("userTest"))).thenReturn(c1);
+
+		BudgetMensuelDTO budget = new BudgetMensuelDTO();
+		budget.setCompteBancaire(c1);
+		budget.setMois(Month.JANUARY.getValue());
+		budget.setAnnee(2018);
+		budget.setActif(false);
+		budget.setId();
+		when(mockDataDBBudget.chargeBudgetMensuelDTO(any())).thenReturn(budget);
+		BudgetMensuel bo = new BudgetMensuel();
+		bo.setCompteBancaire(c1);
+		bo.setMois(Month.JANUARY);
+		bo.setAnnee(2018);
+		bo.setActif(false);
+		bo.setId("compteTest_2018_1");
+		bo.setSoldeFin(0D);
+		bo.setSoldeNow(1000D);
+		bo.setDateMiseAJour(Calendar.getInstance());
+		bo.setResultatMoisPrecedent(0D, 100D);
+		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
+		when(mockDataDBBudget.sauvegardeBudgetMensuel(any(), any())).thenReturn(bo.getId());
+		
+		Utilisateur user = new Utilisateur();
+		user.setId("userTest");
+		user.setLibelle("userTest");
+		user.setLogin("userTest");
+		serviceUser.registerUserBusinessSession(user, "clear");
+
+		// OK
+
+		String url = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", "compteTest_2018_1").replace("{idUtilisateur}", "userTest");
+		LOGGER.info("Reinit budget: {}", url);
+
+		getMockAPI().perform(
+				delete(url))
+		.andExpect(status().isOk())
+		.andExpect(content().string(containsString("\"newBudget\":true")));
+	}
 
 
 

@@ -6,6 +6,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.business.OperationsService;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
@@ -115,6 +117,33 @@ public class OperationsAPIController extends AbstractAPIController {
 	}
 
 
+	/**
+	 * Mise à jour du budget
+	 * @param idBudget id du budget
+	 * @param idUtilisateur idUtilisateur
+	 * @param budget budget
+	 * @return budget mis à jour
+	 * @throws DataNotFoundException
+	 */
+	@ApiOperation(httpMethod="DELETE",protocols="HTTPS", value="Réinitialisation d'un budget")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Budget réinitialisé"),
+			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+			@ApiResponse(code = 404, message = "Données introuvables"),
+			@ApiResponse(code = 405, message = "Compte clos. Impossible de réinitialiser le budget")
+	})
+	@ApiImplicitParams(value={
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
+	})	
+	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
+	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+		LOGGER.info("[API][idBudget={}] reinitialisation",idBudget);
+		if(idBudget != null){
+			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, idUtilisateur);
+			return getEntity(budgetUpdated);
+		}
+		throw new DataNotFoundException("Impossible de réinitialiser le budget");
+	}
 	/**
 	 * Retourne le statut du budget
 	 * @param idBudget id du compte

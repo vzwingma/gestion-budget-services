@@ -23,6 +23,7 @@ import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperation
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
@@ -204,11 +205,17 @@ public class OperationsService extends AbstractBusinessService {
 		budget.setCompteBancaire(compteBancaire);
 		budget.setDateMiseAJour(Calendar.getInstance());
 		// Init si dans le futur par rapport au démarrage
-		LocalDate datePremierBudget = getServiceComptes().getIntervallesBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
+		LocalDate datePremierBudget;
+		try{
+			datePremierBudget = getServiceComptes().getIntervallesBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
+		}
+		catch(DataNotFoundException e){
+			datePremierBudget = null;
+		}
 
 		LocalDate dateCourante = BudgetDateTimeUtils.localDateFirstDayOfMonth(mois, annee);
 
-		if(dateCourante.isAfter(datePremierBudget)){
+		if(datePremierBudget != null && dateCourante.isAfter(datePremierBudget)){
 			// MAJ Calculs à partir du mois précédent
 			// Mois précédent
 			Month moisPrecedent = mois.minus(1);
@@ -248,15 +255,21 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException  erreur sur les données
 	 * @throws BudgetNotFoundException budget introuvable
 	 */
-	public BudgetMensuel reinitialiserBudgetMensuel(BudgetMensuel budgetMensuel, String idUtilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
+	public BudgetMensuel reinitialiserBudgetMensuel(String idBudget, String idUtilisateur) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
-		CompteBancaire compteBancaire = getServiceComptes().getCompteById(budgetMensuel.getCompteBancaire().getId(), idUtilisateur);
-		if(compteBancaire != null){
-			// S'il y a eu cloture, on ne fait rien
-			return initNewBudget(compteBancaire, idUtilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
+		BudgetMensuel budgetMensuel = chargerBudgetMensuel(idUtilisateur, BudgetDataUtils.getCompteFromBudgetId(idBudget), BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget));
+		if(budgetMensuel != null){
+			CompteBancaire compteBancaire = getServiceComptes().getCompteById(budgetMensuel.getCompteBancaire().getId(), idUtilisateur);
+			if(compteBancaire != null){
+				// S'il y a eu cloture, on ne fait rien
+				return initNewBudget(compteBancaire, idUtilisateur, budgetMensuel.getMois(), budgetMensuel.getAnnee());
+			}
+			else{
+				throw new DataNotFoundException("Le compte bancaire " + budgetMensuel.getCompteBancaire().getId() + " est introuvable");
+			}
 		}
 		else{
-			throw new DataNotFoundException("Le compte bancaire " + budgetMensuel.getCompteBancaire().getId() + " est introuvable");
+			throw new DataNotFoundException("Le budget " + idBudget + " est introuvable");
 		}
 	}
 	/**

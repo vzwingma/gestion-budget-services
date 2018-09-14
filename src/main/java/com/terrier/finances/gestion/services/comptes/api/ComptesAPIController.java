@@ -118,7 +118,7 @@ public class ComptesAPIController extends AbstractAPIController {
 			intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[1]));
 			return getEntity(intervallesAPI);	
 		}
-		throw new DataNotFoundException("Impossible de trouver l'intervalle de budgets pour le compte " + idCompte);
+		throw new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte);
 	}
 
 

@@ -206,7 +206,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		BudgetMensuelDTO budgetDTO = null;
 		String annee = null;
 		try{
-			annee = BudgetDataUtils.getAnneeFromBudgetId(idBudget);
+			annee = Integer.toString(BudgetDataUtils.getAnneeFromBudgetId(idBudget));
 			budgetDTO = getMongoOperation().findById(idBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
 		}
 		catch(Exception e){
