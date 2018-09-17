@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.swagger.annotations.Api;
@@ -32,7 +33,7 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value=BudgetApiUrlEnum.ADMIN_BASE)
 @Api(protocols="https", value="Administration", tags={"Administration"},
 	consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
-public class AdminAPIController {
+public class AdminAPIController extends AbstractAPIController {
 
 
 	/**
@@ -66,8 +67,7 @@ public class AdminAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.ADMIN_ACCESS + "/{login}/{oldpassword}/{newpassword}")
 	public String password(@PathVariable("login") String login, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
 		LOGGER.info("Changement du mot de passe pour {}", login);
-		
-		String idUtilisateur = authService.authenticateDeprecated(login, oldpassword);
+		String idUtilisateur = null;
 		Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
 		if(utilisateur != null){
 			authService.changePassword(utilisateur, oldpassword, newPassword);

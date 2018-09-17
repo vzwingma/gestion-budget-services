@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurPrefsEnum;
-import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
-import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthResponseAPIObject;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPrefsAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
@@ -56,7 +54,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 * @param motPasse motPasse
 	 * @return résultat de l'opération
 	 */
-	@ApiOperation(httpMethod="POST", produces=MediaType.APPLICATION_JSON_VALUE, protocols="HTTPS", value="Authentification d'un utilisateur", response=AuthResponseAPIObject.class)
+	@ApiOperation(httpMethod="POST", produces=MediaType.APPLICATION_JSON_VALUE, protocols="HTTPS", value="Authentification d'un utilisateur", response=String.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Authentification réussie"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
@@ -67,16 +65,8 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="motPasse", required=true, value="Mot de passe de l'utilisateur", paramType="body"),
 	})
 	@PostMapping(value=BudgetApiUrlEnum.USERS_AUTHENTICATE, consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody ResponseEntity<AuthResponseAPIObject> authenticate(@RequestBody AuthLoginAPIObject auth) throws UserNotAuthorizedException{
-		logger.trace("[API][idUser=?] Authenticate : {}", auth);
-		String idUtilisateur = authService.authenticateDeprecated(auth.getLogin(), auth.getMotDePasse());
-		if(idUtilisateur != null){
-			AuthResponseAPIObject response = new AuthResponseAPIObject();
-			Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
-			response.setIdUtilisateur(idUtilisateur);
-			response.setDroits(utilisateur.getDroits());
-			return getEntity(response);
-		}
+	public @ResponseBody ResponseEntity<String> authenticate(@RequestBody AuthLoginAPIObject auth) throws UserNotAuthorizedException{
+		logger.warn("[API][idUser=?] Service Authenticate implémenté via le Filter (JwtUsernameAndPasswordAuthenticationFilter). Cette méthode ne doit pas être appelée et renvoie une exception");
 		throw new UserNotAuthorizedException();
 	}
 	

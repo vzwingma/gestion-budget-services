@@ -27,6 +27,7 @@ import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
@@ -81,14 +82,14 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		String path = BudgetApiUrlEnum.COMPTES_LIST_FULL.replace("{idUtilisateur}", "123123");
 		// Comptes KO
 		getMockAPI().perform(
-				get(path)
+				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("123123"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		// Comptes OK		
 		path = BudgetApiUrlEnum.COMPTES_LIST_FULL.replace("{idUtilisateur}", "345345");
 		getMockAPI().perform(
-				get(path)
+				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
@@ -102,7 +103,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		// Fail*
 		String path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "AAA").replace("{idUtilisateur}", "111");
 		getMockAPI().perform(
-				post(path))
+				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("111")))
 		.andExpect(status().is4xxClientError());
 
 		CompteBancaire c1 = new CompteBancaire();
@@ -116,14 +117,14 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		
 		// Compte KO
 		getMockAPI().perform(
-				get(path)
+				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("123123"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		
 		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111").replace("{idUtilisateur}", "345345");
 		getMockAPI().perform(
-				get(path)
+				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
@@ -134,7 +135,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	@Test
 	public void testIntervalles() throws Exception {
 		String path = BudgetApiUrlEnum.COMPTES_INTERVALLES_FULL.replace("{idCompte}", "TEST");
-		getMockAPI().perform(get(path))
+		getMockAPI().perform(get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("TEST")))
 		.andExpect(status().is4xxClientError());
 		
 		BudgetMensuelDTO debut = new BudgetMensuelDTO();
@@ -147,7 +148,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 
 		when(mockDataDBBudget.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuelDTO[]{ debut, fin});
 		getMockAPI().perform(
-				get(path))
+				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("TEST")))
 			.andExpect(status().isOk())
 			.andExpect(content().string("{\"datePremierBudget\":17563,\"dateDernierBudget\":17622}"));
 	}
@@ -161,7 +162,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	@Test
 	public void testLibelles() throws Exception {
 		String path = BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES_FULL.replace("{idCompte}", "TEST").replace("{idUtilisateur}", "TEEST") + "?annee=2019";
-		getMockAPI().perform(get(path))
+		getMockAPI().perform(get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("TEEST")))
 		.andExpect(status().isNoContent());
 		
 		Utilisateur user = new Utilisateur();
@@ -173,7 +174,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		libelles.add("OPE2");
 		when(mockDataDBBudget.chargeLibellesOperations(eq("TEST"), eq(2019), any())).thenReturn(libelles);
 		
-		getMockAPI().perform(get(path))
+		getMockAPI().perform(get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("TEEST")))
 		.andExpect(status().isOk())
 		.andExpect(content().string("{\"idCompte\":\"TEST\",\"libellesOperations\":[\"OPE1\",\"OPE2\"]}"));
 	}

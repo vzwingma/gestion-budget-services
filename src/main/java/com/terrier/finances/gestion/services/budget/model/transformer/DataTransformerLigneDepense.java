@@ -42,6 +42,11 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 	 */
 	@Override
 	public LigneOperation transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
+		// Cas de ss categorie perdue
+		// TODO : A enlever
+		if(dto.getIdSSCategorie() == null){
+			return null;
+		}
 		
 		LigneOperation bo = new LigneOperation();
 		bo.setId(dto.getId());
@@ -115,7 +120,12 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 	public List<LigneOperation> transformDTOtoBO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
 		List<LigneOperation> listeDepensesBO = new ArrayList<>();
 		if(listeDTO != null){
-			listeDTO.stream().forEach(dto -> listeDepensesBO.add(transformDTOtoBO(dto, decryptor)));
+			listeDTO.stream().forEach(dto -> {
+				LigneOperation bo = transformDTOtoBO(dto, decryptor);
+				if(bo != null){
+					listeDepensesBO.add(bo);	
+				}
+			});
 		}
 		return listeDepensesBO;
 	}
