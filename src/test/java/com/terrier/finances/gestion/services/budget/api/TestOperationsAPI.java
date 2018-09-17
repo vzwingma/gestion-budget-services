@@ -28,6 +28,7 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
@@ -57,7 +58,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		// Fail
 		String urlWrongCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018&idUtilisateur=unknown";
 		getMockAPI().perform(
-				get(urlWrongCompte))
+				get(urlWrongCompte).header(JwtConfig.JWT_AUTH_HEADER, getToken("unknown", "unknown")))
 		.andExpect(status().is4xxClientError());
 
 	}
@@ -71,7 +72,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		LOGGER.info("Wrong Compte : {}", urlWrongCompte);
 		// Wrong compte
 		getMockAPI().perform(
-				get(urlWrongCompte))
+				get(urlWrongCompte).header(JwtConfig.JWT_AUTH_HEADER, getToken("test")))
 		.andExpect(status().is4xxClientError());
 	}
 
@@ -120,7 +121,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		LOGGER.info("Good Compte : {}", urlGoodCompte);
 
 		getMockAPI().perform(
-				get(urlGoodCompte))
+				get(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 		.andExpect(status().isOk())
 		.andExpect(content().string(containsString("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false")));
 	}

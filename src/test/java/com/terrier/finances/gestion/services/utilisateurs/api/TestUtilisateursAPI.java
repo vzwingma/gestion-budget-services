@@ -27,6 +27,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
@@ -85,7 +86,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		AuthLoginAPIObject auth2 = new AuthLoginAPIObject("Test", "test");
 		LOGGER.info("Authentification OK de {}", json(auth2));
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)
+				post(BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL).header(JwtConfig.JWT_AUTH_HEADER, getToken("test"))
 					.accept(MediaType.APPLICATION_JSON)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json(auth2) ))
@@ -102,7 +103,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		// Fail
 		String path = BudgetApiUrlEnum.USERS_DISCONNECT_FULL.replace("{idUtilisateur}", "123123");
 		getMockAPI().perform(
-				post(path))
+				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("123123")))
 		.andExpect(status().is4xxClientError());
 
 		Utilisateur userOK = new Utilisateur();
@@ -112,7 +113,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		
 		LOGGER.info("Disconnect Failed");
 		getMockAPI().perform(
-				post(path)
+				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
@@ -120,7 +121,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		LOGGER.info("Disconnect OK");
 		path = BudgetApiUrlEnum.USERS_DISCONNECT_FULL.replace("{idUtilisateur}", "345345");
 		getMockAPI().perform(
-				post(path)
+				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNoContent());
@@ -136,7 +137,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		
 		// Fail
 		getMockAPI().perform(
-				post(path))
+				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345")))
 		.andExpect(status().is4xxClientError());
 
 		Utilisateur userOK = new Utilisateur();
@@ -146,7 +147,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		service.registerUserBusinessSession(userOK, "test");
 		
 		getMockAPI().perform(
-				get(path)
+				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345", "Test"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

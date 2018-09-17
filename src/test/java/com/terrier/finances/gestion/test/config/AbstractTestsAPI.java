@@ -3,6 +3,8 @@
  */
 package com.terrier.finances.gestion.test.config;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -19,6 +21,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.services.communs.api.config.RessourcesConfig;
+import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  * Classe abstraite des tests d'API
@@ -65,6 +71,28 @@ public abstract class AbstractTestsAPI {
 		} catch (JsonProcessingException e) {
 			return null;
 		}
+	}
+	
+	
+	public static String getToken(String id){
+		return getToken(id, id);
+	}
+	
+	public static String getToken(String login, String id){
+		Long now = System.currentTimeMillis();
+		String token = Jwts.builder()
+				.setSubject(login)
+				.setId(id)
+				// Convert to list of strings. 
+//				.claim("authorities", auth.getAuthorities().stream()
+//						.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+				.setIssuedAt(new Date(now))
+				.setExpiration(new Date(now + JwtConfig.JWT_EXPIRATION_S * 1000))  // in milliseconds
+				.signWith(SignatureAlgorithm.HS512, JwtConfig.JWT_SECRET_KEY.getBytes())
+				.compact();
+
+		// Add token to header
+		return JwtConfig.JWT_AUTH_PREFIX + token;
 	}
 	
 }
