@@ -64,7 +64,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		Utilisateur userOK = new Utilisateur();
 		userOK.setId("test");
 		userOK.setLogin("Test");
-		userOK.setHashMotDePasse("1000:2f71112c1693c5378e1cd3a0d4884b20:9a00559a79652c140e6539bec1b9ed78fd2a2f42bd0b6f409c399564f8031766c53927b1594579598794cf372af872632450b35196959ac334f7bc97a5a5ddc0");
+//		userOK.setHashMotDePasse("1000:2f71112c1693c5378e1cd3a0d4884b20:9a00559a79652c140e6539bec1b9ed78fd2a2f42bd0b6f409c399564f8031766c53927b1594579598794cf372af872632450b35196959ac334f7bc97a5a5ddc0");
 		userOK.setMasterCleChiffrementDonnees("Sf35rwnRDc7v4SDXsnGHUg==");
 		when(mockDataDBUsers.chargeUtilisateur(eq("Test"))).thenReturn(null, userOK);
 		

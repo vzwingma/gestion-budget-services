@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.api.config;
+package com.terrier.finances.gestion.services.communs.api.exceptions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurPrefsEnum;
-import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthResponseAPIObject;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPrefsAPIObject;
@@ -68,15 +67,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	})
 	@PostMapping(value=BudgetApiUrlEnum.USERS_AUTHENTICATE, consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ResponseEntity<AuthResponseAPIObject> authenticate(@RequestBody AuthLoginAPIObject auth) throws UserNotAuthorizedException{
-		logger.trace("[API][idUser=?] Authenticate : {}", auth);
-		String idUtilisateur = authService.authenticateDeprecated(auth.getLogin(), auth.getMotDePasse());
-		if(idUtilisateur != null){
-			AuthResponseAPIObject response = new AuthResponseAPIObject();
-			Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
-			response.setIdUtilisateur(idUtilisateur);
-			response.setDroits(utilisateur.getDroits());
-			return getEntity(response);
-		}
+		logger.warn("[API][idUser=?] Service Authenticate implémenté via le Filter (JwtUsernameAndPasswordAuthenticationFilter). Cette méthode ne doit pas être appelée et renvoie une exception");
 		throw new UserNotAuthorizedException();
 	}
 	
