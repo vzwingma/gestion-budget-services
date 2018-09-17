@@ -50,40 +50,45 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
 		// All secured paths that needs a token are already defined and secured in config class.
 		// And If user tried to access without access token, then he won't be authenticated and an exception will be thrown.
 		
-		// 3. Get the token
-		String token = header.replace(JwtConfig.JWT_AUTH_PREFIX, "");
 		
 		try {	// exceptions might be thrown in creating the claims if for example the token is expired
-			
 			// 4. Validate the token
-			Claims claims = Jwts.parser()
-					.setSigningKey(JwtConfig.JWT_SECRET_KEY.getBytes())
-					.parseClaimsJws(token)
-					.getBody();
+			Claims claims = getJWTClaims(header);
 			
 			String username = claims.getSubject();
-			if(username != null) {
-				@SuppressWarnings("unchecked")
-				List<String> authorities = (List<String>) claims.get("authorities");
-				
-				// 5. Create auth object
-				// UsernamePasswordAuthenticationToken: A built-in object, used by spring to represent the current authenticated / being authenticated user.
-				// It needs a list of authorities, which has type of GrantedAuthority interface, where SimpleGrantedAuthority is an implementation of that interface
-				 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-								 username, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-				 
-				 // 6. Authenticate the user
-				 // Now, user is authenticated
-				 SecurityContextHolder.getContext().setAuthentication(auth);
-			}
-			
+            if(username != null) {
+                @SuppressWarnings("unchecked")
+                List<String> authorities = (List<String>) claims.get("authorities");
+                
+                // 5. Create auth object
+                // UsernamePasswordAuthenticationToken: A built-in object, used by spring to represent the current authenticated / being authenticated user.
+                // It needs a list of authorities, which has type of GrantedAuthority interface, where SimpleGrantedAuthority is an implementation of that interface
+                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                                 username, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+                 
+                 // 6. Authenticate the user
+                 // Now, user is authenticated
+                 SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+
 		} catch (Exception e) {
 			// In case of failure. Make sure it's clear; so guarantee user won't be authenticated
 			SecurityContextHolder.clearContext();
 		}
-		
 		// go to the next filter in the filter chain
 		chain.doFilter(request, response);
 	}
 
+	
+	/**
+	 * @param token token d'authentification
+	 * @return Elements JWT
+	 */
+	public static Claims getJWTClaims(String token){
+		token = token.replace(JwtConfig.JWT_AUTH_PREFIX, "");
+		return Jwts.parser()
+				.setSigningKey(JwtConfig.JWT_SECRET_KEY.getBytes())
+				.parseClaimsJws(token)
+				.getBody();
+	}
 }

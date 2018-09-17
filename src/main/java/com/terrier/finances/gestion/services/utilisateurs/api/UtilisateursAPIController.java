@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.swagger.annotations.Api;
@@ -61,8 +63,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
             @ApiResponse(code = 404, message = "Ressource introuvable")
     })
 	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="login", required=true, value="Login de l'utilisateur", paramType="body"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="motPasse", required=true, value="Mot de passe de l'utilisateur", paramType="body"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=AuthLoginAPIObject.class, name="auth", required=true, value="Authentification de l'utilisateur", paramType="body")
 	})
 	@PostMapping(value=BudgetApiUrlEnum.USERS_AUTHENTICATE, consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ResponseEntity<String> authenticate(@RequestBody AuthLoginAPIObject auth) throws UserNotAuthorizedException{
@@ -107,13 +108,9 @@ public class UtilisateursAPIController extends AbstractAPIController {
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Session introuvable")
     })
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
-	})
-	
 	@GetMapping(value=BudgetApiUrlEnum.USERS_ACCESS_DATE)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
-		
+	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
+		String idUtilisateur = getIdUtilisateur(auth);
 		if(authService.getBusinessSession(idUtilisateur) != null){
 			LocalDateTime lastAccess = authService.getBusinessSession(idUtilisateur).getUtilisateur().getDernierAcces();
 			logger.info("[API][idUser={}] LastAccessTime : {}", idUtilisateur, lastAccess);
@@ -139,13 +136,9 @@ public class UtilisateursAPIController extends AbstractAPIController {
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Session introuvable")
     })
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
-	})
-	
 	@GetMapping(value=BudgetApiUrlEnum.USERS_PREFS)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
-		
+	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
+		String idUtilisateur = getIdUtilisateur(auth);
 		if(authService.getBusinessSession(idUtilisateur) != null){
 			Map<UtilisateurPrefsEnum, String> prefsUtilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur().getPrefsUtilisateur();
 			logger.info("[API][idUser={}] Preferences Utilisateur : {}", idUtilisateur, prefsUtilisateur);

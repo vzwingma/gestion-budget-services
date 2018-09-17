@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +25,7 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 
 import io.swagger.annotations.Api;
@@ -61,11 +63,12 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="header"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST)
-	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
-		logger.info("[API][idUser={}] getComptes", idUtilisateur);
+	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
+		String idUtilisateur = getIdUtilisateur(auth);
+		logger.info("[API][idUser={}] getComptes", auth, idUtilisateur);
 		return getEntities(comptesService.getComptesUtilisateur(idUtilisateur));
 	}
 
@@ -83,10 +86,11 @@ public class ComptesAPIController extends AbstractAPIController {
 	})
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="header"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID)
-	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
+	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
+		String idUtilisateur = getIdUtilisateur(auth);
 		logger.info("[API][idUser={}][idCompte={}] getCompte", idUtilisateur, idCompte);
 		return getEntity(comptesService.getCompteById(idCompte, idUtilisateur));
 	}
@@ -136,13 +140,14 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Données introuvables")
 	})
 	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="header"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
 	})		
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES)
-	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@PathVariable("idUtilisateur") String idUtilisateur, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee){
-		logger.info("[API][idCompte={}] get Libellés Opérations : {}", idCompte, annee);
+	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee){
+		String idUtilisateur = getIdUtilisateur(auth);
+		logger.info("[API][idUser={}][idCompte={}] get Libellés Opérations : {}", idUtilisateur, idCompte, annee);
 		Set<String> libelles = comptesService.getLibellesOperations(idUtilisateur, idCompte, annee);
 		if(libelles != null && !libelles.isEmpty()){
 			LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();

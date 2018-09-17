@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.swagger.annotations.Api;
@@ -59,15 +61,15 @@ public class AdminAPIController extends AbstractAPIController {
             @ApiResponse(code = 404, message = "Ressource introuvable")
     })
 	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="login", required=true, value="Login de l'utilisateur", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="login", required=true, value="Login de l'utilisateur", paramType="header"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="oldpassword", required=true, value="Ancien mot de passe de l'utilisateur", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="newpassword", required=true, value="Nouveau mot de passe de l'utilisateur", paramType="path")
 	})
 	
-	@GetMapping(value=BudgetApiUrlEnum.ADMIN_ACCESS + "/{login}/{oldpassword}/{newpassword}")
-	public String password(@PathVariable("login") String login, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
-		LOGGER.info("Changement du mot de passe pour {}", login);
-		String idUtilisateur = null;
+	@GetMapping(value=BudgetApiUrlEnum.ADMIN_ACCESS)
+	public String password(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
+		String idUtilisateur = getIdUtilisateur(auth);
+		LOGGER.info("[idUser={}]Changement du mot de passe", idUtilisateur);
 		Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
 		if(utilisateur != null){
 			authService.changePassword(utilisateur, oldpassword, newPassword);

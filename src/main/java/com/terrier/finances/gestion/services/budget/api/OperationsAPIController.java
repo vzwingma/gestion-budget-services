@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,6 +24,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.business.OperationsService;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -64,15 +66,15 @@ public class OperationsAPIController extends AbstractAPIController {
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="query"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="mois", required=true, value="No de mois", paramType="query"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="No de l'année", paramType="query"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="query")			
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="No de l'année", paramType="query")
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_QUERY)
 	public  @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
 			@RequestParam("idCompte") String idCompte, 
 			@RequestParam("mois") Integer mois, 
 			@RequestParam("annee") Integer annee, 
-			@RequestParam("idUtilisateur") String idUtilisateur) throws BudgetNotFoundException, DataNotFoundException {
+			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws BudgetNotFoundException, DataNotFoundException {
+		String idUtilisateur = getIdUtilisateur(auth);
 		logger.info("[API][idUser={}][idCompte={}] getBudget {}/{}", idUtilisateur, idCompte, mois, annee);
 
 		if(mois != null && annee != null){
@@ -107,8 +109,9 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
 	})	
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ID)
-	public @ResponseBody ResponseEntity<BudgetMensuel> updateBudget(@PathVariable("idBudget") String idBudget, @PathVariable("idUtilisateur") String idUtilisateur, @RequestBody BudgetMensuel budget) throws DataNotFoundException{
-		logger.info("[API][idBudget={}] updateBudget",idBudget);
+	public @ResponseBody ResponseEntity<BudgetMensuel> updateBudget(@PathVariable("idBudget") String idBudget, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @RequestBody BudgetMensuel budget) throws DataNotFoundException{
+		String idUtilisateur = getIdUtilisateur(auth);
+		logger.info("[API][idUser={}][idBudget={}] updateBudget",idUtilisateur, idBudget);
 		if(budget != null && idBudget != null && idBudget.equals(budget.getId())){
 			BudgetMensuel budgetUpdated = operationService.calculEtSauvegardeBudget(budget, idUtilisateur);
 			return getEntity(budgetUpdated);
@@ -136,7 +139,8 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
 	})	
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
-	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+		String idUtilisateur = getIdUtilisateur(auth);
 		logger.info("[API][idBudget={}] reinitialisation",idBudget);
 		if(idBudget != null){
 			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, idUtilisateur);
@@ -166,10 +170,11 @@ public class OperationsAPIController extends AbstractAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<Boolean> isBudgetActif(
 			@PathVariable("idBudget") String idBudget, 
-			@PathVariable("idUtilisateur") String idUtilisateur,
+			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth,
 			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif,  @RequestParam(value="uptodateto", required=false) Long uptodateto) throws BudgetNotFoundException {
 
-		logger.info("[API][idBudget={}] actif ? : {}, uptodateto ? {}",idBudget, isActif, uptodateto );
+		String idUtilisateur = getIdUtilisateur(auth);
+		logger.info("[API][idUser={}][idBudget={}] actif ? : {}, uptodateto ? {}",idUtilisateur, idBudget, isActif, uptodateto );
 
 		if(isActif){
 			boolean isBudgetActif = operationService.isBudgetMensuelActif(idBudget);
@@ -212,16 +217,16 @@ public class OperationsAPIController extends AbstractAPIController {
 	})
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="actif", required=false, value="Etat actif du compte", paramType="query"),
 	})	
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<BudgetMensuel> setBudgetActif(
 			@PathVariable("idBudget") String idBudget, 
-			@PathVariable("idUtilisateur") String idUtilisateur,
+			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth,
 			@RequestParam(value="actif") Boolean setActif) throws BudgetNotFoundException {
 
-		logger.info("[API][idBudget={}] set Actif : {}",idBudget, setActif );
+		String idUtilisateur = getIdUtilisateur(auth);
+		logger.info("[API][idUser={}][idBudget={}] set Actif : {}",idBudget, setActif );
 		BudgetMensuel budgetActif = operationService.setBudgetActif(idBudget, setActif, idUtilisateur);
 		return getEntity(budgetActif);
 	}
