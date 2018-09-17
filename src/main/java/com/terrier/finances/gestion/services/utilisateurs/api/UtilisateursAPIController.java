@@ -83,12 +83,9 @@ public class UtilisateursAPIController extends AbstractAPIController {
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Session introuvable")
     })
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="path"),
-	})
-	
 	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT)
-	public ResponseEntity<String> disconnect(@PathVariable("idUtilisateur") String idUtilisateur) throws DataNotFoundException{
+	public ResponseEntity<String> disconnect(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
+		String idUtilisateur = getIdUtilisateur(auth);
 		if(authService.deconnexionBusinessSession(idUtilisateur)){
 			logger.info("[API][idUser={}] Disconnect : true", idUtilisateur);
 			return ResponseEntity.noContent().build();

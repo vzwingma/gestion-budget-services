@@ -62,9 +62,6 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="header"),
-	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST)
 	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
 		String idUtilisateur = getIdUtilisateur(auth);
@@ -85,8 +82,7 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Données introuvables")
 	})
 	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="header"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path")
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID)
 	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
@@ -112,8 +108,9 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES)
-	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte) throws DataNotFoundException{
-		logger.info("[API][idCompte={}] getIntervallesBudgetsCompte", idCompte);
+	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
+		String idUtilisateur = getIdUtilisateur(auth);
+		logger.info("[API][idUser={}][idCompte={}] getIntervallesBudgetsCompte", idUtilisateur, idCompte);
 
 		LocalDate[] intervalles = comptesService.getIntervallesBudgets(idCompte);
 		if(intervalles != null && intervalles.length >= 2){
@@ -140,7 +137,6 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Données introuvables")
 	})
 	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idUtilisateur", required=true, value="Id de l'utilisateur", paramType="header"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
 	})		

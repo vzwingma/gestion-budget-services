@@ -141,7 +141,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
 	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		String idUtilisateur = getIdUtilisateur(auth);
-		logger.info("[API][idBudget={}] reinitialisation",idBudget);
+		logger.info("[API][idUser={}][idBudget={}] reinitialisation", idUtilisateur, idBudget);
 		if(idBudget != null){
 			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, idUtilisateur);
 			return getEntity(budgetUpdated);
@@ -226,7 +226,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@RequestParam(value="actif") Boolean setActif) throws BudgetNotFoundException {
 
 		String idUtilisateur = getIdUtilisateur(auth);
-		logger.info("[API][idUser={}][idBudget={}] set Actif : {}",idBudget, setActif );
+		logger.info("[API][idUser={}][idBudget={}] set Actif : {}",idUtilisateur, idBudget, setActif );
 		BudgetMensuel budgetActif = operationService.setBudgetActif(idBudget, setActif, idUtilisateur);
 		return getEntity(budgetActif);
 	}
