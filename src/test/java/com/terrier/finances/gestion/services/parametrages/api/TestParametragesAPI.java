@@ -15,9 +15,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.services.parametrages.model.CategorieOperationDTO;
 import com.terrier.finances.gestion.services.parametrages.model.transformer.DataTransformerCategorieOperations;

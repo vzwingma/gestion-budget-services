@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
-import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.swagger.annotations.Api;

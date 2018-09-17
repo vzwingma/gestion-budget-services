@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.comptes.model.api.IntervallesCompteAPIObject;
 import com.terrier.finances.gestion.communs.operations.model.api.LibellesOperationsAPIObject;
@@ -25,7 +26,6 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
-import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 
 import io.swagger.annotations.Api;

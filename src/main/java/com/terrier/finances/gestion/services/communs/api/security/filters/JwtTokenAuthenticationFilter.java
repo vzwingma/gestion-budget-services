@@ -14,7 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
+import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -53,7 +53,7 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
 		
 		try {	// exceptions might be thrown in creating the claims if for example the token is expired
 			// 4. Validate the token
-			Claims claims = getJWTClaims(header);
+			Claims claims = JwtConfig.getJWTClaims(header);
 			
 			String username = claims.getSubject();
             if(username != null) {
@@ -77,18 +77,5 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
 		}
 		// go to the next filter in the filter chain
 		chain.doFilter(request, response);
-	}
-
-	
-	/**
-	 * @param token token d'authentification
-	 * @return Elements JWT
-	 */
-	public static Claims getJWTClaims(String token){
-		token = token.replace(JwtConfig.JWT_AUTH_PREFIX, "");
-		return Jwts.parser()
-				.setSigningKey(JwtConfig.JWT_SECRET_KEY.getBytes())
-				.parseClaimsJws(token)
-				.getBody();
 	}
 }

@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-import com.terrier.finances.gestion.services.communs.api.security.filters.JwtTokenAuthenticationFilter;
+import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 
 /**
  * Classe abstraite d'un API Controller
@@ -47,6 +47,6 @@ public abstract class AbstractAPIController {
 	}
 	
 	protected String getIdUtilisateur(String token){
-		return JwtTokenAuthenticationFilter.getJWTClaims(token).getId();
+		return JwtConfig.getJWTClaims(token).getId();
 	}
 }

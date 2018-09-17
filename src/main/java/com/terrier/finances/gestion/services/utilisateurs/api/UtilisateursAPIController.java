@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPrefsAPIObject;
@@ -25,7 +26,6 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
-import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.swagger.annotations.Api;

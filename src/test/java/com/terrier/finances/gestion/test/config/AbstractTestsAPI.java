@@ -20,8 +20,8 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
+import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.services.communs.api.config.RessourcesConfig;
-import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

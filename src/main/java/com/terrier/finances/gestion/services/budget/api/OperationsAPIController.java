@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
@@ -24,7 +25,6 @@ import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.business.OperationsService;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
-import com.terrier.finances.gestion.services.communs.api.config.security.JwtConfig;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
