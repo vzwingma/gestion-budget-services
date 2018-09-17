@@ -78,7 +78,7 @@ public abstract class AbstractTestsAPI {
 		return getToken(id, id);
 	}
 	
-	public static String getToken(String login, String id){
+	public static String getToken(String id, String login){
 		Long now = System.currentTimeMillis();
 		String token = Jwts.builder()
 				.setSubject(login)

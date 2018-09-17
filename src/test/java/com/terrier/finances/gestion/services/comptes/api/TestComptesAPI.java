@@ -58,7 +58,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	public void testGetComptes() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.COMPTES_LIST_FULL.replace("{idUtilisateur}", "123123")))
+				post(BudgetApiUrlEnum.COMPTES_LIST_FULL))
 		.andExpect(status().is4xxClientError());
 
 		
@@ -79,17 +79,15 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		comptes.add(c2);
 		when(mockDataDBUsers.chargeComptes(eq("345345"))).thenReturn(comptes);
 
-		String path = BudgetApiUrlEnum.COMPTES_LIST_FULL.replace("{idUtilisateur}", "123123");
 		// Comptes KO
 		getMockAPI().perform(
-				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("123123"))
+				get(BudgetApiUrlEnum.COMPTES_LIST_FULL).header(JwtConfig.JWT_AUTH_HEADER, getToken("123123"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		// Comptes OK		
-		path = BudgetApiUrlEnum.COMPTES_LIST_FULL.replace("{idUtilisateur}", "345345");
 		getMockAPI().perform(
-				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345"))
+				get(BudgetApiUrlEnum.COMPTES_LIST_FULL).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
@@ -101,7 +99,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	@Test
 	public void testCompte() throws Exception {
 		// Fail*
-		String path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "AAA").replace("{idUtilisateur}", "111");
+		String path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "AAA");
 		getMockAPI().perform(
 				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("111")))
 		.andExpect(status().is4xxClientError());
@@ -113,7 +111,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		c1.setOrdre(1);
 		when(mockDataDBUsers.chargeCompteParId(eq("111"), eq("345345"))).thenReturn(c1);
 		
-		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111").replace("{idUtilisateur}", "123123");
+		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111");
 		
 		// Compte KO
 		getMockAPI().perform(
@@ -122,7 +120,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		
-		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111").replace("{idUtilisateur}", "345345");
+		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111");
 		getMockAPI().perform(
 				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345"))
 				.accept(MediaType.APPLICATION_JSON)
@@ -161,7 +159,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	 */
 	@Test
 	public void testLibelles() throws Exception {
-		String path = BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES_FULL.replace("{idCompte}", "TEST").replace("{idUtilisateur}", "TEEST") + "?annee=2019";
+		String path = BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES_FULL.replace("{idCompte}", "TEST") + "?annee=2019";
 		getMockAPI().perform(get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("TEEST")))
 		.andExpect(status().isNoContent());
 		

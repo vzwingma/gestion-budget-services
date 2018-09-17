@@ -56,9 +56,9 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Test
 	public void testGetBudget() throws Exception {
 		// Fail
-		String urlWrongCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018&idUtilisateur=unknown";
+		String urlWrongCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018";
 		getMockAPI().perform(
-				get(urlWrongCompte).header(JwtConfig.JWT_AUTH_HEADER, getToken("unknown", "unknown")))
+				get(urlWrongCompte).header(JwtConfig.JWT_AUTH_HEADER, getToken("unknown")))
 		.andExpect(status().is4xxClientError());
 
 	}
@@ -68,7 +68,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		when(mockDataDBUsers.chargeCompteParId(eq("unknown"), eq("test"))).thenThrow(new DataNotFoundException("Compte introuvable"));
 
-		String urlWrongCompte =  BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018&idUtilisateur=test";
+		String urlWrongCompte =  BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018";
 		LOGGER.info("Wrong Compte : {}", urlWrongCompte);
 		// Wrong compte
 		getMockAPI().perform(
@@ -117,7 +117,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		// OK
 
-		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=compteTest&mois=1&annee=2018&idUtilisateur=userTest";
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=compteTest&mois=1&annee=2018";
 		LOGGER.info("Good Compte : {}", urlGoodCompte);
 
 		getMockAPI().perform(
@@ -169,11 +169,11 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		// OK
 
-		String url = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", "compteTest_2018_1").replace("{idUtilisateur}", "userTest");
+		String url = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", "compteTest_2018_1");
 		LOGGER.info("Reinit budget: {}", url);
 
 		getMockAPI().perform(
-				delete(url))
+				delete(url).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 		.andExpect(status().isOk())
 		.andExpect(content().string(containsString("\"newBudget\":true")));
 	}
@@ -186,8 +186,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	 */
 	@Test
 	public void testBudgetActif() throws Exception{
-		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST").replace("{idUtilisateur}", "userTest");
-		getMockAPI().perform(get(urlActif))
+		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST");
+		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 			.andExpect(status().is4xxClientError());
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
@@ -196,14 +196,14 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		when(mockDataDBBudget.isBudgetActif(eq("TESTKO"))).thenReturn(Boolean.FALSE);
 		when(mockDataDBBudget.isBudgetActif(eq("TESTOK"))).thenReturn(Boolean.TRUE);
 		
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO").replace("{idUtilisateur}", "userTest") + "?actif=true";
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
-		getMockAPI().perform(get(urlActif))
+		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 			.andExpect(status().isNoContent());
 		
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK").replace("{idUtilisateur}", "userTest") + "?actif=true";
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
-		getMockAPI().perform(get(urlActif))
+		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 			.andExpect(status().isOk());
 	}
 	
@@ -214,8 +214,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	 */
 	@Test
 	public void testIsBudgetUptodate() throws Exception{
-		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST").replace("{idUtilisateur}", "userTest");
-		getMockAPI().perform(get(urlActif))
+		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST");
+		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 			.andExpect(status().is4xxClientError());
 
 		Utilisateur user = new Utilisateur();
@@ -231,14 +231,14 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTKO"), any())).thenReturn(futur.getTime());
 		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTOK"), any())).thenReturn(passe.getTime());
 		
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO").replace("{idUtilisateur}", "userTest") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		LOGGER.info("is Actif : {}", urlActif);
-		getMockAPI().perform(get(urlActif))
+		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 			.andExpect(status().isNoContent());
 		
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK").replace("{idUtilisateur}", "userTest") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		LOGGER.info("is Actif : {}", urlActif);
-		getMockAPI().perform(get(urlActif))
+		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 			.andExpect(status().isOk());
 	}
 	
@@ -250,7 +250,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	 */
 	@Test
 	public void testLockBudget() throws Exception{
-		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST").replace("{idUtilisateur}", "userTest");
+		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST");
 		getMockAPI().perform(post(urlActif))
 			.andExpect(status().is4xxClientError());
 
@@ -277,15 +277,15 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo.setActif(true);
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"), any())).thenReturn(bo);
 		
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO").replace("{idUtilisateur}", "userTest") + "?actif=true";
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
-		getMockAPI().perform(post(urlActif))
+		getMockAPI().perform(post(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 			.andExpect(status().isOk())
 			.andExpect(content().string(containsString("\"actif\":true")));
 		
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK").replace("{idUtilisateur}", "userTest") + "?actif=false";
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?actif=false";
 		LOGGER.info("is Actif : {}", urlActif);
-		getMockAPI().perform(post(urlActif))
+		getMockAPI().perform(post(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest")))
 		.andExpect(status().isOk())
 		.andExpect(content().string(containsString("\"actif\":false")));
 	}
@@ -321,21 +321,21 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		serviceUser.registerUserBusinessSession(user, "clear");
 
 
-		String urlBadBudget = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId()+"XXX").replace("{idUtilisateur}", "userTest");
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId()+"XXX");
 		LOGGER.info("Bad Budget : {}", urlBadBudget);
 
 		getMockAPI().perform(
-				post(urlBadBudget)
+				post(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest"))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(bo)))
 		.andExpect(status().is4xxClientError());
 		// OK
 
-		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId()).replace("{idUtilisateur}", "userTest");
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId());
 		LOGGER.info("Good Budget : {}", urlGoodCompte);
 
 		getMockAPI().perform(
-				post(urlGoodCompte)
+				post(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest"))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(bo)))
 		.andExpect(status().isOk())

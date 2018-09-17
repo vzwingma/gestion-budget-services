@@ -88,9 +88,8 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	@Test
 	public void testDisconnect() throws Exception {
 		// Fail
-		String path = BudgetApiUrlEnum.USERS_DISCONNECT_FULL.replace("{idUtilisateur}", "123123");
 		getMockAPI().perform(
-				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("123123")))
+				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfig.JWT_AUTH_HEADER, getToken("123123")))
 		.andExpect(status().is4xxClientError());
 
 		Utilisateur userOK = new Utilisateur();
@@ -100,15 +99,14 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		
 		LOGGER.info("Disconnect Failed");
 		getMockAPI().perform(
-				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest"))
+				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfig.JWT_AUTH_HEADER, getToken("userTest22"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 		
 		LOGGER.info("Disconnect OK");
-		path = BudgetApiUrlEnum.USERS_DISCONNECT_FULL.replace("{idUtilisateur}", "345345");
 		getMockAPI().perform(
-				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345"))
+				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNoContent());
@@ -120,11 +118,11 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 
 	@Test
 	public void testLastTime() throws Exception {
-		String path = BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL.replace("{idUtilisateur}", "345345");
 		
 		// Fail
+		LOGGER.info("LastTime KO");
 		getMockAPI().perform(
-				post(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345")))
+				post(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345")))
 		.andExpect(status().is4xxClientError());
 
 		Utilisateur userOK = new Utilisateur();
@@ -132,9 +130,9 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		userOK.setLogin("Test");
 		userOK.setDernierAcces(LocalDateTime.now());
 		service.registerUserBusinessSession(userOK, "test");
-		
+		LOGGER.info("LastTime OK {}", BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL);
 		getMockAPI().perform(
-				get(path).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345", "Test"))
+				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfig.JWT_AUTH_HEADER, getToken("345345", "Test"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
