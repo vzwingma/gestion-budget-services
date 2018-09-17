@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
@@ -20,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -65,7 +65,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		Utilisateur userOK = new Utilisateur();
 		userOK.setId("test");
 		userOK.setLogin("Test");
-//		userOK.setHashMotDePasse("1000:2f71112c1693c5378e1cd3a0d4884b20:9a00559a79652c140e6539bec1b9ed78fd2a2f42bd0b6f409c399564f8031766c53927b1594579598794cf372af872632450b35196959ac334f7bc97a5a5ddc0");
+		userOK.setPassword(new BCryptPasswordEncoder().encode("Test"));
 		userOK.setMasterCleChiffrementDonnees("Sf35rwnRDc7v4SDXsnGHUg==");
 		when(mockDataDBUsers.chargeUtilisateur(eq("Test"))).thenReturn(null, userOK);
 		
@@ -81,19 +81,6 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(auth) ))
 		.andExpect(status().isForbidden());
-		
-		// AuthOK
-		AuthLoginAPIObject auth2 = new AuthLoginAPIObject("Test", "test");
-		LOGGER.info("Authentification OK de {}", json(auth2));
-		getMockAPI().perform(
-				post(BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL).header(JwtConfig.JWT_AUTH_HEADER, getToken("test"))
-					.accept(MediaType.APPLICATION_JSON)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(json(auth2) ))
-				.andExpect(status().isOk())
-				.andExpect(header().exists("Content-Type"))
-				.andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON.toString()))
-				.andExpect(content().string("{\"idUtilisateur\":\"test\",\"droits\":{}}"));
 	}	
 	
 
