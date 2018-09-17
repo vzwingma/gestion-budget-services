@@ -2,12 +2,22 @@ package com.terrier.finances.gestion.services.utilisateurs.business;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
@@ -22,7 +32,7 @@ import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSess
  *
  */
 @Service
-public class UtilisateursService extends AbstractBusinessService {
+public class UtilisateursService extends AbstractBusinessService implements UserDetailsService {
 
 	/**
 	 * Logger
@@ -161,7 +171,44 @@ public class UtilisateursService extends AbstractBusinessService {
 		}
 		return false;
 	}
-	
 
+	@Override
+	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+		LOGGER.info("Tentative d'authentification de {}", login);
+		Utilisateur utilisateur;
+		try {
+			utilisateur = dataDBUsers.chargeUtilisateur(login);
+			if(utilisateur != null){
+				LOGGER.info("[idUtilisateur={}] Utilisateur [{}] trouvé", utilisateur.getId(), login);
+				String droits = utilisateur.getDroits()
+							.entrySet()
+							.stream()
+							.filter(e -> e.getValue())
+							.map(e -> e.getKey().name())
+							.collect(Collectors.joining(";"));
+				
+				List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+	                	.commaSeparatedStringToAuthorityList(droits);
+				LOGGER.info("[idUtilisateur={}] Droits {}", utilisateur.getId(), droits); 
+				
+				
+				
+				
+				return new User(utilisateur.getLogin(), passwordEncoder().encode("tushkan82"), grantedAuthorities);
+			}
+			else{
+				LOGGER.error("[AUTH] Erreur 2 : Utilisateur inconnu");
+			}
+			
+		} catch (DataNotFoundException e) {
+			// Uti
+			LOGGER.error("[AUTH] Erreur 3 : Données introuvabls");
+		}
+		return null;
+	}
 	
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+	    return new BCryptPasswordEncoder();
+	}
 }

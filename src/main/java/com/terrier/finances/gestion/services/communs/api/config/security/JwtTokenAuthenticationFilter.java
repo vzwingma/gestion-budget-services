@@ -17,6 +17,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
+/**
+ * Authentification par Token JWT
+ * @author vzwingma
+ *
+ */
 public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
     
 	private final JwtConfig jwtConfig;

@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
  *
  */
 public class JwtConfig {
-	@Value("${security.jwt.uri:/auth/**}")
-	private String Uri;
-
 	@Value("${security.jwt.header:Authorization}")
 	private String header;
 
@@ -22,20 +19,6 @@ public class JwtConfig {
 
 	@Value("${security.jwt.secret:JwtSecretKey}")
 	private String secret;
-
-	/**
-	 * @return the uri
-	 */
-	public String getUri() {
-		return Uri;
-	}
-
-	/**
-	 * @param uri the uri to set
-	 */
-	public void setUri(String uri) {
-		Uri = uri;
-	}
 
 	/**
 	 * @return the header
