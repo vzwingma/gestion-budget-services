@@ -17,7 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 
 /**
  * Authentification par Token JWT
