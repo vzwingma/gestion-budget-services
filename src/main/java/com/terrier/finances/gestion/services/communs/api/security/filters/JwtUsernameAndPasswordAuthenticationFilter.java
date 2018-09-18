@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.services.communs.api.security.filters;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -102,7 +103,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		attempts.remove(auth.getName());
 		
 		
-		Long now = System.currentTimeMillis();
+		Long now = Calendar.getInstance().getTimeInMillis();
 		String token = Jwts.builder()
 				.setSubject(utilisateur.getLogin())
 				.setId(utilisateur.getId())
