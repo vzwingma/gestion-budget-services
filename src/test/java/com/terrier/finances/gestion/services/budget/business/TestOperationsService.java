@@ -25,6 +25,7 @@ import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperation
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
@@ -92,7 +93,7 @@ public class TestOperationsService {
 	 * Test #119
 	 */
 	@Test
-	public void testSetBudgetInactif() throws BudgetNotFoundException {
+	public void testSetBudgetInactif() throws UserNotAuthorizedException, BudgetNotFoundException{
 		when(mockDBBudget.chargeBudgetMensuelById(anyString(), any())).thenReturn(this.budget);
 		BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, "TEST");
 		assertEquals(EtatOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());

@@ -12,6 +12,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.NotModifiedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserAccessForbiddenException;
 
 /**
  * Gestion des exceptions dans le service REST
@@ -54,8 +55,13 @@ class GlobalControllerExceptionHandler {
     	 LOGGER.error("Erreur : Compte clos");
     }
     
-    @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)  // 401
     @ExceptionHandler(UserNotAuthorizedException.class)
+    public void handleUnauthorizedException() {
+    	 LOGGER.error("Erreur : Accès non authentifié");
+    }
+    @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
+    @ExceptionHandler(UserAccessForbiddenException.class)
     public void handleException() {
     	 LOGGER.error("Erreur : Accès non autorisé");
     }

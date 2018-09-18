@@ -23,6 +23,7 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budget.business.OperationsService;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 
@@ -73,7 +74,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@RequestParam("idCompte") String idCompte, 
 			@RequestParam("mois") Integer mois, 
 			@RequestParam("annee") Integer annee, 
-			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws BudgetNotFoundException, DataNotFoundException {
+			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException {
 		String idUtilisateur = getIdUtilisateur(auth);
 		logger.info("[API][idUser={}][idCompte={}] getBudget {}/{}", idUtilisateur, idCompte, mois, annee);
 
@@ -109,7 +110,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
 	})	
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ID)
-	public @ResponseBody ResponseEntity<BudgetMensuel> updateBudget(@PathVariable("idBudget") String idBudget, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @RequestBody BudgetMensuel budget) throws DataNotFoundException{
+	public @ResponseBody ResponseEntity<BudgetMensuel> updateBudget(@PathVariable("idBudget") String idBudget, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @RequestBody BudgetMensuel budget) throws UserNotAuthorizedException, DataNotFoundException{
 		String idUtilisateur = getIdUtilisateur(auth);
 		logger.info("[API][idUser={}][idBudget={}] updateBudget",idUtilisateur, idBudget);
 		if(budget != null && idBudget != null && idBudget.equals(budget.getId())){
@@ -139,7 +140,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
 	})	
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
-	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		String idUtilisateur = getIdUtilisateur(auth);
 		logger.info("[API][idUser={}][idBudget={}] reinitialisation", idUtilisateur, idBudget);
 		if(idBudget != null){
@@ -171,7 +172,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	public ResponseEntity<Boolean> isBudgetActif(
 			@PathVariable("idBudget") String idBudget, 
 			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth,
-			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif,  @RequestParam(value="uptodateto", required=false) Long uptodateto) throws BudgetNotFoundException {
+			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif,  @RequestParam(value="uptodateto", required=false) Long uptodateto) throws UserNotAuthorizedException, BudgetNotFoundException {
 
 		String idUtilisateur = getIdUtilisateur(auth);
 		logger.info("[API][idUser={}][idBudget={}] actif ? : {}, uptodateto ? {}",idUtilisateur, idBudget, isActif, uptodateto );
@@ -223,7 +224,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	public ResponseEntity<BudgetMensuel> setBudgetActif(
 			@PathVariable("idBudget") String idBudget, 
 			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth,
-			@RequestParam(value="actif") Boolean setActif) throws BudgetNotFoundException {
+			@RequestParam(value="actif") Boolean setActif) throws UserNotAuthorizedException, BudgetNotFoundException {
 
 		String idUtilisateur = getIdUtilisateur(auth);
 		logger.info("[API][idUser={}][idBudget={}] set Actif : {}",idUtilisateur, idBudget, setActif );

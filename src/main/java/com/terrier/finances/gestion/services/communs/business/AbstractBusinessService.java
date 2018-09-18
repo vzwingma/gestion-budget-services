@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budget.business.OperationsService;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 import com.terrier.finances.gestion.services.parametrages.business.ParametragesService;
@@ -59,8 +60,12 @@ public class AbstractBusinessService {
 	 * @param idSession
 	 * @return businessSession
 	 */
-	public UserBusinessSession getBusinessSession(String idSession){
-		return getServiceUtilisateurs().getBusinessSession(idSession);
+	public UserBusinessSession getBusinessSession(String idSession) throws UserNotAuthorizedException{
+		UserBusinessSession userSession = getServiceUtilisateurs().getBusinessSession(idSession);
+		if(userSession != null){
+			return userSession;
+		}
+		throw new UserNotAuthorizedException(new StringBuilder().append("L'utilisateur ").append(idSession).append(" n'est pas authentifié"));
 	}
 	
 	/**

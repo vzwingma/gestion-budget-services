@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
@@ -119,10 +120,12 @@ public class ComptesService extends AbstractBusinessService {
 	 * @return liste des libelles opérations
 	 */
 	public Set<String> getLibellesOperations(String idUtilisateur, String idCompte, int annee){
-		if(getBusinessSession(idUtilisateur) != null){
+		try{
 			BasicTextEncryptor decryptor = getBusinessSession(idUtilisateur).getEncryptor();
 			return this.dataDepenses.chargeLibellesOperations(idCompte, annee, decryptor);
 		}
-		return new HashSet<>();
+		catch(UserNotAuthorizedException e){
+			return new HashSet<>();
+		}
 	}
 }
