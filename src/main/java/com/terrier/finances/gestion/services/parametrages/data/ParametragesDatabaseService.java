@@ -3,7 +3,6 @@ package com.terrier.finances.gestion.services.parametrages.data;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.services.communs.data.AbstractDatabaseService;
 import com.terrier.finances.gestion.services.parametrages.model.CategorieOperationDTO;
 import com.terrier.finances.gestion.services.parametrages.model.transformer.DataTransformerCategorieOperations;
@@ -62,30 +62,8 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	 * @return la catégorie
 	 * @param id identifiant de la catégorie
 	 */
-	public CategorieOperation chargeCategorieParId(String id) {
-
-		CategorieOperation categorie = null;
-		List<CategorieOperation> listeCategories = chargeCategories();
-
-		if(id != null){
-			// Recherche parmi les catégories
-			Optional<CategorieOperation> cat = listeCategories.parallelStream()
-					.filter(c -> id.equals(c.getId()))
-					.findFirst();
-			if(cat.isPresent()){
-				categorie = cat.get();
-			}
-			// Sinon les sous catégories
-			else{
-				Optional<CategorieOperation> ssCats = listeCategories.parallelStream()
-						.flatMap(c -> c.getListeSSCategories().stream())
-						.filter(ss -> id.equals(ss.getId()))
-						.findFirst();
-				if(ssCats.isPresent()){
-					categorie = ssCats.get();
-				}
-			}
-		}
+	public CategorieOperation getCategorieParId(String id) {
+		CategorieOperation categorie = BudgetDataUtils.getCategorieById(id, chargeCategories());
 		LOGGER.trace("[DB] Categorie by id [{}]->[{}]", id, categorie);
 		return categorie;
 	}

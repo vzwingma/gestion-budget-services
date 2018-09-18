@@ -76,7 +76,7 @@ public class ParametragesService extends AbstractBusinessService {
 	 */
 	public CategorieOperation getCategorieById(String idCategorie) throws DataNotFoundException{
 		LOGGER.trace("Recherche de la catégorie : {}", idCategorie);
-		CategorieOperation ssCategorieDepense = dataParams.chargeCategorieParId(idCategorie);
+		CategorieOperation ssCategorieDepense = dataParams.getCategorieParId(idCategorie);
 		if(ssCategorieDepense != null){
 			LOGGER.trace(">> : {}", ssCategorieDepense);
 			return ssCategorieDepense;

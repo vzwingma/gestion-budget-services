@@ -86,13 +86,13 @@ public class TestConverters {
 		cat.setCategorie(true);
 		cat.setId("IdTest");
 		cat.setLibelle("LibelleTest");
-		bo.getTotalParCategories().put(cat, new Double[]{ 100D, 200D});
+		bo.getTotalParCategories().put(cat.getId(), new Double[]{ 100D, 200D});
 		
 		CategorieOperation ssCat = new CategorieOperation();
 		ssCat.setCategorie(false);
 		ssCat.setId("IdTest");
 		ssCat.setLibelle("LibelleTest");
-		bo.getTotalParSSCategories().put(ssCat, new Double[]{ 100D, 200D});
+		bo.getTotalParSSCategories().put(ssCat.getId(), new Double[]{ 100D, 200D});
 
 		
 		Utilisateur user = new Utilisateur();
@@ -119,9 +119,9 @@ public class TestConverters {
 		assertEquals(bo.getSoldeReelNow(), boRead.getSoldeReelNow(), 1);
 		
 		assertEquals(1, boRead.getTotalParCategories().size());
-		assertEquals("IdTest", boRead.getTotalParCategories().keySet().iterator().next().getId());
+		assertEquals("IdTest", boRead.getTotalParCategories().keySet().iterator().next());
 		assertEquals(1, boRead.getTotalParSSCategories().size());
-		assertEquals("IdTest", boRead.getTotalParSSCategories().keySet().iterator().next().getId());
+		assertEquals("IdTest", boRead.getTotalParSSCategories().keySet().iterator().next());
 	}
 	
 	
@@ -137,13 +137,13 @@ public class TestConverters {
 		cat.setCategorie(true);
 		cat.setId("IdTest");
 		cat.setLibelle("LibelleTest");
-		bo.getTotalParCategories().put(cat, new Double[]{ 100D, 200D});
+		bo.getTotalParCategories().put(cat.getId(), new Double[]{ 100D, 200D});
 		
 		CategorieOperation ssCat = new CategorieOperation();
 		ssCat.setCategorie(false);
 		ssCat.setId("IdTest");
 		ssCat.setLibelle("LibelleTest");
-		bo.getTotalParSSCategories().put(ssCat, new Double[]{ 100D, 200D});
+		bo.getTotalParSSCategories().put(ssCat.getId(), new Double[]{ 100D, 200D});
 		
 		APIObjectMessageConverter<AbstractAPIObjectModel> converter = new APIObjectMessageConverter<>();
 		assertTrue(converter.canRead(BudgetMensuel.class, MediaType.APPLICATION_JSON));
@@ -159,9 +159,9 @@ public class TestConverters {
 		
 		BudgetMensuel boRead = (BudgetMensuel)modelRead;
 		assertEquals(1, boRead.getTotalParCategories().size());
-		assertEquals("IdTest", boRead.getTotalParCategories().keySet().iterator().next().getId());
+		assertEquals("IdTest", boRead.getTotalParCategories().keySet().iterator().next());
 		assertEquals(1, boRead.getTotalParSSCategories().size());
-		assertEquals("IdTest", boRead.getTotalParSSCategories().keySet().iterator().next().getId());
+		assertEquals("IdTest", boRead.getTotalParSSCategories().keySet().iterator().next());
 	}
 	
 }

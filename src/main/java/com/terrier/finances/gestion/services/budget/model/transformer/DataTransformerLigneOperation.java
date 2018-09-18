@@ -27,12 +27,12 @@ import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatab
  *
  */
 @Component("dataTransformerLigneDepense")
-public class DataTransformerLigneDepense implements IDataTransformer<LigneOperation, LigneDepenseDTO> {
+public class DataTransformerLigneOperation implements IDataTransformer<LigneOperation, LigneDepenseDTO> {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataTransformerLigneDepense.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataTransformerLigneOperation.class);
 	
 	@Autowired
 	private ParametragesDatabaseService parametrageService;
@@ -51,7 +51,10 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 		bo.setDateOperation(dto.getDateOperation());
 		bo.setDerniereOperation(dto.isDerniereOperation());
 		bo.setEtat(EtatOperationEnum.valueOf(decryptor.decrypt(dto.getEtat())));
-		bo.setSsCategorie(parametrageService.chargeCategorieParId(decryptor.decrypt(dto.getIdSSCategorie())));
+		bo.setIdSsCategorie(decryptor.decrypt(dto.getIdSSCategorie()));
+		
+		bo.setSsCategorie(parametrageService.getCategorieParId(bo.getIdSsCategorie()));
+		
 		bo.setLibelle(decryptor.decrypt(dto.getLibelle()));
 		bo.setPeriodique(dto.isPeriodique());
 		bo.setTypeDepense(TypeOperationEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
@@ -76,8 +79,7 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 		dto.setDerniereOperation(bo.isDerniereOperation());
 		dto.setEtat(encryptor.encrypt(bo.getEtat().name()));
 		dto.setId(bo.getId());
-		dto.setIdCategorie(bo.getCategorie() != null ? encryptor.encrypt(bo.getCategorie().getId()) : null);
-		dto.setIdSSCategorie(bo.getSsCategorie() != null ? encryptor.encrypt(bo.getSsCategorie().getId()) : null);
+		dto.setIdSSCategorie(bo.getIdSsCategorie() != null ? encryptor.encrypt(bo.getIdSsCategorie()) : null);
 		dto.setLibelle(encryptor.encrypt(bo.getLibelle()));
 		dto.setPeriodique(bo.isPeriodique());
 		dto.setTypeDepense(encryptor.encrypt(bo.getTypeDepense().name()));
@@ -134,7 +136,7 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 		LigneOperation ligneOperationClonee = new LigneOperation();
 		ligneOperationClonee.setId(UUID.randomUUID().toString());
 		ligneOperationClonee.setLibelle(ligneOperation.getLibelle());
-		ligneOperationClonee.setSsCategorie(ligneOperation.getSsCategorie());
+		ligneOperationClonee.setIdSsCategorie(ligneOperation.getIdSsCategorie());
 		ligneOperationClonee.setDateMaj(Calendar.getInstance().getTime());
 		ligneOperationClonee.setDateOperation(null);
 		ligneOperationClonee.setEtat(EtatOperationEnum.PREVUE);

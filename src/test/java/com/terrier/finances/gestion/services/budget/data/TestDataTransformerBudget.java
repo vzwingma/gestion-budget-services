@@ -6,8 +6,6 @@ package com.terrier.finances.gestion.services.budget.data;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 
 import java.time.Month;
 
@@ -15,11 +13,8 @@ import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
@@ -27,8 +22,7 @@ import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperatio
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget;
-import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense;
-import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
+import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneOperation;
 
 /**
  * @author PVZN02821
@@ -37,15 +31,11 @@ import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatab
 @RunWith(MockitoJUnitRunner.class)
 public class TestDataTransformerBudget {
 
-	
-	@Mock
-	private ParametragesDatabaseService parametrageMockService;
-	
 	@Spy
 	private DataTransformerBudget transformer;
 	
 	@Spy
-	private DataTransformerLigneDepense dataTransformerLigneDepense;
+	private DataTransformerLigneOperation dataTransformerLigneDepense;
 	
 	private static CategorieOperation cat1;
 	private static CategorieOperation cat2;
@@ -108,34 +98,6 @@ public class TestDataTransformerBudget {
 	public void initTransformer() throws DataNotFoundException{
 		e.setPassword("test");
 		transformer.setDataTransformerLigneDepense(dataTransformerLigneDepense);
-		transformer.setParametrageService(parametrageMockService);
-		when(parametrageMockService.chargeCategorieParId(anyString())).thenAnswer(new Answer<CategorieOperation>() {
-
-			/* (non-Javadoc)
-			 * @see org.mockito.stubbing.Answer#answer(org.mockito.invocation.InvocationOnMock)
-			 */
-			@Override
-			public CategorieOperation answer(InvocationOnMock invocation) throws Throwable {
-				String param = (String)invocation.getArguments()[0];
-				switch (param) {
-				case "CAT1":
-					return cat1;
-				case "CAT2":
-					return cat2;
-				case "SS CAT11":
-					return ssCat11;
-				case "SS CAT12":
-					return ssCat12;
-				case "SS CAT21":
-					return ssCat21;
-				case "SS CAT22":
-					return ssCat22;
-				default:
-					break;
-				}
-				return null;
-			}
-		});
 	}
 	
 	
@@ -153,13 +115,13 @@ public class TestDataTransformerBudget {
 		bo.setSoldeFin(123D);
 		bo.setSoldeNow(12D);
 		
-		bo.getTotalParSSCategories().put(ssCat11, new Double[]{11D, 311D});
-		bo.getTotalParSSCategories().put(ssCat12, new Double[]{12D, 312D});
-		bo.getTotalParSSCategories().put(ssCat21, new Double[]{21D, 321D});
-		bo.getTotalParSSCategories().put(ssCat22, new Double[]{22D, 322D});
+		bo.getTotalParSSCategories().put(ssCat11.getId(), new Double[]{11D, 311D});
+		bo.getTotalParSSCategories().put(ssCat12.getId(), new Double[]{12D, 312D});
+		bo.getTotalParSSCategories().put(ssCat21.getId(), new Double[]{21D, 321D});
+		bo.getTotalParSSCategories().put(ssCat22.getId(), new Double[]{22D, 322D});
 		
-		bo.getTotalParCategories().put(cat1, new Double[]{1111D, 11311D});
-		bo.getTotalParCategories().put(cat2, new Double[]{1112D, 11312D});
+		bo.getTotalParCategories().put(cat1.getId(), new Double[]{1111D, 11311D});
+		bo.getTotalParCategories().put(cat2.getId(), new Double[]{1112D, 11312D});
 		
 		
 		/**

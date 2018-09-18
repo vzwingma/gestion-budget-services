@@ -30,7 +30,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneDepense;
+import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneOperation;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
@@ -55,7 +55,7 @@ public class OperationsService extends AbstractBusinessService {
 	private BudgetDatabaseService dataDepenses;
 
 
-	private DataTransformerLigneDepense transformer = new DataTransformerLigneDepense();
+	private DataTransformerLigneOperation transformer = new DataTransformerLigneOperation();
 
 
 	
@@ -540,13 +540,13 @@ public class OperationsService extends AbstractBusinessService {
 			/*
 			 * #121 : La réserve n'est pas une véritable opération. Elle n'est pas prise en compte dans les calculs 
 			 */
-			if(!IdsCategoriesEnum.RESERVE.getId().equals(operation.getSsCategorie().getId())){
+			if(!IdsCategoriesEnum.RESERVE.getId().equals(operation.getIdSsCategorie())){
 				/**
 				 *  Calcul par catégorie
 				 */
 				Double[] valeursCat = {0D,0D};
-				if(budget.getTotalParCategories().get(operation.getCategorie()) != null){
-					valeursCat = budget.getTotalParCategories().get(operation.getCategorie());
+				if(budget.getTotalParCategories().get(operation.getIdCategorie()) != null){
+					valeursCat = budget.getTotalParCategories().get(operation.getIdCategorie());
 				}
 				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
 					valeursCat[0] = valeursCat[0] + valeurOperation;
@@ -555,14 +555,14 @@ public class OperationsService extends AbstractBusinessService {
 				else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 					valeursCat[1] = valeursCat[1] + valeurOperation;
 				}
-				budget.getTotalParCategories().put(operation.getCategorie(), valeursCat);
+				budget.getTotalParCategories().put(operation.getCategorie().getId(), valeursCat);
 
 				/**
 				 *  Calcul par sous catégorie
 				 */
 				Double[] valeurSsCat = {0D,0D};
-				if( budget.getTotalParSSCategories().get(operation.getSsCategorie()) != null){
-					valeurSsCat = budget.getTotalParSSCategories().get(operation.getSsCategorie());
+				if( budget.getTotalParSSCategories().get(operation.getIdSsCategorie()) != null){
+					valeurSsCat = budget.getTotalParSSCategories().get(operation.getIdSsCategorie());
 				}
 				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
 					valeurSsCat[0] = valeurSsCat[0] + valeurOperation;
@@ -571,7 +571,7 @@ public class OperationsService extends AbstractBusinessService {
 				if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 					valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
 				}
-				budget.getTotalParSSCategories().put(operation.getSsCategorie(), valeurSsCat);
+				budget.getTotalParSSCategories().put(operation.getIdSsCategorie(), valeurSsCat);
 				/**
 				 * Calcul des totaux
 				 */

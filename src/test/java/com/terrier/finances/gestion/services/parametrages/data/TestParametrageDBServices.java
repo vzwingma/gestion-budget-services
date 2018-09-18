@@ -91,10 +91,10 @@ public class TestParametrageDBServices {
 		when(mockMongo.findAll(CategorieOperationDTO.class)).thenReturn(categoriesFromDB);
 		when(db.getMongoOperation()).thenReturn(mockMongo);
 		
-		CategorieOperation cat = db.chargeCategorieParId("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a");
+		CategorieOperation cat = db.getCategorieParId("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a");
 		assertNotNull(cat);
 		
-		CategorieOperation ssCat = db.chargeCategorieParId("467496e4-9059-4b9b-8773-21f230c8c5c6");
+		CategorieOperation ssCat = db.getCategorieParId("467496e4-9059-4b9b-8773-21f230c8c5c6");
 		assertNotNull(ssCat);
 		assertNotNull(ssCat.getCategorieParente());
 		assertEquals("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", ssCat.getCategorieParente().getId());
@@ -102,7 +102,7 @@ public class TestParametrageDBServices {
 		
 		cat.getListeSSCategories().clear();
 		
-		CategorieOperation ssCat2 = db.chargeCategorieParId("467496e4-9059-4b9b-8773-21f230c8c5c6");
+		CategorieOperation ssCat2 = db.getCategorieParId("467496e4-9059-4b9b-8773-21f230c8c5c6");
 		assertNotNull(ssCat2);
 		assertNotNull(ssCat2.getCategorieParente());
 		assertEquals("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", ssCat2.getCategorieParente().getId());
@@ -145,10 +145,10 @@ public class TestParametrageDBServices {
 		when(mockMongo.findAll(CategorieOperationDTO.class)).thenReturn(categoriesFromDB);
 		when(db.getMongoOperation()).thenReturn(mockMongo);
 		
-		CategorieOperation cat = db.chargeCategorieParId("ID8");
+		CategorieOperation cat = db.getCategorieParId("ID8");
 		assertNotNull(cat);
 		
-		CategorieOperation ssCat = db.chargeCategorieParId("ID88");
+		CategorieOperation ssCat = db.getCategorieParId("ID88");
 		assertNotNull(ssCat);
 		assertNotNull(ssCat.getCategorieParente());
 		assertEquals("ID8", ssCat.getCategorieParente().getId());
@@ -156,7 +156,7 @@ public class TestParametrageDBServices {
 		
 		cat.getListeSSCategories().clear();
 		
-		CategorieOperation ssCat2 = db.chargeCategorieParId("ID73");
+		CategorieOperation ssCat2 = db.getCategorieParId("ID73");
 		assertNotNull(ssCat2);
 		assertNotNull(ssCat2.getCategorieParente());
 		assertEquals("ID7", ssCat2.getCategorieParente().getId());
