@@ -42,12 +42,6 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 	 */
 	@Override
 	public LigneOperation transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
-		// Cas de ss categorie perdue
-		// TODO : A enlever
-		if(dto.getIdSSCategorie() == null){
-			return null;
-		}
-		
 		LigneOperation bo = new LigneOperation();
 		bo.setId(dto.getId());
 		if(dto.getAuteur() !=null){

@@ -333,7 +333,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		BudgetMensuelDTO budgetDTO = dataTransformerBudget.transformBOtoDTO(budgetBO, encryptor);
 		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budgetDTO.getCompteBancaire().getLibelle(), budgetDTO.getMois() + 1, budgetDTO.getAnnee());
 		try{
-			getMongoOperation().save(budgetDTO, getBudgetCollectionName(budgetBO.getAnnee()));
+		//	getMongoOperation().save(budgetDTO, getBudgetCollectionName(budgetBO.getAnnee()));
 			LOGGER.info("Budget {} sauvegardé ", budgetDTO.getId());
 			return budgetDTO.getId();
 		}
