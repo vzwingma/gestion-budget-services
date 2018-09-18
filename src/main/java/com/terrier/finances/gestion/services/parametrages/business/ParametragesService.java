@@ -40,8 +40,8 @@ public class ParametragesService extends AbstractBusinessService {
 		List<CategorieOperation> listeCategories = dataParams.chargeCategories();
 		LOGGER.info("> Chargement des {} catégories <", listeCategories.size());
 		listeCategories.stream().forEachOrdered(c -> {
-			LOGGER.debug("[{}] {}", c.isActif() ? "v" : "X", c);
-			c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}]		{}", s.isActif() ? "v" : "X", s));
+			LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
+			c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}][{}]		{}", s.isActif() ? "v" : "X", s.getId(), s));
 		});
 	}
 
@@ -82,14 +82,5 @@ public class ParametragesService extends AbstractBusinessService {
 			return ssCategorieDepense;
 		}
 		throw new DataNotFoundException("Catégorie introuvable");
-	}
-
-
-
-	/**
-	 * Reset des données
-	 */
-	public void resetData(){
-		dataParams.resetData();
 	}
 }
