@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.services.budget.model.LigneDepenseDTO;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
 
@@ -52,8 +53,13 @@ public class DataTransformerLigneOperation implements IDataTransformer<LigneOper
 		bo.setDerniereOperation(dto.isDerniereOperation());
 		bo.setEtat(EtatOperationEnum.valueOf(decryptor.decrypt(dto.getEtat())));
 		bo.setIdSsCategorie(decryptor.decrypt(dto.getIdSSCategorie()));
-		
-		bo.setSsCategorie(parametrageService.getCategorieParId(bo.getIdSsCategorie()));
+		CategorieOperation ssCat = parametrageService.getCategorieParId(bo.getIdSsCategorie());
+		if(ssCat != null){
+			bo.setSsCategorie(ssCat);
+		}
+		else{
+			return null;
+		}
 		
 		bo.setLibelle(decryptor.decrypt(dto.getLibelle()));
 		bo.setPeriodique(dto.isPeriodique());
@@ -115,10 +121,10 @@ public class DataTransformerLigneOperation implements IDataTransformer<LigneOper
 	 */
 	public List<LigneOperation> transformDTOtoBO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
 		List<LigneOperation> listeDepensesBO = new ArrayList<>();
-		if(listeDTO != null){
+		if(listeDTO != null && !listeDTO.isEmpty()){
 			listeDTO.stream().forEach(dto -> {
 				LigneOperation bo = transformDTOtoBO(dto, decryptor);
-				if(bo != null){
+				if(dto != null && bo != null){
 					listeDepensesBO.add(bo);	
 				}
 			});
