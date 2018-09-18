@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
@@ -106,11 +107,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		Long now = Calendar.getInstance().getTimeInMillis();
 		String token = Jwts.builder()
 				.setSubject(utilisateur.getLogin())
-				.setId(utilisateur.getId())
+				.setId(UUID.randomUUID().toString())
 				// Convert to list of strings. 
-				.claim("authorities", auth.getAuthorities().stream()
+				.claim(JwtConfig.JWT_CLAIM_AUTORITIES_HEADER, auth.getAuthorities().stream()
 						.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+				.claim(JwtConfig.JWT_CLAIM_USERID_HEADER, utilisateur.getId())
 				.setIssuedAt(new Date(now))
+				.setIssuer("Budget-Services v" + usersDetailsServices.getVersion())
 				.setExpiration(new Date(now + JwtConfig.JWT_EXPIRATION_S * 1000))  // in milliseconds
 				.signWith(SignatureAlgorithm.HS512, JwtConfig.JWT_SECRET_KEY.getBytes())
 				.compact();

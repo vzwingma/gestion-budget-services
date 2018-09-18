@@ -61,24 +61,26 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 		if(listeCategories.isEmpty()){
 			chargeCategories();
 		}
-		// Recherche parmi les catégories
-		Optional<CategorieOperation> cat = 
-				listeCategories
-				.parallelStream()
-				.filter(c -> id.equals(c.getId()))
-				.findFirst();
-		if(cat.isPresent()){
-			return cat.get();
-		}
-		// Sinon les sous catégories
-		else{
-			Optional<CategorieOperation> ssCat = listeCategories
-			.parallelStream()
-			.flatMap(c -> c.getListeSSCategories().stream())
-			.filter(ss -> id.equals(ss.getId()))
-			.findFirst();
-			if(ssCat.isPresent()){
-				return ssCat.get();
+		if(id != null){
+			// Recherche parmi les catégories
+			Optional<CategorieOperation> cat = 
+					listeCategories
+					.parallelStream()
+					.filter(c -> id.equals(c.getId()))
+					.findFirst();
+			if(cat.isPresent()){
+				return cat.get();
+			}
+			// Sinon les sous catégories
+			else{
+				Optional<CategorieOperation> ssCat = listeCategories
+						.parallelStream()
+						.flatMap(c -> c.getListeSSCategories().stream())
+						.filter(ss -> id.equals(ss.getId()))
+						.findFirst();
+				if(ssCat.isPresent()){
+					return ssCat.get();
+				}
 			}
 		}
 		return null;

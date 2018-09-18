@@ -4,6 +4,7 @@
 package com.terrier.finances.gestion.test.config;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -74,15 +75,16 @@ public abstract class AbstractTestsAPI {
 	}
 	
 	
-	public static String getToken(String id){
-		return getToken(id, id);
+	public static String getTestToken(String id){
+		return getTestToken(id, id);
 	}
 	
-	public static String getToken(String id, String login){
+	public static String getTestToken(String id, String login){
 		Long now = System.currentTimeMillis();
 		String token = Jwts.builder()
 				.setSubject(login)
-				.setId(id)
+				.setId(UUID.randomUUID().toString())
+				.claim(JwtConfig.JWT_CLAIM_USERID_HEADER, id)
 				// Convert to list of strings. 
 //				.claim("authorities", auth.getAuthorities().stream()
 //						.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))

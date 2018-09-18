@@ -47,6 +47,6 @@ public abstract class AbstractAPIController {
 	}
 	
 	protected String getIdUtilisateur(String token){
-		return JwtConfig.getJWTClaims(token).getId();
+		return (String)JwtConfig.getJWTClaims(token).get(JwtConfig.JWT_CLAIM_USERID_HEADER);
 	}
 }
