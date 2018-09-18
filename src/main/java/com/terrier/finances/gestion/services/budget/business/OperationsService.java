@@ -540,7 +540,7 @@ public class OperationsService extends AbstractBusinessService {
 			/*
 			 * #121 : La réserve n'est pas une véritable opération. Elle n'est pas prise en compte dans les calculs 
 			 */
-			if(operation.getSsCategorie() != null && !IdsCategoriesEnum.RESERVE.getId().equals(operation.getSsCategorie().getId())){
+			if(!IdsCategoriesEnum.RESERVE.getId().equals(operation.getSsCategorie().getId())){
 				/**
 				 *  Calcul par catégorie
 				 */
