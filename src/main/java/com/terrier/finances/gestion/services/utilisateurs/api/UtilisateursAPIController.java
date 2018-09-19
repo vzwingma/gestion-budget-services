@@ -25,8 +25,10 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserAccessForbiddenException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
+import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -58,6 +60,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	@ApiOperation(httpMethod="POST", produces=MediaType.APPLICATION_JSON_VALUE, protocols="HTTPS", value="Authentification d'un utilisateur", response=String.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Authentification réussie"),
+            @ApiResponse(code = 401, message = "L'utilisateur doit être identifié"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Ressource introuvable")
     })
@@ -75,21 +78,23 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 * @param login login de l'utilisateur
 	 * @param motPasse motPasse
 	 * @return résultat de l'opération
+	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Déconnexion d'un utilisateur")
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Déconnexion réussie"),
+            @ApiResponse(code = 401, message = "L'utilisateur doit être identifié"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Session introuvable")
     })
 	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT)
-	public ResponseEntity<String> disconnect(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
-		String idUtilisateur = getIdUtilisateur(auth);
-		if(authService.deconnexionBusinessSession(idUtilisateur)){
-			logger.info("[API][idUser={}] Disconnect : true", idUtilisateur);
+	public ResponseEntity<String> disconnect(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
+		UserBusinessSession userSession = getUtilisateur(auth);
+		if(authService.deconnexionBusinessSession(userSession)){
+			logger.info("[API][idUser={}] Disconnect : true", userSession.getUtilisateur().getId());
 			return ResponseEntity.noContent().build();
 		}
-		throw new DataNotFoundException("[API][idUser="+idUtilisateur+"] Impossible de déconnecter l'utilisateur");
+		throw new DataNotFoundException("[API][idUser="+userSession+"] Impossible de déconnecter l'utilisateur");
 	}
 	
 	/**
@@ -97,25 +102,27 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 * @param idUtilisateur id Utilisateur
 	 * @return date de dernier accès
 	 * @throws DataNotFoundException
+	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Date de dernier accès d'un utilisateur")
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Opération réussie"),
+            @ApiResponse(code = 401, message = "L'utilisateur doit être identifié"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Session introuvable")
     })
 	@GetMapping(value=BudgetApiUrlEnum.USERS_ACCESS_DATE)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
-		String idUtilisateur = getIdUtilisateur(auth);
-		if(authService.getBusinessSession(idUtilisateur) != null){
-			LocalDateTime lastAccess = authService.getBusinessSession(idUtilisateur).getUtilisateur().getDernierAcces();
-			logger.info("[API][idUser={}] LastAccessTime : {}", idUtilisateur, lastAccess);
+	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
+		UserBusinessSession userSession = getUtilisateur(auth);
+		if(userSession != null){
+			LocalDateTime lastAccess = userSession.getUtilisateur().getDernierAcces();
+			logger.info("[API][idUser={}] LastAccessTime : {}", userSession.getUtilisateur().getId(), lastAccess);
 			UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
-			prefs.setIdUtilisateur(idUtilisateur);
+			prefs.setIdUtilisateur(userSession.getUtilisateur().getId());
 			prefs.setLastAccessTime(BudgetDateTimeUtils.getLongFromLocalDateTime(lastAccess));
 			return getEntity(prefs);
 		}
-		throw new DataNotFoundException("[API][idUser="+idUtilisateur+"] Impossible de trouver l'utilisateur");
+		throw new DataNotFoundException("[API][idUser=?] Impossible de trouver l'utilisateur");
 	}
 	
 	
@@ -125,24 +132,27 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 * @param idUtilisateur id Utilisateur
 	 * @return préférences
 	 * @throws DataNotFoundException
+	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Préférences d'un utilisateur")
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Opération réussie"),
+            @ApiResponse(code = 401, message = "L'utilisateur doit être identifié"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Session introuvable")
     })
 	@GetMapping(value=BudgetApiUrlEnum.USERS_PREFS)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
-		String idUtilisateur = getIdUtilisateur(auth);
-		if(authService.getBusinessSession(idUtilisateur) != null){
-			Map<UtilisateurPrefsEnum, String> prefsUtilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur().getPrefsUtilisateur();
+	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
+		UserBusinessSession userSession = getUtilisateur(auth);
+		if(userSession != null){
+			Map<UtilisateurPrefsEnum, String> prefsUtilisateur = userSession.getUtilisateur().getPrefsUtilisateur();
+			String idUtilisateur = userSession.getUtilisateur().getId();
 			logger.info("[API][idUser={}] Preferences Utilisateur : {}", idUtilisateur, prefsUtilisateur);
 			UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
 			prefs.setIdUtilisateur(idUtilisateur);
 			prefs.setPreferences(prefsUtilisateur);
 			return getEntity(prefs);
 		}
-		throw new DataNotFoundException("[API][idUser="+idUtilisateur+"] Impossible de trouver l'utilisateur");
+		throw new DataNotFoundException("[API][token="+auth+"] Impossible de trouver l'utilisateur");
 	}
 }

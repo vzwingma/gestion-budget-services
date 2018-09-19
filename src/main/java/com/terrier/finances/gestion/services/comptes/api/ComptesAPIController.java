@@ -25,6 +25,7 @@ import com.terrier.finances.gestion.communs.operations.model.api.LibellesOperati
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 
@@ -55,16 +56,18 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @param idUtilisateur id de l'utilisateur
 	 * @return liste des comptes de l'utilisateur
 	 * @throws DataNotFoundException erreur données non trouvées
+	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Comptes d'un utilisateur")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération réussie"),
+			@ApiResponse(code = 401, message = "L'utilisateur doit être authentifié"),
 			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST)
-	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
-		String idUtilisateur = getIdUtilisateur(auth);
+	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
+		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
 		logger.info("[API][idUser={}] getComptes", auth, idUtilisateur);
 		return getEntities(comptesService.getComptesUtilisateur(idUtilisateur));
 	}
@@ -74,10 +77,12 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @param idCompte id du compte
 	 * @return compte associé
 	 * @throws DataNotFoundException erreur données non trouvées
+	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Compte d'un utilisateur")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération réussie"),
+			@ApiResponse(code = 401, message = "L'utilisateur doit être authentifié"),
 			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
 			@ApiResponse(code = 404, message = "Données introuvables")
 	})
@@ -85,8 +90,8 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path")
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID)
-	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
-		String idUtilisateur = getIdUtilisateur(auth);
+	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
+		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
 		logger.info("[API][idUser={}][idCompte={}] getCompte", idUtilisateur, idCompte);
 		return getEntity(comptesService.getCompteById(idCompte, idUtilisateur));
 	}
@@ -97,10 +102,12 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @param idCompte id du compte
 	 * @return compte associé
 	 * @throws DataNotFoundException erreur données non trouvées
+	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Intervalles des budgets pour un compte")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération réussie"),
+			@ApiResponse(code = 401, message = "L'utilisateur doit être authentifié"),
 			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
 			@ApiResponse(code = 404, message = "Données introuvables")
 	})
@@ -108,8 +115,8 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES)
-	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException{
-		String idUtilisateur = getIdUtilisateur(auth);
+	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
+		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
 		logger.info("[API][idUser={}][idCompte={}] getIntervallesBudgetsCompte", idUtilisateur, idCompte);
 
 		LocalDate[] intervalles = comptesService.getIntervallesBudgets(idCompte);
@@ -128,11 +135,13 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @param idUtilisateur id Utilisateur
 	 * @param idCompte idCompte
 	 * @param annee année
+	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Libelles des opérations des budgets de l'année pour un compte")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération réussie"),
 			@ApiResponse(code = 204, message = "Aucune donnée"),
+			@ApiResponse(code = 401, message = "L'utilisateur doit être authentifié"),
 			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
 			@ApiResponse(code = 404, message = "Données introuvables")
 	})
@@ -141,8 +150,8 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
 	})		
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES)
-	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee){
-		String idUtilisateur = getIdUtilisateur(auth);
+	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
+		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
 		logger.info("[API][idUser={}][idCompte={}] get Libellés Opérations : {}", idUtilisateur, idCompte, annee);
 		Set<String> libelles = comptesService.getLibellesOperations(idUtilisateur, idCompte, annee);
 		if(libelles != null && !libelles.isEmpty()){

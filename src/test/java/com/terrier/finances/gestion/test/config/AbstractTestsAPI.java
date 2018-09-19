@@ -4,7 +4,6 @@
 package com.terrier.finances.gestion.test.config;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;

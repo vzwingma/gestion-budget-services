@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,20 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	@Autowired
 	private UtilisateursService serviceUser;
 
+	
+	@BeforeEach
+	public void init() {
+		Utilisateur user = new Utilisateur();
+		user.setId("345345");
+		user.setLogin("345345");
+		user.setLibelle("345345");
+		serviceUser.registerUserBusinessSession(user, "345345");
+		Utilisateur user2 = new Utilisateur();
+		user2.setId("123123");
+		user2.setLogin("123123");
+		user2.setLibelle("123123");
+		serviceUser.registerUserBusinessSession(user2, "123123");
+	}
 
 	@Test
 	public void testGetComptes() throws Exception {
@@ -148,7 +163,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 
 		when(mockDataDBBudget.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuelDTO[]{ debut, fin});
 		getMockAPI().perform(
-				get(path).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("TEST")))
+				get(path).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("123123")))
 			.andExpect(status().isOk())
 			.andExpect(content().string("{\"datePremierBudget\":17563,\"dateDernierBudget\":17622}"));
 	}
@@ -162,7 +177,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	@Test
 	public void testLibelles() throws Exception {
 		String path = BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES_FULL.replace("{idCompte}", "TEST") + "?annee=2019";
-		getMockAPI().perform(get(path).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("TEEST")))
+		getMockAPI().perform(get(path).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("123123")))
 		.andExpect(status().isNoContent());
 		
 		Utilisateur user = new Utilisateur();
@@ -174,7 +189,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		libelles.add("OPE2");
 		when(mockDataDBBudget.chargeLibellesOperations(eq("TEST"), eq(2019), any())).thenReturn(libelles);
 		
-		getMockAPI().perform(get(path).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("TEEST")))
+		getMockAPI().perform(get(path).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("123123")))
 		.andExpect(status().isOk())
 		.andExpect(content().string("{\"idCompte\":\"TEST\",\"libellesOperations\":[\"OPE1\",\"OPE2\"]}"));
 	}

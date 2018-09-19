@@ -89,20 +89,20 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	public void testDisconnect() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("123123")))
+				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest22")))
 		.andExpect(status().is4xxClientError());
 
 		Utilisateur userOK = new Utilisateur();
 		userOK.setId("345345");
-		userOK.setLogin("Test");
-		service.registerUserBusinessSession(userOK, "test");
+		userOK.setLogin("345345");
+		service.registerUserBusinessSession(userOK, "345345");
 		
 		LOGGER.info("Disconnect Failed");
 		getMockAPI().perform(
 				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest22"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotFound());
+		.andExpect(status().isUnauthorized());
 		
 		LOGGER.info("Disconnect OK");
 		getMockAPI().perform(

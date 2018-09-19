@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
@@ -52,11 +53,12 @@ public class AdminAPIController extends AbstractAPIController {
 	 * @param oldpassword ancien mot de passe
 	 * @param newPassword nouveau mot de passe
 	 * @return résultat de l'opération
+	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="GET", produces="application/text", protocols="HTTPS", value="Opération de changement de mot de passe", response=String.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Changement de passe réussi"),
-            @ApiResponse(code = 401, message = "L'opération doit être identifiée"),
+            @ApiResponse(code = 401, message = "L'utilisateur doit être identifié"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Ressource introuvable")
     })
@@ -66,8 +68,8 @@ public class AdminAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="newpassword", required=true, value="Nouveau mot de passe de l'utilisateur", paramType="path")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.ADMIN_ACCESS)
-	public String password(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
-		String idUtilisateur = getIdUtilisateur(auth);
+	public String password(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword) throws UserNotAuthorizedException{
+		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
 		LOGGER.info("[idUser={}]Changement du mot de passe", idUtilisateur);
 		Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
 		if(utilisateur != null){

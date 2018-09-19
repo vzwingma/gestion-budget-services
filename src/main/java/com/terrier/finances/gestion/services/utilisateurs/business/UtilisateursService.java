@@ -156,7 +156,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	public void registerUserBusinessSession(Utilisateur utilisateur, String masterKeyClear){
 		LOGGER.debug("[SEC][idUser={}] Enregistrement de la BusinessSession", utilisateur.getId());
 		if(this.businessSessions.containsKey(utilisateur.getId())){
-			deconnexionBusinessSession(utilisateur.getId());
+			deconnexionBusinessSession(this.businessSessions.get(utilisateur.getId()));
 		}
 		this.businessSessions.putIfAbsent(utilisateur.getId(), new UserBusinessSession(utilisateur));
 		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);
@@ -186,11 +186,9 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 * @param idSession
 	 * @return résultat de la déconnexion
 	 */
-	public boolean deconnexionBusinessSession(String idSession){
-		UserBusinessSession userSession = this.businessSessions.get(idSession);
+	public boolean deconnexionBusinessSession(UserBusinessSession userSession ){
 		if(userSession != null){
-			userSession.deconnexion();
-			return this.businessSessions.remove(idSession) != null;
+			return this.businessSessions.remove(userSession.getUtilisateur().getId()) != null;
 		}
 		return false;
 	}

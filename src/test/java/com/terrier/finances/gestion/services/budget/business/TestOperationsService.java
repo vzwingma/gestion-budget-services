@@ -131,7 +131,7 @@ public class TestOperationsService {
 	public void testSetBudgetInactif() throws UserNotAuthorizedException, BudgetNotFoundException{
 		when(mockDBBudget.chargeBudgetMensuelById(anyString(), any())).thenReturn(this.budget);
 		try {
-			BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, "TEST");
+			BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, new UserBusinessSession(new Utilisateur()));
 			assertEquals(EtatOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
 		}
 		catch (Exception e) {
@@ -210,17 +210,19 @@ public class TestOperationsService {
 		op2.setDerniereOperation(false);
 		budget.getListeOperations().add(op2);
 
-		assertTrue(operationsService.setLigneDepenseAsDerniereOperation(this.budget.getId(), "ID_op", "userTest"));
+		Utilisateur u = new Utilisateur();
+		u.setLibelle("userTest");
+		u.setLogin("userTest");
+		
+		assertTrue(operationsService.setLigneDepenseAsDerniereOperation(this.budget.getId(), "ID_op", new UserBusinessSession(u)));
 
 		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(argThat(new BaseMatcher<BudgetMensuel>() {
 
 			@Override
 			public boolean matches(Object arg0) {
-				LOGGER.info("arg0 : {}", arg0);
 				if(arg0 instanceof BudgetMensuel) {
 					boolean resultat = true;
 					BudgetMensuel b = (BudgetMensuel)arg0;
-					LOGGER.info("OPs {}", b.getListeOperations());
 					resultat &= b.getListeOperations().size() == 3;
 					for (LigneOperation op : b.getListeOperations()) {
 						if(op.getId().equals("OP1")) {
