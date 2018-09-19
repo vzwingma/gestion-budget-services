@@ -2,13 +2,21 @@ package com.terrier.finances.gestion.services.budget.business;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.time.Month;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,10 +36,14 @@ import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperation
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
+import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
+import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 import com.terrier.finances.gestion.test.config.TestMockAuthServicesConfig;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
@@ -60,6 +72,9 @@ public class TestOperationsService {
 	private OperationsService operationsService;
 
 	@Autowired
+	private UtilisateurDatabaseService mockDataDBUsers;
+	
+	@Autowired
 	@Qualifier("mockAuthService")
 	private UtilisateursService authenticationService;
 
@@ -68,14 +83,20 @@ public class TestOperationsService {
 
 	/**
 	 * Surcharge de l'authservice
+	 * @throws DataNotFoundException 
 	 */
 	@BeforeEach
-	public void initBusinessSession(){
+	public void initBusinessSession() throws DataNotFoundException{
 		UserBusinessSession mockUser = Mockito.mock(UserBusinessSession.class);
 		when(mockUser.getEncryptor()).thenReturn(new BasicTextEncryptor());
 		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
 		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
-
+		
+		Utilisateur user = new Utilisateur();
+		user.setId("userTest");
+		user.setLibelle("userTest");
+		user.setLogin("userTest");
+		authenticationService.registerUserBusinessSession(user, "clear");
 
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
@@ -91,10 +112,15 @@ public class TestOperationsService {
 		this.budget.setAnnee(now.getYear());
 		CompteBancaire compte = new CompteBancaire();
 		compte.setActif(true);
-		compte.setId("C_ID");
+		compte.setId("CID");
 		compte.setLibelle("TEST COMPTE");
 		compte.setOrdre(0);
+		
+		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(compte);
+		
 		this.budget.setCompteBancaire(compte);
+		
+		this.budget.setId(BudgetDataUtils.getBudgetId(compte, Month.JANUARY, 2018));
 	}
 
 
@@ -165,5 +191,52 @@ public class TestOperationsService {
 		assertEquals(150, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
 		assertEquals(273, Double.valueOf(this.budget.getSoldeReelFin()).intValue());		
 
+	}
+
+	@Test
+	public void testSetLastOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException {
+
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(this.budget);
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("MOCK"));	
+		CategorieOperation cat = new CategorieOperation("SCAT_ID");
+		CategorieOperation sscat = new CategorieOperation("CAT_ID");
+		sscat.setCategorieParente(cat);
+
+		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		op1.setDerniereOperation(true);
+		budget.getListeOperations().add(op1);
+		LigneOperation op2 = new LigneOperation(sscat, "OP2", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		op2.setId("ID_op");
+		op2.setDerniereOperation(false);
+		budget.getListeOperations().add(op2);
+
+		assertTrue(operationsService.setLigneDepenseAsDerniereOperation(this.budget.getId(), "ID_op", "userTest"));
+
+		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(argThat(new BaseMatcher<BudgetMensuel>() {
+
+			@Override
+			public boolean matches(Object arg0) {
+				LOGGER.info("arg0 : {}", arg0);
+				if(arg0 instanceof BudgetMensuel) {
+					boolean resultat = true;
+					BudgetMensuel b = (BudgetMensuel)arg0;
+					LOGGER.info("OPs {}", b.getListeOperations());
+					resultat &= b.getListeOperations().size() == 3;
+					for (LigneOperation op : b.getListeOperations()) {
+						if(op.getId().equals("OP1")) {
+							resultat &= !op.isDerniereOperation();
+						}
+						else if(op.getId().equals("OP2")) {
+							resultat &= op.isDerniereOperation();
+						}
+					}
+					return resultat;
+				}
+				return false;
+			}
+
+			@Override
+			public void describeTo(Description arg0) { }
+		}), any(BasicTextEncryptor.class));
 	}
 }

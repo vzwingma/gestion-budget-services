@@ -12,7 +12,7 @@ import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDataba
 
 @Configuration
 @ComponentScan(basePackages = {
-		"com.terrier.finances.gestion.services.statut",
+		"com.terrier.finances.gestion.services.statut.business",
 		"com.terrier.finances.gestion.services.budget.business", 
 		"com.terrier.finances.gestion.services.comptes.business",		
 		"com.terrier.finances.gestion.services.parametrages.business",

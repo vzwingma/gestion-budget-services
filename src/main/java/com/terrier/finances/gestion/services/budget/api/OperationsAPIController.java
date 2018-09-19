@@ -263,7 +263,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="derniereOperation", required=true, value="Activité du budget par rapport à la date en paramètres (en ms)", paramType="query"),
 	})	
 	 
-	@GetMapping(value=BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_ETAT)
+	@PostMapping(value=BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_ETAT)
 	public ResponseEntity<Boolean> setAsDerniereOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation, 

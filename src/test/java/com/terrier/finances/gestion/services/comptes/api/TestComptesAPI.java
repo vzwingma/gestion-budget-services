@@ -26,6 +26,7 @@ import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
@@ -110,10 +111,11 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		c1.setLibelle("Libelle1");
 		c1.setOrdre(1);
 		when(mockDataDBUsers.chargeCompteParId(eq("111"), eq("345345"))).thenReturn(c1);
-		
+		when(mockDataDBUsers.chargeCompteParId(eq("111"), eq("123123"))).thenThrow(new DataNotFoundException("Mock : Compte 111 introuvable pour 123123"));
 		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111");
 		
 		// Compte KO
+		LOGGER.info("testCompte : {}", path);
 		getMockAPI().perform(
 				get(path).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("123123"))
 				.accept(MediaType.APPLICATION_JSON)

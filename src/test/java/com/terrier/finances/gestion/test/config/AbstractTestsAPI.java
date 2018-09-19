@@ -70,6 +70,7 @@ public abstract class AbstractTestsAPI {
 		try {
 			return new ObjectMapper().writeValueAsString(restObject);
 		} catch (JsonProcessingException e) {
+			LoggerFactory.getLogger(AbstractTestsAPI.class).error("Erreur lors du JSON {}", restObject, e);
 			return null;
 		}
 	}
@@ -83,7 +84,7 @@ public abstract class AbstractTestsAPI {
 		Long now = System.currentTimeMillis();
 		String token = Jwts.builder()
 				.setSubject(login)
-				.setId(UUID.randomUUID().toString())
+				.setId(id)
 				.claim(JwtConfig.JWT_CLAIM_USERID_HEADER, id)
 				// Convert to list of strings. 
 //				.claim("authorities", auth.getAuthorities().stream()

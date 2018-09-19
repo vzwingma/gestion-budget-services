@@ -58,8 +58,8 @@ public class OperationsService extends AbstractBusinessService {
 	private DataTransformerLigneOperation transformer = new DataTransformerLigneOperation();
 
 
-	
-	
+
+
 	/**
 	 * Chargement du budget du mois courant
 	 * @param compte compte 
@@ -128,7 +128,7 @@ public class OperationsService extends AbstractBusinessService {
 		return budgetMensuel;
 	}
 
-	
+
 	/**
 	 * Chargement du budget du mois courant pour le compte inactif
 	 * @param compte compte 
@@ -226,7 +226,7 @@ public class OperationsService extends AbstractBusinessService {
 			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(idUtilisateur, compteBancaire.getId(), moisPrecedent, anneePrecedente);
 			// #115 : Cloture automatique du mois précédent
 			setBudgetActif(budgetPrecedent.getId(), false, idUtilisateur);
-			
+
 			initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 		}
 		else{
@@ -249,6 +249,17 @@ public class OperationsService extends AbstractBusinessService {
 		}
 	}
 
+	/**
+	 * @param idUtilisateur
+	 * @param idBudget
+	 * @return budget correspondant aux paramètres
+	 * @throws UserNotAuthorizedException utilisateur non autorisé
+	 * @throws BudgetNotFoundException budget introuvable
+	 * @throws DataNotFoundException données introuvables
+	 */
+	private BudgetMensuel chargerBudgetMensuel(String idUtilisateur, String idBudget) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException{
+		return chargerBudgetMensuel(idUtilisateur, BudgetDataUtils.getCompteFromBudgetId(idBudget), BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget));
+	}
 
 	/**
 	 * Réinitialiser un budget mensuel
@@ -258,7 +269,7 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public BudgetMensuel reinitialiserBudgetMensuel(String idBudget, String idUtilisateur) throws UserNotAuthorizedException, BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
-		BudgetMensuel budgetMensuel = chargerBudgetMensuel(idUtilisateur, BudgetDataUtils.getCompteFromBudgetId(idBudget), BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget));
+		BudgetMensuel budgetMensuel = chargerBudgetMensuel(idUtilisateur, idBudget);
 		if(budgetMensuel != null){
 			CompteBancaire compteBancaire = getServiceComptes().getCompteById(budgetMensuel.getCompteBancaire().getId(), idUtilisateur);
 			if(compteBancaire != null){
@@ -369,9 +380,12 @@ public class OperationsService extends AbstractBusinessService {
 	 * @param auteur auteur de l'action
 	 */
 	private void ajoutOperation(BudgetMensuel budget, LigneOperation ligneOperation, Utilisateur auteur){
-		LOGGER.info("Ajout d'une Opération : {}", ligneOperation);
+
 		ligneOperation.setAuteur(auteur.getLibelle());
 		ligneOperation.setDateMaj(Calendar.getInstance().getTime());
+		// Si mise à jour d'une opération, on l'enlève
+		boolean maj = budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
+		LOGGER.info("{} d'une Opération : {}", maj ? "Mise à jour" : "Ajout", ligneOperation);
 		budget.getListeOperations().add(ligneOperation);
 		budget.setDateMiseAJour(Calendar.getInstance());
 	}
@@ -500,28 +514,37 @@ public class OperationsService extends AbstractBusinessService {
 	 * Mise à jour de la ligne comme dernière opération
 	 * @param ligneId
 	 */
-	public void setLigneDepenseAsDerniereOperation(BudgetMensuel budget, String ligneId, String idUtilisateur) throws UserNotAuthorizedException{
-		for (LigneOperation ligne : budget.getListeOperations()) {
-			if(ligne.getId().equals(ligneId)){
-				LOGGER.info("Tag de la ligne {} comme dernière opération", ligne);
-				ligne.setDerniereOperation(true);
+	public boolean setLigneDepenseAsDerniereOperation(String idBudget, String ligneId, String idUtilisateur) throws UserNotAuthorizedException{
+		try {
+			BudgetMensuel budget = chargerBudgetMensuel(idUtilisateur, idBudget);
+			if(budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()) {
+				LOGGER.info("[idBudget={}][idOperation={}] Tag de la ligne comme dernière opération", idBudget, ligneId);
+				budget.getListeOperations()
+				.parallelStream()
+				.forEach(op -> op.setDerniereOperation(ligneId.equals(op.getId())));
+				// Mise à jour du budget
+				budget.setDateMiseAJour(Calendar.getInstance());
+				dataDepenses.sauvegardeBudgetMensuel(budget, getBusinessSession(idUtilisateur).getEncryptor());
+				return true;
 			}
-			else{
-				ligne.setDerniereOperation(false);
-			}
+
+		} catch (BudgetNotFoundException | DataNotFoundException e) {
+			LOGGER.error("Erreur lors du tag de la ligne {} dans le budget {}", ligneId, idBudget, e);
+		} catch (Exception e) {
+			LOGGER.error("Erreur lors du tag de la ligne {} dans le budget {}", ligneId, idBudget, e);
 		}
-		// Mise à jour du budget
-		budget.setDateMiseAJour(Calendar.getInstance());
-		dataDepenses.sauvegardeBudgetMensuel(budget, getBusinessSession(idUtilisateur).getEncryptor());
+		return false;
 	}
 
 	/**
 	 * Calcul du budget Courant et sauvegarde
 	 * @param budget budget à sauvegarder
+	 * @throws DataNotFoundException 
+	 * @throws BudgetNotFoundException 
 	 */
-	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, String utilisateur) throws UserNotAuthorizedException{
+	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, String idUtilisateur) throws UserNotAuthorizedException, BudgetNotFoundException{
 		calculBudget(budget);
-		dataDepenses.sauvegardeBudgetMensuel(budget, getBusinessSession(utilisateur).getEncryptor());
+		dataDepenses.sauvegardeBudgetMensuel(budget, getBusinessSession(idUtilisateur).getEncryptor());
 		return budget;
 	}
 
@@ -583,7 +606,7 @@ public class OperationsService extends AbstractBusinessService {
 					budget.ajouteASoldeFin(valeurOperation);
 				}
 			}
-			
+
 
 		}
 		LOGGER.debug("Solde prévu		| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
@@ -604,9 +627,9 @@ public class OperationsService extends AbstractBusinessService {
 			//#119 : Toutes les opérations en attente sont annulées
 			if(!budgetActif){		
 				budgetMensuel.getListeOperations()
-					.stream()
-					.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
-					.forEach(op -> op.setEtat(EtatOperationEnum.ANNULEE));
+				.stream()
+				.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
+				.forEach(op -> op.setEtat(EtatOperationEnum.ANNULEE));
 			}
 			return calculEtSauvegardeBudget(budgetMensuel, idUtilisateur);
 		}
