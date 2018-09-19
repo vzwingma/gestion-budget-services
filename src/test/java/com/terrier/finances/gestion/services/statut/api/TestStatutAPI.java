@@ -5,13 +5,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
@@ -25,14 +25,14 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
  * @author vzwingma
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
 public class TestStatutAPI extends AbstractTestsAPI {
 
 	@Autowired
 	private StatusApplicationService statusApplicationService;
 	
-	@Before
+	@BeforeEach
 	public void initControleur(){
 		statusApplicationService.initApplication();
 	}

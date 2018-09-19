@@ -3,18 +3,16 @@
  */
 package com.terrier.finances.gestion.services.budget.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.spy;
 
 import java.time.Month;
 
 import org.jasypt.util.text.BasicTextEncryptor;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
@@ -28,13 +26,12 @@ import com.terrier.finances.gestion.services.budget.model.transformer.DataTransf
  * @author PVZN02821
  *
  */
-@RunWith(MockitoJUnitRunner.class)
 public class TestDataTransformerBudget {
 
-	@Spy
+	
 	private DataTransformerBudget transformer;
 	
-	@Spy
+	
 	private DataTransformerLigneOperation dataTransformerLigneDepense;
 	
 	private static CategorieOperation cat1;
@@ -94,8 +91,10 @@ public class TestDataTransformerBudget {
 	
 	private BasicTextEncryptor e = new BasicTextEncryptor();
 	
-	@Before
+	@BeforeEach
 	public void initTransformer() throws DataNotFoundException{
+		transformer = spy(new DataTransformerBudget());
+		dataTransformerLigneDepense = spy(new DataTransformerLigneOperation());
 		e.setPassword("test");
 		transformer.setDataTransformerLigneDepense(dataTransformerLigneDepense);
 	}
@@ -141,10 +140,10 @@ public class TestDataTransformerBudget {
 		assertEquals(bo.getSoldeFin(), bo2.getSoldeFin(), 1);
 		assertEquals(bo.getSoldeNow(), bo2.getSoldeNow(), 1);
 		
-		assertEquals(bo.getTotalParCategories().get(cat1)[0], bo2.getTotalParCategories().get(cat1)[0], 1);
-		assertEquals(bo.getTotalParCategories().get(cat1)[1], bo2.getTotalParCategories().get(cat1)[1], 1);
+		assertEquals(bo.getTotalParCategories().get(cat1.getId())[0], bo2.getTotalParCategories().get(cat1.getId())[0], 1);
+		assertEquals(bo.getTotalParCategories().get(cat1.getId())[1], bo2.getTotalParCategories().get(cat1.getId())[1], 1);
 		
-		assertEquals(bo.getTotalParSSCategories().get(ssCat11)[0], bo2.getTotalParSSCategories().get(ssCat11)[0], 1);
-		assertEquals(bo.getTotalParSSCategories().get(ssCat11)[1], bo2.getTotalParSSCategories().get(ssCat11)[1], 1);
+		assertEquals(bo.getTotalParSSCategories().get(ssCat11.getId())[0], bo2.getTotalParSSCategories().get(ssCat11.getId())[0], 1);
+		assertEquals(bo.getTotalParSSCategories().get(ssCat11.getId())[1], bo2.getTotalParSSCategories().get(ssCat11.getId())[1], 1);
 	}
 }

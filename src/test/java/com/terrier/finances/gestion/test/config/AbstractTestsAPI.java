@@ -6,13 +6,13 @@ package com.terrier.finances.gestion.test.config;
 import java.util.Date;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -32,7 +32,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * @author vzwingma
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={RessourcesConfig.class})
 public abstract class AbstractTestsAPI {
@@ -49,7 +49,7 @@ public abstract class AbstractTestsAPI {
 	@Autowired
 	private WebApplicationContext wac;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}

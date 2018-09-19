@@ -13,12 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Month;
 import java.util.Calendar;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.terrier.finances.gestion.communs.api.security.JwtConfig;
@@ -40,7 +40,7 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
  * @author vzwingma
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
 public class TestOperationsAPI extends AbstractTestsAPI {
@@ -323,6 +323,60 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		String urlBadBudget = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId()+"XXX");
 		LOGGER.info("Bad Budget : {}", urlBadBudget);
+
+		getMockAPI().perform(
+				post(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json(bo)))
+		.andExpect(status().is4xxClientError());
+		// OK
+
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId());
+		LOGGER.info("Good Budget : {}", urlGoodCompte);
+
+		getMockAPI().perform(
+				post(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json(bo)))
+		.andExpect(status().isOk())
+		.andExpect(content().string(containsString("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false")));
+	}
+	
+	
+
+	
+	@Test
+	public void testSetAsDerniereOperation() throws Exception {
+
+		// Budget
+		CompteBancaire c1 = new CompteBancaire();
+		c1.setActif(true);
+		c1.setId("C1");
+		c1.setLibelle("Libelle1");
+		c1.setOrdre(1);
+
+		BudgetMensuel bo = new BudgetMensuel();
+		bo.setCompteBancaire(c1);
+		bo.setMois(Month.JANUARY);
+		bo.setAnnee(2018);
+		bo.setActif(false);
+		bo.setId("BUDGETTEST");
+		bo.setSoldeFin(0D);
+		bo.setSoldeNow(1000D);
+		bo.setDateMiseAJour(Calendar.getInstance());
+		bo.setResultatMoisPrecedent(0D, 100D);
+//		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo), any())).thenReturn(bo.getId());
+//
+
+		Utilisateur user = new Utilisateur();
+		user.setId("userTest");
+		user.setLibelle("userTest");
+		user.setLogin("userTest");
+		serviceUser.registerUserBusinessSession(user, "clear");
+
+
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_ETAT_FULL.replace("{idBudget}", bo.getId()+"XXX").replace("{idOperation}", "ID_op");
+		LOGGER.info("Bad SetOperation : {}", urlBadBudget);
 
 		getMockAPI().perform(
 				post(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))

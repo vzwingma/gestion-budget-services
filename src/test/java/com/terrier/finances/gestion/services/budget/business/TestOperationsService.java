@@ -1,6 +1,8 @@
 package com.terrier.finances.gestion.services.budget.business;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -8,14 +10,16 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 
 import org.jasypt.util.text.BasicTextEncryptor;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
@@ -37,17 +41,21 @@ import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
  * @author vzwingma
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes={TestMockDBServicesConfig.class, TestMockAuthServicesConfig.class})
 public class TestOperationsService {
 
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(TestOperationsService.class);
 
 	@Autowired
 	private TestMockAuthServicesConfig mocksAuthConfig;
 
 	@Autowired
 	private BudgetDatabaseService mockDBBudget;
-	
+
 	@Autowired
 	private OperationsService operationsService;
 
@@ -61,21 +69,22 @@ public class TestOperationsService {
 	/**
 	 * Surcharge de l'authservice
 	 */
-	@Before
+	@BeforeEach
 	public void initBusinessSession(){
 		UserBusinessSession mockUser = Mockito.mock(UserBusinessSession.class);
 		when(mockUser.getEncryptor()).thenReturn(new BasicTextEncryptor());
 		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
 		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
-	}
 
-	@Before
-	public void initBudget(){
+
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
 		this.budget.setResultatMoisPrecedent(0D, 0D);
 		this.budget.razCalculs();
-		this.budget.getListeOperations().add(new LigneOperation(new CategorieOperation(), "TEST1", TypeOperationEnum.CREDIT, "123", EtatOperationEnum.PREVUE, false));
+		CategorieOperation dep = new CategorieOperation(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
+		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
+		dep.setCategorieParente(cat);
+		this.budget.getListeOperations().add(new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, "123", EtatOperationEnum.PREVUE, false));
 
 		LocalDate now = LocalDate.now();
 		this.budget.setMois(now.getMonth());
@@ -95,8 +104,15 @@ public class TestOperationsService {
 	@Test
 	public void testSetBudgetInactif() throws UserNotAuthorizedException, BudgetNotFoundException{
 		when(mockDBBudget.chargeBudgetMensuelById(anyString(), any())).thenReturn(this.budget);
-		BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, "TEST");
-		assertEquals(EtatOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
+		try {
+			BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, "TEST");
+			assertEquals(EtatOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
+		}
+		catch (Exception e) {
+			LOGGER.error("Erreur lors du calcul", e);
+			fail();
+		}
+
 	}	
 
 	/**
@@ -104,8 +120,9 @@ public class TestOperationsService {
 	 */
 	@Test
 	public void testCalculBudget(){
-
-		this.operationsService.calculBudget(budget);
+		assertNotNull(this.operationsService);
+		assertNotNull(this.budget);
+		this.operationsService.calculBudget(this.budget);
 		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
 		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
 
@@ -122,9 +139,11 @@ public class TestOperationsService {
 		assertEquals(223, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
 
 
-		CategorieOperation reserveCat = new CategorieOperation(IdsCategoriesEnum.RESERVE);
+		CategorieOperation reserveSSCat = new CategorieOperation(IdsCategoriesEnum.RESERVE);
+		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.SALAIRE);
+		reserveSSCat.setCategorieParente(cat);
 
-		LigneOperation reserve = new LigneOperation(reserveCat, "TESTRESERVE", TypeOperationEnum.CREDIT, "100", EtatOperationEnum.REALISEE, false);
+		LigneOperation reserve = new LigneOperation(reserveSSCat, "TESTRESERVE", TypeOperationEnum.CREDIT, "100", EtatOperationEnum.REALISEE, false);
 		this.budget.getListeOperations().add(reserve);
 		this.operationsService.calculBudget(budget);
 		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
@@ -136,7 +155,7 @@ public class TestOperationsService {
 		// Pour éviter le doublon du recalcul ci dessous
 		this.budget.setResultatMoisPrecedent(0D, 0D);
 
-		LigneOperation piocheReserve = new LigneOperation(reserveCat, "PIOCHERESERVE", TypeOperationEnum.DEPENSE, "50", EtatOperationEnum.REALISEE, false);
+		LigneOperation piocheReserve = new LigneOperation(reserveSSCat, "PIOCHERESERVE", TypeOperationEnum.DEPENSE, "50", EtatOperationEnum.REALISEE, false);
 		this.budget.getListeOperations().add(piocheReserve);
 		this.operationsService.calculBudget(budget);
 
