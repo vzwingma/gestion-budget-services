@@ -21,6 +21,7 @@ import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
@@ -50,6 +51,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	@Autowired
 	private OperationsService operationService;
 
+	
 	/**
 	 * Retour le budget d'un utilisateur
 	 * @param idUtilisateur id de l'utilisateur
@@ -167,7 +169,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws BudgetNotFoundException erreur données non trouvées
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Retourne l'un des états d'un budget mensuel : {actif} ou {uptodate}", notes="{actif} : indique si le budget est actif ou pas. {uptodate} indique si le budget a été mis à jour en BDD par rapport à la date passée en paramètre", tags={"Budget"})
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Retourne l'un des états d'un budget mensuel : {etat} ou {uptodate}", notes="{etat} : indique si le budget est ouvert ou cloturé. {uptodate} indique si le budget a été mis à jour en BDD par rapport à la date passée en paramètre", tags={"Budget"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Budget actif"),
 			@ApiResponse(code = 204, message = "Budget inactif"),
@@ -220,7 +222,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws BudgetNotFoundException erreur données non trouvées
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Mise à jour de l'état d'un budget mensuel (ouvert/cloturé)", tags={"Budget"})
+	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Mise à jour de l'{état} d'un budget mensuel (ouvert/cloturé)", notes="{etat} : indique si le budget est ouvert ou cloturé.", tags={"Budget"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération réussie"),
 			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
@@ -315,6 +317,7 @@ public class OperationsAPIController extends AbstractAPIController {
 		UserBusinessSession userSession = getUtilisateur(auth);
 		if(operation != null && idBudget != null && userSession != null){
 			logger.info("[API][idUser={}][idBudget={}][idOperation={}] createOrUpdateOperation",userSession.getUtilisateur().getId(), idBudget, operation.getId());
+			completeCategoriesOnOperation(operation);
 			BudgetMensuel budgetUpdated = operationService.createOrUpdateOperation(idBudget, operation, userSession);
 			return getEntity(budgetUpdated);
 		}
@@ -335,6 +338,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	@ApiOperation(httpMethod="DELETE",protocols="HTTPS", value="Suppression d'une opération", tags={"Opérations"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération supprimée"),
+			@ApiResponse(code = 204, message = "Opération supprimée"),			
 			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
 			@ApiResponse(code = 403, message = "Opération non autorisée"),	
 			@ApiResponse(code = 404, message = "Données introuvables"),
@@ -362,6 +366,14 @@ public class OperationsAPIController extends AbstractAPIController {
 			}
 		}
 		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + idOperation);
+	}
+	
+	/**
+	 * Réinjection des catégories dans les opérations du budget
+	 * @param budget
+	 */
+	private void completeCategoriesOnOperation(LigneOperation operation){
+		operation.setSsCategorie(BudgetDataUtils.getCategorieById(operation.getIdSsCategorie(), operationService.getServiceParams().getCategories()));
 	}
 }
 

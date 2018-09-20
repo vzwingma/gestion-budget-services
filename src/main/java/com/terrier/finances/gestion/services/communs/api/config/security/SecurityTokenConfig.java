@@ -61,6 +61,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/swagger-ui*").permitAll()
 		.antMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
 		.antMatchers(HttpMethod.GET, "/webjars/**").permitAll()
+		.antMatchers(HttpMethod.GET, "/csrf/**").permitAll()
 		.antMatchers(HttpMethod.GET, "/v2/api-docs/**").permitAll()
 		// Supervision : Autorisée
 		.antMatchers(HttpMethod.GET, "/admin/v1/statut").permitAll()		   

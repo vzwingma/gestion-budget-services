@@ -425,14 +425,15 @@ public class OperationsService extends AbstractBusinessService {
 				ligneOperation.setDateMaj(Calendar.getInstance().getTime());
 				ligneOperation.setAuteur(userSession.getUtilisateur().getLibelle());
 				if(ligneOperation.getEtat() != null) {
-					LOGGER.trace("Intégration de l'opération {} dans le budget {}", ligneOperation, budget);
+					
+					if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
+						ligneOperation.setDateOperation(Calendar.getInstance().getTime());
+					}
+					else {
+						ligneOperation.setDateOperation(null);
+					}
+					LOGGER.debug("Intégration de l'opération {} dans le budget {}", ligneOperation, budget);
 					budget.getListeOperations().add(ligneOperation);
-				}
-				else if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
-					ligneOperation.setDateOperation(Calendar.getInstance().getTime());
-				}
-				else {
-					ligneOperation.setDateOperation(null);
 				}
 				// Mise à jour du budget
 				budget = calculEtSauvegardeBudget(budget, userSession);
@@ -551,7 +552,7 @@ public class OperationsService extends AbstractBusinessService {
 
 		}
 		LOGGER.debug("Solde prévu		| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
-		LOGGER.debug("Solde réel (avec marge)| {}	| {}",  budget.getSoldeNow() + budget.getMarge(), budget.getSoldeFin() + budget.getMarge());
+		LOGGER.debug("Solde réel (+ marge)	| {}	| {}",  budget.getSoldeNow() + budget.getMarge(), budget.getSoldeFin() + budget.getMarge());
 	}
 
 	/**
