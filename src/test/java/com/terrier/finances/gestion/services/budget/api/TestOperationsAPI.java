@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Month;
 import java.util.Calendar;
 
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,7 @@ import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperation
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
@@ -59,8 +60,43 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Autowired
 	private UtilisateursService serviceUser;
 
+	private CompteBancaire c1;
+	private BudgetMensuel bo;
+
+	@BeforeEach
+	public void initBudget () throws DataNotFoundException, BudgetNotFoundException {
+		// Budget
+		c1 = new CompteBancaire();
+		c1.setActif(true);
+		c1.setId("C1");
+		c1.setLibelle("Libelle1");
+		c1.setOrdre(1);
+		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(c1);
+
+		bo = new BudgetMensuel();
+		bo.setCompteBancaire(c1);
+		bo.setMois(Month.JANUARY);
+		bo.setAnnee(2018);
+		bo.setActif(true);
+		bo.setId("C1_2018_1");
+		bo.setSoldeFin(0D);
+		bo.setSoldeNow(1000D);
+		bo.setDateMiseAJour(Calendar.getInstance());
+		bo.setResultatMoisPrecedent(0D, 100D);
+		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo), any())).thenReturn(bo.getId());
+		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("Mock"));
+
+		Utilisateur user = new Utilisateur();
+		user.setId("userTest");
+		user.setLibelle("userTest");
+		user.setLogin("userTest");
+		serviceUser.registerUserBusinessSession(user, "clear");
+
+	}
+
 	@Test
-	public void testGetBudget() throws Exception {
+	public void testGetBudgetQuery() throws Exception {
 		// Fail
 		String urlWrongCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018";
 		getMockAPI().perform(
@@ -87,49 +123,13 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Test
 	public void testGetBudgetOK() throws Exception {
 
-		// Budget
-		CompteBancaire c1 = new CompteBancaire();
-		c1.setActif(true);
-		c1.setId("C1");
-		c1.setLibelle("Libelle1");
-		c1.setOrdre(1);
-		when(mockDataDBUsers.chargeCompteParId(eq("compteTest"), eq("userTest"))).thenReturn(c1);
-
-		BudgetMensuelDTO budget = new BudgetMensuelDTO();
-		budget.setCompteBancaire(c1);
-		budget.setMois(Month.JANUARY.getValue());
-		budget.setAnnee(2018);
-		budget.setActif(false);
-		budget.setId();
-		when(mockDataDBBudget.chargeBudgetMensuelDTO(any())).thenReturn(budget);
-		BudgetMensuel bo = new BudgetMensuel();
-		bo.setCompteBancaire(c1);
-		bo.setMois(Month.JANUARY);
-		bo.setAnnee(2018);
-		bo.setActif(false);
-		bo.setId("BUDGETTEST");
-		bo.setSoldeFin(0D);
-		bo.setSoldeNow(1000D);
-		bo.setDateMiseAJour(Calendar.getInstance());
-		bo.setResultatMoisPrecedent(0D, 100D);
-		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
-
-
-		Utilisateur user = new Utilisateur();
-		user.setId("userTest");
-		user.setLibelle("userTest");
-		user.setLogin("userTest");
-		serviceUser.registerUserBusinessSession(user, "clear");
-
-		// OK
-
 		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=compteTest&mois=1&annee=2018";
 		LOGGER.info("Good Compte : {}", urlGoodCompte);
 
 		getMockAPI().perform(
 				get(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
 		.andExpect(status().isOk())
-		.andExpect(content().string(containsString("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false")));
+		.andExpect(content().string(containsString("{\"id\":\""+bo.getId()+"\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":true")));
 	}
 
 
@@ -139,14 +139,6 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Test
 	public void testReinitbudget() throws Exception {
 
-		// Budget
-		CompteBancaire c1 = new CompteBancaire();
-		c1.setActif(true);
-		c1.setId("compteTest");
-		c1.setLibelle("Libelle1");
-		c1.setOrdre(1);
-		when(mockDataDBUsers.chargeCompteParId(eq("compteTest"), eq("userTest"))).thenReturn(c1);
-
 		BudgetMensuelDTO budget = new BudgetMensuelDTO();
 		budget.setCompteBancaire(c1);
 		budget.setMois(Month.JANUARY.getValue());
@@ -154,19 +146,9 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		budget.setActif(false);
 		budget.setId();
 		when(mockDataDBBudget.chargeBudgetMensuelDTO(any())).thenReturn(budget);
-		BudgetMensuel bo = new BudgetMensuel();
-		bo.setCompteBancaire(c1);
-		bo.setMois(Month.JANUARY);
-		bo.setAnnee(2018);
-		bo.setActif(false);
-		bo.setId("compteTest_2018_1");
-		bo.setSoldeFin(0D);
-		bo.setSoldeNow(1000D);
-		bo.setDateMiseAJour(Calendar.getInstance());
-		bo.setResultatMoisPrecedent(0D, 100D);
 		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
 		when(mockDataDBBudget.sauvegardeBudgetMensuel(any(), any())).thenReturn(bo.getId());
-		
+
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
 		user.setLibelle("userTest");
@@ -194,25 +176,25 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	public void testBudgetActif() throws Exception{
 		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST");
 		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
-			.andExpect(status().is4xxClientError());
+		.andExpect(status().is4xxClientError());
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
 		serviceUser.registerUserBusinessSession(user, "ms");
-		
+
 		when(mockDataDBBudget.isBudgetActif(eq("TESTKO"))).thenReturn(Boolean.FALSE);
 		when(mockDataDBBudget.isBudgetActif(eq("TESTOK"))).thenReturn(Boolean.TRUE);
-		
+
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
-			.andExpect(status().isNoContent());
-		
+		.andExpect(status().isNoContent());
+
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
-			.andExpect(status().isOk());
+		.andExpect(status().isOk());
 	}
-	
+
 
 	/**
 	 * Test budget
@@ -222,33 +204,33 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	public void testIsBudgetUptodate() throws Exception{
 		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST");
 		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
-			.andExpect(status().is4xxClientError());
+		.andExpect(status().is4xxClientError());
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
 		serviceUser.registerUserBusinessSession(user, "ms");
-		
+
 		Calendar futur = Calendar.getInstance();
 		futur.add(Calendar.HOUR_OF_DAY, 1);
-		
+
 		Calendar passe = Calendar.getInstance();
 		passe.add(Calendar.HOUR_OF_DAY, -1);
-		
+
 		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTKO"), any())).thenReturn(futur.getTime());
 		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTOK"), any())).thenReturn(passe.getTime());
-		
+
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
-			.andExpect(status().isNoContent());
-		
+		.andExpect(status().isNoContent());
+
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(get(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
-			.andExpect(status().isOk());
+		.andExpect(status().isOk());
 	}
-	
-	
+
+
 
 	/**
 	 * Test buget
@@ -258,12 +240,12 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	public void testLockBudget() throws Exception{
 		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST");
 		getMockAPI().perform(post(urlActif))
-			.andExpect(status().is4xxClientError());
+		.andExpect(status().is4xxClientError());
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
 		serviceUser.registerUserBusinessSession(user, "ms");
-		
+
 		BudgetMensuel bo = new BudgetMensuel();
 		CompteBancaire c1 = new CompteBancaire();
 		c1.setActif(true);
@@ -282,59 +264,31 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTKO"), any())).thenReturn(bo);
 		bo.setActif(true);
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"), any())).thenReturn(bo);
-		
+
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(post(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString("\"actif\":true")));
-		
+		.andExpect(status().isOk())
+		.andExpect(content().string(containsString("\"actif\":true")));
+
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?actif=false";
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(post(urlActif).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
 		.andExpect(status().isOk())
 		.andExpect(content().string(containsString("\"actif\":false")));
 	}
-	
-	
-	@Disabled
+
+
+
 	@Test
-	public void testUpdateBudget() throws Exception {
-
-		// Budget
-		CompteBancaire c1 = new CompteBancaire();
-		c1.setActif(true);
-		c1.setId("C1");
-		c1.setLibelle("Libelle1");
-		c1.setOrdre(1);
-
-		BudgetMensuel bo = new BudgetMensuel();
-		bo.setCompteBancaire(c1);
-		bo.setMois(Month.JANUARY);
-		bo.setAnnee(2018);
-		bo.setActif(false);
-		bo.setId("BUDGETTEST");
-		bo.setSoldeFin(0D);
-		bo.setSoldeNow(1000D);
-		bo.setDateMiseAJour(Calendar.getInstance());
-		bo.setResultatMoisPrecedent(0D, 100D);
-		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo), any())).thenReturn(bo.getId());
-
-
-		Utilisateur user = new Utilisateur();
-		user.setId("userTest");
-		user.setLibelle("userTest");
-		user.setLogin("userTest");
-		serviceUser.registerUserBusinessSession(user, "clear");
-
+	public void testGetBudget() throws Exception {
 
 		String urlBadBudget = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId()+"XXX");
 		LOGGER.info("Bad Budget : {}", urlBadBudget);
 
 		getMockAPI().perform(
-				post(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(json(bo)))
+				get(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().is4xxClientError());
 		// OK
 
@@ -342,44 +296,21 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		LOGGER.info("Good Budget : {}", urlGoodCompte);
 
 		getMockAPI().perform(
-				post(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(json(bo)))
+				get(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().string(containsString("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false")));
+		.andExpect(content().string(containsString("{\"id\":\""+bo.getId()+"\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":true")));
 	}
-	
-	
 
-	
+
+
+
 	@Test
 	public void testSetAsDerniereOperation() throws Exception {
-
-		// Budget
-		CompteBancaire c1 = new CompteBancaire();
-		c1.setActif(true);
-		c1.setId("C1");
-		c1.setLibelle("Libelle1");
-		c1.setOrdre(1);
-		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(c1);
-		
-		BudgetMensuel bo = new BudgetMensuel();
-		bo.setCompteBancaire(c1);
-		bo.setMois(Month.JANUARY);
-		bo.setAnnee(2018);
-		bo.setActif(false);
-		bo.setId("C1_2018_1");
-		bo.setSoldeFin(0D);
-		bo.setSoldeNow(1000D);
-		bo.setDateMiseAJour(Calendar.getInstance());
-		bo.setResultatMoisPrecedent(0D, 100D);
-		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo), any())).thenReturn(bo.getId());
-		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
-
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
-		
+
 		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
 		op1.setDerniereOperation(true);
 		bo.getListeOperations().add(op1);
@@ -388,16 +319,9 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		op2.setDerniereOperation(false);
 		bo.getListeOperations().add(op2);
 
-		Utilisateur user = new Utilisateur();
-		user.setId("userTest");
-		user.setLibelle("userTest");
-		user.setLogin("userTest");
-		serviceUser.registerUserBusinessSession(user, "clear");
-
-
-		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_ETAT_FULL.replace("{idBudget}", bo.getId()+"XXX").replace("{idOperation}", "ID_op");
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_DERNIERE_FULL.replace("{idBudget}", bo.getId()+"XXX").replace("{idOperation}", "ID_op");
 		LOGGER.info("Bad SetOperation : {}", urlBadBudget);
-		
+
 		getMockAPI().perform(
 				post(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
 				.contentType(MediaType.APPLICATION_JSON)
@@ -405,13 +329,82 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		.andExpect(status().isNoContent());
 		// OK
 
-		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_ETAT_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "ID_op")+"?derniereOperation=true";
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_DERNIERE_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "ID_op");
 		LOGGER.info("Good SetOperation : {}", urlGoodCompte);
 
 		getMockAPI().perform(
 				post(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(bo)))
+		.andExpect(status().isOk());
+	}
+
+
+
+
+	@Test
+	public void testDelOperation() throws Exception {
+
+		CategorieOperation cat = new CategorieOperation("SCAT_ID");
+		CategorieOperation sscat = new CategorieOperation("CAT_ID");
+		sscat.setCategorieParente(cat);
+
+		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		op1.setId("OP1");
+		op1.setDerniereOperation(true);
+		bo.getListeOperations().add(op1);
+
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "ID_op");
+		LOGGER.info("Bad del : {}", urlBadBudget);
+
+		getMockAPI().perform(
+				delete(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isNotFound());
+		// OK
+
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "OP1");
+		LOGGER.info("Good Del : {}", urlGoodCompte);
+
+		getMockAPI().perform(
+				delete(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk());
+	}
+
+
+
+	@Test
+	public void testUpdateOperation() throws Exception {
+
+
+		CategorieOperation cat = new CategorieOperation("SCAT_ID");
+		CategorieOperation sscat = new CategorieOperation("CAT_ID");
+		sscat.setCategorieParente(cat);
+
+		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
+		op1.setDerniereOperation(true);
+		op1.setId("OP1");
+		bo.getListeOperations().add(op1);
+		bo.setActif(false);
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATIONS_FULL.replace("{idBudget}", bo.getId());
+		LOGGER.info("Bad Update : {}", urlBadBudget);
+		getMockAPI().perform(
+				post(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json(op1)));
+		//.andExpect(status().is4xxClientError());
+		bo.setActif(true);
+		// OK
+		LigneOperation opupdate = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		opupdate.setId("OP1");
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATIONS_FULL.replace("{idBudget}", bo.getId());
+		LOGGER.info("Good Update : {}", urlGoodCompte);
+
+		getMockAPI().perform(
+				post(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json(opupdate)))
 		.andExpect(status().isOk());
 	}
 }

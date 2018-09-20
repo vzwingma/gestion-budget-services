@@ -63,11 +63,15 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @return le nom de la collection
 	 */
 	protected String getBudgetCollectionName(String idBudget){
-		if(idBudget != null){
-			int annee = BudgetDataUtils.getAnneeFromBudgetId(idBudget);
-			String collectionName = new StringBuilder(COLLECTION_BUDGET).append(annee).toString();
-			LOGGER.debug("Utilisation de la collection [{}]", collectionName);
-			return  collectionName;	
+		try {
+			if(idBudget != null){
+				int annee = BudgetDataUtils.getAnneeFromBudgetId(idBudget);
+				String collectionName = new StringBuilder(COLLECTION_BUDGET).append(annee).toString();
+				LOGGER.debug("Utilisation de la collection [{}]", collectionName);
+				return  collectionName;	
+			}
+		} catch (BudgetNotFoundException e) {
+			// Erreur loguée ensuite
 		}
 		LOGGER.error("Erreur lors de la recheche du nom de la collection associée à [{}]", idBudget);
 

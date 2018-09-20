@@ -49,7 +49,7 @@ class GlobalControllerExceptionHandler {
     	 LOGGER.info("Non modifiée");
     }
     
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)  // 405
+    @ResponseStatus(HttpStatus.LOCKED)  // 423
     @ExceptionHandler(CompteClosedException.class)
     public void handleClosedException() {
     	 LOGGER.error("Erreur : Compte clos");

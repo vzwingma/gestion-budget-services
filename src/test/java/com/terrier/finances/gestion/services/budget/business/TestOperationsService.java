@@ -106,7 +106,10 @@ public class TestOperationsService {
 		CategorieOperation dep = new CategorieOperation(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
 		dep.setCategorieParente(cat);
-		this.budget.getListeOperations().add(new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, "123", EtatOperationEnum.PREVUE, false));
+		
+		LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, "123", EtatOperationEnum.PREVUE, false);
+		test1.setId("TEST1");
+		this.budget.getListeOperations().add(test1);
 
 		LocalDate now = LocalDate.now();
 		this.budget.setMois(now.getMonth());
@@ -245,6 +248,31 @@ public class TestOperationsService {
 
 
 
+	/**
+	 * Update opération
+	 * @throws UserNotAuthorizedException
+	 * @throws DataNotFoundException
+	 * @throws BudgetNotFoundException
+	 * @throws CompteClosedException
+	 */
+	@Test
+	public void testDelOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException {
+		LOGGER.info("testDelOperation");
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(this.budget);
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("MOCK"));	
+		CategorieOperation cat = new CategorieOperation("SCAT_ID");
+		CategorieOperation sscat = new CategorieOperation("CAT_ID");
+		sscat.setCategorieParente(cat);
+		Utilisateur u = new Utilisateur();
+		u.setLibelle("userTest");
+		u.setLogin("userTest");
+
+		BudgetMensuel budgetDel = operationsService.deleteOperation(this.budget.getId(), "TEST1", new UserBusinessSession(u));
+		assertEquals(0, budgetDel.getListeOperations().size());
+		
+		LOGGER.info("/testDelOperation");
+
+	}
 
 	/**
 	 * Update opération
@@ -299,7 +327,7 @@ public class TestOperationsService {
 		BudgetMensuel budgetUpdate = operationsService.createOrUpdateOperation(this.budget.getId(), opUpdate, new UserBusinessSession(u));
 		assertEquals(3, budgetUpdate.getListeOperations().size());
 		assertEquals(549, budgetUpdate.getSoldeFin());
-		assertEquals(548, budgetUpdate.getSoldeNow());
+		assertEquals(213, budgetUpdate.getSoldeNow());
 		
 		LOGGER.info("/testCRUDOperation");
 
