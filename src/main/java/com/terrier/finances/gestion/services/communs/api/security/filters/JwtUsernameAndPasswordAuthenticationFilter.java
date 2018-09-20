@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -52,8 +53,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	private UtilisateursService usersDetailsServices;
 
 
-	private Map<String, String> attempts = new HashMap<String, String>();
-	
+	private Map<String, String> attempts = new HashMap<>();
+
 	public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager, UtilisateursService usersDetailsServices) {
 		this.authManager = authManager;
 		this.usersDetailsServices = usersDetailsServices;
@@ -66,9 +67,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	 * @see org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter#attemptAuthentication(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationException {
-
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// 1. Get credentials from request
 			AuthLoginAPIObject creds = new ObjectMapper().readValue(request.getInputStream(), AuthLoginAPIObject.class);
@@ -85,7 +84,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 			return authManager.authenticate(authToken);
 
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new BadCredentialsException("Impossible de lire " + request);
 		}
 	}
 
@@ -102,8 +101,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		Utilisateur utilisateur = usersDetailsServices.successfulAuthentication(auth, attempts.get(auth.getName()));
 		// Une fois que cette partie est faite. On efface l'attempt.
 		attempts.remove(auth.getName());
-		
-		
+
+
 		Long now = Calendar.getInstance().getTimeInMillis();
 		String token = Jwts.builder()
 				.setSubject(utilisateur.getLogin())
@@ -122,6 +121,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		response.addHeader(JwtConfig.JWT_AUTH_HEADER, JwtConfig.JWT_AUTH_PREFIX + token);
 		LOGGER.debug("[API][idUser={}] Token [{}]", auth.getName(), response.getHeader(JwtConfig.JWT_AUTH_HEADER));
 	}
-	
-	
+
+
 }

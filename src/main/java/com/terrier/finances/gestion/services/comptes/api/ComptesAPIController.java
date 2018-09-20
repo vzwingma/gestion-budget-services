@@ -68,7 +68,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST)
 	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
 		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
-		logger.info("[API][idUser={}] getComptes", auth, idUtilisateur);
+		logger.info("[API][idUser={}] getComptes", idUtilisateur);
 		return getEntities(comptesService.getComptesUtilisateur(idUtilisateur));
 	}
 

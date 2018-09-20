@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.jasypt.util.text.BasicTextEncryptor;
@@ -58,7 +59,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
 	 */
 	@Override
-	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String login) {
 
 		LOGGER.info("[SEC][idUser=?] Tentative d'authentification de {}", login);
 		Utilisateur utilisateur;
@@ -69,7 +70,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 				String droits = utilisateur.getDroits()
 						.entrySet()
 						.stream()
-						.filter(e -> e.getValue())
+						.filter(Entry::getValue)
 						.map(e -> e.getKey().name())
 						.collect(Collectors.joining(";"));
 

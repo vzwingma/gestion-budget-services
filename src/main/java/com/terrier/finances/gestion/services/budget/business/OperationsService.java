@@ -67,7 +67,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	public BudgetMensuel chargerBudgetMensuel(UserBusinessSession userSession, String idCompte, Month mois, int annee) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException{
+	public BudgetMensuel chargerBudgetMensuel(String idCompte, Month mois, int annee, UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget {} de {}/{}", idCompte, mois, annee);
 
 		CompteBancaire compteBancaire = getServiceComptes().getCompteById(idCompte, userSession.getUtilisateur().getId());
@@ -162,7 +162,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * @param idBudget identifiant du budget
 	 * @return la date de mise à jour du  budget
 	 */
-	public boolean isBudgetUpToDate(String idBudget, Date dateSurIHM, UserBusinessSession userSession) throws UserNotAuthorizedException {
+	public boolean isBudgetUpToDate(String idBudget, Date dateSurIHM, UserBusinessSession userSession) {
 
 		Date dateEnBDD = this.dataDepenses.getDateMiseAJourBudget(idBudget, userSession.getEncryptor());
 		if(dateEnBDD != null){
@@ -222,7 +222,7 @@ public class OperationsService extends AbstractBusinessService {
 			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 			// Recherche du budget précédent 
 			// Si impossible : BudgetNotFoundException
-			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(userSession, compteBancaire.getId(), moisPrecedent, anneePrecedente);
+			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(compteBancaire.getId(), moisPrecedent, anneePrecedente, userSession);
 			// #115 : Cloture automatique du mois précédent
 			setBudgetActif(budgetPrecedent.getId(), false, userSession);
 
@@ -255,8 +255,8 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws BudgetNotFoundException budget introuvable
 	 * @throws DataNotFoundException données introuvables
 	 */
-	private BudgetMensuel chargerBudgetMensuel(UserBusinessSession userSession, String idBudget) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException{
-		return chargerBudgetMensuel(userSession, BudgetDataUtils.getCompteFromBudgetId(idBudget), BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget));
+	public BudgetMensuel chargerBudgetMensuel(String idBudget, UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException{
+		return chargerBudgetMensuel(BudgetDataUtils.getCompteFromBudgetId(idBudget), BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget), userSession);
 	}
 
 	/**
@@ -267,7 +267,7 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public BudgetMensuel reinitialiserBudgetMensuel(String idBudget, UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
-		BudgetMensuel budgetMensuel = chargerBudgetMensuel(userSession, idBudget);
+		BudgetMensuel budgetMensuel = chargerBudgetMensuel(idBudget, userSession);
 		if(budgetMensuel != null){
 			CompteBancaire compteBancaire = getServiceComptes().getCompteById(budgetMensuel.getCompteBancaire().getId(), userSession.getUtilisateur().getId());
 			if(compteBancaire != null){
@@ -327,7 +327,7 @@ public class OperationsService extends AbstractBusinessService {
 		/**
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
 		 */
-		BudgetMensuel budgetTransfert = chargerBudgetMensuel(userSession, compteCrediteur.getId(), budget.getMois(), budget.getAnnee());
+		BudgetMensuel budgetTransfert = chargerBudgetMensuel(compteCrediteur.getId(), budget.getMois(), budget.getAnnee(), userSession);
 		if(budget.getCompteBancaire().isActif() && budgetTransfert.getCompteBancaire().isActif() && budget.isActif() && budgetTransfert.isActif()){
 			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneOperation);
 
@@ -511,7 +511,7 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public boolean setLigneDepenseAsDerniereOperation(String idBudget, String ligneId, UserBusinessSession userSession) throws UserNotAuthorizedException{
 		try {
-			BudgetMensuel budget = chargerBudgetMensuel(userSession, idBudget);
+			BudgetMensuel budget = chargerBudgetMensuel(idBudget, userSession);
 			if(budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()) {
 				LOGGER.info("[idBudget={}][idOperation={}] Tag de la ligne comme dernière opération", idBudget, ligneId);
 				budget.getListeOperations()
@@ -524,7 +524,7 @@ public class OperationsService extends AbstractBusinessService {
 			}
 
 		} catch (BudgetNotFoundException | DataNotFoundException e) {
-			LOGGER.error("Erreur lors du tag de la ligne {} dans le budget {}", ligneId, idBudget, e);
+			LOGGER.error("Le budget {} est introuvable. Impossible de tagguer l'opération {}", idBudget, ligneId, e);
 		} catch (Exception e) {
 			LOGGER.error("Erreur lors du tag de la ligne {} dans le budget {}", ligneId, idBudget, e);
 		}
@@ -537,7 +537,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException 
 	 * @throws BudgetNotFoundException 
 	 */
-	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException{
+	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, UserBusinessSession userSession) {
 		calculBudget(budget);
 		dataDepenses.sauvegardeBudgetMensuel(budget, userSession.getEncryptor());
 		return budget;

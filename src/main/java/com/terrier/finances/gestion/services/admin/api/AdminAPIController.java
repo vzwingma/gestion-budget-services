@@ -3,8 +3,6 @@
  */
 package com.terrier.finances.gestion.services.admin.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,10 +37,6 @@ import io.swagger.annotations.ApiResponses;
 public class AdminAPIController extends AbstractAPIController {
 
 
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AdminAPIController.class);
 
 	@Autowired
 	private UtilisateursService authService;
@@ -70,17 +64,17 @@ public class AdminAPIController extends AbstractAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.ADMIN_ACCESS)
 	public String password(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword) throws UserNotAuthorizedException{
 		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
-		LOGGER.info("[idUser={}]Changement du mot de passe", idUtilisateur);
+		logger.info("[idUser={}]Changement du mot de passe", idUtilisateur);
 		Utilisateur utilisateur = authService.getBusinessSession(idUtilisateur).getUtilisateur();
 		if(utilisateur != null){
 			authService.changePassword(utilisateur, oldpassword, newPassword);
 			String returnOK = "Le mot de passe de "+utilisateur.getLogin()+ " a bien été modifié : \n " + utilisateur.toFullString();
-			LOGGER.error(returnOK);
+			logger.error(returnOK);
 			return returnOK;
 		}
 		else{
 			String returnErr = "L'utilisateur est introuvable ou le mot de passe est incorrect";
-			LOGGER.error(returnErr);
+			logger.error(returnErr);
 			return returnErr;
 		}
 	}	

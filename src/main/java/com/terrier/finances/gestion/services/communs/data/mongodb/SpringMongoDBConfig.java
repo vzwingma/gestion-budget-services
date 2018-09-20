@@ -75,7 +75,7 @@ public class SpringMongoDBConfig {
 			return Integer.parseInt(env);
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("La clé {}={} n'est pas un nombre. La valeur par défaut : {} ", cle.name(), env, defaultVar, e);
+			LOGGER.error("La clé {}={} n'est pas un nombre. La valeur par défaut : {} ", cle.name(), env, defaultVar);
 			return defaultVar;
 		}
 	}

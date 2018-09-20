@@ -50,7 +50,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 				LOGGER.error("[DB] Erreur lors du chargement des catégories");
 			}
 		}
-		return listeCategories.stream().map(c -> cloneCategorie(c)).collect(Collectors.toList());
+		return listeCategories.stream().map(this::cloneCategorie).collect(Collectors.toList());
 	}
 
 
