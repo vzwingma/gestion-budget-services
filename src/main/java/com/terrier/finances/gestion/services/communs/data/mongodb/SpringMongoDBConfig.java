@@ -39,11 +39,11 @@ public class SpringMongoDBConfig {
 	@Bean
 	public MongoTemplate mongoTemplate() {
 
-		String db = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_DB, "budget-app-dev");
-		String host = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_HOST, "ds113936.mlab.com");
-		String username = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_USERNAME, "budget");
-		String password = getStringEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_PWD, "budgetdev");
-		int port =  getIntgerEnvVar(MongoDBCOnfigEnum.MONGODB_CONFIG_PORT, 13936);
+		String db = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_DB, "budget-app-dev");
+		String host = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_HOST, "ds113936.mlab.com");
+		String username = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_USERNAME, "budget");
+		String password = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_PWD, "budgetdev");
+		int port =  getIntgerEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_PORT, 13936);
 
 		//create mongo template
 		String mongoURI = new StringBuilder("mongodb://").append(username).append(":").append(password).append("@").append(host).append(":").append(port).append("/").append(db).toString();
@@ -59,7 +59,7 @@ public class SpringMongoDBConfig {
 	 * @param cle
 	 * @return valeur de la clé
 	 */
-	private String getStringEnvVar(MongoDBCOnfigEnum cle, String defaultVar){
+	private String getStringEnvVar(MongoDBConfigEnum cle, String defaultVar){
 		String envVar = System.getenv(cle.name());
 		return envVar != null ? envVar : defaultVar;
 	}
@@ -69,7 +69,7 @@ public class SpringMongoDBConfig {
 	 * @param cle
 	 * @return valeur de la clé
 	 */
-	private Integer getIntgerEnvVar(MongoDBCOnfigEnum cle, Integer defaultVar){
+	private Integer getIntgerEnvVar(MongoDBConfigEnum cle, Integer defaultVar){
 		String env = System.getenv(cle.name());
 		try{
 			return Integer.parseInt(env);

@@ -179,13 +179,7 @@
 		<dependency>
 			<groupId>io.github.vzwingma.finances.budget</groupId>
 			<artifactId>communs</artifactId>
-			<version>7.0.0-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.springfox</groupId>
-					<artifactId>springfox-swagger2</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>7.1.0-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SPRING -->
