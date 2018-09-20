@@ -110,9 +110,6 @@ public class OperationsService extends AbstractBusinessService {
 				int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 				LOGGER.debug("Chargement du budget du mois précédent du compte actif {} : {}/{}", compteBancaire.getId(), moisPrecedent, anneePrecedente);
 				BudgetMensuel budgetPrecedent = this.dataDepenses.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente, encryptor);
-				if(budgetPrecedent.isActif()){
-					calculBudget(budgetPrecedent);
-				}
 				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin(), budgetPrecedent.getMarge());
 			}
 			catch(BudgetNotFoundException e){
@@ -417,23 +414,30 @@ public class OperationsService extends AbstractBusinessService {
 		try {
 			BudgetMensuel budget = chargerBudgetMensuel(idBudget, userSession);
 			if(budget.isActif() && budget.getCompteBancaire().isActif()){
-
 				// Si mise à jour d'une opération, on l'enlève
-				boolean maj = budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
-				LOGGER.info("{} d'une Opération : {}", maj ? ligneOperation.getEtat() != null ? "Mise à jour" : "Suppression" : "Ajout", ligneOperation);
-
-				ligneOperation.setDateMaj(Calendar.getInstance().getTime());
-				ligneOperation.setAuteur(userSession.getUtilisateur().getLibelle());
+				int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
+				budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
 				if(ligneOperation.getEtat() != null) {
-					
+					LOGGER.info("{} d'une Opération : {}", rangMaj > -1 ? "Mise à jour" : "Ajout", ligneOperation);
+					ligneOperation.setDateMaj(Calendar.getInstance().getTime());
+					ligneOperation.setAuteur(userSession.getUtilisateur().getLibelle());
 					if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
 						ligneOperation.setDateOperation(Calendar.getInstance().getTime());
 					}
 					else {
 						ligneOperation.setDateOperation(null);
 					}
-					LOGGER.debug("Intégration de l'opération {} dans le budget {}", ligneOperation, budget);
-					budget.getListeOperations().add(ligneOperation);
+					if(rangMaj >= 0) {
+						LOGGER.debug("Intégration de l'opération {} dans le budget {}", ligneOperation, budget);
+						budget.getListeOperations().add(rangMaj, ligneOperation);
+					}
+					else {
+						LOGGER.debug("Ajout de l'opération {} dans le budget {}", ligneOperation, budget);
+						budget.getListeOperations().add(ligneOperation);
+					}
+				}
+				else {
+					LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
 				}
 				// Mise à jour du budget
 				budget = calculEtSauvegardeBudget(budget, userSession);
