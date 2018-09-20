@@ -297,15 +297,16 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
 	 * @throws BudgetNotFoundException 
+	 * @throws CompteClosedException 
 	*/
 	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Mise à jour d'une opération", tags={"Opérations"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Opération mise à jour"),
 			@ApiResponse(code = 201, message = "Opération créée"),
 			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),
-	
-			@ApiResponse(code = 404, message = "Données introuvables")
+			@ApiResponse(code = 403, message = "Opération non autorisée"),	
+			@ApiResponse(code = 404, message = "Données introuvables"),
+			@ApiResponse(code = 405, message = "Compte clos")
 	})
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
@@ -316,11 +317,11 @@ public class OperationsAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<BudgetMensuel> createOrUpdateOperation(
 			@PathVariable("idBudget") String idBudget,
 			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, 
-			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
+			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		UserBusinessSession userSession = getUtilisateur(auth);
 		if(operation != null && idBudget != null && userSession != null){
 			logger.info("[API][idUser={}][idBudget={}][idOperation={}] createOrUpdateOperation",userSession.getUtilisateur().getId(), idBudget, operation.getId());
-			BudgetMensuel budgetUpdated = operationService.ajoutOperationEtCalcul(idBudget, operation, userSession);
+			BudgetMensuel budgetUpdated = operationService.createOrUpdateOperation(idBudget, operation, userSession);
 			return getEntity(budgetUpdated);
 		}
 		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + operation);

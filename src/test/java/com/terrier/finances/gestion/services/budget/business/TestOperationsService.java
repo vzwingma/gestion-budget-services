@@ -39,6 +39,7 @@ import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategori
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
@@ -73,7 +74,7 @@ public class TestOperationsService {
 
 	@Autowired
 	private UtilisateurDatabaseService mockDataDBUsers;
-	
+
 	@Autowired
 	@Qualifier("mockAuthService")
 	private UtilisateursService authenticationService;
@@ -91,7 +92,7 @@ public class TestOperationsService {
 		when(mockUser.getEncryptor()).thenReturn(new BasicTextEncryptor());
 		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
 		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
-		
+
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
 		user.setLibelle("userTest");
@@ -115,11 +116,11 @@ public class TestOperationsService {
 		compte.setId("CID");
 		compte.setLibelle("TEST COMPTE");
 		compte.setOrdre(0);
-		
+
 		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(compte);
-		
+
 		this.budget.setCompteBancaire(compte);
-		
+
 		this.budget.setId(BudgetDataUtils.getBudgetId(compte, Month.JANUARY, 2018));
 	}
 
@@ -213,7 +214,7 @@ public class TestOperationsService {
 		Utilisateur u = new Utilisateur();
 		u.setLibelle("userTest");
 		u.setLogin("userTest");
-		
+
 		assertTrue(operationsService.setLigneDepenseAsDerniereOperation(this.budget.getId(), "ID_op", new UserBusinessSession(u)));
 
 		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(argThat(new BaseMatcher<BudgetMensuel>() {
@@ -240,5 +241,67 @@ public class TestOperationsService {
 			@Override
 			public void describeTo(Description arg0) { }
 		}), any(BasicTextEncryptor.class));
+	}
+
+
+
+
+	/**
+	 * Update opération
+	 * @throws UserNotAuthorizedException
+	 * @throws DataNotFoundException
+	 * @throws BudgetNotFoundException
+	 * @throws CompteClosedException
+	 */
+	@Test
+	public void testCRUDOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException {
+		LOGGER.info("testCRUDOperation");
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(this.budget);
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("MOCK"));	
+		CategorieOperation cat = new CategorieOperation("SCAT_ID");
+		CategorieOperation sscat = new CategorieOperation("CAT_ID");
+		sscat.setCategorieParente(cat);
+		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		op1.setDerniereOperation(true);
+		op1.setId("OP1");
+		budget.getListeOperations().add(op1);
+		LigneOperation op2 = new LigneOperation(sscat, "OP2", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
+		op2.setId("ID_op");
+		op2.setDerniereOperation(false);
+		op2.setId("OP2");
+		budget.getListeOperations().add(op2);
+
+		Utilisateur u = new Utilisateur();
+		u.setLibelle("userTest");
+		u.setLogin("userTest");
+
+		LOGGER.info("testCRUDOperation - Add new Ope");
+		LigneOperation opNew = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
+		opNew.setId("OP3");
+
+		BudgetMensuel budgetOP3 = operationsService.createOrUpdateOperation(this.budget.getId(), opNew, new UserBusinessSession(u));
+		assertEquals(4, budgetOP3.getListeOperations().size());
+
+		LOGGER.info("testCRUDOperation - Delete existing Ope");
+		LigneOperation opDel = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", null, false);
+		opDel.setId("OP1");
+
+		BudgetMensuel budgetDel = operationsService.createOrUpdateOperation(this.budget.getId(), opDel, new UserBusinessSession(u));
+		assertEquals(3, budgetDel.getListeOperations().size());
+		
+		
+		assertEquals(549, budgetDel.getSoldeFin());
+		assertEquals(0, budgetDel.getSoldeNow());
+		
+		LOGGER.info("testCRUDOperation - Update Ope");
+		LigneOperation opUpdate = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		opUpdate.setId("OP3");
+		BudgetMensuel budgetUpdate = operationsService.createOrUpdateOperation(this.budget.getId(), opUpdate, new UserBusinessSession(u));
+		assertEquals(3, budgetUpdate.getListeOperations().size());
+		assertEquals(549, budgetUpdate.getSoldeFin());
+		assertEquals(548, budgetUpdate.getSoldeNow());
+		
+		LOGGER.info("/testCRUDOperation");
+
 	}
 }

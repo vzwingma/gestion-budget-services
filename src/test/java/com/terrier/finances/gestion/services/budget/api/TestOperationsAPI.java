@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Month;
 import java.util.Calendar;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -296,6 +297,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	}
 	
 	
+	@Disabled
 	@Test
 	public void testUpdateBudget() throws Exception {
 
