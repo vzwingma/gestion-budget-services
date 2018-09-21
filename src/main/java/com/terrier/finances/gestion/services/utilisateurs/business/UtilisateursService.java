@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -66,15 +66,14 @@ public class UtilisateursService extends AbstractBusinessService implements User
 			utilisateur = dataDBUsers.chargeUtilisateur(login);
 			if(utilisateur != null){
 				LOGGER.info("[SEC][idUser={}] Utilisateur [{}] trouvé", utilisateur.getId(), login);
-				String droits = utilisateur.getDroits()
+				List<GrantedAuthority> grantedAuthorities = utilisateur.getDroits()
 						.entrySet()
 						.stream()
 						.filter(Entry::getValue)
-						.map(e -> e.getKey().name())
-						.collect(Collectors.joining(";"));
+						.map(e -> new SimpleGrantedAuthority(e.getKey().name()))
+						.collect(Collectors.toList());
 
-				List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(droits);
-				LOGGER.info("[SEC][idUser={}] Droits {}", utilisateur.getId(), droits); 
+				LOGGER.info("[SEC][idUser={}] Droits {}", utilisateur.getId(), grantedAuthorities); 
 
 				if(utilisateur.getMasterCleChiffrementDonnees() == null){
 					LOGGER.error("[SEC][idUser={}] Erreur 4 lors de l'authentification. Master key introuvable", utilisateur.getId());
@@ -193,6 +192,9 @@ public class UtilisateursService extends AbstractBusinessService implements User
 		return false;
 	}
 
+	/**
+	 * @return encoder password
+	 */
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
