@@ -65,7 +65,7 @@ public class SpringMongoDBConfig {
 			return envVar;
 		}
 		else {
-			LOGGER.warn("La clé {} n'est définie. Utilisation de la valeur par défaut : {} ", cle.name(), defaultVar);
+			LOGGER.warn("La clé {0} n'est définie. Utilisation de la valeur par défaut : {1} ", cle.name(), defaultVar);
 			 return defaultVar;
 		}
 	}
@@ -81,7 +81,7 @@ public class SpringMongoDBConfig {
 			return Integer.parseInt(env);
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("La clé {}={} n'est pas un nombre. La valeur par défaut : {} ", cle.name(), env, defaultVar);
+			LOGGER.error("La clé {0}={1} n'est pas un nombre. La valeur par défaut : {2} ", cle.name(), env, defaultVar);
 			return defaultVar;
 		}
 	}

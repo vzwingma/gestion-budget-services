@@ -433,11 +433,12 @@ public class OperationsService extends AbstractBusinessService {
 				LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
 			}
 			// Mise à jour du budget
-			budget = calculEtSauvegardeBudget(budget, userSession);
+			calculEtSauvegardeBudget(budget, userSession);
 		}
 		else{
-			LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", budget.getCompteBancaire());
-			throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte est cloturé");
+			String idCompte = BudgetDataUtils.getCompteFromBudgetId(idBudget);
+			LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", idCompte);
+			throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte "+idCompte+ " est cloturé");
 		}
 		return budget;
 	}
