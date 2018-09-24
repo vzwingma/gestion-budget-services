@@ -33,13 +33,13 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 	 */
 	public Utilisateur chargeUtilisateur(String login) throws DataNotFoundException{
 		try{
-			LOGGER.info("Recherche de l'utilisateur {}", login);
+			LOGGER.info("[idUser={}] Recherche de l'utilisateur", login);
 			Query queryUser = new Query();
 			queryUser.addCriteria(Criteria.where("login").is(login));
 			return getMongoOperation().findOne(queryUser, Utilisateur.class);
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors de la recherche de l'utilisateur {}", login, e);
+			LOGGER.error("[idUser={}] Erreur lors de la recherche de l'utilisateur", login, e);
 			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + login);
 		}
 	}
@@ -53,7 +53,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 			getMongoOperation().save(utilisateur);
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors de la sauvegarde de l'utilisateur", e);
+			LOGGER.error("[idUser={}] Erreur lors de la sauvegarde de l'utilisateur", utilisateur.getId(), e);
 		}
 	}
 
@@ -68,17 +68,17 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 	public List<CompteBancaire> chargeComptes(String idUtilisateur) throws DataNotFoundException{
 		List<CompteBancaire>  listeComptes = new ArrayList<>();
 		try{
-			LOGGER.info("Chargement des comptes de [_id={}]", idUtilisateur);
+			LOGGER.info("[idUser={}] Chargement des comptes", idUtilisateur);
 			Query queryBudget = new Query().addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(idUtilisateur)));
 
 			listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class)
 					.stream()
 					.sorted((compte1, compte2) -> Integer.compare(compte1.getOrdre(), compte2.getOrdre()))
 					.collect(Collectors.toList());
-			LOGGER.info(" {} comptes chargés : {} ", listeComptes.size(), listeComptes);
+			LOGGER.info("[idUser={}]  {} comptes chargés : {} ", idUtilisateur, listeComptes.size(), listeComptes);
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement des comptes de {}", idUtilisateur, e);
+			LOGGER.error("[idUser={}] Erreur lors du chargement des comptes", idUtilisateur, e);
 			throw new DataNotFoundException("Erreur lors de la recherche des comptes");
 		}
 		return listeComptes;
@@ -88,27 +88,27 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 	/**
 	 * Chargement d'un compte par un id
 	 * @param idCompte id du compte
-	 * @param utilisateur utilisateur associé
+	 * @param idUtilisateur utilisateur associé
 	 * @return compte
 	 * @throws DataNotFoundException
 	 */
-	public CompteBancaire chargeCompteParId(String idCompte, String utilisateur) throws DataNotFoundException{
+	public CompteBancaire chargeCompteParId(String idCompte, String idUtilisateur) throws DataNotFoundException{
 		try{
-			LOGGER.info("Chargement du compte {}", idCompte);
+			LOGGER.info("[idUser={}][idCompte={}] Chargement du compte", idUtilisateur, idCompte);
 			Query queryBudget = new Query();
 			queryBudget
 				.addCriteria(Criteria.where("id").is(idCompte));
 			CompteBancaire compte =  getMongoOperation().findOne(queryBudget, CompteBancaire.class);		
-			if(compte.getListeProprietaires().stream().anyMatch(u -> u.getId().equals(utilisateur))){
+			if(compte.getListeProprietaires().stream().anyMatch(u -> u.getId().equals(idUtilisateur))){
 				return compte;
 			}
 			else{
-				LOGGER.warn("Aucun compte {} n'existe pour l'utilisateur courant {}", idCompte, utilisateur);
+				LOGGER.warn("[idUser={}][idCompte={}] Aucun compte n'existe pour l'utilisateur", idUtilisateur, idCompte);
 				throw new DataNotFoundException("Aucun compte n'existe pour l'utilisateur courant");
 			}
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement du compte {}", idCompte, e);
+			LOGGER.error("[idCompte={}] Erreur lors du chargement du compte", idCompte, e);
 			throw new DataNotFoundException("Erreur lors de la recherche de compte");
 		}
 	}
@@ -128,11 +128,11 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 				.addCriteria(Criteria.where("id").is(idCompte))
 				.addCriteria(Criteria.where("actif").is(true));
 			boolean isActif = getMongoOperation().findOne(queryBudget, CompteBancaire.class) != null;
-			LOGGER.info("Compte {} est actif ? {}", idCompte, isActif);
+			LOGGER.info("[idCompte={}] Compte actif ? {}", idCompte, isActif);
 			return isActif;
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement du compte {}", idCompte, e);
+			LOGGER.error("[idCompte={}] Erreur lors du chargement du compte ", idCompte, e);
 			throw new DataNotFoundException("Erreur lors de la recherche de compte");
 		}
 	}
