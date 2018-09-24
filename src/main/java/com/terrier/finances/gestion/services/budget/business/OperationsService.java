@@ -403,42 +403,52 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws CompteClosedException compte clos
 	 */
 	public BudgetMensuel createOrUpdateOperation(String idBudget, LigneOperation ligneOperation, UserBusinessSession userSession) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
-		BudgetMensuel budget = chargerBudgetMensuel(idBudget, userSession);
-		LOGGER.warn("{} - {} - {}- {}", budget.isActif(), budget.getCompteBancaire().isActif(), budget, budget.getCompteBancaire());
-		if(budget != null && budget.isActif() && budget.getCompteBancaire().isActif()){
-			// Si mise à jour d'une opération, on l'enlève
-			int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
-			budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
-			if(ligneOperation.getEtat() != null) {
-				LOGGER.info("{} d'une Opération : {}", rangMaj > -1 ? "Mise à jour" : "Ajout", ligneOperation);
-				ligneOperation.setDateMaj(Calendar.getInstance().getTime());
-				ligneOperation.setAuteur(userSession.getUtilisateur().getLibelle());
-				if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
-					ligneOperation.setDateOperation(Calendar.getInstance().getTime());
+
+		try {
+
+
+			BudgetMensuel budget = chargerBudgetMensuel(idBudget, userSession);
+			LOGGER.warn("{} - {} - {}- {}", budget.isActif(), budget.getCompteBancaire().isActif(), budget, budget.getCompteBancaire());
+			if(budget != null && budget.getCompteBancaire().isActif()){
+				// Si mise à jour d'une opération, on l'enlève
+				int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
+				budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
+				if(ligneOperation.getEtat() != null) {
+					LOGGER.info("{} d'une Opération : {}", rangMaj > -1 ? "Mise à jour" : "Ajout", ligneOperation);
+					ligneOperation.setDateMaj(Calendar.getInstance().getTime());
+					ligneOperation.setAuteur(userSession.getUtilisateur().getLibelle());
+					if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
+						ligneOperation.setDateOperation(Calendar.getInstance().getTime());
+					}
+					else {
+						ligneOperation.setDateOperation(null);
+					}
+					if(rangMaj >= 0) {
+						LOGGER.debug("Intégration de l'opération {} dans le budget {}", ligneOperation, budget);
+						budget.getListeOperations().add(rangMaj, ligneOperation);
+					}
+					else {
+						LOGGER.debug("Ajout de l'opération {} dans le budget {}", ligneOperation, budget);
+						budget.getListeOperations().add(ligneOperation);
+					}
 				}
 				else {
-					ligneOperation.setDateOperation(null);
+					LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
 				}
-				if(rangMaj >= 0) {
-					LOGGER.debug("Intégration de l'opération {} dans le budget {}", ligneOperation, budget);
-					budget.getListeOperations().add(rangMaj, ligneOperation);
-				}
-				else {
-					LOGGER.debug("Ajout de l'opération {} dans le budget {}", ligneOperation, budget);
-					budget.getListeOperations().add(ligneOperation);
-				}
+				// Mise à jour du budget
+				budget = calculEtSauvegardeBudget(budget, userSession);
 			}
-			else {
-				LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
+			else{
+				LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", budget.getCompteBancaire());
+				throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte est cloturé");
 			}
-			// Mise à jour du budget
-			budget = calculEtSauvegardeBudget(budget, userSession);
+			return budget;
 		}
-		else{
-			LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", budget.getCompteBancaire());
-			throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte est cloturé");
+		catch (Exception e) {
+			LOGGER.error("******* Erreur : ", e);
+			throw new CompteClosedException("EEEEEEEEEEEEEEEE");
 		}
-		return budget;
+
 	}
 
 
@@ -500,34 +510,37 @@ public class OperationsService extends AbstractBusinessService {
 				/**
 				 *  Calcul par catégorie
 				 */
-				Double[] valeursCat = {0D,0D};
-				if(budget.getTotalParCategories().get(operation.getIdCategorie()) != null){
-					valeursCat = budget.getTotalParCategories().get(operation.getIdCategorie());
+				if(operation.getIdCategorie() != null) {
+					Double[] valeursCat = {0D,0D};
+					if(budget.getTotalParCategories().get(operation.getIdCategorie()) != null){
+						valeursCat = budget.getTotalParCategories().get(operation.getIdCategorie());
+					}
+					if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+						valeursCat[0] = valeursCat[0] + valeurOperation;
+						valeursCat[1] = valeursCat[1] + valeurOperation;
+					}
+					else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+						valeursCat[1] = valeursCat[1] + valeurOperation;
+					}
+					budget.getTotalParCategories().put(operation.getIdCategorie(), valeursCat);
 				}
-				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
-					valeursCat[0] = valeursCat[0] + valeurOperation;
-					valeursCat[1] = valeursCat[1] + valeurOperation;
-				}
-				else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
-					valeursCat[1] = valeursCat[1] + valeurOperation;
-				}
-				budget.getTotalParCategories().put(operation.getCategorie().getId(), valeursCat);
-
 				/**
 				 *  Calcul par sous catégorie
 				 */
-				Double[] valeurSsCat = {0D,0D};
-				if( budget.getTotalParSSCategories().get(operation.getIdSsCategorie()) != null){
-					valeurSsCat = budget.getTotalParSSCategories().get(operation.getIdSsCategorie());
+				if(operation.getIdSsCategorie() != null) {
+					Double[] valeurSsCat = {0D,0D};
+					if( budget.getTotalParSSCategories().get(operation.getIdSsCategorie()) != null){
+						valeurSsCat = budget.getTotalParSSCategories().get(operation.getIdSsCategorie());
+					}
+					if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+						valeurSsCat[0] = valeurSsCat[0] + valeurOperation;
+						valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
+					}
+					if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+						valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
+					}
+					budget.getTotalParSSCategories().put(operation.getIdSsCategorie(), valeurSsCat);
 				}
-				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
-					valeurSsCat[0] = valeurSsCat[0] + valeurOperation;
-					valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
-				}
-				if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
-					valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
-				}
-				budget.getTotalParSSCategories().put(operation.getIdSsCategorie(), valeurSsCat);
 				/**
 				 * Calcul des totaux
 				 */

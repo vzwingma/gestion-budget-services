@@ -43,6 +43,8 @@ public class TestParametragesAPI extends AbstractTestsAPI  {
 
 	@Test
 	public void testGetCategories() throws Exception {
+		when(mockDataDBParams.chargeCategories()).thenReturn(new ArrayList<>());
+		
 		getMockAPI().perform(get(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL))
 				.andExpect(status().isOk())
 				.andExpect(content().string("[]"));

@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Month;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
@@ -57,7 +59,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	private UtilisateurDatabaseService mockDataDBUsers;
 	@Autowired
 	private BudgetDatabaseService mockDataDBBudget;
-
+	@Autowired
+	private ParametragesDatabaseService mockDataDBParams;
 	@Autowired
 	private UtilisateursService serviceUser;
 
@@ -387,16 +390,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		op1.setDerniereOperation(true);
 		op1.setId("OP1");
 		bo.getListeOperations().add(op1);
-		bo.setActif(false);
-		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATION_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", op1.getId());
-		String jsonOP1 = json(op1);
-		LOGGER.info("Bad Update {} : {}", urlBadBudget, jsonOP1);
-		getMockAPI().perform(
-				post(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonOP1))
-			.andExpect(status().is4xxClientError());
 		bo.setActif(true);
+
 		// OK
 		LigneOperation opupdate = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
 		opupdate.setId("OP1");
@@ -440,15 +435,16 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo2), any())).thenReturn(bo2.getId());
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C2_2018_1"), any())).thenReturn(bo2);
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C1_2018_1"), any())).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuel(eq(c2), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo2);
 		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("Mock"));
 
-		
-		
-
-		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE);
+		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.REMBOURSEMENT);
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE);
 		sscat.setCategorieParente(cat);
 
+		when(mockDataDBParams.chargeCategories()).thenReturn(Arrays.asList(cat, sscat));
+		when(mockDataDBParams.getCategorieParId(eq(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.name()))).thenReturn(sscat);
+		
 		LigneOperation opIntercompte = new LigneOperation(sscat, "OPInter", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
 		opIntercompte.setId("OPInter");
 		bo.getListeOperations().add(opIntercompte);
