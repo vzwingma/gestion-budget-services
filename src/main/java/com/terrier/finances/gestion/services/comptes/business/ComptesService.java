@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.jasypt.util.text.BasicTextEncryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,10 @@ import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDataba
  */
 @Service
 public class ComptesService extends AbstractBusinessService {
-
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(ComptesService.class);
 	/**
 	 * Utilisateurs
 	 */
@@ -64,6 +69,7 @@ public class ComptesService extends AbstractBusinessService {
 	public CompteBancaire getCompteById(String idCompte, String idUtilisateur) throws DataNotFoundException{
 		CompteBancaire compte = dataDBUsers.chargeCompteParId(idCompte, idUtilisateur);
 		if(compte != null){
+			LOGGER.debug("[idUser={}][idCompte={}] Compte chargé (actif ? {})", idUtilisateur, idCompte, compte.isActif());
 			return compte;
 		}
 		throw new DataNotFoundException("Aucun compte "+idCompte+ " trouvé");
