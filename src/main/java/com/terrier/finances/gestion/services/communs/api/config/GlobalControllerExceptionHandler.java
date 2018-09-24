@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.NotModifiedException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserAccessForbiddenException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 
 /**
  * Gestion des exceptions dans le service REST
@@ -40,13 +39,6 @@ class GlobalControllerExceptionHandler {
     @ExceptionHandler(DataNotFoundException.class)
     public void handleDataNotFoundException() {
     	 LOGGER.error("Erreur : Données introuvables");
-    }
-    
-    
-    @ResponseStatus(HttpStatus.NOT_MODIFIED)  // 204
-    @ExceptionHandler(NotModifiedException.class)
-    public void handleNotModifiedException() {
-    	 LOGGER.info("Non modifiée");
     }
     
     @ResponseStatus(HttpStatus.LOCKED)  // 423

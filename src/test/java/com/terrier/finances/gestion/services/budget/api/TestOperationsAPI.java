@@ -30,6 +30,7 @@ import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
@@ -71,7 +72,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		c1.setId("C1");
 		c1.setLibelle("Libelle1");
 		c1.setOrdre(1);
-		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(c1);
+		when(mockDataDBUsers.chargeCompteParId(eq("C1"), anyString())).thenReturn(c1);
 
 		bo = new BudgetMensuel();
 		bo.setCompteBancaire(c1);
@@ -84,7 +85,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo.setDateMiseAJour(Calendar.getInstance());
 		bo.setResultatMoisPrecedent(0D, 100D);
 		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo), any())).thenReturn(bo.getId());
-		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuel(eq(c1), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
 		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("Mock"));
 
 		Utilisateur user = new Utilisateur();
@@ -123,7 +124,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Test
 	public void testGetBudgetOK() throws Exception {
 
-		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=compteTest&mois=1&annee=2018";
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=C1&mois=1&annee=2018";
 		LOGGER.info("Good Compte : {}", urlGoodCompte);
 
 		getMockAPI().perform(
@@ -157,7 +158,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		// OK
 
-		String url = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", "compteTest_2018_1");
+		String url = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", "C1_2018_1");
 		LOGGER.info("Reinit budget: {}", url);
 
 		getMockAPI().perform(
@@ -319,7 +320,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		op2.setDerniereOperation(false);
 		bo.getListeOperations().add(op2);
 
-		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_DERNIERE_FULL.replace("{idBudget}", bo.getId()+"XXX").replace("{idOperation}", "ID_op");
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATION_DERNIERE_FULL.replace("{idBudget}", bo.getId()+"XXX").replace("{idOperation}", "ID_op");
 		LOGGER.info("Bad SetOperation : {}", urlBadBudget);
 
 		getMockAPI().perform(
@@ -329,7 +330,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		.andExpect(status().isNoContent());
 		// OK
 
-		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_DERNIERE_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "ID_op");
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATION_DERNIERE_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "ID_op");
 		LOGGER.info("Good SetOperation : {}", urlGoodCompte);
 
 		getMockAPI().perform(
@@ -354,7 +355,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		op1.setDerniereOperation(true);
 		bo.getListeOperations().add(op1);
 
-		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "ID_op");
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATION_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "ID_op");
 		LOGGER.info("Bad del : {}", urlBadBudget);
 
 		getMockAPI().perform(
@@ -363,7 +364,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		.andExpect(status().isNotFound());
 		// OK
 
-		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATIONS_ID_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "OP1");
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATION_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "OP1");
 		LOGGER.info("Good Del : {}", urlGoodCompte);
 
 		getMockAPI().perform(
@@ -387,22 +388,93 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		op1.setId("OP1");
 		bo.getListeOperations().add(op1);
 		bo.setActif(false);
-		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATIONS_FULL.replace("{idBudget}", bo.getId());
-		LOGGER.info("Bad Update : {}", urlBadBudget);
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_OPERATION_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", op1.getId());
+		String jsonOP1 = json(op1);
+		LOGGER.info("Bad Update {} : {}", urlBadBudget, jsonOP1);
 		getMockAPI().perform(
 				post(urlBadBudget).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(json(op1)));
-		//.andExpect(status().is4xxClientError());
+				.content(jsonOP1))
+			.andExpect(status().is4xxClientError());
 		bo.setActif(true);
 		// OK
 		LigneOperation opupdate = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
 		opupdate.setId("OP1");
-		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATIONS_FULL.replace("{idBudget}", bo.getId());
-		LOGGER.info("Good Update : {}", urlGoodCompte);
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATION_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", opupdate.getId());
+		String jsonopupdate = json(opupdate);
+		
+		LOGGER.info("Good Update {} : {}", urlGoodCompte, jsonopupdate);
 
 		getMockAPI().perform(
 				post(urlGoodCompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonopupdate))
+		.andExpect(status().isOk());
+	}
+	
+	
+
+
+	@Test
+	public void testCreateOperationInterCompte() throws Exception {
+
+		// Budget
+		CompteBancaire c2 = new CompteBancaire();
+		c2.setActif(true);
+		c2.setId("C2");
+		c2.setLibelle("C2");
+		c2.setOrdre(1);
+		when(mockDataDBUsers.chargeCompteParId(eq("C2"), anyString())).thenReturn(c2);
+
+
+		BudgetMensuel bo2 = new BudgetMensuel();
+		bo2.setCompteBancaire(c2);
+		bo2.setMois(Month.JANUARY);
+		bo2.setAnnee(2018);
+		bo2.setActif(true);
+		bo2.setId("C2_2018_1");
+		bo2.setSoldeFin(0D);
+		bo2.setSoldeNow(1000D);
+		bo2.setDateMiseAJour(Calendar.getInstance());
+		bo2.setResultatMoisPrecedent(0D, 100D);
+		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo2), any())).thenReturn(bo2.getId());
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C2_2018_1"), any())).thenReturn(bo2);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C1_2018_1"), any())).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("Mock"));
+
+		
+		
+
+		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE);
+		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE);
+		sscat.setCategorieParente(cat);
+
+		LigneOperation opIntercompte = new LigneOperation(sscat, "OPInter", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
+		opIntercompte.setId("OPInter");
+		bo.getListeOperations().add(opIntercompte);
+
+
+		String urlIntercompte = BudgetApiUrlEnum.BUDGET_OPERATION_INTERCOMPTE_FULL
+									.replace("{idBudget}", bo.getId())
+									.replace("{idOperation}", opIntercompte.getId())
+									.replace("{idCompte}", c2.getId());
+		c2.setActif(false);
+		LOGGER.info("Bad Intercompte : {}", urlIntercompte);
+		getMockAPI().perform(
+				post(urlIntercompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json(opIntercompte)))
+			.andExpect(status().is4xxClientError());
+
+
+		// OK
+		LigneOperation opupdate = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		opupdate.setId("OP1");
+
+		LOGGER.info("Good Intercompte : {}", urlIntercompte);
+		c2.setActif(true);
+		getMockAPI().perform(
+				post(urlIntercompte).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest"))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(opupdate)))
 		.andExpect(status().isOk());

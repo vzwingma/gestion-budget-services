@@ -70,6 +70,6 @@ public abstract class AbstractAPIController {
 		if(userSession != null){
 			return userSession;
 		}
-		throw new UserNotAuthorizedException(new StringBuilder().append("L'utilisateur n'est pas authentifié"));
+		throw new UserNotAuthorizedException("L'utilisateur n'est pas authentifié");
 	}
 }

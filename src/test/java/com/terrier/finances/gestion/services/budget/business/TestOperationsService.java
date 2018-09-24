@@ -218,7 +218,7 @@ public class TestOperationsService {
 		u.setLibelle("userTest");
 		u.setLogin("userTest");
 
-		assertTrue(operationsService.setLigneDepenseAsDerniereOperation(this.budget.getId(), "ID_op", new UserBusinessSession(u)));
+		assertTrue(operationsService.setLigneAsDerniereOperation(this.budget.getId(), "ID_op", new UserBusinessSession(u)));
 
 		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(argThat(new BaseMatcher<BudgetMensuel>() {
 

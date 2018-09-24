@@ -49,7 +49,7 @@ public class StatutAPIController extends AbstractAPIController {
 	 * Appel PING
 	 * @return résultat du ping
 	 */
-	@ApiOperation(httpMethod="GET", produces=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Statut de l'opération", response=StatutDependencyAPIObject.class)
+	@ApiOperation(httpMethod="GET", produces=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Statut de l'application", response=StatutDependencyAPIObject.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Statut de l'application"),
             @ApiResponse(code = 401, message = "L'opération doit être identifiée"),

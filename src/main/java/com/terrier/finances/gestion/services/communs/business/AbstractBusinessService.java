@@ -76,7 +76,7 @@ public class AbstractBusinessService {
 		if(userSession != null){
 			return userSession;
 		}
-		throw new UserNotAuthorizedException(new StringBuilder().append("L'utilisateur ").append(idSession).append(" n'est pas authentifié"));
+		throw new UserNotAuthorizedException(new StringBuilder().append("L'utilisateur ").append(idSession).append(" n'est pas authentifié").toString());
 	}
 	
 	/**

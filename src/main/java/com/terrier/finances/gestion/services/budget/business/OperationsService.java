@@ -18,6 +18,7 @@ import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
+import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
@@ -300,7 +301,7 @@ public class OperationsService extends AbstractBusinessService {
 			}
 		}
 		else{
-			throw new CompteClosedException(new StringBuilder().append("Impossible d'initialiser un nouveau budget. Le compte est cloturé"));
+			throw new CompteClosedException("Impossible d'initialiser un nouveau budget. Le compte est cloturé");
 		}
 	}
 
@@ -314,53 +315,59 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException erreur données
 	 * @throws CompteClosedException 
 	 */
-	@Deprecated
-	public BudgetMensuel ajoutLigneTransfertIntercompte(String idBudget, LigneOperation ligneOperation, CompteBancaire compteCrediteur, UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException, CompteClosedException{
+	public BudgetMensuel createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination, UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException, CompteClosedException{
 
-		//		BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, userSession.getEncryptor());
-		//		/**
-		//		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
-		//		 */
-		//		BudgetMensuel budgetTransfert = chargerBudgetMensuel(compteCrediteur.getId(), budget.getMois(), budget.getAnnee(), userSession);
-		//		if(budget.getCompteBancaire().isActif() && budgetTransfert.getCompteBancaire().isActif() && budget.isActif() && budgetTransfert.isActif()){
-		//			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} > {} ", budget.getCompteBancaire().getLibelle(), compteCrediteur, ligneOperation);
-		//
-		//			// #59 : Cohérence des états
-		//			EtatOperationEnum etatDepenseCourant = ligneOperation.getEtat();
-		//			EtatOperationEnum etatDepenseTransfert = null;
-		//			switch (etatDepenseCourant) {
-		//			case ANNULEE:
-		//				etatDepenseTransfert = EtatOperationEnum.ANNULEE;
-		//				break;
-		//			case REPORTEE:
-		//				etatDepenseTransfert = EtatOperationEnum.REPORTEE;
-		//				break;
-		//			case PREVUE:
-		//			case REALISEE:
-		//			default:				
-		//				etatDepenseTransfert = EtatOperationEnum.PREVUE;
-		//				break;
-		//			}
-		//
-		//			LigneOperation ligneTransfert = new LigneOperation(
-		//					ligneOperation.getSsCategorie(), 
-		//					"[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneOperation.getLibelle(), 
-		//					TypeOperationEnum.CREDIT, 
-		//					Double.toString(Math.abs(ligneOperation.getValeur())), 
-		//					etatDepenseTransfert, 
-		//					ligneOperation.isPeriodique());
-		//
-		//			ajoutOperation(budgetTransfert, ligneTransfert, userSession.getUtilisateur());
-		//			calculEtSauvegardeBudget(budgetTransfert, userSession);
-		//			/**
-		//			 *  Ajout de la ligne dans le budget courant
-		//			 */
-		//			ligneOperation.setLibelle("[vers "+budgetTransfert.getCompteBancaire().getLibelle()+"] " + ligneOperation.getLibelle());
-		//			return ajoutOperationEtCalcul(idBudget, ligneOperation, userSession);
-		//		}
-		//		else{
-		throw new CompteClosedException(new StringBuilder("Impossible d'ajouter une opération de transfert intercompte : L'un des deux comptes est cloturé"));
-		//		}
+		/**
+		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
+		 */
+		try {
+			String idBudgetDestination = BudgetDataUtils.getBudgetId(idCompteDestination, BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget));
+			LOGGER.info("[BUDGET] Ajout d'un transfert intercompte de {} vers {} ({}) > {} ", idBudget, idBudgetDestination, idCompteDestination, ligneOperation);
+			BudgetMensuel budget = dataDepenses.chargeBudgetMensuelById(idBudget, userSession.getEncryptor());
+			BudgetMensuel budgetTransfert = dataDepenses.chargeBudgetMensuelById(idBudgetDestination, userSession.getEncryptor());
+			LOGGER.debug("[BUDGET] Budgets : {} -> {}", budget, budgetTransfert);
+			if(budget.getCompteBancaire().isActif() && budgetTransfert.getCompteBancaire().isActif() && budget.isActif() && budgetTransfert.isActif()){
+				// #59 : Cohérence des états
+				EtatOperationEnum etatDepenseCourant = ligneOperation.getEtat();
+				EtatOperationEnum etatDepenseTransfert = null;
+				switch (etatDepenseCourant) {
+				case ANNULEE:
+					etatDepenseTransfert = EtatOperationEnum.ANNULEE;
+					break;
+				case REPORTEE:
+					etatDepenseTransfert = EtatOperationEnum.REPORTEE;
+					break;
+				case PREVUE:
+				case REALISEE:
+				default:				
+					etatDepenseTransfert = EtatOperationEnum.PREVUE;
+					break;
+				}
+				LigneOperation ligneTransfert = new LigneOperation(
+						ligneOperation.getSsCategorie(), 
+						"[de "+budget.getCompteBancaire().getLibelle()+"] " + ligneOperation.getLibelle(), 
+						TypeOperationEnum.CREDIT, 
+						Double.toString(Math.abs(ligneOperation.getValeur())), 
+						etatDepenseTransfert, 
+						ligneOperation.isPeriodique());
+
+				createOrUpdateOperation(idBudgetDestination, ligneTransfert, userSession);
+				/**
+				 *  Ajout de la ligne dans le budget courant
+				 */
+				ligneOperation.setLibelle("[vers "+budgetTransfert.getCompteBancaire().getLibelle()+"] " + ligneOperation.getLibelle());
+				return createOrUpdateOperation(idBudget, ligneOperation, userSession);
+			}
+			else{
+				throw new CompteClosedException("Impossible d'ajouter une opération de transfert intercompte : L'un des deux comptes est cloturé");
+			}
+
+		}
+		catch (Exception e) {
+			// TODO : A enlever
+			LOGGER.error("Erreur dans le traitement de l'opération", e);
+			throw new CompteClosedException("Erreur lors de l'opération " + e.getMessage());
+		}
 	}
 
 
@@ -390,8 +397,7 @@ public class OperationsService extends AbstractBusinessService {
 				}
 			}
 			else{
-				LOGGER.warn("Impossible de modifier ou créer une opération. Le compte est cloturé");
-				throw new CompteClosedException(new StringBuilder().append("Impossible de modifier ou créer une opération. Le compte est cloturé"));
+				throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte est cloturé");
 			}
 		}
 		catch (Exception e) {
@@ -411,9 +417,9 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws CompteClosedException compte clos
 	 */
 	public BudgetMensuel createOrUpdateOperation(String idBudget, LigneOperation ligneOperation, UserBusinessSession userSession) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
-		try {
-			BudgetMensuel budget = chargerBudgetMensuel(idBudget, userSession);
-			if(budget.isActif() && budget.getCompteBancaire().isActif()){
+		BudgetMensuel budget = chargerBudgetMensuel(idBudget, userSession);
+		if(budget != null && budget.isActif() && budget.getCompteBancaire().isActif()){
+			try {
 				// Si mise à jour d'une opération, on l'enlève
 				int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
 				budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
@@ -442,16 +448,17 @@ public class OperationsService extends AbstractBusinessService {
 				// Mise à jour du budget
 				budget = calculEtSauvegardeBudget(budget, userSession);
 			}
-			else{
-				LOGGER.warn("Impossible de modifier ou créer une opération. Le compte est cloturé");
-				throw new CompteClosedException(new StringBuilder().append("Impossible de modifier ou créer une opération. Le compte est cloturé"));
+			catch (Exception e) {
+				LOGGER.error("Erreur lors de la mise à jour", e);
+				return null;
 			}
-			return budget;
 		}
-		catch (Exception e) {
-			LOGGER.error("Erreur lors de la mise à jour", e);
-			return null;
+		else{
+			LOGGER.warn("Impossible de modifier ou créer une opération. Le compte est cloturé");
+			throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte est cloturé");
 		}
+		return budget;
+
 	}
 
 
@@ -459,7 +466,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * Mise à jour de la ligne comme dernière opération
 	 * @param ligneId
 	 */
-	public boolean setLigneDepenseAsDerniereOperation(String idBudget, String ligneId, UserBusinessSession userSession) throws UserNotAuthorizedException{
+	public boolean setLigneAsDerniereOperation(String idBudget, String ligneId, UserBusinessSession userSession) throws UserNotAuthorizedException{
 		try {
 			BudgetMensuel budget = chargerBudgetMensuel(idBudget, userSession);
 			if(budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()) {
@@ -487,7 +494,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException 
 	 * @throws BudgetNotFoundException 
 	 */
-	public BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, UserBusinessSession userSession) {
+	private BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, UserBusinessSession userSession) {
 		budget.setDateMiseAJour(Calendar.getInstance());
 		calculBudget(budget);
 		dataDepenses.sauvegardeBudgetMensuel(budget, userSession.getEncryptor());
