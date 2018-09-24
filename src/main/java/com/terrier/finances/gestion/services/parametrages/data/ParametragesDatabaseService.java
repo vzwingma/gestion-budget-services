@@ -39,7 +39,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	public List<CategorieOperation> chargeCategories() {
 		if(listeCategories.isEmpty()){
 			try{
-				LOGGER.info("[BD] Chargement des catégories en BDD");
+				LOGGER.info("Chargement des catégories en BDD");
 				// Ajout des catégories
 				listeCategories = getMongoOperation().findAll(CategorieOperationDTO.class)
 						.stream()
@@ -47,7 +47,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 						.collect(Collectors.toList());
 			}
 			catch(Exception e){
-				LOGGER.error("[DB] Erreur lors du chargement des catégories");
+				LOGGER.error("Erreur lors du chargement des catégories");
 			}
 		}
 		return listeCategories.stream().map(this::cloneCategorie).collect(Collectors.toList());
@@ -64,7 +64,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	 */
 	public CategorieOperation getCategorieParId(String id) {
 		CategorieOperation categorie = BudgetDataUtils.getCategorieById(id, chargeCategories());
-		LOGGER.trace("[DB] Categorie by id [{}]->[{}]", id, categorie);
+		LOGGER.trace("Categorie by id [{}]->[{}]", id, categorie);
 		return categorie;
 	}
 

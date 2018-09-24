@@ -28,6 +28,12 @@ public abstract class AbstractAPIController {
 	 * Logger
 	 */
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	
+	public AbstractAPIController() {
+		org.slf4j.MDC.put("key", "[API]");
+	}
+	
 	@Autowired
 	private UtilisateursService serviceUtilisateurs;
 	/**

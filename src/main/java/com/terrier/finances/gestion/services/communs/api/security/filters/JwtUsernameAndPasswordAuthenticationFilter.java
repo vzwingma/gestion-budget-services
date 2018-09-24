@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -46,6 +47,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtUsernameAndPasswordAuthenticationFilter.class);
 
+	public JwtUsernameAndPasswordAuthenticationFilter() {
+		MDC.put("key", "[SEC]");
+	}
+	
 	// Auth manager pour l'authentification
 	private AuthenticationManager authManager;
 
@@ -70,7 +75,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		try {
 			// 1. Get credentials from request
 			AuthLoginAPIObject creds = new ObjectMapper().readValue(request.getInputStream(), AuthLoginAPIObject.class);
-			LOGGER.info("[API][idUser=?] Authentification de [{}]", creds.getLogin());
+			LOGGER.info("[idUser=?] Authentification de [{}]", creds.getLogin());
 
 			// 2. Create auth object (contains credentials) which will be used by auth manager
 			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -96,7 +101,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication auth) throws IOException, ServletException {
 
-		LOGGER.info("[API][idUser={}] Utilisateur authentifié", auth.getName());
+		LOGGER.info("[idUser={}] Utilisateur authentifié", auth.getName());
 		Utilisateur utilisateur = usersDetailsServices.successfulAuthentication(auth, attempts.get(auth.getName()));
 		// Une fois que cette partie est faite. On efface l'attempt.
 		attempts.remove(auth.getName());
@@ -118,7 +123,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
 		// Add token to header
 		response.addHeader(JwtConfig.JWT_AUTH_HEADER, JwtConfig.JWT_AUTH_PREFIX + token);
-		LOGGER.debug("[API][idUser={}] Token [{}]", auth.getName(), response.getHeader(JwtConfig.JWT_AUTH_HEADER));
+		LOGGER.debug("[idUser={}] Token [{}]", auth.getName(), response.getHeader(JwtConfig.JWT_AUTH_HEADER));
 	}
 
 

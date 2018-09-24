@@ -5,6 +5,7 @@ package com.terrier.finances.gestion.services.communs.data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,6 +26,7 @@ public abstract class AbstractDatabaseService {
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDatabaseService.class);
+	
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -36,6 +38,7 @@ public abstract class AbstractDatabaseService {
 	 * Constructeur permettant de définir les composants utilisés en DATA
 	 */
 	public AbstractDatabaseService(){
+		MDC.put("key", "[DB]");
 		LOGGER.info("[INIT] Service {}", this.getClass().getSimpleName());
 	}
 
