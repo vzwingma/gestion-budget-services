@@ -404,51 +404,42 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public BudgetMensuel createOrUpdateOperation(String idBudget, LigneOperation ligneOperation, UserBusinessSession userSession) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
-		try {
-
-
-			BudgetMensuel budget = chargerBudgetMensuel(idBudget, userSession);
-			LOGGER.warn("{} - {} - {}- {}", budget.isActif(), budget.getCompteBancaire().isActif(), budget, budget.getCompteBancaire());
-			if(budget != null && budget.getCompteBancaire().isActif()){
-				// Si mise à jour d'une opération, on l'enlève
-				int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
-				budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
-				if(ligneOperation.getEtat() != null) {
-					LOGGER.info("{} d'une Opération : {}", rangMaj > -1 ? "Mise à jour" : "Ajout", ligneOperation);
-					ligneOperation.setDateMaj(Calendar.getInstance().getTime());
-					ligneOperation.setAuteur(userSession.getUtilisateur().getLibelle());
-					if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
-						ligneOperation.setDateOperation(Calendar.getInstance().getTime());
-					}
-					else {
-						ligneOperation.setDateOperation(null);
-					}
-					if(rangMaj >= 0) {
-						LOGGER.debug("Intégration de l'opération {} dans le budget {}", ligneOperation, budget);
-						budget.getListeOperations().add(rangMaj, ligneOperation);
-					}
-					else {
-						LOGGER.debug("Ajout de l'opération {} dans le budget {}", ligneOperation, budget);
-						budget.getListeOperations().add(ligneOperation);
-					}
+		BudgetMensuel budget = chargerBudgetMensuel(idBudget, userSession);
+		if(budget != null && budget.getCompteBancaire().isActif()){
+			// Si mise à jour d'une opération, on l'enlève
+			int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
+			budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
+			if(ligneOperation.getEtat() != null) {
+				String actionMessage = rangMaj > -1 ? "Mise à jour" : "Ajout";
+				LOGGER.info("{} d'une Opération : {}",actionMessage , ligneOperation);
+				ligneOperation.setDateMaj(Calendar.getInstance().getTime());
+				ligneOperation.setAuteur(userSession.getUtilisateur().getLibelle());
+				if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
+					ligneOperation.setDateOperation(Calendar.getInstance().getTime());
 				}
 				else {
-					LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
+					ligneOperation.setDateOperation(null);
 				}
-				// Mise à jour du budget
-				budget = calculEtSauvegardeBudget(budget, userSession);
+				if(rangMaj >= 0) {
+					LOGGER.debug("Intégration de l'opération {} dans le budget {}", ligneOperation, budget);
+					budget.getListeOperations().add(rangMaj, ligneOperation);
+				}
+				else {
+					LOGGER.debug("Ajout de l'opération {} dans le budget {}", ligneOperation, budget);
+					budget.getListeOperations().add(ligneOperation);
+				}
 			}
-			else{
-				LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", budget.getCompteBancaire());
-				throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte est cloturé");
+			else {
+				LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
 			}
-			return budget;
+			// Mise à jour du budget
+			budget = calculEtSauvegardeBudget(budget, userSession);
 		}
-		catch (Exception e) {
-			LOGGER.error("******* Erreur : ", e);
-			throw new CompteClosedException("EEEEEEEEEEEEEEEE");
+		else{
+			LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", budget.getCompteBancaire());
+			throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte est cloturé");
 		}
-
+		return budget;
 	}
 
 

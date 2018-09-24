@@ -364,7 +364,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		UserBusinessSession userSession = getUtilisateur(auth);
 		logger.info("[API][idUser={}][idBudget={}][idOperation={}] createOperation InterCompte [{}]",userSession.getUtilisateur().getId(), idBudget, idOperation, idCompte);
-		if(operation != null && idBudget != null && userSession != null){
+		if(operation != null && idBudget != null){
 			operation.setId(idOperation);
 			completeCategoriesOnOperation(operation);
 			BudgetMensuel budgetUpdated = operationService.createOperationIntercompte(idBudget, operation, idCompte, userSession);
