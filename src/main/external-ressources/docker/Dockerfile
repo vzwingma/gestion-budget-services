@@ -1,5 +1,5 @@
 # Issu de la dernière image Tomcat 8
-FROM tomcat:8.5.24-alpine
+FROM tomcat:8.5.34-alpine
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
