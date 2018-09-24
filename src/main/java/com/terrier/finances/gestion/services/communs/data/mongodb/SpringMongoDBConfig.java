@@ -61,7 +61,13 @@ public class SpringMongoDBConfig {
 	 */
 	private String getStringEnvVar(MongoDBConfigEnum cle, String defaultVar){
 		String envVar = System.getenv(cle.name());
-		return envVar != null ? envVar : defaultVar;
+		if(envVar != null) {
+			return envVar;
+		}
+		else {
+			LOGGER.warn("La clé {} n'est définie. Utilisation de la valeur par défaut : {} ", cle.name(), defaultVar);
+			 return defaultVar;
+		}
 	}
 
 	/**
