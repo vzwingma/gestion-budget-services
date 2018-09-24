@@ -18,7 +18,7 @@
 		<spring.security.version>5.0.8.RELEASE</spring.security.version>
 		<vaadin.version>8.5.1</vaadin.version>
 		<jackson.version>2.9.6</jackson.version>
-		<jersey.version>2.26</jersey.version>
+		<jersey.version>2.27</jersey.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
