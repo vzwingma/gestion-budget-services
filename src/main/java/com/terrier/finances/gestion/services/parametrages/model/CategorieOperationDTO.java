@@ -3,12 +3,15 @@ package com.terrier.finances.gestion.services.parametrages.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 /**
  * Catégorie de dépense
  * @author vzwingma
  *
  */
-public class CategorieDepenseDTO {
+@Document(collection = "categoriesoperations")
+public class CategorieOperationDTO {
 
 	/**
 	 * Identifiant
@@ -23,13 +26,9 @@ public class CategorieDepenseDTO {
 	 */
 	private boolean actif;
 	/**
-	 * Liste des sous catégories
+	 * Liste des id des sous catégories
 	 */
-	private Set<CategorieDepenseDTO> listeSSCategories = new HashSet<>();
-	/**
-	 * Catégorie parente
-	 */
-	private String idCategorieParente;
+	private Set<CategorieOperationDTO> listeSSCategories = new HashSet<>();
 	/**
 	 * Est ce une catégorie ?
 	 */
@@ -50,26 +49,19 @@ public class CategorieDepenseDTO {
 		this.libelle = libelle;
 	}
 
-	
 	/**
 	 * @return the listeSSCategories
 	 */
-	public Set<CategorieDepenseDTO> getListeSSCategories() {
+	public Set<CategorieOperationDTO> getListeSSCategories() {
 		return listeSSCategories;
 	}
 
-
-
-
 	/**
-	 * @param idCategorieParente the idCategorieParente to set
+	 * @param listeSSCategories the listeSSCategories to set
 	 */
-	public void setIdCategorieParente(String idCategorieParente) {
-		this.idCategorieParente = idCategorieParente;
+	public void setListeSSCategories(Set<CategorieOperationDTO> listeSSCategories) {
+		this.listeSSCategories = listeSSCategories;
 	}
-
-
-
 
 	/**
 	 * @return the categorie
@@ -114,15 +106,6 @@ public class CategorieDepenseDTO {
 	public boolean isActif() {
 		return actif;
 	}
-
-
-	/**
-	 * @return the idCategorieParente
-	 */
-	public String getIdCategorieParente() {
-		return idCategorieParente;
-	}
-
 
 	/**
 	 * @param actif the actif to set

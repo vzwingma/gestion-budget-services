@@ -41,4 +41,14 @@ public class UserBusinessSession {
 		this.utilisateur = null;
 		this.encryptor = null;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return new StringBuilder().append(utilisateur).toString();
+	}
+	
+	
 }

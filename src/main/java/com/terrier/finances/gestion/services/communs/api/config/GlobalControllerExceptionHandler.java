@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.NotModifiedException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserAccessForbiddenException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 
 /**
@@ -40,15 +41,19 @@ class GlobalControllerExceptionHandler {
     	 LOGGER.error("Erreur : Données introuvables");
     }
     
-    
-    @ResponseStatus(HttpStatus.NOT_MODIFIED)  // 204
-    @ExceptionHandler(NotModifiedException.class)
-    public void handleNotModifiedException() {
-    	 LOGGER.info("Non modifiée");
+    @ResponseStatus(HttpStatus.LOCKED)  // 423
+    @ExceptionHandler(CompteClosedException.class)
+    public void handleClosedException() {
+    	 LOGGER.error("Erreur : Compte clos");
     }
     
-    @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)  // 401
     @ExceptionHandler(UserNotAuthorizedException.class)
+    public void handleUnauthorizedException() {
+    	 LOGGER.error("Erreur : Accès non authentifié");
+    }
+    @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
+    @ExceptionHandler(UserAccessForbiddenException.class)
     public void handleException() {
     	 LOGGER.error("Erreur : Accès non autorisé");
     }

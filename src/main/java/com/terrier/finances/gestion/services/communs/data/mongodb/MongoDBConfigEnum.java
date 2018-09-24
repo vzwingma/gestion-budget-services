@@ -8,7 +8,7 @@ package com.terrier.finances.gestion.services.communs.data.mongodb;
  * @author vzwingma
  *
  */
-public enum MongoDBCOnfigEnum {
+public enum MongoDBConfigEnum {
 
 	MONGODB_CONFIG_DB, 
 	MONGODB_CONFIG_HOST, 

@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
 
 /**
  * DataTransformer
@@ -29,9 +27,8 @@ import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatab
 public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, BudgetMensuelDTO> {
 
 	@Autowired @Qualifier("dataTransformerLigneDepense")
-	private DataTransformerLigneDepense dataTransformerLigneDepense = new DataTransformerLigneDepense();
-	@Autowired
-	private ParametragesDatabaseService parametrageService;
+	private DataTransformerLigneOperation dataTransformerLigneDepense = new DataTransformerLigneOperation();
+
 	/**
 	 * Constructeur pour Spring
 	 */
@@ -70,19 +67,19 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 				bo.setSoldeNow(dto.getNowArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getNowArgentAvance())) : 0);
 				bo.setSoldeFin(dto.getFinArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getFinArgentAvance())): 0);
 				// Complétion des totaux
-				Map<CategorieDepense, Double[]> totalCategorieBO = new HashMap<>();
+				Map<String, Double[]> totalCategorieBO = new HashMap<>();
 
 				if(dto.getTotalParCategories() != null){
 					dto.getTotalParCategories().entrySet()
 					.parallelStream()
 					.forEach(entry -> {
-						CategorieDepense c = getCategorieByEncryptedId(entry.getKey(), decryptor);
-						if(c != null){
+						String idC = getCategorieByEncryptedId(entry.getKey(), decryptor);
+						if(idC != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
 							for (int i = 0; i < entry.getValue().length; i++) {
 								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(decryptor.decrypt(entry.getValue()[i])) : 0D;
 							}
-							totalCategorieBO.put(c, totauxBO);
+							totalCategorieBO.put(idC, totauxBO);
 						}
 					});
 				}
@@ -90,18 +87,18 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 
 
 				// Complétion des totaux ss catégorie
-				Map<CategorieDepense, Double[]> totalSsCategorieBO = new HashMap<>();
+				Map<String, Double[]> totalSsCategorieBO = new HashMap<>();
 				if(dto.getTotalParSSCategories() != null){
 					dto.getTotalParSSCategories().entrySet()
 					.parallelStream()
 					.forEach(entry -> {
-						CategorieDepense ssC = getCategorieByEncryptedId(entry.getKey(), decryptor);
-						if(ssC != null){
+						String idCsC = getCategorieByEncryptedId(entry.getKey(), decryptor);
+						if(idCsC != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
 							for (int i = 0; i < entry.getValue().length; i++) {
 								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(decryptor.decrypt(entry.getValue()[i])) : 0D;
 							}
-							totalSsCategorieBO.put(ssC, totauxBO);
+							totalSsCategorieBO.put(idCsC, totauxBO);
 						}
 					});
 				}
@@ -119,8 +116,8 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	}
 
 
-	private CategorieDepense getCategorieByEncryptedId(String encryptedId, BasicTextEncryptor decryptor){
-		return parametrageService.chargeCategorieParId(decryptor.decrypt(encryptedId));
+	private String getCategorieByEncryptedId(String encryptedId, BasicTextEncryptor decryptor){
+		return  decryptor.decrypt(encryptedId);
 	}
 
 
@@ -156,7 +153,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 				for (int i = 0; i < entry.getValue().length; i++) {
 					totauxDTO[i] = entry.getValue()[i] != null ? encryptor.encrypt(entry.getValue()[i].toString()) : null;
 				}
-				totalCategorieDTO.put(encryptor.encrypt(entry.getKey().getId()), totauxDTO);
+				totalCategorieDTO.put(encryptor.encrypt(entry.getKey()), totauxDTO);
 			});
 		}
 		dto.setTotalParCategories(totalCategorieDTO);
@@ -171,12 +168,12 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 				for (int i = 0; i < entry.getValue().length; i++) {
 					totauxDTO[i] = entry.getValue()[i] != null ? encryptor.encrypt(entry.getValue()[i].toString()) : null;
 				}
-				totalSsCategorieDTO.put(encryptor.encrypt(entry.getKey().getId()), totauxDTO);
+				totalSsCategorieDTO.put(encryptor.encrypt(entry.getKey()), totauxDTO);
 			});
 		}
 		dto.setTotalParSSCategories(totalSsCategorieDTO);
 
-		dto.setId(bo.getId());
+		dto.setId();
 		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
 		return dto;
 	}
@@ -185,7 +182,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	/**
 	 * @return the dataTransformerLigneDepense
 	 */
-	public final DataTransformerLigneDepense getDataTransformerLigneDepense() {
+	public final DataTransformerLigneOperation getDataTransformerLigneDepense() {
 		return dataTransformerLigneDepense;
 	}
 
@@ -193,17 +190,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	/**
 	 * @param dataTransformerLigneDepense the dataTransformerLigneDepense to set
 	 */
-	public final void setDataTransformerLigneDepense(DataTransformerLigneDepense dataTransformerLigneDepense) {
+	public final void setDataTransformerLigneDepense(DataTransformerLigneOperation dataTransformerLigneDepense) {
 		this.dataTransformerLigneDepense = dataTransformerLigneDepense;
 	}
-
-
-	/**
-	 * @param parametrageService the parametrageService to set
-	 */
-	public final void setParametrageService(ParametragesDatabaseService parametrageService) {
-		this.parametrageService = parametrageService;
-	}
-
-
 }

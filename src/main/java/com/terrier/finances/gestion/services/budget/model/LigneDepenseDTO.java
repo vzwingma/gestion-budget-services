@@ -19,7 +19,6 @@ public class LigneDepenseDTO implements Serializable {
 	private String id;
 	// SS Catégorie
 	private String idSSCategorie;
-	private String idCategorie;
 	// Libellé
 	private String libelle;
 	// Notes
@@ -196,7 +195,6 @@ public class LigneDepenseDTO implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("LigneDepenseDTO [id=").append(id)
 				.append(", idSSCategorie=").append(idSSCategorie)
-				.append(", idCategorie=").append(idCategorie)
 				.append(", libelle=").append(libelle).append(", notes=")
 				.append(notes).append(", typeDepense=").append(typeDepense)
 				.append(", etat=").append(etat).append(", valeur=")
@@ -224,19 +222,6 @@ public class LigneDepenseDTO implements Serializable {
 		this.idSSCategorie = idSSCategorie;
 	}
 
-	/**
-	 * @return the idCategorie
-	 */
-	public String getIdCategorie() {
-		return idCategorie;
-	}
-
-	/**
-	 * @param idCategorie the idCategorie to set
-	 */
-	public void setIdCategorie(String idCategorie) {
-		this.idCategorie = idCategorie;
-	}
 
 	/**
 	 * @return the derniereOperation

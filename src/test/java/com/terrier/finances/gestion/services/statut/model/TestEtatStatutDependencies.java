@@ -3,14 +3,12 @@
  */
 package com.terrier.finances.gestion.services.statut.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.terrier.finances.gestion.services.statut.api.StatutDependencyAPIObject;
-import com.terrier.finances.gestion.services.statut.model.DependencyName;
-import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
 /**
  * @author vzwingma
@@ -34,7 +32,7 @@ public class TestEtatStatutDependencies {
 		assertEquals(StatutStateEnum.OK, statutRoot.getStatusObject());
 		
 		// Ajout d'une dépendance inconnue
-		statutRoot.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION);
+		statutRoot.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION, "APP");
 		assertEquals(StatutStateEnum.INCONNU, statutRoot.getDependances().get(0).getStatusObject());
 		// La dépendance globale redevient inconnue
 		assertEquals(StatutStateEnum.INCONNU, statutRoot.getStatusCompile());
@@ -45,7 +43,7 @@ public class TestEtatStatutDependencies {
 		assertEquals(StatutStateEnum.OK, statutRoot.getStatusCompile());
 		
 		// Ajout d'une dépendance à la BDD (n'est pas correct mais c'est pour le test)
-		statutRoot.addDependency(DependencyName.REST_SERVICE, DependencyName.DATABASE);
+		statutRoot.addDependency(DependencyName.REST_SERVICE, DependencyName.DATABASE, "REST");
 		assertEquals(StatutStateEnum.INCONNU, statutRoot.getDependances().get(0).getStatusCompile());
 		assertEquals(StatutStateEnum.OK, statutRoot.getDependances().get(0).getStatusObject());
 		assertEquals(StatutStateEnum.INCONNU, statutRoot.getDependances().get(0).getDependances().get(0).getStatusCompile());

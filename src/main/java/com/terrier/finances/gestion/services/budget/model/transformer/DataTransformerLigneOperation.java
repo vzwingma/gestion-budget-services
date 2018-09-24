@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.services.budget.model.LigneDepenseDTO;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
 
@@ -27,12 +28,12 @@ import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatab
  *
  */
 @Component("dataTransformerLigneDepense")
-public class DataTransformerLigneDepense implements IDataTransformer<LigneOperation, LigneDepenseDTO> {
+public class DataTransformerLigneOperation implements IDataTransformer<LigneOperation, LigneDepenseDTO> {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataTransformerLigneDepense.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataTransformerLigneOperation.class);
 	
 	@Autowired
 	private ParametragesDatabaseService parametrageService;
@@ -42,7 +43,6 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 	 */
 	@Override
 	public LigneOperation transformDTOtoBO(LigneDepenseDTO dto, BasicTextEncryptor decryptor) {
-		
 		LigneOperation bo = new LigneOperation();
 		bo.setId(dto.getId());
 		if(dto.getAuteur() !=null){
@@ -52,7 +52,15 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 		bo.setDateOperation(dto.getDateOperation());
 		bo.setDerniereOperation(dto.isDerniereOperation());
 		bo.setEtat(EtatOperationEnum.valueOf(decryptor.decrypt(dto.getEtat())));
-		bo.setSsCategorie(parametrageService.chargeCategorieParId(decryptor.decrypt(dto.getIdSSCategorie())));
+		bo.setIdSsCategorie(decryptor.decrypt(dto.getIdSSCategorie()));
+		CategorieOperation ssCat = parametrageService.getCategorieParId(bo.getIdSsCategorie());
+		if(ssCat != null){
+			bo.setSsCategorie(ssCat);
+		}
+		else{
+			return null;
+		}
+		
 		bo.setLibelle(decryptor.decrypt(dto.getLibelle()));
 		bo.setPeriodique(dto.isPeriodique());
 		bo.setTypeDepense(TypeOperationEnum.valueOf(decryptor.decrypt(dto.getTypeDepense())));
@@ -77,8 +85,7 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 		dto.setDerniereOperation(bo.isDerniereOperation());
 		dto.setEtat(encryptor.encrypt(bo.getEtat().name()));
 		dto.setId(bo.getId());
-		dto.setIdCategorie(bo.getCategorie() != null ? encryptor.encrypt(bo.getCategorie().getId()) : null);
-		dto.setIdSSCategorie(bo.getSsCategorie() != null ? encryptor.encrypt(bo.getSsCategorie().getId()) : null);
+		dto.setIdSSCategorie(bo.getIdSsCategorie() != null ? encryptor.encrypt(bo.getIdSsCategorie()) : null);
 		dto.setLibelle(encryptor.encrypt(bo.getLibelle()));
 		dto.setPeriodique(bo.isPeriodique());
 		dto.setTypeDepense(encryptor.encrypt(bo.getTypeDepense().name()));
@@ -114,8 +121,13 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 	 */
 	public List<LigneOperation> transformDTOtoBO(List<LigneDepenseDTO> listeDTO, BasicTextEncryptor decryptor) {
 		List<LigneOperation> listeDepensesBO = new ArrayList<>();
-		if(listeDTO != null){
-			listeDTO.stream().forEach(dto -> listeDepensesBO.add(transformDTOtoBO(dto, decryptor)));
+		if(listeDTO != null && !listeDTO.isEmpty()){
+			listeDTO.stream().forEach(dto -> {
+				LigneOperation bo = transformDTOtoBO(dto, decryptor);
+				if(dto != null && bo != null){
+					listeDepensesBO.add(bo);	
+				}
+			});
 		}
 		return listeDepensesBO;
 	}
@@ -130,7 +142,7 @@ public class DataTransformerLigneDepense implements IDataTransformer<LigneOperat
 		LigneOperation ligneOperationClonee = new LigneOperation();
 		ligneOperationClonee.setId(UUID.randomUUID().toString());
 		ligneOperationClonee.setLibelle(ligneOperation.getLibelle());
-		ligneOperationClonee.setSsCategorie(ligneOperation.getSsCategorie());
+		ligneOperationClonee.setIdSsCategorie(ligneOperation.getIdSsCategorie());
 		ligneOperationClonee.setDateMaj(Calendar.getInstance().getTime());
 		ligneOperationClonee.setDateOperation(null);
 		ligneOperationClonee.setEtat(EtatOperationEnum.PREVUE);

@@ -6,6 +6,8 @@ package com.terrier.finances.gestion.services.statut.business;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
@@ -21,17 +23,27 @@ import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 @Service
 public class StatusApplicationService extends AbstractBusinessService {
 
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatusApplicationService.class);
+
+	
 	// Statut de l'application
 	private StatutDependencyAPIObject statutApplication;
 	
 	@PostConstruct
 	public void initApplication(){
 		this.statutApplication = new StatutDependencyAPIObject(DependencyName.APPLICATION);
+		this.statutApplication.setDescription("Services Budget v" + this.getVersion() + " [" + this.getBuildTime() + "]");
 		this.statutApplication.updateStatusModule(DependencyName.APPLICATION, StatutStateEnum.OK);
-		this.statutApplication.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION);
-		this.statutApplication.addDependency(DependencyName.REST_SERVICE, DependencyName.APPLICATION);
+		this.statutApplication.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION, "Base de données Mongo");
+		this.statutApplication.addDependency(DependencyName.REST_SERVICE, DependencyName.APPLICATION, "API");
+		
+		LOGGER.info("[INIT] Démarrage de l'application Services v{} [{}]", this.getVersion(), this.getBuildTime());
 	}
 
+	
 	/**
 	 * Mise à jour de la dépendance
 	 * @param nomDependance nom de la dépendance
@@ -45,8 +57,6 @@ public class StatusApplicationService extends AbstractBusinessService {
 	 * @return the statutApplication
 	 */
 	public StatutDependencyAPIObject getStatutApplication() {
-
-
 		return statutApplication;
 	}
 	

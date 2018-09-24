@@ -11,9 +11,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @ComponentScan(basePackages = { 
 		"com.terrier.finances.gestion.services",
+		"com.terrier.finances.gestion.services.comptes.business",
+		"com.terrier.finances.gestion.services.parametrages.business",
+		"com.terrier.finances.gestion.services.statut.business",
 		"com.terrier.finances.gestion.services.utilisateurs.business"})
 @PropertySource(value={"classpath:config.properties"}, ignoreResourceNotFound = true)
-public class ServicesConfig {
+public class AppConfig {
 
 	
 }

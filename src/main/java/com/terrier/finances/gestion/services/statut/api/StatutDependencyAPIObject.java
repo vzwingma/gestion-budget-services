@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-import com.terrier.finances.gestion.communs.utils.data.DataUtils;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.services.statut.model.DependencyName;
 import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
@@ -34,6 +34,9 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	// Nom 
 	@ApiModelProperty(notes = "Nom de l'application ou de la dépendance", required=true)
 	private DependencyName nom;
+	// Nom 
+	@ApiModelProperty(notes = "Description de l'application ou de la dépendance", required=false)
+	private String description;
 	
 	// Status du module
 	@JsonIgnore
@@ -97,15 +100,16 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	 * @param dependance dépendance à ajouter
 	 * @param parent objet statut parent
 	 */
-	public void addDependency(DependencyName dependance, DependencyName parent){
+	public void addDependency(DependencyName dependance, DependencyName parent, String description){
 		if(parent != null && this.nom.equals(parent)){
 			StatutDependencyAPIObject nlleDependance = new StatutDependencyAPIObject(dependance);
+			nlleDependance.setDescription(description);
 			nlleDependance.updateStatusModule(dependance, StatutStateEnum.INCONNU);
 			this.dependances.add(nlleDependance);
 		}
 		else if(this.dependances != null && !this.dependances.isEmpty()){
 			for (StatutDependencyAPIObject statutDependencyObject : dependances) {
-				statutDependencyObject.addDependency(dependance, parent);
+				statutDependencyObject.addDependency(dependance, parent, description);
 			}
 		}
 		updateStatusCompile();
@@ -174,7 +178,7 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	 * @return the date
 	 */
 	public String getDate() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DataUtils.DATE_DAY_HOUR_S_PATTERN);
+		SimpleDateFormat sdf = new SimpleDateFormat(BudgetDateTimeUtils.DATE_DAY_HOUR_S_PATTERN);
 		return date != null ? sdf.format(this.date.getTime()) : "null";
 	}
 
@@ -192,6 +196,22 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	 */
 	public StatutStateEnum getStatusCompile() {
 		return statusCompile;
+	}
+
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 

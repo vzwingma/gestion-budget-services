@@ -1,14 +1,20 @@
 package com.terrier.finances.gestion.services.parametrages.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieDepense;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.services.communs.data.AbstractDatabaseService;
+import com.terrier.finances.gestion.services.parametrages.model.CategorieOperationDTO;
+import com.terrier.finances.gestion.services.parametrages.model.transformer.DataTransformerCategorieOperations;
 
 /**
  * Service de données en MongoDB fournissant les paramètres
@@ -19,46 +25,36 @@ import com.terrier.finances.gestion.services.communs.data.AbstractDatabaseServic
 public class ParametragesDatabaseService extends AbstractDatabaseService {
 
 	/**
-	 * Liste des catégories
+	 * Liste des catégories (A usage interne uniquement !!! Pour réponse : Clonage obligatoire)
 	 */
-	private Map<String, CategorieDepense> mapCategories = new HashMap<>();
+	private List<CategorieOperation> listeCategories = new ArrayList<>();
 	/**
-	 * Liste des sous catégories
+	 * Logger
 	 */
-	private Map<String, CategorieDepense> mapSSCategories = new HashMap<>();	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ParametragesDatabaseService.class);
 
 	/**
 	 * @return la liste des catégories
 	 */
-	public List<CategorieDepense> chargeCategories() {
-		if(mapCategories.size() == 0){
+	public List<CategorieOperation> chargeCategories() {
+		if(listeCategories.isEmpty()){
 			try{
-				List<CategorieDepense> listeAllCategories =  getMongoOperation().findAll(CategorieDepense.class);
+				LOGGER.info("[BD] Chargement des catégories en BDD");
 				// Ajout des catégories
-				listeAllCategories
-				.stream()
-				.filter(CategorieDepense::isCategorie)
-				.forEach(c -> mapCategories.put(c.getId(), c));
-
-				// Ajout des sous catégories
-				listeAllCategories
-				.stream()
-				.filter(c -> !c.isCategorie())
-				.forEach(c -> {
-					CategorieDepense categorieParente = mapCategories.get(c.getIdCategorieParente());
-					if(categorieParente != null){
-						c.setCategorieParente(categorieParente);
-						categorieParente.getListeSSCategories().add(c);
-					}
-					mapSSCategories.put(c.getId(), c);
-				});
+				listeCategories = getMongoOperation().findAll(CategorieOperationDTO.class)
+						.stream()
+						.map(dto -> new DataTransformerCategorieOperations().transformDTOtoBO(dto))
+						.collect(Collectors.toList());
 			}
 			catch(Exception e){
-				return new ArrayList<>();
+				LOGGER.error("[DB] Erreur lors du chargement des catégories");
 			}
 		}
-		return new ArrayList<>(mapCategories.values());
+		return listeCategories.stream().map(this::cloneCategorie).collect(Collectors.toList());
 	}
+
+
+
 
 
 
@@ -66,29 +62,36 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	 * @return la catégorie
 	 * @param id identifiant de la catégorie
 	 */
-	public CategorieDepense chargeCategorieParId(String id) {
-
-		if(mapCategories.size() == 0){
-			chargeCategories();
-		}
-		// Recherche parmi les catégories
-		CategorieDepense categorie = mapCategories.get(id);
-
-		// Sinon les sous catégories
-		if(categorie == null){
-			categorie = mapSSCategories.get(id);
-		}
+	public CategorieOperation getCategorieParId(String id) {
+		CategorieOperation categorie = BudgetDataUtils.getCategorieById(id, chargeCategories());
+		LOGGER.trace("[DB] Categorie by id [{}]->[{}]", id, categorie);
 		return categorie;
 	}
 
 
-
-
-	/**
-	 * Suppression des données en mémoire
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
 	 */
-	public void resetData(){
-		mapCategories.clear();
-		mapSSCategories.clear();
+	private CategorieOperation cloneCategorie(CategorieOperation categorie) {
+		if(categorie != null){
+			CategorieOperation clone = new CategorieOperation(categorie.getId());
+			clone.setActif(categorie.isActif());
+			clone.setCategorie(categorie.isCategorie());
+			// Pas de clone de la catégorie parente pour éviter les récursions
+			clone.setLibelle(categorie.getLibelle());
+			Set<CategorieOperation> setSSCatsClones = new HashSet<>();
+			if(categorie.getListeSSCategories() != null && !categorie.getListeSSCategories().isEmpty()){
+
+				categorie.getListeSSCategories().stream().forEach(ssC -> {
+					CategorieOperation ssCClone = cloneCategorie(ssC);
+					// Réinjection de la catégorie parente
+					ssCClone.setCategorieParente(clone);
+					setSSCatsClones.add(ssCClone);
+				});
+			}
+			clone.getListeSSCategories().addAll(setSSCatsClones);
+			return clone;
+		}
+		return null;
 	}
 }

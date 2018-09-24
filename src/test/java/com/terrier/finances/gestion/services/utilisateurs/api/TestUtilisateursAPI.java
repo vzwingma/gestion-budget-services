@@ -9,21 +9,22 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
@@ -37,7 +38,7 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
  * @author vzwingma
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
 public class TestUtilisateursAPI extends AbstractTestsAPI  {
@@ -56,7 +57,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	public void testAuthenticate() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)
+				post(BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().is4xxClientError());
@@ -64,7 +65,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		Utilisateur userOK = new Utilisateur();
 		userOK.setId("test");
 		userOK.setLogin("Test");
-		userOK.setHashMotDePasse("1000:2f71112c1693c5378e1cd3a0d4884b20:9a00559a79652c140e6539bec1b9ed78fd2a2f42bd0b6f409c399564f8031766c53927b1594579598794cf372af872632450b35196959ac334f7bc97a5a5ddc0");
+		userOK.setPassword(new BCryptPasswordEncoder().encode("Test"));
 		userOK.setMasterCleChiffrementDonnees("Sf35rwnRDc7v4SDXsnGHUg==");
 		when(mockDataDBUsers.chargeUtilisateur(eq("Test"))).thenReturn(null, userOK);
 		
@@ -75,24 +76,11 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		LOGGER.info("Authentification Failed de {}", json(auth));
 		
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)
+				post(BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(auth) ))
 		.andExpect(status().isForbidden());
-		
-		// AuthOK
-		AuthLoginAPIObject auth2 = new AuthLoginAPIObject("Test", "test");
-		LOGGER.info("Authentification OK de {}", json(auth2));
-		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL)
-					.accept(MediaType.APPLICATION_JSON)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(json(auth2) ))
-				.andExpect(status().isOk())
-				.andExpect(header().exists("Content-Type"))
-				.andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON.toString()))
-				.andExpect(content().string("{\"idUtilisateur\":\"test\",\"droits\":{}}"));
 	}	
 	
 
@@ -101,28 +89,27 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	public void testDisconnect() throws Exception {
 		// Fail
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_DISCONNECT_FULL))
+				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest22")))
 		.andExpect(status().is4xxClientError());
-
 
 		Utilisateur userOK = new Utilisateur();
 		userOK.setId("345345");
-		userOK.setLogin("Test");
-		service.registerUserBusinessSession(userOK, "test");
+		userOK.setLogin("345345");
+		service.registerUserBusinessSession(userOK, "345345");
 		
 		LOGGER.info("Disconnect Failed");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_DISCONNECT_FULL + "/123123")
+				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest22"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotFound());
+		.andExpect(status().isUnauthorized());
 		
 		LOGGER.info("Disconnect OK");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_DISCONNECT_FULL + "/345345")
+				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("345345"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk());
+		.andExpect(status().isNoContent());
 		
 	}	
 	
@@ -131,9 +118,11 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 
 	@Test
 	public void testLastTime() throws Exception {
+		
 		// Fail
+		LOGGER.info("LastTime KO");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL))
+				post(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("345345")))
 		.andExpect(status().is4xxClientError());
 
 		Utilisateur userOK = new Utilisateur();
@@ -141,9 +130,9 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		userOK.setLogin("Test");
 		userOK.setDernierAcces(LocalDateTime.now());
 		service.registerUserBusinessSession(userOK, "test");
-		
+		LOGGER.info("LastTime OK {}", BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL);
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.ROOT_BASE + BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL + "/345345")
+				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("345345", "Test"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

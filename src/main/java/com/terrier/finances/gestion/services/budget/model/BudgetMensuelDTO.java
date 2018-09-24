@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.services.budget.model;
 
 import java.io.Serializable;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 
 /**
  * Budget du mois
@@ -29,9 +31,12 @@ public class BudgetMensuelDTO implements Serializable {
 	private static final long serialVersionUID = 4393433203514049021L;
 
 	/**
-	 * Mois du budget
+	 * Mois du budget (au sens CALENDAR)
 	 */
 	private int mois;
+	/**
+	 * année du budget
+	 */
 	private int annee;
 	/**
 	 * Budget actif
@@ -72,7 +77,7 @@ public class BudgetMensuelDTO implements Serializable {
 	 */
 	public String getId() {
 		if(id == null){
-			setId(null);
+			setId();
 		}
 		return id;
 	}
@@ -83,8 +88,8 @@ public class BudgetMensuelDTO implements Serializable {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(String id) {
-		this.id = this.getCompteBancaire().getId()+"_"+this.getAnnee()+"_"+(this.getMois()+1);
+	public void setId() {
+		this.id = BudgetDataUtils.getBudgetId(this.compteBancaire, Month.of(this.mois+1), this.annee);
 	}
 
 

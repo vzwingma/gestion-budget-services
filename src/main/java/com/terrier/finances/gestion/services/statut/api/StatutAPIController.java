@@ -6,8 +6,6 @@ package com.terrier.finances.gestion.services.statut.api;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,15 +31,10 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping(value=BudgetApiUrlEnum.ROOT_BASE)
+@RequestMapping(value=BudgetApiUrlEnum.ADMIN_BASE)
 @Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Administration", tags={"Administration"})
 public class StatutAPIController extends AbstractAPIController {
 
-
-	/**
-	 * Logger
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(StatutAPIController.class);
 
 	
 	@Autowired
@@ -56,16 +49,16 @@ public class StatutAPIController extends AbstractAPIController {
 	 * Appel PING
 	 * @return résultat du ping
 	 */
-	@ApiOperation(httpMethod="GET", produces=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Statut de l'opération", response=StatutDependencyAPIObject.class)
+	@ApiOperation(httpMethod="GET", produces=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Statut de l'application", response=StatutDependencyAPIObject.class)
 	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Statut de l'application"),
             @ApiResponse(code = 401, message = "L'opération doit être identifiée"),
             @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
             @ApiResponse(code = 404, message = "Ressource introuvable")
     }) 
-	@GetMapping(value=BudgetApiUrlEnum.STATUT_BASE)
+	@GetMapping(value=BudgetApiUrlEnum.ADMIN_STATUT)
 	public @ResponseBody ResponseEntity<StatutDependencyAPIObject> ping(){
-		LOGGER.info("[API] Appel statut : {}", this.statusApplicationService.getStatutApplication());
+		logger.info("[API] Appel statut : {}", this.statusApplicationService.getStatutApplication());
 		return getEntity(this.statusApplicationService.getStatutApplication());
 	}
 	
