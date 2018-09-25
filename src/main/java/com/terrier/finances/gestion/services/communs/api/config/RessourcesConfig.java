@@ -2,16 +2,19 @@ package com.terrier.finances.gestion.services.communs.api.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.terrier.finances.gestion.services.communs.api.converters.APIObjectMessageConverter;
+import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 
 
 @Configuration
@@ -24,7 +27,7 @@ import com.terrier.finances.gestion.services.communs.api.converters.APIObjectMes
 		"com.terrier.finances.gestion.services.utilisateurs.api",
 		"com.terrier.finances.gestion.services.parametrages.api",
 		"com.terrier.finances.gestion.services.communs.api.config"
-		})
+})
 public class RessourcesConfig implements WebMvcConfigurer{
 	/*
 	 * Configure ContentNegotiationManager
@@ -42,6 +45,14 @@ public class RessourcesConfig implements WebMvcConfigurer{
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		converters.add(new APIObjectMessageConverter<>());
 		WebMvcConfigurer.super.configureMessageConverters(converters);
+	}
+
+	@Autowired
+	private IncomingRequestInterceptor requestInterceptor;
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(requestInterceptor);
 	}
 
 

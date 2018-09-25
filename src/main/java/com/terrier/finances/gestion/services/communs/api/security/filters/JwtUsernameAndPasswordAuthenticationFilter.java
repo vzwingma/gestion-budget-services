@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terrier.finances.gestion.communs.api.security.JwtConfig;
+import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
@@ -112,18 +112,18 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 				.setSubject(utilisateur.getLogin())
 				.setId(UUID.randomUUID().toString())
 				// Convert to list of strings. 
-				.claim(JwtConfig.JWT_CLAIM_AUTORITIES_HEADER, auth.getAuthorities().stream()
+				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_AUTORITIES, auth.getAuthorities().stream()
 						.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-				.claim(JwtConfig.JWT_CLAIM_USERID_HEADER, utilisateur.getId())
+				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, utilisateur.getId())
 				.setIssuedAt(new Date(now))
 				.setIssuer("Budget-Services v" + usersDetailsServices.getVersion())
-				.setExpiration(new Date(now + JwtConfig.JWT_EXPIRATION_S * 1000))  // in milliseconds
-				.signWith(SignatureAlgorithm.HS512, JwtConfig.JWT_SECRET_KEY.getBytes())
+				.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
+				.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.JWT_SECRET_KEY.getBytes())
 				.compact();
 
 		// Add token to header
-		response.addHeader(JwtConfig.JWT_AUTH_HEADER, JwtConfig.JWT_AUTH_PREFIX + token);
-		LOGGER.debug("[idUser={}] Token [{}]", auth.getName(), response.getHeader(JwtConfig.JWT_AUTH_HEADER));
+		response.addHeader(JwtConfigEnum.JWT_HEADER_AUTH, JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token);
+		LOGGER.debug("[idUser={}] Token [{}]", auth.getName(), response.getHeader(JwtConfigEnum.JWT_HEADER_AUTH));
 	}
 
 

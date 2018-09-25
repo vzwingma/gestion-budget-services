@@ -11,13 +11,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPrefsAPIObject;
@@ -69,7 +68,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	})
 	@PostMapping(value=BudgetApiUrlEnum.USERS_AUTHENTICATE, consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ResponseEntity<String> authenticate(@RequestBody AuthLoginAPIObject auth) throws UserAccessForbiddenException{
-		logger.warn("[API][idUser=?] Service Authenticate implémenté via le Filter (JwtUsernameAndPasswordAuthenticationFilter). Cette méthode ne doit pas être appelée et renvoie une exception");
+		logger.warn("Service Authenticate implémenté via le Filter (JwtUsernameAndPasswordAuthenticationFilter). Cette méthode ne doit pas être appelée et renvoie une exception");
 		throw new UserAccessForbiddenException("Accès interdit");
 	}
 	
@@ -88,13 +87,12 @@ public class UtilisateursAPIController extends AbstractAPIController {
             @ApiResponse(code = 404, message = "Session introuvable")
     })
 	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT)
-	public ResponseEntity<String> disconnect(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
-		UserBusinessSession userSession = getUtilisateur(auth);
+	public ResponseEntity<String> disconnect(@RequestAttribute("userSession") UserBusinessSession userSession) throws DataNotFoundException, UserNotAuthorizedException{
 		if(authService.deconnexionBusinessSession(userSession)){
-			logger.info("[API][idUser={}] Disconnect : true", userSession.getUtilisateur().getId());
+			logger.info("Disconnect : true");
 			return ResponseEntity.noContent().build();
 		}
-		throw new DataNotFoundException("[API][idUser="+userSession+"] Impossible de déconnecter l'utilisateur");
+		throw new DataNotFoundException("[idUser="+userSession+"] Impossible de déconnecter l'utilisateur");
 	}
 	
 	/**
@@ -112,17 +110,16 @@ public class UtilisateursAPIController extends AbstractAPIController {
             @ApiResponse(code = 404, message = "Session introuvable")
     })
 	@GetMapping(value=BudgetApiUrlEnum.USERS_ACCESS_DATE)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
-		UserBusinessSession userSession = getUtilisateur(auth);
+	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur( @RequestAttribute("userSession") UserBusinessSession userSession) throws DataNotFoundException, UserNotAuthorizedException{
 		if(userSession != null){
 			LocalDateTime lastAccess = userSession.getUtilisateur().getDernierAcces();
-			logger.info("[API][idUser={}] LastAccessTime : {}", userSession.getUtilisateur().getId(), lastAccess);
+			logger.info("LastAccessTime : {}", lastAccess);
 			UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
 			prefs.setIdUtilisateur(userSession.getUtilisateur().getId());
 			prefs.setLastAccessTime(BudgetDateTimeUtils.getLongFromLocalDateTime(lastAccess));
 			return getEntity(prefs);
 		}
-		throw new DataNotFoundException("[API][idUser=?] Impossible de trouver l'utilisateur");
+		throw new DataNotFoundException("Impossible de trouver l'utilisateur");
 	}
 	
 	
@@ -142,17 +139,16 @@ public class UtilisateursAPIController extends AbstractAPIController {
             @ApiResponse(code = 404, message = "Session introuvable")
     })
 	@GetMapping(value=BudgetApiUrlEnum.USERS_PREFS)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
-		UserBusinessSession userSession = getUtilisateur(auth);
+	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@RequestAttribute("userSession") UserBusinessSession userSession) throws DataNotFoundException, UserNotAuthorizedException{
 		if(userSession != null){
 			Map<UtilisateurPrefsEnum, String> prefsUtilisateur = userSession.getUtilisateur().getPrefsUtilisateur();
 			String idUtilisateur = userSession.getUtilisateur().getId();
-			logger.info("[API][idUser={}] Preferences Utilisateur : {}", idUtilisateur, prefsUtilisateur);
+			logger.info("Preferences Utilisateur : {}", prefsUtilisateur);
 			UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
 			prefs.setIdUtilisateur(idUtilisateur);
 			prefs.setPreferences(prefsUtilisateur);
 			return getEntity(prefs);
 		}
-		throw new DataNotFoundException("[API][token="+auth+"] Impossible de trouver l'utilisateur");
+		throw new DataNotFoundException("[token=?] Impossible de trouver l'utilisateur");
 	}
 }

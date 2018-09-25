@@ -20,7 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-import com.terrier.finances.gestion.communs.api.security.JwtConfig;
+import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.services.communs.api.config.RessourcesConfig;
 
 import io.jsonwebtoken.Jwts;
@@ -84,17 +84,17 @@ public abstract class AbstractTestsAPI {
 		String token = Jwts.builder()
 				.setSubject(login)
 				.setId(id)
-				.claim(JwtConfig.JWT_CLAIM_USERID_HEADER, id)
+				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, id)
 				// Convert to list of strings. 
 //				.claim("authorities", auth.getAuthorities().stream()
 //						.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
 				.setIssuedAt(new Date(now))
-				.setExpiration(new Date(now + JwtConfig.JWT_EXPIRATION_S * 1000))  // in milliseconds
-				.signWith(SignatureAlgorithm.HS512, JwtConfig.JWT_SECRET_KEY.getBytes())
+				.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
+				.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.JWT_SECRET_KEY.getBytes())
 				.compact();
 
 		// Add token to header
-		return JwtConfig.JWT_AUTH_PREFIX + token;
+		return JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token;
 	}
 	
 }

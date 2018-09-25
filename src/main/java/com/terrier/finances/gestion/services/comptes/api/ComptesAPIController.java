@@ -12,13 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.comptes.model.api.IntervallesCompteAPIObject;
 import com.terrier.finances.gestion.communs.operations.model.api.LibellesOperationsAPIObject;
@@ -28,6 +27,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
+import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -66,10 +66,9 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST)
-	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
-		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
-		logger.info("[API][idUser={}] getComptes", idUtilisateur);
-		return getEntities(comptesService.getComptesUtilisateur(idUtilisateur));
+	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestAttribute("userSession") UserBusinessSession userSession) throws DataNotFoundException, UserNotAuthorizedException{
+		logger.info("getComptes");
+		return getEntities(comptesService.getComptesUtilisateur(userSession.getUtilisateur().getId()));
 	}
 
 	/**
@@ -90,10 +89,9 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path")
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID)
-	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
-		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
-		logger.info("[API][idUser={}][idCompte={}] getCompte", idUtilisateur, idCompte);
-		return getEntity(comptesService.getCompteById(idCompte, idUtilisateur));
+	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestAttribute("userSession") UserBusinessSession userSession) throws DataNotFoundException, UserNotAuthorizedException{
+		logger.info("[idCompte={}] getCompte", idCompte);
+		return getEntity(comptesService.getCompteById(idCompte, userSession.getUtilisateur().getId()));
 	}
 
 
@@ -115,9 +113,8 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES)
-	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws DataNotFoundException, UserNotAuthorizedException{
-		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
-		logger.info("[API][idUser={}][idCompte={}] getIntervallesBudgetsCompte", idUtilisateur, idCompte);
+	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte,  @RequestAttribute("userSession") UserBusinessSession userSession) throws DataNotFoundException, UserNotAuthorizedException{
+		logger.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
 
 		LocalDate[] intervalles = comptesService.getIntervallesBudgets(idCompte);
 		if(intervalles != null && intervalles.length >= 2){
@@ -150,10 +147,9 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
 	})		
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES)
-	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
-		String idUtilisateur = getUtilisateur(auth).getUtilisateur().getId();
-		logger.info("[API][idUser={}][idCompte={}] get Libellés Opérations : {}", idUtilisateur, idCompte, annee);
-		Set<String> libelles = comptesService.getLibellesOperations(idUtilisateur, idCompte, annee);
+	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations( @RequestAttribute("userSession") UserBusinessSession userSession, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
+		logger.info("[idCompte={}] get Libellés Opérations : {}", annee);
+		Set<String> libelles = comptesService.getLibellesOperations(userSession.getUtilisateur().getId(), idCompte, annee);
 		if(libelles != null && !libelles.isEmpty()){
 			LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();
 			libellesO.setIdCompte(idCompte);

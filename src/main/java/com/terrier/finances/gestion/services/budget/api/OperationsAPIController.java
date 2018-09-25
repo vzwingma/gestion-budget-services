@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terrier.finances.gestion.communs.api.security.JwtConfig;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
@@ -82,9 +81,8 @@ public class OperationsAPIController extends AbstractAPIController {
 			@RequestParam("idCompte") String idCompte, 
 			@RequestParam("mois") Integer mois, 
 			@RequestParam("annee") Integer annee, 
-			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException {
-		UserBusinessSession userSession = getUtilisateur(auth);
-		logger.info("[API][idUser={}][idCompte={}] getBudget {}/{}", userSession.getUtilisateur().getId(), idCompte, mois, annee);
+			@RequestAttribute("userSession") UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException {
+		logger.info("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
 
 		if(mois != null && annee != null){
 			try{
@@ -123,10 +121,9 @@ public class OperationsAPIController extends AbstractAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ID)
 	public @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
 			@PathVariable("idBudget") String idBudget, 
-			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
+			@RequestAttribute("userSession") UserBusinessSession userSession) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
 
-		UserBusinessSession userSession = getUtilisateur(auth);
-		logger.info("[API][idUser={}][idBudget={}] chargeBudget",userSession.getUtilisateur().getId(), idBudget);
+		logger.info("[idBudget={}] chargeBudget", idBudget);
 		if(idBudget != null){
 			return getEntity(operationService.chargerBudgetMensuel(idBudget, userSession));
 		}
@@ -155,9 +152,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	})	
 
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
-	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
-		UserBusinessSession userSession = getUtilisateur(auth);
-		logger.info("[API][idUser={}][idBudget={}] reinitialisation", userSession.getUtilisateur().getId(), idBudget);
+	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestAttribute("userSession") UserBusinessSession userSession) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+		logger.info("[idBudget={}] reinitialisation", idBudget);
 		if(idBudget != null){
 			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, userSession);
 			return getEntity(budgetUpdated);
@@ -188,11 +184,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<Boolean> isBudgetActif(
 			@PathVariable("idBudget") String idBudget, 
-			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth,
+			@RequestAttribute("userSession") UserBusinessSession userSession,
 			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif,  @RequestParam(value="uptodateto", required=false) Long uptodateto) throws UserNotAuthorizedException, BudgetNotFoundException {
 
-		UserBusinessSession userSession = getUtilisateur(auth);
-		logger.info("[API][idUser={}][idBudget={}] actif ? : {}, uptodateto ? {}",userSession.getUtilisateur().getId(), idBudget, isActif, uptodateto );
+		logger.info("[idBudget={}] actif ? : {}, uptodateto ? {}", idBudget, isActif, uptodateto );
 
 		if(isActif){
 			boolean isBudgetActif = operationService.isBudgetMensuelActif(idBudget);
@@ -240,11 +235,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<BudgetMensuel> setBudgetActif(
 			@PathVariable("idBudget") String idBudget,
-			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth,
+			@RequestAttribute("userSession") UserBusinessSession userSession,
 			@RequestParam(value="actif") Boolean setActif) throws UserNotAuthorizedException, BudgetNotFoundException {
 
-		UserBusinessSession userSession = getUtilisateur(auth);
-		logger.info("[API][idUser={}][idBudget={}] set Actif : {}",userSession.getUtilisateur().getId(), idBudget, setActif );
+		logger.info("[idBudget={}] set Actif : {}", idBudget, setActif );
 		BudgetMensuel budgetActif = operationService.setBudgetActif(idBudget, setActif, userSession);
 		return getEntity(budgetActif);
 	}
@@ -274,10 +268,9 @@ public class OperationsAPIController extends AbstractAPIController {
 	public ResponseEntity<Boolean> setAsDerniereOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation, 
-			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws UserNotAuthorizedException, BudgetNotFoundException {
+			@RequestAttribute("userSession") UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException {
 
-		UserBusinessSession userSession = getUtilisateur(auth);
-		logger.info("[API][idUser={}][idBudget={}][idOperation={}] setAsDerniereOperation",userSession.getUtilisateur().getId(), idBudget, idOperation);
+		logger.info("[idBudget={}][idOperation={}] setAsDerniereOperation", idBudget, idOperation);
 		boolean resultat = operationService.setLigneAsDerniereOperation(idBudget, idOperation, userSession);
 		if(resultat){
 			return ResponseEntity.ok().build();
@@ -315,10 +308,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<BudgetMensuel> createOrUpdateOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
-			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, 
+			@RequestAttribute("userSession") UserBusinessSession userSession, 
 			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
-		UserBusinessSession userSession = getUtilisateur(auth);
-		logger.info("[API][idUser={}][idBudget={}][idOperation={}] createOrUpdateOperation",userSession, idBudget, idOperation);
+
+		logger.info("[idBudget={}][idOperation={}] createOrUpdateOperation", idBudget, idOperation);
 		if(operation != null && idBudget != null && userSession != null){
 			operation.setId(idOperation);
 			completeCategoriesOnOperation(operation);
@@ -360,10 +353,10 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
 			@PathVariable("idCompte") String idCompte,
-			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth, 
+			@RequestAttribute("userSession") UserBusinessSession userSession, 
 			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
-		UserBusinessSession userSession = getUtilisateur(auth);
-		logger.info("[API][idUser={}][idBudget={}][idOperation={}] createOperation InterCompte [{}]",userSession.getUtilisateur().getId(), idBudget, idOperation, idCompte);
+
+		logger.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
 		if(operation != null && idBudget != null){
 			operation.setId(idOperation);
 			completeCategoriesOnOperation(operation);
@@ -401,10 +394,11 @@ public class OperationsAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<BudgetMensuel> deleteOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
-			@RequestHeader(JwtConfig.JWT_AUTH_HEADER) String auth) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
-		UserBusinessSession userSession = getUtilisateur(auth);
+			@RequestAttribute("userSession") UserBusinessSession userSession
+		) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+		
 		if(idOperation != null && idBudget != null && userSession != null){
-			logger.info("[API][idUser={}][idBudget={}][idOperation={}] deleteOperation",userSession.getUtilisateur().getId(), idBudget, idOperation);
+			logger.info("[idBudget={}][idOperation={}] deleteOperation", idBudget, idOperation);
 			BudgetMensuel budgetUpdated = operationService.deleteOperation(idBudget, idOperation, userSession);
 			if(budgetUpdated != null) {
 				return getEntity(budgetUpdated);
@@ -423,11 +417,17 @@ public class OperationsAPIController extends AbstractAPIController {
 	private void completeCategoriesOnOperation(LigneOperation operation){
 		List<CategorieOperation> categories = operationService.getServiceParams().getCategories();
 		try {
-			operation.setSsCategorie(BudgetDataUtils.getCategorieById(operation.getIdSsCategorie(), categories));
+			CategorieOperation catFound = BudgetDataUtils.getCategorieById(operation.getIdSsCategorie(), categories);
+			if(catFound != null) {
+				operation.setSsCategorie(catFound);
+				return;
+			}
 		}
 		catch (Exception e) {
-			logger.warn("Impossible de retrouver la sous catégorie : {} parmi la liste ci dessous. Le fonctionnement peut être incorrect. \n {}", operation.getIdSsCategorie(), categories);
+			logger.warn("Impossible de retrouver la sous catégorie : {}", operation.getIdSsCategorie(), e);
 		}
+		logger.warn("Impossible de retrouver la sous catégorie : {} parmi la liste ci dessous. Le fonctionnement peut être incorrect. \n {}", operation.getIdSsCategorie(), categories);
+
 	}
 }
 
