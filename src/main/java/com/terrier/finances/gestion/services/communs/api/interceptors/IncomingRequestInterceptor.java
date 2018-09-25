@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -22,7 +23,7 @@ import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 @Component
 public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 
-	
+
 
 	public static final Logger LOGGER = LoggerFactory.getLogger( IncomingRequestInterceptor.class );
 
@@ -31,9 +32,10 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	 * Traite les entêtes en entrée
 	 * @param request
 	 * @param apiController
+	 * @throws UserNotAuthorizedException utilisateur inconnu
 	 */
-	private void manageHeaders(HttpServletRequest request, AbstractAPIController apiController) {
-		
+	private void manageHeaders(HttpServletRequest request, AbstractAPIController apiController) throws UserNotAuthorizedException {
+
 		StringBuilder valueLog = new StringBuilder();
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID);
 		if(corrIdHeader != null) {
@@ -55,27 +57,32 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 			try {
 				request.setAttribute("userSession", apiController.getUtilisateur(jwtToken));
 			} catch (UserNotAuthorizedException e) {
-				LOGGER.warn("[API={}][idUser={}] Impossible d'injecter la userSession. Utilisateur non authorisé", corrIdHeader, idUser);
-				request.setAttribute("userSession", null);
+				LOGGER.warn("[API={}][idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", corrIdHeader, idUser);
+				throw e;
 			}
 		}
 		apiController.updateMdckey(valueLog.toString());
 	}
-	
-	
+
+
 
 	/* (non-Javadoc)
 	 * @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 */
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
-		if(handler instanceof HandlerMethod) {
-			HandlerMethod handlerMethod = (HandlerMethod)handler;
-			if(handlerMethod.getBean() instanceof AbstractAPIController) {
-				manageHeaders(request, (AbstractAPIController)handlerMethod.getBean());
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		try {
+			if(handler instanceof HandlerMethod) {
+				HandlerMethod handlerMethod = (HandlerMethod)handler;
+				if(handlerMethod.getBean() instanceof AbstractAPIController) {
+					manageHeaders(request, (AbstractAPIController)handlerMethod.getBean());
+				}
 			}
 		}
-		return super.preHandle(request, response, handler);
+		catch (UserNotAuthorizedException e) {
+			response.sendError(HttpStatus.UNAUTHORIZED.value(), "Utilisateur non authentifié");
+			return false;
+		}
+		return true;
 	}
 }
