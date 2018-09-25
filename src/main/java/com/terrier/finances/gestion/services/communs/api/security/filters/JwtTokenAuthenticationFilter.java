@@ -14,7 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.terrier.finances.gestion.communs.api.security.JwtConfig;
+import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 
 import io.jsonwebtoken.Claims;
 
@@ -35,10 +35,10 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
 			throws ServletException, IOException {
 		
 		// 1. get the authentication header. Tokens are supposed to be passed in the authentication header
-		String header = request.getHeader(JwtConfig.JWT_AUTH_HEADER);
+		String header = request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
 		
 		// 2. validate the header and check the prefix
-		if(header == null || !header.startsWith(JwtConfig.JWT_AUTH_PREFIX)) {
+		if(header == null || !header.startsWith(JwtConfigEnum.JWT_HEADER_AUTH_PREFIX)) {
 			chain.doFilter(request, response);  		// If not valid, go to the next filter.
 			return;
 		}
@@ -52,7 +52,7 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
 		
 		try {	// exceptions might be thrown in creating the claims if for example the token is expired
 			// 4. Validate the token
-			Claims claims = JwtConfig.getJWTClaims(header);
+			Claims claims = JwtConfigEnum.getJWTClaims(header);
 			
 			String username = claims.getSubject();
             if(username != null) {

@@ -15,7 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.terrier.finances.gestion.communs.api.security.JwtConfig;
+import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
@@ -70,7 +70,7 @@ public class TestParametragesAPI extends AbstractTestsAPI  {
 		when(mockDataDBParams.chargeCategories()).thenReturn(categoriesFromDB);
 		
 		String expectedResult = "[{\"id\":\"8f1614c9-503c-4e7d-8cb5-0c9a9218b84a\",\"libelle\":\"Alimentation\",\"actif\":true,\"listeSSCategories\":[{\"id\":\"467496e4-9059-4b9b-8773-21f230c8c5c6\",\"libelle\":\"Courses\",\"actif\":true,\"listeSSCategories\":[],\"categorie\":false}],\"categorie\":true}]";
-		getMockAPI().perform( get(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL).header(JwtConfig.JWT_AUTH_HEADER, getTestToken("userTest")))
+		getMockAPI().perform( get(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("userTest")))
 					.andExpect(status().isOk())
 					.andExpect(content().string(expectedResult));
 

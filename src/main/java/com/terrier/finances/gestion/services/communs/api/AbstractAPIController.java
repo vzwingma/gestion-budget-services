@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-import com.terrier.finances.gestion.communs.api.security.JwtConfig;
+import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
@@ -27,9 +27,11 @@ public abstract class AbstractAPIController {
 	/**
 	 * Logger
 	 */
-	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	
+	public final Logger logger = LoggerFactory.getLogger(this.getClass());
+		
+	/**
+	 * Constructeur des API Controleur
+	 */
 	public AbstractAPIController() {
 		org.slf4j.MDC.put("key", "[API]");
 	}
@@ -64,10 +66,10 @@ public abstract class AbstractAPIController {
 	 * @return utilisateur si authentifié
 	 * @throws UserNotAuthorizedException erreur d'auter
 	 */
-	protected UserBusinessSession getUtilisateur(String token) throws UserNotAuthorizedException{
+	public UserBusinessSession getUtilisateur(String token) throws UserNotAuthorizedException{
 		UserBusinessSession userSession = null;
 		try{
-			String idUser = (String)JwtConfig.getJWTClaims(token).get(JwtConfig.JWT_CLAIM_USERID_HEADER);
+			String idUser = (String)JwtConfigEnum.getJWTClaims(token).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
 			userSession = serviceUtilisateurs.getBusinessSession(idUser);
 		}
 		catch (Exception e) {
@@ -77,5 +79,12 @@ public abstract class AbstractAPIController {
 			return userSession;
 		}
 		throw new UserNotAuthorizedException("L'utilisateur n'est pas authentifié");
+	}
+	
+	/**
+	 * @param value
+	 */
+	public void updateMdckey(String value) {
+		org.slf4j.MDC.put("key", value);
 	}
 }
