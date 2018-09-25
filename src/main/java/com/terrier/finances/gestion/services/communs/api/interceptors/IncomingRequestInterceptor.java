@@ -15,7 +15,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedEx
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 
 /**
- * Request inteceptor pour charger le correlationID et le idUser
+ * Request inteceptor pour charger le correlationID et le userSession
  * @author vzwingma
  *
  */
