@@ -16,7 +16,8 @@ import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDataba
 		"com.terrier.finances.gestion.services.budget.business", 
 		"com.terrier.finances.gestion.services.comptes.business",		
 		"com.terrier.finances.gestion.services.parametrages.business",
-		"com.terrier.finances.gestion.services.budget.model.transformer"})	
+		"com.terrier.finances.gestion.services.budget.model.transformer",
+		"com.terrier.finances.gestion.services.communs.api.interceptors"})	
 public class TestMockDBServicesConfig {
 
 	private MongoTemplate mockDBTemplate = Mockito.mock(MongoTemplate.class);
