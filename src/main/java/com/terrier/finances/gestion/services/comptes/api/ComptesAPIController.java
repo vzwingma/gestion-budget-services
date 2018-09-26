@@ -148,7 +148,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	})		
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES)
 	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations( @RequestAttribute("userSession") UserBusinessSession userSession, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
-		logger.info("[idCompte={}] get Libellés Opérations : {}", annee);
+		logger.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);
 		Set<String> libelles = comptesService.getLibellesOperations(userSession.getUtilisateur().getId(), idCompte, annee);
 		if(libelles != null && !libelles.isEmpty()){
 			LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();
