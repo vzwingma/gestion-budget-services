@@ -12,9 +12,9 @@ public enum MongoDBConfigEnum {
 
 	MONGODB_CONFIG_DB("budget-app-dev"), 
 	MONGODB_CONFIG_HOST("ds113936.mlab.com"), 
-	MONGODB_CONFIG_PORT("budget"),
+	MONGODB_CONFIG_PORT(13936),
 	MONGODB_CONFIG_USERNAME( "budgetdev"),
-	MONGODB_CONFIG_PWD(13936);
+	MONGODB_CONFIG_PWD("budget");
 	
 	
 	private int intDefaultValue;
