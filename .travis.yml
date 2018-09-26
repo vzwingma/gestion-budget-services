@@ -27,9 +27,9 @@ install:
 
 script:
   # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB.
-  - echo "Branche     : ${TRAVIS_BRANCH}";
-  - echo "PullRequest : ${TRAVIS_PULL_REQUEST}";
-  - if [ ${TRAVIS_BRANCH} = "master" ] && [ ${TRAVIS_PULL_REQUEST} != "false" ]; 
+  - echo "Branche     : $TRAVIS_BRANCH";
+  - echo "PullRequest : $TRAVIS_PULL_REQUEST";
+  - if [[ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST != "false" ]];
     then 
       echo "ReTag de snapshot"; 
       git tag -d snapshot; 
