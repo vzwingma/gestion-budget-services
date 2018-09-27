@@ -13,9 +13,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<spring.version>5.0.9.RELEASE</spring.version>
+		<spring.version>5.1.0.RELEASE</spring.version>
 		<mongo.data.version>3.8.0</mongo.data.version>
-		<spring.security.version>5.0.8.RELEASE</spring.security.version>
+		<spring.security.version>5.1.0.RELEASE</spring.security.version>
 		<vaadin.version>8.5.1</vaadin.version>
 		<jackson.version>2.9.6</jackson.version>
 		<jersey.version>2.27</jersey.version>
