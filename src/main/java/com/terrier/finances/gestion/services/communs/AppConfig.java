@@ -19,5 +19,5 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @PropertySource(value={"classpath:config.properties"}, ignoreResourceNotFound = true)
 public class AppConfig {
 
-	
+
 }

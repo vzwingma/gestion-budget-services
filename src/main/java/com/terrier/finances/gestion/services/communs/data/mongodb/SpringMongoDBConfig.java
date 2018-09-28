@@ -39,11 +39,11 @@ public class SpringMongoDBConfig {
 	@Bean
 	public MongoTemplate mongoTemplate() {
 
-		String db = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_DB, "budget-app-dev");
-		String host = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_HOST, "ds113936.mlab.com");
-		String username = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_USERNAME, "budget");
-		String password = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_PWD, "budgetdev");
-		int port =  getIntgerEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_PORT, 13936);
+		String db = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_DB);
+		String host = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_HOST);
+		String username = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_USERNAME);
+		String password = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_PWD);
+		int port = getIntgerEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_PORT);
 
 		//create mongo template
 		String mongoURI = new StringBuilder("mongodb://").append(username).append(":").append(password).append("@").append(host).append(":").append(port).append("/").append(db).toString();
@@ -52,41 +52,43 @@ public class SpringMongoDBConfig {
 		LOGGER.info("[INIT] Configuration de la connexion vers MongDB : [{}]", mongoURILog);
 		return new MongoTemplate(new SimpleMongoDbFactory(new MongoClientURI(mongoURI)));
 	}
-
-
 	/**
 	 * Retourne la valeur string de la variable d'environnement
 	 * @param cle
 	 * @return valeur de la clé
 	 */
-	private String getStringEnvVar(MongoDBConfigEnum cle, String defaultVar){
+	public static String getStringEnvVar(MongoDBConfigEnum cle){
 		String envVar = System.getenv(cle.name());
 		if(envVar != null) {
 			return envVar;
 		}
 		else {
 			if(LOGGER.isWarnEnabled()) {
-				LOGGER.warn("La clé {} n'est définie. Utilisation de la valeur par défaut : {} ", cle.name(), defaultVar);
+				LOGGER.warn("La clé {} n'est définie. Utilisation de la valeur par défaut : {} ", cle.name(), cle.getDefaultValue());
 			}
-			 return defaultVar;
+			 return cle.getDefaultValue();
 		}
 	}
+	
+
+
+
 
 	/**
 	 * Retourne la valeur int de la variable d'environnement
 	 * @param cle
 	 * @return valeur de la clé
 	 */
-	private Integer getIntgerEnvVar(MongoDBConfigEnum cle, Integer defaultVar){
+	public static Integer getIntgerEnvVar(MongoDBConfigEnum cle){
 		String env = System.getenv(cle.name());
 		try{
 			return Integer.parseInt(env);
 		}
 		catch(NumberFormatException e){
 			if(LOGGER.isWarnEnabled()) {
-				LOGGER.error("La clé {}={} n'est pas un nombre. La valeur par défaut : {} ", cle.name(), env, defaultVar);
+				LOGGER.error("La clé {}={} n'est pas un nombre. La valeur par défaut : {} ", cle.name(), env, cle.getIntDefaultValue());
 			}
-			return defaultVar;
+			return cle.getIntDefaultValue();
 		}
 	}
 }
