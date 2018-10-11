@@ -139,7 +139,7 @@ public class TestOperationsService {
 		}
 		catch (Exception e) {
 			LOGGER.error("Erreur lors du calcul", e);
-			fail();
+			fail("Erreur lors du calcul");
 		}
 
 	}	
