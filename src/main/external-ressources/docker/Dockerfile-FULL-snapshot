@@ -1,5 +1,5 @@
-# Issu de la dernière image Tomcat 8
-FROM tomcat:8.5.34-alpine
+# Issu de l'image en cours
+FROM vzwingmann/gestion_budget:snapshot
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
