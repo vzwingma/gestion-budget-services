@@ -3,7 +3,7 @@ FROM vzwingmann/gestion_budget:snapshot
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
-COPY ihm.war /usr/local/tomcat/webapps/services.war
+COPY services.war /usr/local/tomcat/webapps/services.war
 
 # Droit pour tous les users de Tomcat
 RUN chmod a+r -R /usr/local/tomcat; \
