@@ -44,7 +44,7 @@ before_deploy:
   - cd ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - echo "Construction de l'image Docker gestion_budget_services"; 
-  - docker build -t vzwingmann/gestion_budget_services:travis -f Dockerfile-SERVICES
+  - docker build -t vzwingmann/gestion_budget_services:travis -f Dockerfile-SERVICES .;
   - if [[ $TRAVIS_BRANCH == v* ]]; 
     then 
         VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
