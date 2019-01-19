@@ -45,7 +45,6 @@ before_deploy:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - echo "Construction de l'image Docker gestion_budget_services"; 
   - docker build -t vzwingmann/gestion_budget_services:travis -f Dockerfile-SERVICES .;
-  - docker build -t vzwingmann/gestion_budget_services:travis-raspberry -f Dockerfile-SERVICES-raspberry .;  
   - if [[ $TRAVIS_BRANCH == v* ]]; 
     then 
         VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
@@ -53,17 +52,9 @@ before_deploy:
         docker push vzwingmann/gestion_budget_services:$VERSION ; 
         docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:latest ; 
         docker push vzwingmann/gestion_budget_services:latest ; 
-        
-        docker tag vzwingmann/gestion_budget_services:travis-raspberry vzwingmann/gestion_budget_services:arm-$VERSION ; 
-        docker push vzwingmann/gestion_budget_services:arm-$VERSION ; 
-        docker tag vzwingmann/gestion_budget_services:travis-raspberry vzwingmann/gestion_budget_services:arm-latest ; 
-        docker push vzwingmann/gestion_budget_services:arm-latest ; 
     else 
        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
        docker push vzwingmann/gestion_budget_service:$TRAVIS_BRANCH ; 
-       
-       docker tag vzwingmann/gestion_budget_services:travis-raspberry vzwingmann/gestion_budget_services-raspberry:arm-$TRAVIS_BRANCH ; 
-       docker push vzwingmann/gestion_budget_services-raspberry:arm-$TRAVIS_BRANCH ; 
     fi;   
 
 deploy:
