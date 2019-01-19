@@ -45,6 +45,7 @@ before_deploy:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - echo "Construction de l'image Docker gestion_budget_services"; 
   - docker build -t vzwingmann/gestion_budget_services:travis -f Dockerfile-SERVICES .;
+  - docker build -t vzwingmann/gestion_budget_services:travis-raspberry -f Dockerfile-SERVICES-raspberry .;  
   - if [[ $TRAVIS_BRANCH == v* ]]; 
     then 
         VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
@@ -53,16 +54,16 @@ before_deploy:
         docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:latest ; 
         docker push vzwingmann/gestion_budget_services:latest ; 
         
-        echo "Construction de l'image Docker gestion_budget:latest";
-        docker build -t vzwingmann/gestion_budget:latest -f Dockerfile-FULL-latest .;
-        docker push vzwingmann/gestion_budget:latest;
+        docker tag vzwingmann/gestion_budget_services:travis-raspberry vzwingmann/gestion_budget_services-raspberry:$VERSION ; 
+        docker push vzwingmann/gestion_budget_services-raspberry:$VERSION ; 
+        docker tag vzwingmann/gestion_budget_services:travis-raspberry vzwingmann/gestion_budget_services-raspberry:latest ; 
+        docker push vzwingmann/gestion_budget_services-raspberry:latest ; 
     else 
        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
-       docker push vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
+       docker push vzwingmann/gestion_budget_service:$TRAVIS_BRANCH ; 
        
-       echo "Construction de l'image Docker gestion_budget:snapshot";
-       docker build -t vzwingmann/gestion_budget:snapshot -f Dockerfile-FULL-snapshot .;
-       docker push vzwingmann/gestion_budget:snapshot;
+       docker tag vzwingmann/gestion_budget_services:travis-raspberry vzwingmann/gestion_budget_services-raspberry:$TRAVIS_BRANCH ; 
+       docker push vzwingmann/gestion_budget_services-raspberry:$TRAVIS_BRANCH ; 
     fi;   
 
 deploy:
