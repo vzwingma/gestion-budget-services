@@ -1,5 +1,5 @@
 # Issu de l'image en cours
-FROM vzwingmann/gestion_budget:snapshot
+FROM gordonff/rpi-tomcat
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
