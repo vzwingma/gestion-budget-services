@@ -10,10 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.terrier.finances.gestion.communs.admin.model.DependencyName;
+import com.terrier.finances.gestion.communs.admin.model.StatutDependencyAPIObject;
+import com.terrier.finances.gestion.communs.admin.model.StatutStateEnum;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
-import com.terrier.finances.gestion.services.statut.api.StatutDependencyAPIObject;
-import com.terrier.finances.gestion.services.statut.model.DependencyName;
-import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
 /**
  * Retourne le statut de l'application
