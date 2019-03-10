@@ -221,7 +221,7 @@ public class OperationsService extends AbstractBusinessService {
 			// Si impossible : BudgetNotFoundException
 			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(compteBancaire.getId(), moisPrecedent, anneePrecedente, userSession);
 			// #115 : Cloture automatique du mois précédent
-			setBudgetActif(budgetPrecedent.getId(), false, userSession);
+			budgetPrecedent = setBudgetActif(budgetPrecedent.getId(), false, userSession);
 
 			initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 		}
