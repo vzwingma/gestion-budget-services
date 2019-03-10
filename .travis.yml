@@ -55,7 +55,7 @@ before_deploy:
         docker push vzwingmann/gestion_budget_services:latest ; 
     else 
        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
-       docker push vzwingmann/gestion_budget_service:$TRAVIS_BRANCH ; 
+       docker push vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
     fi;   
 
 deploy:
