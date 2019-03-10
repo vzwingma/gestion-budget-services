@@ -35,6 +35,7 @@ public class StatusApplicationService extends AbstractBusinessService {
 	@PostConstruct
 	public void initApplication(){
 		this.statutApplication = new StatutDependencyAPIObject(DependencyName.APPLICATION);
+		this.statutApplication.setVersion(this.getVersion());
 		this.statutApplication.setDescription("Services Budget v" + this.getVersion() + " [" + this.getBuildTime() + "]");
 		this.statutApplication.updateStatusModule(DependencyName.APPLICATION, StatutStateEnum.OK);
 		this.statutApplication.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION, "Base de données Mongo");

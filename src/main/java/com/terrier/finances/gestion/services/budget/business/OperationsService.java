@@ -29,6 +29,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedEx
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneOperation;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
+import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
@@ -51,6 +52,8 @@ public class OperationsService extends AbstractBusinessService {
 	@Autowired
 	private BudgetDatabaseService dataDepenses;
 
+	@Autowired
+	private ComptesService compteServices;
 
 	private DataTransformerLigneOperation transformer = new DataTransformerLigneOperation();
 
@@ -339,9 +342,13 @@ public class OperationsService extends AbstractBusinessService {
 			etatDepenseTransfert = EtatOperationEnum.PREVUE;
 			break;
 		}
+		
+		CompteBancaire compteSource = this.compteServices.getCompteById(idCompteSource, userSession.getUtilisateur().getId());
+		CompteBancaire compteCible = this.compteServices.getCompteById(idCompteDestination, userSession.getUtilisateur().getId());
+		
 		LigneOperation ligneTransfert = new LigneOperation(
 				ligneOperation.getSsCategorie(), 
-				"[de "+idCompteSource+"] " + ligneOperation.getLibelle(), 
+				"[de "+compteSource.getLibelle()+"] " + ligneOperation.getLibelle(), 
 				TypeOperationEnum.CREDIT, 
 				Double.toString(Math.abs(ligneOperation.getValeur())), 
 				etatDepenseTransfert, 
@@ -351,7 +358,7 @@ public class OperationsService extends AbstractBusinessService {
 		/**
 		 *  Ajout de la ligne dans le budget courant
 		 */
-		ligneOperation.setLibelle("[vers "+idCompteDestination+"] " + ligneOperation.getLibelle());
+		ligneOperation.setLibelle("[vers "+compteCible.getLibelle()+"] " + ligneOperation.getLibelle());
 		return createOrUpdateOperation(idBudget, ligneOperation, userSession);
 
 	}
