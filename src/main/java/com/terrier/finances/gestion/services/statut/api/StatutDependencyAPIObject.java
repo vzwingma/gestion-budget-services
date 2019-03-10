@@ -34,7 +34,12 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	// Nom 
 	@ApiModelProperty(notes = "Nom de l'application ou de la dépendance", required=true)
 	private DependencyName nom;
+	
 	// Nom 
+	@ApiModelProperty(notes = "Version de l'application ou de la dépendance", required=false)
+	private String version;
+	
+	// Description 
 	@ApiModelProperty(notes = "Description de l'application ou de la dépendance", required=false)
 	private String description;
 	
@@ -213,6 +218,8 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	
 
 
 	/* (non-Javadoc)
@@ -230,6 +237,22 @@ public class StatutDependencyAPIObject extends AbstractAPIObjectModel {
 		}
 		builder.append("], date=").append(date).append("]");
 		return builder.toString();
+	}
+
+
+	/**
+	 * @return the version
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(String version) {
+		this.version = version;
 	}	
 	
 	
