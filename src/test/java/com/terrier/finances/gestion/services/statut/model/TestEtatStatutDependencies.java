@@ -25,7 +25,6 @@ public class TestEtatStatutDependencies {
 		
 		assertNotNull(statutRoot);
 		assertNotNull(statutRoot.getDate());
-		assertNotNull(statutRoot.getTimestamp());
 		assertNotNull(statutRoot.getNom());
 		assertEquals(StatutStateEnum.INCONNU, statutRoot.getStatusObject());
 		
