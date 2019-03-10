@@ -221,7 +221,7 @@ public class OperationsService extends AbstractBusinessService {
 			// Si impossible : BudgetNotFoundException
 			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(compteBancaire.getId(), moisPrecedent, anneePrecedente, userSession);
 			// #115 : Cloture automatique du mois précédent
-			setBudgetActif(budgetPrecedent.getId(), false, userSession);
+			budgetPrecedent = setBudgetActif(budgetPrecedent.getId(), false, userSession);
 
 			initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 		}
@@ -569,12 +569,12 @@ public class OperationsService extends AbstractBusinessService {
 			BudgetMensuel budgetMensuel = dataDepenses.chargeBudgetMensuelById(idBudgetMensuel, userSession.getEncryptor());
 			budgetMensuel.setActif(budgetActif);
 			budgetMensuel.setDateMiseAJour(Calendar.getInstance());
-			//#119 : Toutes les opérations en attente sont annulées
+			//  #119 #141 : Toutes les opérations en attente sont reportées
 			if(!budgetActif){		
 				budgetMensuel.getListeOperations()
 				.stream()
 				.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
-				.forEach(op -> op.setEtat(EtatOperationEnum.ANNULEE));
+				.forEach(op -> op.setEtat(EtatOperationEnum.REPORTEE));
 			}
 			return calculEtSauvegardeBudget(budgetMensuel, userSession);
 		}

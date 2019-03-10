@@ -8,7 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.terrier.finances.gestion.services.statut.api.StatutDependencyAPIObject;
+import com.terrier.finances.gestion.communs.admin.model.DependencyName;
+import com.terrier.finances.gestion.communs.admin.model.StatutDependencyAPIObject;
+import com.terrier.finances.gestion.communs.admin.model.StatutStateEnum;
 
 /**
  * @author vzwingma
