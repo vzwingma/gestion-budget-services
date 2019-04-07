@@ -11,7 +11,7 @@
 [![Build Status](https://img.shields.io/travis/com/vzwingma/gestion-budget-services.svg)](https://travis-ci.com/vzwingma/gestion-budget-services/branches)
 [![GitHub issues](https://img.shields.io/github/issues-raw/vzwingma/gestion-budget-services.svg?style=flat-square)](https://github.com/vzwingma/gestion-budget-services/issues)
 
-[![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/gestion-budget-services/badge.svg)](https://snyk.io/test/github/vzwingma/gestion-budget-services)
+[![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/gestion-budget-services/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/vzwingma/gestion-budget-services)
 [![Dépendences](https://img.shields.io/librariesio/github/vzwingma/gestion-budget-services.png)](https://libraries.io/github/vzwingma/gestion-budget-services)
 
 <a href="https://sonarcloud.io/dashboard?id=gestion-budget-services"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/project_badges/measure?project=gestion-budget-services&metric=coverage" /></a>
