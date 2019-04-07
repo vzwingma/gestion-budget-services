@@ -92,24 +92,21 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		Set<String> libellesDepenses = new HashSet<>();
 		try{
 			List<BudgetMensuelDTO> budgetsDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
-			if(budgetsDTO != null){
-
-				budgetsDTO
-				.parallelStream()
-				// liste dépenses transformées 
-				.map(budgetDTO -> getDataTransformerBudget().transformDTOtoBO(budgetDTO, decryptor))
-				.forEach(budget -> {
-					if(budget != null && budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()){
-						budget.getListeOperations()
-						.parallelStream()
-						.forEach(operation -> {
-							if(operation != null){
-								libellesDepenses.add(operation.getLibelle());
-							}
-						});
-					}
-				});
-			}
+			budgetsDTO
+			.parallelStream()
+			// liste dépenses transformées 
+			.map(budgetDTO -> getDataTransformerBudget().transformDTOtoBO(budgetDTO, decryptor))
+			.forEach(budget -> {
+				if(budget != null && budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()){
+					budget.getListeOperations()
+					.parallelStream()
+					.forEach(operation -> {
+						if(operation != null){
+							libellesDepenses.add(operation.getLibelle());
+						}
+					});
+				}
+			});
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement des libellés des dépenses du compte {} de {}", idCompte, annee, e);
