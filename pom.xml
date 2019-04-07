@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.vzwingma.finances.budget</groupId>
 	<artifactId>services</artifactId>
-	<version>7.1.0-SNAPSHOT</version>
+	<version>7.2.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
@@ -13,10 +13,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<spring.version>5.1.1.RELEASE</spring.version>
-		<mongo.data.version>3.8.0</mongo.data.version>
+		<communs.version>7.4.0-SNAPSHOT</communs.version>
+		<spring.version>5.1.5.RELEASE</spring.version>
+		<mongo.data.version>3.9.0</mongo.data.version>
 		<spring.security.version>5.1.5.RELEASE</spring.security.version>
-		<vaadin.version>8.5.1</vaadin.version>
 		<jackson.version>2.9.6</jackson.version>
 		<jersey.version>2.27</jersey.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
@@ -181,7 +181,7 @@
 		<dependency>
 			<groupId>io.github.vzwingma.finances.budget</groupId>
 			<artifactId>communs</artifactId>
-			<version>7.3.2-SNAPSHOT</version>
+			<version>${communs.version}</version>
 		</dependency>
 
 		<!-- SPRING -->
@@ -287,7 +287,7 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>swagger-ui</artifactId>
-			<version>3.18.2</version>
+			<version>3.20.1</version>
 		</dependency>
 		<!-- LOG -->
 		<!-- slf4j dependency -->
@@ -315,13 +315,13 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.3.1</version>
+			<version>5.4.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.3.1</version>
+			<version>5.4.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
