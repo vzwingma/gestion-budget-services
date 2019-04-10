@@ -45,17 +45,6 @@ before_deploy:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - echo "Construction de l'image Docker gestion_budget_services"; 
   - docker build -t vzwingmann/gestion_budget_services:travis -f Dockerfile-SERVICES .;
-  - if [[ $TRAVIS_BRANCH == v* ]]; 
-    then 
-        VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
-        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$VERSION ; 
-        docker push vzwingmann/gestion_budget_services:$VERSION ; 
-        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:latest ; 
-        docker push vzwingmann/gestion_budget_services:latest ; 
-    else 
-       docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
-       docker push vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
-    fi;   
 
 deploy:
 # Déploiement des releaes sur tag : snapshot ou version 
@@ -67,3 +56,15 @@ deploy:
     on:
       repo: vzwingma/gestion-budget-services
       tags: true
+
+  - if [[ $TRAVIS_BRANCH == v* ]]; 
+    then 
+        VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$VERSION ; 
+        docker push vzwingmann/gestion_budget_services:$VERSION ; 
+        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:latest ; 
+        docker push vzwingmann/gestion_budget_services:latest ; 
+    else 
+       docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
+       docker push vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
+    fi;        
