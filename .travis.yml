@@ -10,63 +10,27 @@ git:
 # Notification SLACK
 notifications:
   slack: terrier-zed:zBgR60L3Sf7vLgxKqVonmaMT
-before_install:
-# Version tagguée > Application de la version sur Maven
-  - if [[ $TRAVIS_BRANCH == v* ]]; 
-    then 
-        VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
-    else 
-        VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec  -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
-        VERSION=$(echo $VERSION | sed -r 's/(-SNAPSHOT)+//gi')-SNAPSHOT; 
-    fi; 
-    echo "Application de la version $VERSION"; 
-    mvn versions:set -DnewVersion=$VERSION; 
-    mvn versions:commit;
-install: 
-  - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
 
 script:
   # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB.
   - if [[ $TRAVIS_BRANCH == "master" ]];
     then 
       echo "ReTag de snapshot"; 
-      git tag -d snapshot; 
-      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services :refs/tags/snapshot; 
-      git tag snapshot; 
-      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services --tags; 
     else 
       echo "Pas de reTag de snapshot"; 
     fi
 
 # Déploiement des releaes sur tag : snapshot ou version 
 before_deploy:
-  - cp ~/build/vzwingma/gestion-budget-services/target/webapps/services.war ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker/services.war
-  - cd ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker
-  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - echo "Construction de l'image Docker gestion_budget_services"; 
-  - docker build -t vzwingmann/gestion_budget_services:travis -f Dockerfile-SERVICES .;
   - VERSION_DOCKER = "";
   - if [[ $TRAVIS_BRANCH == v* ]]; 
     then 
         VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
         VERSION_DOCKER="latest";
-        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$VERSION_DOCKER_TAG ; 
-        docker push vzwingmann/gestion_budget_services:$VERSION_DOCKER_TAG ; 
     else 
        VERSION_DOCKER="snapshot";
     fi;
-    docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$VERSION_DOCKER ; 
-    docker push vzwingmann/gestion_budget_services:$VERSION_DOCKER ; 
-deploy:
-# Déploiement des releaes sur tag : snapshot ou version 
-  - provider: releases
-    api-key: $GITHUB_API_KEY
-    skip_cleanup: true
-    overwrite: true
-    file: /home/travis/build/vzwingma/gestion-budget-services/target/webapps/services.war
-    on:
-      repo: vzwingma/gestion-budget-services
-      tags: true
 
 after_deploy:
   # Deploiement sur MassiveGrid
