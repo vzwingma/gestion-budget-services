@@ -67,7 +67,6 @@ deploy:
     on:
       repo: vzwingma/gestion-budget-services
       tags: true
-
 after_deploy:
   # Deploiement sur MassiveGrid
   - ENV="";
