@@ -45,7 +45,18 @@ before_deploy:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - echo "Construction de l'image Docker gestion_budget_services"; 
   - docker build -t vzwingmann/gestion_budget_services:travis -f Dockerfile-SERVICES .;
-
+  - VERSION_DOCKER = "";
+  - if [[ $TRAVIS_BRANCH == v* ]]; 
+    then 
+        VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+        VERSION_DOCKER="latest";
+        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$VERSION_DOCKER_TAG ; 
+        docker push vzwingmann/gestion_budget_services:$VERSION_DOCKER_TAG ; 
+    else 
+       VERSION_DOCKER="snapshot";
+    fi;
+    docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$VERSION_DOCKER ; 
+    docker push vzwingmann/gestion_budget_services:$VERSION_DOCKER ; 
 deploy:
 # Déploiement des releaes sur tag : snapshot ou version 
   - provider: releases
@@ -57,14 +68,26 @@ deploy:
       repo: vzwingma/gestion-budget-services
       tags: true
 
+after_deploy:
+  # Deploiement sur MassiveGrid
+  - ENV = "";
+  - NODE_ID = 26374;
   - if [[ $TRAVIS_BRANCH == v* ]]; 
     then 
-        VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
-        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$VERSION ; 
-        docker push vzwingmann/gestion_budget_services:$VERSION ; 
-        docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:latest ; 
-        docker push vzwingmann/gestion_budget_services:latest ; 
-    else 
-       docker tag vzwingmann/gestion_budget_services:travis vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
-       docker push vzwingmann/gestion_budget_services:$TRAVIS_BRANCH ; 
-    fi;        
+      ENV = "budget"
+    else
+      ENV = "budget-rec"
+    fi;
+  # Démarrage 
+  - echo "Démarrage de l'environnement $ENV"
+  - URL_START = $MASSIVEGRID_URL + "startenv?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN
+  - curl $URL_START  
+  # Redéploiement   
+  - echo "Redéploiement de la version " + $VERSION_DOCKER + " sur MassiveGrid " + $ENV;
+  - URL_REDEPLOY = $MASSIVEGRID_URL + "redeploycontainers?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN + "&tag=" + $VERSION_DOCKER +"&nodeId=" + $NODE_ID
+  - curl -X POST $URL_REDEPLOY  
+  # Arrêt   
+  - echo "Arrêt de l'environnement $ENV"
+  - URL_STOP = $MASSIVEGRID_URL + "stopenv?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN
+  - curl $URL_STOP
+		 
