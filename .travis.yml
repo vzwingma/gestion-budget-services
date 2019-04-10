@@ -23,8 +23,7 @@ before_install:
     mvn versions:set -DnewVersion=$VERSION; 
     mvn versions:commit;
 install: 
-  - mvn clean 
-  # install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
+  - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
 
 script:
   # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB.
@@ -41,8 +40,8 @@ script:
 
 # Déploiement des releaes sur tag : snapshot ou version 
 before_deploy:
-#  - cp ~/build/vzwingma/gestion-budget-services/target/webapps/services.war ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker/services.war
-#  - cd ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker
+  - cp ~/build/vzwingma/gestion-budget-services/target/webapps/services.war ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker/services.war
+  - cd ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker
 #  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - echo "Construction de l'image Docker gestion_budget_services"; 
 #  - docker build -t vzwingmann/gestion_budget_services:travis -f Dockerfile-SERVICES .;
@@ -71,23 +70,23 @@ deploy:
 
 after_deploy:
   # Deploiement sur MassiveGrid
-  - ENV = "";
-  - NODE_ID = 26374;
+  - ENV="";
+  - NODE_ID=26374;
   - if [[ $TRAVIS_BRANCH == v* ]]; 
     then 
-      ENV = "budget"
+      ENV="budget"
     else
-      ENV = "budget-rec"
+      ENV="budget-rec"
     fi;
   # Démarrage 
   - echo "Démarrage de l'environnement $ENV";
-  - URL_START = $MASSIVEGRID_URL + "startenv?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN;
-  - curl $URL_START  ;
+  - URL_START=$MASSIVEGRID_URL + "startenv?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN;
+  - curl $URL_START;
   # Redéploiement   
   - echo "Redéploiement de la version " + $VERSION_DOCKER + " sur MassiveGrid " + $ENV;
-  - URL_REDEPLOY = $MASSIVEGRID_URL + "redeploycontainers?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN + "&tag=" + $VERSION_DOCKER +"&nodeId=" + $NODE_ID;
+  - URL_REDEPLOY=$MASSIVEGRID_URL + "redeploycontainers?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN + "&tag=" + $VERSION_DOCKER +"&nodeId=" + $NODE_ID;
   - curl -X POST $URL_REDEPLOY  ;
   # Arrêt   
   - echo "Arrêt de l'environnement $ENV" ;
-  - URL_STOP = $MASSIVEGRID_URL + "stopenv?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN ;
+  - URL_STOP=$MASSIVEGRID_URL + "stopenv?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN ;
   - curl $URL_STOP ;
