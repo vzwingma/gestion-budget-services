@@ -76,3 +76,15 @@ after_deploy:
     else
       ENV="budget-rec"
     fi;
+  # Démarrage 
+  - echo "Démarrage de l'environnement $ENV";
+  - URL_START=$MASSIVEGRID_URL + "startenv?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN;
+  - curl $URL_START;
+  # Redéploiement   
+  - echo "Redéploiement de la version " + $VERSION_DOCKER + " sur MassiveGrid " + $ENV;
+  - URL_REDEPLOY=$MASSIVEGRID_URL + "redeploycontainers?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN + "&tag=" + $VERSION_DOCKER +"&nodeId=" + $NODE_ID;
+  - curl -X POST $URL_REDEPLOY  ;
+  # Arrêt   
+  - echo "Arrêt de l'environnement $ENV" ;
+  - URL_STOP=$MASSIVEGRID_URL + "stopenv?envName=" + $ENV + "&session=" + $MASSIVEGRID_USER_TOKEN ;
+  - curl $URL_STOP ;
