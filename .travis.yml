@@ -69,4 +69,6 @@ deploy:
       tags: true
 after_deploy:
   - echo "Déploiement sur MassiveGrid"
- 
+  - ENV="";
+  - NODE_ID=26374;
+  
