@@ -70,4 +70,9 @@ after_deploy:
   - echo "Déploiement sur MassiveGrid"
   - ENV="";
   - NODE_ID=26374;
-  
+  - if [[ $TRAVIS_BRANCH == v* ]]; 
+    then 
+      ENV="budget"
+    else
+      ENV="budget-rec"
+    fi;
