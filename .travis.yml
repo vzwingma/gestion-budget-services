@@ -45,7 +45,7 @@ before_deploy:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - echo "Construction de l'image Docker gestion_budget_services"; 
   - docker build -t vzwingmann/gestion_budget_services:travis -f Dockerfile-SERVICES .;
-  - VERSION_DOCKER = "snapshot";
+  - VERSION_DOCKER="snapshot";
   - if [[ $TRAVIS_BRANCH == v* ]]; 
     then 
         VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
