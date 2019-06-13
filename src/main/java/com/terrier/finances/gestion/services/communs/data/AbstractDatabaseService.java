@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.terrier.finances.gestion.communs.admin.model.DependencyName;
 import com.terrier.finances.gestion.communs.admin.model.StatutStateEnum;
@@ -29,7 +28,7 @@ public abstract class AbstractDatabaseService {
 	
 
 	@Autowired
-	private MongoTemplate mongoTemplate;
+	private MongoOperations mongoOperations;
 
 	@Autowired
 	private StatusApplicationService statutApplicationService;
@@ -48,7 +47,7 @@ public abstract class AbstractDatabaseService {
 	 */
 	public MongoOperations getMongoOperation(){
 		updateMongoStatus();
-		return mongoTemplate;
+		return mongoOperations;
 	}
 
 
@@ -56,9 +55,9 @@ public abstract class AbstractDatabaseService {
 	 * 
 	 */
 	private void updateMongoStatus(){
-		if(mongoTemplate != null && statutApplicationService != null){
-			StatutStateEnum statutDB = mongoTemplate.getDb().getName() != null ? StatutStateEnum.OK : StatutStateEnum.FATAL;
-			LOGGER.trace("Statut DB : {} -> {}", mongoTemplate.getDb().getName(), statutDB);        
+		if(mongoOperations != null && statutApplicationService != null){
+			StatutStateEnum statutDB = mongoOperations.getCollectionNames() != null ? StatutStateEnum.OK : StatutStateEnum.FATAL;
+			LOGGER.trace("Statut DB -> {}", statutDB);        
 			statutApplicationService.updateDependencyStatut(DependencyName.DATABASE, statutDB);
 		}
 	}

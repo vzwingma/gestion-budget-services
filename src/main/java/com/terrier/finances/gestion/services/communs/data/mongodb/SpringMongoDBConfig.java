@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
@@ -26,7 +28,7 @@ public class SpringMongoDBConfig {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringMongoDBConfig.class);
 
-
+	
 	/**
 	 * 
 	 * @param host de la BDD
@@ -34,11 +36,10 @@ public class SpringMongoDBConfig {
 	 * @param username login
 	 * @param password mot de passe
 	 * @param db nom de la BDD
-	 * @return Template de connexion BDD
-	 */
-	@Bean
-	public MongoTemplate mongoTemplate() {
-
+	 * @return Factory de connexion BDD
+	  */
+    @Bean
+    public MongoDbFactory mongoDbFactory() {
 		String db = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_DB);
 		String host = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_HOST);
 		String username = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_USERNAME);
@@ -50,7 +51,15 @@ public class SpringMongoDBConfig {
 		String mongoURILog = new StringBuilder("mongodb://").append(username).append("@").append(host).append(":").append(port).append("/").append(db).toString();
 
 		LOGGER.info("[INIT] Configuration de la connexion vers MongDB : [{}]", mongoURILog);
-		return new MongoTemplate(new SimpleMongoDbFactory(new MongoClientURI(mongoURI)));
+		return new SimpleMongoDbFactory(new MongoClientURI(mongoURI));
+    }
+
+	/**
+	 * @return MongoOperations de connexion BDD
+	 **/
+	@Bean
+	public MongoOperations mongoOperations() {
+		return new MongoTemplate(mongoDbFactory());
 	}
 	/**
 	 * Retourne la valeur string de la variable d'environnement
