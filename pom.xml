@@ -121,6 +121,7 @@
 		<profile>
 			<id>prod</id>
 			<build>
+				<finalName>services</finalName>
 				<resources>
 					<resource>
 						<directory>src/main/resources/config/dev</directory>
@@ -131,9 +132,6 @@
 					<resource>
 						<directory>src/main/resources/config/prod</directory>
 						<filtering>true</filtering>
-						<excludes>
-							<exclude>*.xml</exclude>
-						</excludes>
 					</resource>
 				</resources>
 			</build>
