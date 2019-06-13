@@ -1,10 +1,9 @@
-# Issu de la dernière image Tomcat 8
-FROM tomcat:8.5.34-alpine
+# Issu de la dernière image OpenJDK 8
+FROM openjdk:8-alpine
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
-COPY services.war /usr/local/tomcat/webapps/services.war
+COPY services.jar /opt/services.jar
 
-# Droit pour tous les users de Tomcat
-RUN chmod a+r -R /usr/local/tomcat; \
-    chmod 777 -R /usr/local/tomcat;
+# Lancement de l'appli
+CMD java -jar /opt/services.jar

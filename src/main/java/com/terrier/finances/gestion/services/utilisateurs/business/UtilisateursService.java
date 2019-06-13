@@ -11,7 +11,6 @@ import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -47,7 +46,9 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 */
 	@Autowired
 	private UtilisateurDatabaseService dataDBUsers;
-
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	/**
 	 * Session coté Business
 	 */
@@ -140,7 +141,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 		LOGGER.debug("[SEC][idUser={}]Rechiffrement MasterKey : {}" ,utilisateur.getId(), masterKeyEncr);
 		utilisateur.setMasterCleChiffrementDonnees(masterKeyEncr);
 
-		String newHashPassword = passwordEncoder().encode(newPassword);
+		String newHashPassword = this.passwordEncoder.encode(newPassword);
 		LOGGER.info("[SEC][idUser={}] Nouveau hash du mot de passe : {}",utilisateur.getId(), newHashPassword);
 		utilisateur.setPassword(newHashPassword);
 		dataDBUsers.majUtilisateur(utilisateur);
@@ -190,13 +191,5 @@ public class UtilisateursService extends AbstractBusinessService implements User
 			return this.businessSessions.remove(userSession.getUtilisateur().getId()) != null;
 		}
 		return false;
-	}
-
-	/**
-	 * @return encoder password
-	 */
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
 	}
 }

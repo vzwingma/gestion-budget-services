@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,12 +15,11 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.Month;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +139,7 @@ public class TestOperationsService {
 		}
 		catch (Exception e) {
 			LOGGER.error("Erreur lors du calcul", e);
-			fail();
+			fail("Erreur lors du calcul");
 		}
 
 	}	
@@ -220,29 +219,22 @@ public class TestOperationsService {
 
 		assertTrue(operationsService.setLigneAsDerniereOperation(this.budget.getId(), "ID_op", new UserBusinessSession(u)));
 
-		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(argThat(new BaseMatcher<BudgetMensuel>() {
+		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(argThat(new ArgumentMatcher<BudgetMensuel>() {
 
 			@Override
-			public boolean matches(Object arg0) {
-				if(arg0 instanceof BudgetMensuel) {
-					boolean resultat = true;
-					BudgetMensuel b = (BudgetMensuel)arg0;
-					resultat &= b.getListeOperations().size() == 3;
-					for (LigneOperation op : b.getListeOperations()) {
-						if(op.getId().equals("OP1")) {
-							resultat &= !op.isDerniereOperation();
-						}
-						else if(op.getId().equals("OP2")) {
-							resultat &= op.isDerniereOperation();
-						}
+			public boolean matches(BudgetMensuel b) {
+				boolean resultat = true;
+				resultat &= b.getListeOperations().size() == 3;
+				for (LigneOperation op : b.getListeOperations()) {
+					if(op.getId().equals("OP1")) {
+						resultat &= !op.isDerniereOperation();
 					}
-					return resultat;
+					else if(op.getId().equals("OP2")) {
+						resultat &= op.isDerniereOperation();
+					}
 				}
-				return false;
+				return resultat;
 			}
-
-			@Override
-			public void describeTo(Description arg0) { }
 		}), any(BasicTextEncryptor.class));
 	}
 
