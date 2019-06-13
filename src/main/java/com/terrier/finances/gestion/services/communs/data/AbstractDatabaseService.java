@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.terrier.finances.gestion.communs.admin.model.DependencyName;
+import com.terrier.finances.gestion.communs.admin.model.StatutStateEnum;
 import com.terrier.finances.gestion.services.statut.business.StatusApplicationService;
-import com.terrier.finances.gestion.services.statut.model.DependencyName;
-import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
 /**
  * DataServices

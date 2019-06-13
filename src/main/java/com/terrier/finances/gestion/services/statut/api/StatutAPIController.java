@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.terrier.finances.gestion.communs.admin.model.DependencyName;
+import com.terrier.finances.gestion.communs.admin.model.StatutDependencyAPIObject;
+import com.terrier.finances.gestion.communs.admin.model.StatutStateEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.statut.business.StatusApplicationService;
-import com.terrier.finances.gestion.services.statut.model.DependencyName;
-import com.terrier.finances.gestion.services.statut.model.StatutStateEnum;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

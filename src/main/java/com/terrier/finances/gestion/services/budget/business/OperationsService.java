@@ -29,6 +29,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedEx
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneOperation;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
+import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
@@ -51,6 +52,8 @@ public class OperationsService extends AbstractBusinessService {
 	@Autowired
 	private BudgetDatabaseService dataDepenses;
 
+	@Autowired
+	private ComptesService compteServices;
 
 	private DataTransformerLigneOperation transformer = new DataTransformerLigneOperation();
 
@@ -218,7 +221,7 @@ public class OperationsService extends AbstractBusinessService {
 			// Si impossible : BudgetNotFoundException
 			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(compteBancaire.getId(), moisPrecedent, anneePrecedente, userSession);
 			// #115 : Cloture automatique du mois précédent
-			setBudgetActif(budgetPrecedent.getId(), false, userSession);
+			budgetPrecedent = setBudgetActif(budgetPrecedent.getId(), false, userSession);
 
 			initBudgetFromBudgetPrecedent(budget, budgetPrecedent);
 		}
@@ -339,9 +342,13 @@ public class OperationsService extends AbstractBusinessService {
 			etatDepenseTransfert = EtatOperationEnum.PREVUE;
 			break;
 		}
+		
+		CompteBancaire compteSource = this.compteServices.getCompteById(idCompteSource, userSession.getUtilisateur().getId());
+		CompteBancaire compteCible = this.compteServices.getCompteById(idCompteDestination, userSession.getUtilisateur().getId());
+		
 		LigneOperation ligneTransfert = new LigneOperation(
 				ligneOperation.getSsCategorie(), 
-				"[de "+idCompteSource+"] " + ligneOperation.getLibelle(), 
+				"[de "+compteSource.getLibelle()+"] " + ligneOperation.getLibelle(), 
 				TypeOperationEnum.CREDIT, 
 				Double.toString(Math.abs(ligneOperation.getValeur())), 
 				etatDepenseTransfert, 
@@ -351,7 +358,7 @@ public class OperationsService extends AbstractBusinessService {
 		/**
 		 *  Ajout de la ligne dans le budget courant
 		 */
-		ligneOperation.setLibelle("[vers "+idCompteDestination+"] " + ligneOperation.getLibelle());
+		ligneOperation.setLibelle("[vers "+compteCible.getLibelle()+"] " + ligneOperation.getLibelle());
 		return createOrUpdateOperation(idBudget, ligneOperation, userSession);
 
 	}
@@ -562,12 +569,12 @@ public class OperationsService extends AbstractBusinessService {
 			BudgetMensuel budgetMensuel = dataDepenses.chargeBudgetMensuelById(idBudgetMensuel, userSession.getEncryptor());
 			budgetMensuel.setActif(budgetActif);
 			budgetMensuel.setDateMiseAJour(Calendar.getInstance());
-			//#119 : Toutes les opérations en attente sont annulées
+			//  #119 #141 : Toutes les opérations en attente sont reportées
 			if(!budgetActif){		
 				budgetMensuel.getListeOperations()
 				.stream()
 				.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
-				.forEach(op -> op.setEtat(EtatOperationEnum.ANNULEE));
+				.forEach(op -> op.setEtat(EtatOperationEnum.REPORTEE));
 			}
 			return calculEtSauvegardeBudget(budgetMensuel, userSession);
 		}

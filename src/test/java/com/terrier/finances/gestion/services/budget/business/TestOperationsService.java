@@ -135,7 +135,7 @@ public class TestOperationsService {
 		when(mockDBBudget.chargeBudgetMensuelById(anyString(), any())).thenReturn(this.budget);
 		try {
 			BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, new UserBusinessSession(new Utilisateur()));
-			assertEquals(EtatOperationEnum.ANNULEE, m.getListeOperations().get(0).getEtat());
+			assertEquals(EtatOperationEnum.REPORTEE, m.getListeOperations().get(0).getEtat());
 		}
 		catch (Exception e) {
 			LOGGER.error("Erreur lors du calcul", e);
