@@ -23,13 +23,6 @@ public class APIObjectMessageConverter<T extends AbstractAPIObjectModel> impleme
 	private ObjectMapper mapper = new ObjectMapper();
 
 
-	/**
-	 * Constructeur
-	 */
-	public APIObjectMessageConverter() {
-		mapper = new ObjectMapper();
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.springframework.http.converter.HttpMessageConverter#canRead(java.lang.Class, org.springframework.http.MediaType)
