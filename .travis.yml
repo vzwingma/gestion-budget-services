@@ -40,7 +40,7 @@ script:
 
 # Déploiement des releaes sur tag : snapshot ou version 
 before_deploy:
-  - cp ~/build/vzwingma/gestion-budget-services/target/webapps/services.jar ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker/services.jar
+  - cp ~/build/vzwingma/gestion-budget-services/target/services.jar ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker/services.jar
   - cd ~/build/vzwingma/gestion-budget-services/src/main/external-ressources/docker
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - echo "Construction de l'image Docker gestion_budget_services"; 
