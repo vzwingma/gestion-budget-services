@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.services.communs.api.converters;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -114,7 +115,7 @@ public class TestConverters {
 		
 		BudgetMensuel boRead = (BudgetMensuel)modelRead;
 		assertEquals(bo.getId(), boRead.getId());
-		assertEquals(bo.getMarge(), boRead.getMarge());
+		assertEquals(bo.getMarge().doubleValue(), boRead.getMarge().doubleValue());
 		assertEquals(bo.getSoldeReelFin(), boRead.getSoldeReelFin(), 1);
 		assertEquals(bo.getSoldeReelNow(), boRead.getSoldeReelNow(), 1);
 		

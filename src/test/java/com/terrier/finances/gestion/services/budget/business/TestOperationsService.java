@@ -4,10 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -222,19 +223,25 @@ public class TestOperationsService {
 		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(argThat(new ArgumentMatcher<BudgetMensuel>() {
 
 			@Override
-			public boolean matches(BudgetMensuel b) {
-				boolean resultat = true;
-				resultat &= b.getListeOperations().size() == 3;
-				for (LigneOperation op : b.getListeOperations()) {
-					if(op.getId().equals("OP1")) {
-						resultat &= !op.isDerniereOperation();
+			public boolean matches(Object argument) {
+				if(argument instanceof BudgetMensuel) {
+					BudgetMensuel b = (BudgetMensuel)argument;
+					boolean resultat = true;
+					resultat &= b.getListeOperations().size() == 3;
+					for (LigneOperation op : b.getListeOperations()) {
+						if(op.getId().equals("OP1")) {
+							resultat &= !op.isDerniereOperation();
+						}
+						else if(op.getId().equals("OP2")) {
+							resultat &= op.isDerniereOperation();
+						}
 					}
-					else if(op.getId().equals("OP2")) {
-						resultat &= op.isDerniereOperation();
-					}
+					return resultat;
 				}
-				return resultat;
+				return false;
 			}
+			
+			
 		}), any(BasicTextEncryptor.class));
 	}
 
