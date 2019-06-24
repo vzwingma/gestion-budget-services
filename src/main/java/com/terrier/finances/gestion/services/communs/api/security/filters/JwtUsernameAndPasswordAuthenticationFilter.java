@@ -26,6 +26,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonpCharacterEscapes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
@@ -74,7 +76,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// 1. Get credentials from request
-			AuthLoginAPIObject creds = new ObjectMapper().readValue(request.getInputStream(), AuthLoginAPIObject.class);
+			JsonFactory factory = new JsonFactory();
+			factory.setCharacterEscapes(new JsonpCharacterEscapes());
+			ObjectMapper mapper = new ObjectMapper(factory).disableDefaultTyping();
+			AuthLoginAPIObject creds = mapper.readValue(request.getInputStream(), AuthLoginAPIObject.class);
 			LOGGER.info("[idUser=?] Authentification de [{}]", creds.getLogin());
 
 			// 2. Create auth object (contains credentials) which will be used by auth manager
