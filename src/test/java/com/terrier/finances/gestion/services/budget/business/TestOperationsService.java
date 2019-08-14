@@ -78,7 +78,10 @@ public class TestOperationsService {
 
 	private BudgetMensuel budget;
 
-
+	private CompteBancaire compte = new CompteBancaire();
+	
+	private Utilisateur user;
+	
 	/**
 	 * Surcharge de l'authservice
 	 * @throws DataNotFoundException 
@@ -90,7 +93,7 @@ public class TestOperationsService {
 		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
 		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
 
-		Utilisateur user = new Utilisateur();
+		user = new Utilisateur();
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
@@ -111,14 +114,15 @@ public class TestOperationsService {
 		LocalDate now = LocalDate.now();
 		this.budget.setMois(now.getMonth());
 		this.budget.setAnnee(now.getYear());
-		CompteBancaire compte = new CompteBancaire();
+		compte = new CompteBancaire();
 		compte.setActif(true);
 		compte.setId("CID");
 		compte.setLibelle("TEST COMPTE");
 		compte.setOrdre(0);
 
 		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(compte);
-
+		when(operationsService.getServiceComptes().getCompteById(anyString(), anyString())).thenReturn(compte);
+		
 		this.budget.setCompteBancaire(compte);
 
 		this.budget.setId(BudgetDataUtils.getBudgetId(compte, Month.JANUARY, 2018));
@@ -211,11 +215,7 @@ public class TestOperationsService {
 		op2.setDerniereOperation(false);
 		budget.getListeOperations().add(op2);
 
-		Utilisateur u = new Utilisateur();
-		u.setLibelle("userTest");
-		u.setLogin("userTest");
-
-		assertTrue(operationsService.setLigneAsDerniereOperation(this.budget.getId(), "ID_op", new UserBusinessSession(u)));
+		assertTrue(operationsService.setLigneAsDerniereOperation(this.budget.getId(), "ID_op", new UserBusinessSession(user)));
 
 		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(any(BudgetMensuel.class), any(BasicTextEncryptor.class));
 	}
@@ -235,14 +235,11 @@ public class TestOperationsService {
 		LOGGER.info("testDelOperation");
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("MOCK"));	
+
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
-		Utilisateur u = new Utilisateur();
-		u.setLibelle("userTest");
-		u.setLogin("userTest");
-
-		BudgetMensuel budgetDel = operationsService.deleteOperation(this.budget.getId(), "TEST1", new UserBusinessSession(u));
+		BudgetMensuel budgetDel = operationsService.deleteOperation(this.budget.getId(), "TEST1", new UserBusinessSession(user));
 		assertEquals(0, budgetDel.getListeOperations().size());
 		
 		LOGGER.info("/testDelOperation");
@@ -274,22 +271,18 @@ public class TestOperationsService {
 		op2.setId("OP2");
 		budget.getListeOperations().add(op2);
 
-		Utilisateur u = new Utilisateur();
-		u.setLibelle("userTest");
-		u.setLogin("userTest");
-
 		LOGGER.info("testCRUDOperation - Add new Ope");
 		LigneOperation opNew = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
 		opNew.setId("OP3");
 
-		BudgetMensuel budgetOP3 = operationsService.createOrUpdateOperation(this.budget.getId(), opNew, new UserBusinessSession(u));
+		BudgetMensuel budgetOP3 = operationsService.createOrUpdateOperation(this.budget.getId(), opNew, new UserBusinessSession(user));
 		assertEquals(4, budgetOP3.getListeOperations().size());
 
 		LOGGER.info("testCRUDOperation - Delete existing Ope");
 		LigneOperation opDel = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", null, false);
 		opDel.setId("OP1");
 
-		BudgetMensuel budgetDel = operationsService.createOrUpdateOperation(this.budget.getId(), opDel, new UserBusinessSession(u));
+		BudgetMensuel budgetDel = operationsService.createOrUpdateOperation(this.budget.getId(), opDel, new UserBusinessSession(user));
 		assertEquals(3, budgetDel.getListeOperations().size());
 		
 		
@@ -299,7 +292,7 @@ public class TestOperationsService {
 		LOGGER.info("testCRUDOperation - Update Ope");
 		LigneOperation opUpdate = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
 		opUpdate.setId("OP3");
-		BudgetMensuel budgetUpdate = operationsService.createOrUpdateOperation(this.budget.getId(), opUpdate, new UserBusinessSession(u));
+		BudgetMensuel budgetUpdate = operationsService.createOrUpdateOperation(this.budget.getId(), opUpdate, new UserBusinessSession(user));
 		assertEquals(3, budgetUpdate.getListeOperations().size());
 		assertEquals(549, budgetUpdate.getSoldeFin());
 		assertEquals(213, budgetUpdate.getSoldeNow());
