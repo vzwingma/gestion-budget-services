@@ -3,6 +3,7 @@
  */
 package com.terrier.finances.gestion.services.communs.data.mongodb;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -67,7 +68,7 @@ public class SpringMongoDBConfig {
 	 * @return valeur de la clé
 	 */
 	public static String getStringEnvVar(MongoDBConfigEnum cle){
-		String envVar = System.getenv(cle.name());
+		String envVar =  StringEscapeUtils.escapeJava(System.getenv(cle.name()));
 		if(envVar != null) {
 			return envVar;
 		}
@@ -89,7 +90,7 @@ public class SpringMongoDBConfig {
 	 * @return valeur de la clé
 	 */
 	public static Integer getIntgerEnvVar(MongoDBConfigEnum cle){
-		String env = System.getenv(cle.name());
+		String env = StringEscapeUtils.escapeJava(System.getenv(cle.name()));
 		try{
 			return Integer.parseInt(env);
 		}
