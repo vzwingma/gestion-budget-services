@@ -109,15 +109,15 @@ public class OperationsService extends AbstractBusinessService {
 		// Maj du budget ssi budget actif
 		if(budgetMensuel != null && budgetMensuel.isActif()){
 			// Recalcul du résultat du mois précédent
+			Month moisPrecedent = mois.minus(1);
+			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 			try{
-				Month moisPrecedent = mois.minus(1);
-				int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 				LOGGER.debug("Chargement du budget du mois précédent du compte actif {} : {}/{}", compteBancaire.getId(), moisPrecedent, anneePrecedente);
 				BudgetMensuel budgetPrecedent = this.dataDepenses.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente, encryptor);
 				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin(), budgetPrecedent.getMarge());
 			}
 			catch(BudgetNotFoundException e){
-				LOGGER.error("Le budget précédent celui de [{}/{}] est introuvable", mois, annee);
+				LOGGER.error("Le budget précédent celui de [{}/{}] : [{}/{}] est introuvable", mois, annee, moisPrecedent, anneePrecedente);
 			}
 			// Résultat mensuel mis à jour
 			calculEtSauvegardeBudget(budgetMensuel, userSession);
