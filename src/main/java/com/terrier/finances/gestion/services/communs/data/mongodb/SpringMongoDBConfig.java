@@ -13,7 +13,10 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientOptions.Builder;
 import com.mongodb.MongoClientURI;
+import com.mongodb.WriteConcern;
 
 /**
  * Configuration de connexion à la BDD via des variables d'environnement
@@ -41,18 +44,26 @@ public class SpringMongoDBConfig {
 	  */
     @Bean
     public MongoDbFactory mongoDbFactory() {
+    	
 		String db = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_DB);
 		String host = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_HOST);
 		String username = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_USERNAME);
 		String password = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_PWD);
-		int port = getIntgerEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_PORT);
 
 		//create mongo template
-		String mongoURI = new StringBuilder("mongodb://").append(username).append(":").append(password).append("@").append(host).append(":").append(port).append("/").append(db).toString();
-		String mongoURILog = new StringBuilder("mongodb://").append(username).append("@").append(host).append(":").append(port).append("/").append(db).toString();
-
-		LOGGER.info("[INIT] Configuration de la connexion vers MongDB : [{}]", mongoURILog);
-		return new SimpleMongoDbFactory(new MongoClientURI(mongoURI));
+		String mongoURI = new StringBuilder("mongodb+srv://")
+				.append(username).append(":").append(password)
+				.append("@").append(host).append("/").append(db)
+				.toString();
+		// Mongo Options
+		Builder options = MongoClientOptions.builder()
+				.writeConcern(WriteConcern.MAJORITY)
+				.retryWrites(true)
+				.sslEnabled(true)
+				.sslInvalidHostNameAllowed(true);
+		
+		LOGGER.info("[INIT] Configuration de la connexion vers MongoDB Atlas : [{}]", mongoURI.replaceAll(":(.)*@", "*"));
+		return new SimpleMongoDbFactory(new MongoClientURI(mongoURI, options));
     }
 
 	/**
@@ -67,7 +78,7 @@ public class SpringMongoDBConfig {
 	 * @param cle
 	 * @return valeur de la clé
 	 */
-	public static String getStringEnvVar(MongoDBConfigEnum cle){
+	private static String getStringEnvVar(MongoDBConfigEnum cle){
 		String envVar =  StringEscapeUtils.escapeJava(System.getenv(cle.name()));
 		if(envVar != null) {
 			return envVar;
@@ -77,28 +88,6 @@ public class SpringMongoDBConfig {
 				LOGGER.warn("La clé {} n'est définie. Utilisation de la valeur par défaut : {} ", cle.name(), cle.getDefaultValue());
 			}
 			 return cle.getDefaultValue();
-		}
-	}
-	
-
-
-
-
-	/**
-	 * Retourne la valeur int de la variable d'environnement
-	 * @param cle
-	 * @return valeur de la clé
-	 */
-	public static Integer getIntgerEnvVar(MongoDBConfigEnum cle){
-		String env = StringEscapeUtils.escapeJava(System.getenv(cle.name()));
-		try{
-			return Integer.parseInt(env);
-		}
-		catch(NumberFormatException e){
-			if(LOGGER.isWarnEnabled()) {
-				LOGGER.error("La clé {}={} n'est pas un nombre. La valeur par défaut : {} ", cle.name(), env, cle.getIntDefaultValue());
-			}
-			return cle.getIntDefaultValue();
 		}
 	}
 }
