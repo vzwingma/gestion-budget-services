@@ -25,7 +25,7 @@ public class TestMockDBServicesConfig {
 	private UtilisateurDatabaseService mockUserDBService = Mockito.mock(UtilisateurDatabaseService.class);
 	private ParametragesDatabaseService mockParamsDBService = Mockito.mock(ParametragesDatabaseService.class);
 	
-	@Bean BudgetDatabaseService dataService(){
+	@Bean BudgetDatabaseService dataDepenses(){
 		return this.mockBudgetDBService;
 	}
 	

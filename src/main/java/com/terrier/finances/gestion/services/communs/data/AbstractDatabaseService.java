@@ -56,7 +56,7 @@ public abstract class AbstractDatabaseService {
 	 */
 	private void updateMongoStatus(){
 		if(mongoOperations != null && statutApplicationService != null){
-			StatutStateEnum statutDB = mongoOperations.getCollectionNames() != null ? StatutStateEnum.OK : StatutStateEnum.FATAL;
+			StatutStateEnum statutDB = ! mongoOperations.getCollectionNames().isEmpty() ? StatutStateEnum.OK : StatutStateEnum.FATAL;
 			LOGGER.trace("Statut DB -> {}", statutDB);        
 			statutApplicationService.updateDependencyStatut(DependencyName.DATABASE, statutDB);
 		}

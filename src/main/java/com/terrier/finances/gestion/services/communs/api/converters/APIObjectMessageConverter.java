@@ -9,6 +9,8 @@ import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonpCharacterEscapes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 
@@ -20,14 +22,12 @@ import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
  */
 public class APIObjectMessageConverter<T extends AbstractAPIObjectModel> implements HttpMessageConverter<T> {
 
-	private ObjectMapper mapper = new ObjectMapper();
+	private ObjectMapper mapper;
 
-
-	/**
-	 * Constructeur
-	 */
 	public APIObjectMessageConverter() {
-		mapper = new ObjectMapper();
+		JsonFactory factory = new JsonFactory();
+		factory.setCharacterEscapes(new JsonpCharacterEscapes());
+		mapper = new ObjectMapper(factory).disableDefaultTyping();
 	}
 
 
