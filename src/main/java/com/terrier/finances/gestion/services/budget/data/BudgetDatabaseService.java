@@ -19,7 +19,6 @@ import org.springframework.stereotype.Repository;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
-import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
@@ -43,39 +42,10 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	@Autowired @Qualifier("dataTransformerBudget")
 	private DataTransformerBudget dataTransformerBudget;
 
-	private static final String COLLECTION_BUDGET = "budget_";
 	private static final String ATTRIBUT_COMPTE_ID = "compteBancaire.id";
 	private static final String ATTRIBUT_ANNEE = "annee";
 	private static final String ATTRIBUT_MOIS = "mois";
 
-	/**
-	 * @param annee année
-	 * @return le nom de la collection
-	 */
-	protected String getBudgetCollectionName(int annee){
-		StringBuilder collectionName = new StringBuilder(COLLECTION_BUDGET).append(annee);
-		LOGGER.trace("Utilisation de la collection [{}]", collectionName);
-		return  collectionName.toString();
-	}
-	/**
-	 * @param annee année
-	 * @return le nom de la collection
-	 */
-	protected String getBudgetCollectionName(String idBudget){
-		try {
-			if(idBudget != null){
-				int annee = BudgetDataUtils.getAnneeFromBudgetId(idBudget);
-				String collectionName = new StringBuilder(COLLECTION_BUDGET).append(annee).toString();
-				LOGGER.debug("Utilisation de la collection [{}]", collectionName);
-				return  collectionName;	
-			}
-		} catch (BudgetNotFoundException e) {
-			// Erreur loguée ensuite
-		}
-		LOGGER.error("Erreur lors de la recheche du nom de la collection associée à [{}]", idBudget);
-
-		return null;
-	}
 
 
 	/**
@@ -90,7 +60,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte).and(ATTRIBUT_ANNEE).is(annee));
 		Set<String> libellesDepenses = new HashSet<>();
 		try{
-			List<BudgetMensuelDTO> budgetsDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
+			List<BudgetMensuelDTO> budgetsDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class);
 			budgetsDTO
 			.parallelStream()
 			// liste dépenses transformées 
@@ -127,7 +97,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and(ATTRIBUT_MOIS).is(mois.getValue() -1).and(ATTRIBUT_ANNEE).is(annee));
 		BudgetMensuelDTO budgetDTO = null;
 		try{
-			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(annee));
+			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class);
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement du budget mensuel", e);
@@ -185,7 +155,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		queryBudget.limit(1);
 		BudgetMensuelDTO budgetDTO = null;
 		try{
-			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(idBudget));
+			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class);
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement du budget d'id {}", idBudget, e);
@@ -205,7 +175,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		LOGGER.info("Chargement du budget [{}]", idBudget);
 		BudgetMensuelDTO budgetDTO = null;
 		try{
-			budgetDTO = getMongoOperation().findById(idBudget, BudgetMensuelDTO.class, getBudgetCollectionName(idBudget));
+			budgetDTO = getMongoOperation().findById(idBudget, BudgetMensuelDTO.class);
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement du budget du compte {}", idBudget, e);
@@ -232,7 +202,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		Calendar annee = Calendar.getInstance();
 		for (int a = 2014; a <= annee.get(Calendar.YEAR); a++) {
 			try{
-				budgets.addAll(getMongoOperation().find(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a)));
+				budgets.addAll(getMongoOperation().find(queryBudget, BudgetMensuelDTO.class));
 			}
 			catch(Exception e){
 				LOGGER.error("Erreur lors du chargement des budgets du compte {}", idCompte, e);
@@ -269,7 +239,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		try{
 			BudgetMensuelDTO premierbudget = null;
 			for (int a = 2014; a <= Calendar.getInstance().get(Calendar.YEAR); a++) {
-				premierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a));
+				premierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class);
 				if(premierbudget != null){
 					break;
 				}				
@@ -280,7 +250,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 
 			BudgetMensuelDTO dernierbudget = null;
 			for (int a = Calendar.getInstance().get(Calendar.YEAR); a >= 2014; a--) {
-				dernierbudget = getMongoOperation().findOne(querydernierBudget, BudgetMensuelDTO.class, getBudgetCollectionName(a));
+				dernierbudget = getMongoOperation().findOne(querydernierBudget, BudgetMensuelDTO.class);
 				if(dernierbudget != null){
 					break;
 				}				
@@ -304,7 +274,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		LOGGER.info("Chargement du budget {} ", idBudget);
 		Query queryBudget = new Query().addCriteria(Criteria.where("id").is(idBudget));
 		try{
-			BudgetMensuelDTO budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class, getBudgetCollectionName(idBudget));
+			BudgetMensuelDTO budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class);
 			if(budgetDTO != null && budgetDTO.getListeDepenses() != null){
 				return budgetDTO.getListeDepenses();
 			}
@@ -333,7 +303,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		BudgetMensuelDTO budgetDTO = dataTransformerBudget.transformBOtoDTO(budgetBO);
 		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budgetDTO.getCompteBancaire().getLibelle(), budgetDTO.getMois() + 1, budgetDTO.getAnnee());
 		try{
-			getMongoOperation().save(budgetDTO, getBudgetCollectionName(budgetBO.getAnnee()));
+			getMongoOperation().save(budgetDTO);
 			LOGGER.info("Budget {} sauvegardé ", budgetDTO.getId());
 			return budgetDTO.getId();
 		}
