@@ -36,13 +36,17 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 	private UtilisateursService usersDetailsServices;
 
 
+	
+	/**
+	 * configuration Sécurité
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-		.csrf().disable()
-		// make sure we use stateless session; session won't be used to store user's state.
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 	
+			// make sure we use stateless session; session won't be used to store user's state.
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 	
 		.and()
+			.csrf().disable()
 		// handle an authorized attempts 
 		.exceptionHandling().authenticationEntryPoint((req, rsp, e) -> {
 			LOGGER.warn("[SEC] Erreur 401 : Accès non autorisé à l'URL [{}]", req.getRequestURI());
@@ -55,20 +59,21 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 		.addFilterAfter(new JwtTokenAuthenticationFilter(), JwtUsernameAndPasswordAuthenticationFilter.class)
 		// authorization requests config
 		.authorizeRequests()
-		// Authorize Authenticate
-		.antMatchers(HttpMethod.POST, BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL).permitAll()
-		// Authorize Swagger
-		.antMatchers(HttpMethod.GET, "/swagger-ui*").permitAll()
-		.antMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
-		.antMatchers(HttpMethod.GET, "/webjars/**").permitAll()
-		.antMatchers(HttpMethod.GET, "/csrf/**").permitAll()
-		.antMatchers(HttpMethod.GET, "/v2/api-docs/**").permitAll()
-		// Supervision : Autorisée
-		.antMatchers(HttpMethod.GET, "/admin/v1/statut").permitAll()		   
-		// must be an admin 
-		.antMatchers(HttpMethod.GET, "/admin/v1/password/**").hasRole("ADMIN")
-		// Any other request must be authenticated
-		.anyRequest().authenticated(); 
+			// Authorize Authenticate
+			.antMatchers(HttpMethod.POST, BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL).permitAll()
+			.antMatchers("/error").permitAll()
+			// Authorize Swagger
+			.antMatchers(HttpMethod.GET, "/swagger-ui*").permitAll()
+			.antMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
+			.antMatchers(HttpMethod.GET, "/webjars/**").permitAll()
+			.antMatchers(HttpMethod.GET, "/csrf/**").permitAll()
+			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").permitAll()
+			// Supervision : Autorisée
+			.antMatchers(HttpMethod.GET, "/admin/v1/statut").permitAll()		   
+			// must be an admin 
+			.antMatchers(HttpMethod.GET, "/admin/v1/password/**").hasRole("ADMIN")
+			// Any other request must be authenticated
+			.anyRequest().authenticated(); 
 	}
 
 
