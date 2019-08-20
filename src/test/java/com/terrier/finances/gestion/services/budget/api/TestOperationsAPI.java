@@ -95,7 +95,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
-		serviceUser.registerUserBusinessSession(user, "clear");
+		serviceUser.registerUserBusinessSession(user);
 
 	}
 
@@ -157,7 +157,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
-		serviceUser.registerUserBusinessSession(user, "clear");
+		serviceUser.registerUserBusinessSession(user);
 
 		// OK
 
@@ -183,7 +183,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		.andExpect(status().is4xxClientError());
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
-		serviceUser.registerUserBusinessSession(user, "ms");
+		serviceUser.registerUserBusinessSession(user);
 
 		when(mockDataDBBudget.isBudgetActif(eq("TESTKO"))).thenReturn(Boolean.FALSE);
 		when(mockDataDBBudget.isBudgetActif(eq("TESTOK"))).thenReturn(Boolean.TRUE);
@@ -212,7 +212,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
-		serviceUser.registerUserBusinessSession(user, "ms");
+		serviceUser.registerUserBusinessSession(user);
 
 		Calendar futur = Calendar.getInstance();
 		futur.add(Calendar.HOUR_OF_DAY, 1);
@@ -248,7 +248,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
-		serviceUser.registerUserBusinessSession(user, "ms");
+		serviceUser.registerUserBusinessSession(user);
 
 		BudgetMensuel bo = new BudgetMensuel();
 		CompteBancaire c1 = new CompteBancaire();

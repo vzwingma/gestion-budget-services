@@ -95,7 +95,7 @@ public class TestOperationsService {
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
-		authenticationService.registerUserBusinessSession(user, "clear");
+		authenticationService.registerUserBusinessSession(user);
 
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);

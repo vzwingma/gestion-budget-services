@@ -61,12 +61,12 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		user.setId("345345");
 		user.setLogin("345345");
 		user.setLibelle("345345");
-		serviceUser.registerUserBusinessSession(user, "345345");
+		serviceUser.registerUserBusinessSession(user);
 		Utilisateur user2 = new Utilisateur();
 		user2.setId("123123");
 		user2.setLogin("123123");
 		user2.setLibelle("123123");
-		serviceUser.registerUserBusinessSession(user2, "123123");
+		serviceUser.registerUserBusinessSession(user2);
 	}
 
 	@Test
@@ -181,7 +181,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		
 		Utilisateur user = new Utilisateur();
 		user.setId("TEEST");
-		serviceUser.registerUserBusinessSession(user, "null");
+		serviceUser.registerUserBusinessSession(user);
 		
 		Set<String> libelles = new HashSet<>();
 		libelles.add("OPE1");
