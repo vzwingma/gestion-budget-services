@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 */
 	@Autowired
 	private UtilisateurDatabaseService dataDBUsers;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	/**
@@ -75,11 +74,6 @@ public class UtilisateursService extends AbstractBusinessService implements User
 						.collect(Collectors.toList());
 
 				LOGGER.info("[SEC][idUser={}] Droits {}", utilisateur.getId(), grantedAuthorities); 
-
-				if(utilisateur.getMasterCleChiffrementDonnees() == null){
-					LOGGER.error("[SEC][idUser={}] Erreur 4 lors de l'authentification. Master key introuvable", utilisateur.getId());
-					return null;
-				}
 				return new User(utilisateur.getLogin(), utilisateur.getPassword(), grantedAuthorities);
 			}
 			else{
@@ -94,33 +88,19 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	}
 
 
-
 	/**
 	 * Une fois l'authentification réalisée, enregistrement de la session business
 	 * @param auth authentification
-	 * @param motPasseEnClair mot de passe en clair pour déchiffrer la masterKey
+	 * @throws DataNotFoundException 
 	 */
-	public Utilisateur successfulAuthentication(Authentication auth, String motPasseEnClair){
-
-		Utilisateur utilisateur;
-		try {
-			utilisateur = dataDBUsers.chargeUtilisateur(auth.getName());
-			if(utilisateur != null){
-				LOGGER.debug("[SEC][idUser={}] MasterKey chiffrée des données : {}", utilisateur.getId(), utilisateur.getMasterCleChiffrementDonnees());
-				BasicTextEncryptor decryptorCle = new BasicTextEncryptor();
-				decryptorCle.setPassword(motPasseEnClair);
-				String cleChiffrementDonnees = decryptorCle.decrypt(utilisateur.getMasterCleChiffrementDonnees());
-				registerUserBusinessSession(utilisateur, cleChiffrementDonnees);
-
-				// Enregistrement de la date du dernier accès à maintenant
-				LocalDateTime dernierAcces = utilisateur.getDernierAcces();
-				utilisateur.setDernierAcces(LocalDateTime.now());
-				dataDBUsers.majUtilisateur(utilisateur);
-				utilisateur.setDernierAcces(dernierAcces);
-			}
-		} catch (DataNotFoundException e) {
-			utilisateur = null;
-		}
+	public Utilisateur successfullAuthentication(Authentication auth) throws DataNotFoundException{
+		Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(auth.getName());
+		registerUserBusinessSession(utilisateur);
+		// Enregistrement de la date du dernier accès à maintenant
+		LocalDateTime dernierAcces = utilisateur.getDernierAcces();
+		utilisateur.setDernierAcces(LocalDateTime.now());
+		dataDBUsers.majUtilisateur(utilisateur);
+		utilisateur.setDernierAcces(dernierAcces);
 		return utilisateur;
 	}
 	/**
@@ -132,20 +112,11 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	public void changePassword(Utilisateur utilisateur, String oldPassword, String newPassword){
 
 		LOGGER.info("[SEC][idUser={}] Changement du mot de passe pour {}, ", utilisateur.getLogin(), utilisateur.getId());
-		BasicTextEncryptor decryptorForMasterKey = new BasicTextEncryptor();
-		decryptorForMasterKey.setPassword(oldPassword);
-		String masterKeyClear = decryptorForMasterKey.decrypt(utilisateur.getMasterCleChiffrementDonnees());
-		BasicTextEncryptor encryptorForMasterKey = new BasicTextEncryptor();
-		encryptorForMasterKey.setPassword(newPassword);
-		String masterKeyEncr = encryptorForMasterKey.encrypt(masterKeyClear);
-		LOGGER.debug("[SEC][idUser={}]Rechiffrement MasterKey : {}" ,utilisateur.getId(), masterKeyEncr);
-		utilisateur.setMasterCleChiffrementDonnees(masterKeyEncr);
-
 		String newHashPassword = this.passwordEncoder.encode(newPassword);
 		LOGGER.info("[SEC][idUser={}] Nouveau hash du mot de passe : {}",utilisateur.getId(), newHashPassword);
 		utilisateur.setPassword(newHashPassword);
 		dataDBUsers.majUtilisateur(utilisateur);
-		registerUserBusinessSession(utilisateur, masterKeyClear);
+		registerUserBusinessSession(utilisateur);
 	}
 
 	/**
@@ -153,7 +124,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 * @param utilisateur
 	 * @param masterKeyClear
 	 */
-	public void registerUserBusinessSession(Utilisateur utilisateur, String masterKeyClear){
+	public void registerUserBusinessSession(Utilisateur utilisateur){
 		LOGGER.debug("[SEC][idUser={}] Enregistrement de la BusinessSession", utilisateur.getId());
 		if(this.businessSessions.containsKey(utilisateur.getId())){
 			deconnexionBusinessSession(this.businessSessions.get(utilisateur.getId()));
