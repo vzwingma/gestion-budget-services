@@ -1,7 +1,5 @@
 package com.terrier.finances.gestion.services.utilisateurs.model;
 
-import org.jasypt.util.text.BasicTextEncryptor;
-
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 
 /**
@@ -13,21 +11,10 @@ public class UserBusinessSession {
 
 	// Utilisateur métier, associé à la session
 	private Utilisateur utilisateur;
-	// Encryptor pour les échanges avec la BDD
-	private BasicTextEncryptor encryptor = new BasicTextEncryptor();
-
 
 	public UserBusinessSession(Utilisateur utilisateur){
 		this.utilisateur = utilisateur;
 	}
-	
-	/**
-	 * @return the encryptor
-	 */
-	public BasicTextEncryptor getEncryptor() {
-		return encryptor;
-	}
-	
 	
 	
 	/**
@@ -39,7 +26,6 @@ public class UserBusinessSession {
 
 	public void deconnexion(){
 		this.utilisateur = null;
-		this.encryptor = null;
 	}
 
 	/* (non-Javadoc)
@@ -49,6 +35,4 @@ public class UserBusinessSession {
 	public String toString() {
 		return new StringBuilder().append(utilisateur).toString();
 	}
-	
-	
 }

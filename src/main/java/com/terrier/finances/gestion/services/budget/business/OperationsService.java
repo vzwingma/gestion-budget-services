@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,11 +96,9 @@ public class OperationsService extends AbstractBusinessService {
 	private BudgetMensuel chargerBudgetMensuelSurCompteActif(UserBusinessSession userSession, CompteBancaire compteBancaire, Month mois, int annee) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget du compte actif {} de {}/{}", compteBancaire.getId(), mois, annee);
 
-		BasicTextEncryptor encryptor = userSession.getEncryptor();
-
 		BudgetMensuel budgetMensuel = null;
 		try{
-			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee, encryptor);
+			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee);
 		}
 		catch(BudgetNotFoundException e){
 			budgetMensuel = initNewBudget(compteBancaire, userSession, mois, annee);
@@ -113,7 +110,7 @@ public class OperationsService extends AbstractBusinessService {
 			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 			try{
 				LOGGER.debug("Chargement du budget du mois précédent du compte actif {} : {}/{}", compteBancaire.getId(), moisPrecedent, anneePrecedente);
-				BudgetMensuel budgetPrecedent = this.dataDepenses.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente, encryptor);
+				BudgetMensuel budgetPrecedent = this.dataDepenses.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente);
 				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin(), budgetPrecedent.getMarge());
 			}
 			catch(BudgetNotFoundException e){
@@ -137,9 +134,8 @@ public class OperationsService extends AbstractBusinessService {
 		LOGGER.debug("Chargement du budget du compte inactif {} de {}/{}", compteBancaire.getId(), mois, annee);
 
 		BudgetMensuel budgetMensuel = null;
-		BasicTextEncryptor encryptor = userSession.getEncryptor();
 		try{
-			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee, encryptor);
+			budgetMensuel = this.dataDepenses.chargeBudgetMensuel(compteBancaire, mois, annee);
 		}
 		catch(BudgetNotFoundException e){
 			Month moisPrecedent = mois.minus(1);
@@ -161,7 +157,7 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public boolean isBudgetUpToDate(String idBudget, Date dateSurIHM, UserBusinessSession userSession) {
 
-		Date dateEnBDD = this.dataDepenses.getDateMiseAJourBudget(idBudget, userSession.getEncryptor());
+		Date dateEnBDD = this.dataDepenses.getDateMiseAJourBudget(idBudget);
 		if(dateEnBDD != null){
 			return dateSurIHM.after(dateEnBDD);
 		}
@@ -234,7 +230,7 @@ public class OperationsService extends AbstractBusinessService {
 		}
 
 		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
-		String idBudget = this.dataDepenses.sauvegardeBudgetMensuel(budget, userSession.getEncryptor());
+		String idBudget = this.dataDepenses.sauvegardeBudgetMensuel(budget);
 		if(idBudget != null){
 			budget.setId(idBudget);
 			return budget;
@@ -465,7 +461,7 @@ public class OperationsService extends AbstractBusinessService {
 				.forEach(op -> op.setDerniereOperation(ligneId.equals(op.getId())));
 				// Mise à jour du budget
 				budget.setDateMiseAJour(Calendar.getInstance());
-				dataDepenses.sauvegardeBudgetMensuel(budget, userSession.getEncryptor());
+				dataDepenses.sauvegardeBudgetMensuel(budget);
 				return true;
 			}
 
@@ -486,7 +482,7 @@ public class OperationsService extends AbstractBusinessService {
 	private BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, UserBusinessSession userSession) {
 		budget.setDateMiseAJour(Calendar.getInstance());
 		calculBudget(budget);
-		dataDepenses.sauvegardeBudgetMensuel(budget, userSession.getEncryptor());
+		dataDepenses.sauvegardeBudgetMensuel(budget);
 		return budget;
 	}
 
@@ -566,7 +562,7 @@ public class OperationsService extends AbstractBusinessService {
 	public BudgetMensuel setBudgetActif(String idBudgetMensuel, boolean budgetActif, UserBusinessSession userSession) throws BudgetNotFoundException{
 		LOGGER.info("{} du budget {} de {}", budgetActif ? "Réouverture" : "Fermeture", idBudgetMensuel, userSession);
 		if(userSession != null){
-			BudgetMensuel budgetMensuel = dataDepenses.chargeBudgetMensuelById(idBudgetMensuel, userSession.getEncryptor());
+			BudgetMensuel budgetMensuel = dataDepenses.chargeBudgetMensuelById(idBudgetMensuel);
 			budgetMensuel.setActif(budgetActif);
 			budgetMensuel.setDateMiseAJour(Calendar.getInstance());
 			//  #119 #141 : Toutes les opérations en attente sont reportées

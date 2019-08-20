@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +84,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @param idCompte id du compte
 	 * @return liste des libellés
 	 */
-	public Set<String> chargeLibellesOperations(String idCompte, int annee, BasicTextEncryptor decryptor) {
+	public Set<String> chargeLibellesOperations(String idCompte, int annee) {
 		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte).and(ATTRIBUT_ANNEE).is(annee));
@@ -95,7 +94,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 			budgetsDTO
 			.parallelStream()
 			// liste dépenses transformées 
-			.map(budgetDTO -> getDataTransformerBudget().transformDTOtoBO(budgetDTO, decryptor))
+			.map(budgetDTO -> getDataTransformerBudget().transformDTOtoBO(budgetDTO))
 			.forEach(budget -> {
 				if(budget != null && budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()){
 					budget.getListeOperations()
@@ -122,7 +121,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @param annee année du budget
 	 * @return budget mensuel
 	 */
-	public BudgetMensuel chargeBudgetMensuel(CompteBancaire compte, Month mois, int annee, BasicTextEncryptor decryptor) throws BudgetNotFoundException{
+	public BudgetMensuel chargeBudgetMensuel(CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee);
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and(ATTRIBUT_MOIS).is(mois.getValue() -1).and(ATTRIBUT_ANNEE).is(annee));
@@ -137,7 +136,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee).toString());
 		}
 		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
-		return dataTransformerBudget.transformDTOtoBO(budgetDTO, decryptor);
+		return dataTransformerBudget.transformDTOtoBO(budgetDTO);
 	}
 
 
@@ -162,9 +161,9 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @param idBudget identifiant du budget
 	 * @return date de mise à jour
 	 */
-	public Date getDateMiseAJourBudget(String idBudget, BasicTextEncryptor decryptor) {
+	public Date getDateMiseAJourBudget(String idBudget) {
 		try {
-			BudgetMensuel budgetMensuel = chargeBudgetMensuelById(idBudget, decryptor);
+			BudgetMensuel budgetMensuel = chargeBudgetMensuelById(idBudget);
 			if(budgetMensuel != null){
 				return budgetMensuel.getDateMiseAJour() != null ? budgetMensuel.getDateMiseAJour().getTime() : null;
 			}
@@ -179,7 +178,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @param idBudget identifiant du budget
 	 * @return budget mensuel
 	 */
-	public BudgetMensuel chargeBudgetMensuelById(String idBudget, BasicTextEncryptor decryptor) throws BudgetNotFoundException{
+	public BudgetMensuel chargeBudgetMensuelById(String idBudget) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget d'id {}", idBudget);
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where("id").is(idBudget));
@@ -194,7 +193,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		if(budgetDTO == null){
 			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget ").append(idBudget).toString());
 		}
-		return  dataTransformerBudget.transformDTOtoBO(budgetDTO, decryptor);
+		return  dataTransformerBudget.transformDTOtoBO(budgetDTO);
 	}
 	/**
 	 * Chargement du compte
@@ -327,11 +326,11 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @param annee année
 	 * @return résultat de la sauvegarde: id du budget
 	 */
-	public String sauvegardeBudgetMensuel(BudgetMensuel budgetBO, BasicTextEncryptor encryptor){
+	public String sauvegardeBudgetMensuel(BudgetMensuel budgetBO){
 		if(budgetBO == null){
 			return null;
 		}
-		BudgetMensuelDTO budgetDTO = dataTransformerBudget.transformBOtoDTO(budgetBO, encryptor);
+		BudgetMensuelDTO budgetDTO = dataTransformerBudget.transformBOtoDTO(budgetBO);
 		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budgetDTO.getCompteBancaire().getLibelle(), budgetDTO.getMois() + 1, budgetDTO.getAnnee());
 		try{
 			getMongoOperation().save(budgetDTO, getBudgetCollectionName(budgetBO.getAnnee()));

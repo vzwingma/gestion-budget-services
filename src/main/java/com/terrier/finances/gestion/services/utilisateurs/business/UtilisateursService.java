@@ -159,8 +159,6 @@ public class UtilisateursService extends AbstractBusinessService implements User
 			deconnexionBusinessSession(this.businessSessions.get(utilisateur.getId()));
 		}
 		this.businessSessions.putIfAbsent(utilisateur.getId(), new UserBusinessSession(utilisateur));
-		this.businessSessions.get(utilisateur.getId()).getEncryptor().setPassword(masterKeyClear);
-
 	}
 
 

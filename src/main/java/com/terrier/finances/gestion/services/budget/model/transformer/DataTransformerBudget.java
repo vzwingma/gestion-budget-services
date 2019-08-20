@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	 * @see com.terrier.finances.gestion.model.AbstractTransformer#transformDTOtoBO(java.lang.Object)
 	 */
 	@Override
-	public BudgetMensuel transformDTOtoBO(BudgetMensuelDTO dto, BasicTextEncryptor decryptor) {
+	public BudgetMensuel transformDTOtoBO(BudgetMensuelDTO dto) {
 		try{
 			BudgetMensuel bo = new BudgetMensuel();
 			bo.setActif(dto.isActif());
@@ -56,16 +55,16 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 				c.setTime(dto.getDateMiseAJour());
 				bo.setDateMiseAJour(c);
 			}
-			bo.setListeOperations(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses(), decryptor));
+			bo.setListeOperations(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses()));
 			bo.setMois(Month.of(dto.getMois() + 1));
-			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getResultatMoisPrecedent())) : 0D, dto.getMargeMoisPrecedent() != null ? Double.valueOf(decryptor.decrypt(dto.getMargeMoisPrecedent())) : 0D);
+			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(dto.getResultatMoisPrecedent()) : 0D, dto.getMargeMoisPrecedent() != null ? Double.valueOf(dto.getMargeMoisPrecedent()) : 0D);
 
 			/*
 			 * Budget clos : utilisation des valeurs calculées
 			 */
 			if(!bo.isActif()){
-				bo.setSoldeNow(dto.getNowArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getNowArgentAvance())) : 0);
-				bo.setSoldeFin(dto.getFinArgentAvance() != null ? Double.valueOf(decryptor.decrypt(dto.getFinArgentAvance())): 0);
+				bo.setSoldeNow(dto.getNowArgentAvance() != null ? Double.valueOf(dto.getNowArgentAvance()) : 0);
+				bo.setSoldeFin(dto.getFinArgentAvance() != null ? Double.valueOf(dto.getFinArgentAvance()): 0);
 				// Complétion des totaux
 				Map<String, Double[]> totalCategorieBO = new HashMap<>();
 
@@ -73,13 +72,12 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 					dto.getTotalParCategories().entrySet()
 					.parallelStream()
 					.forEach(entry -> {
-						String idC = getCategorieByEncryptedId(entry.getKey(), decryptor);
-						if(idC != null){
+						if(entry.getKey() != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
 							for (int i = 0; i < entry.getValue().length; i++) {
-								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(decryptor.decrypt(entry.getValue()[i])) : 0D;
+								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(entry.getValue()[i]) : 0D;
 							}
-							totalCategorieBO.put(idC, totauxBO);
+							totalCategorieBO.put(entry.getKey(), totauxBO);
 						}
 					});
 				}
@@ -92,13 +90,12 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 					dto.getTotalParSSCategories().entrySet()
 					.parallelStream()
 					.forEach(entry -> {
-						String idCsC = getCategorieByEncryptedId(entry.getKey(), decryptor);
-						if(idCsC != null){
+						if(entry.getKey() != null){
 							Double[] totauxBO = new Double[entry.getValue().length];
 							for (int i = 0; i < entry.getValue().length; i++) {
-								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(decryptor.decrypt(entry.getValue()[i])) : 0D;
+								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(entry.getValue()[i]) : 0D;
 							}
-							totalSsCategorieBO.put(idCsC, totauxBO);
+							totalSsCategorieBO.put(entry.getKey(), totauxBO);
 						}
 					});
 				}
@@ -116,32 +113,26 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	}
 
 
-	private String getCategorieByEncryptedId(String encryptedId, BasicTextEncryptor decryptor){
-		return  decryptor.decrypt(encryptedId);
-	}
-
-
-
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.AbstractTransformer#transformBOtoDTO(java.lang.Object)
 	 */
 	@Override
-	public BudgetMensuelDTO transformBOtoDTO(BudgetMensuel bo, BasicTextEncryptor encryptor) {
+	public BudgetMensuelDTO transformBOtoDTO(BudgetMensuel bo) {
 		BudgetMensuelDTO dto = new BudgetMensuelDTO();
 		dto.setActif(bo.isActif());
 		dto.setAnnee(bo.getAnnee());
 		dto.setCompteBancaire(bo.getCompteBancaire());
 		dto.getCompteBancaire().setListeProprietaires(null);
 		dto.setDateMiseAJour(bo.getDateMiseAJour() != null ? bo.getDateMiseAJour().getTime() : null);
-		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeOperations(), encryptor));
+		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeOperations()));
 		
 		dto.setMois(bo.getMois().getValue() - 1);
-		dto.setResultatMoisPrecedent(bo.getMoisPrecedentResultat() != null ?  encryptor.encrypt(bo.getMoisPrecedentResultat().toString()) : null);
-		dto.setMargeMoisPrecedent(bo.getMoisPrecedentMarge() != null ? encryptor.encrypt(bo.getMoisPrecedentMarge().toString()) : null);
+		dto.setResultatMoisPrecedent(bo.getMoisPrecedentResultat() != null ? bo.getMoisPrecedentResultat().toString() : null);
+		dto.setMargeMoisPrecedent(bo.getMoisPrecedentMarge() != null ? bo.getMoisPrecedentMarge().toString() : null);
 
 		
-		dto.setFinArgentAvance( encryptor.encrypt(String.valueOf(bo.getSoldeFin())));
-		dto.setNowArgentAvance( encryptor.encrypt(String.valueOf(bo.getSoldeNow())));
+		dto.setFinArgentAvance( String.valueOf(bo.getSoldeFin()));
+		dto.setNowArgentAvance( String.valueOf(bo.getSoldeNow()));
 
 		// Complétion des totaux
 		Map<String, String[]> totalCategorieDTO = new HashMap<>();
@@ -151,9 +142,9 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 			.forEach(entry -> {
 				String[] totauxDTO = new String[entry.getValue().length];
 				for (int i = 0; i < entry.getValue().length; i++) {
-					totauxDTO[i] = entry.getValue()[i] != null ? encryptor.encrypt(entry.getValue()[i].toString()) : null;
+					totauxDTO[i] = entry.getValue()[i] != null ? entry.getValue()[i].toString() : null;
 				}
-				totalCategorieDTO.put(encryptor.encrypt(entry.getKey()), totauxDTO);
+				totalCategorieDTO.put(entry.getKey(), totauxDTO);
 			});
 		}
 		dto.setTotalParCategories(totalCategorieDTO);
@@ -166,9 +157,9 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 			.forEach(entry -> {
 				String[] totauxDTO = new String[entry.getValue().length];
 				for (int i = 0; i < entry.getValue().length; i++) {
-					totauxDTO[i] = entry.getValue()[i] != null ? encryptor.encrypt(entry.getValue()[i].toString()) : null;
+					totauxDTO[i] = entry.getValue()[i] != null ? entry.getValue()[i].toString() : null;
 				}
-				totalSsCategorieDTO.put(encryptor.encrypt(entry.getKey()), totauxDTO);
+				totalSsCategorieDTO.put(entry.getKey(), totauxDTO);
 			});
 		}
 		dto.setTotalParSSCategories(totalSsCategorieDTO);

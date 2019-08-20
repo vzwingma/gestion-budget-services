@@ -126,7 +126,7 @@ public class TestDataTransformerBudget {
 		/**
 		 * Transformation en DTO
 		 */
-		BudgetMensuelDTO dto = transformer.transformBOtoDTO(bo, e);
+		BudgetMensuelDTO dto = transformer.transformBOtoDTO(bo);
 		assertNotNull(dto);
 		
 		assertNotEquals(bo.getSoldeFin(), dto.getFinArgentAvance());
@@ -136,7 +136,7 @@ public class TestDataTransformerBudget {
 		/**
 		 * Transformation en BO
 		 */
-		BudgetMensuel bo2 = transformer.transformDTOtoBO(dto, e);
+		BudgetMensuel bo2 = transformer.transformDTOtoBO(dto);
 		assertEquals(bo.getSoldeFin(), bo2.getSoldeFin(), 1);
 		assertEquals(bo.getSoldeNow(), bo2.getSoldeNow(), 1);
 		
