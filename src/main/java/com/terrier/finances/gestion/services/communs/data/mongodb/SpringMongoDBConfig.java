@@ -85,9 +85,9 @@ public class SpringMongoDBConfig {
 		}
 		else {
 			if(LOGGER.isWarnEnabled()) {
-				LOGGER.warn("La clé {} n'est définie. Utilisation de la valeur par défaut : {} ", cle.name(), cle.getDefaultValue());
+				LOGGER.warn("La clé {} n'est définie");
 			}
-			 return cle.getDefaultValue();
+			 return null;
 		}
 	}
 }
