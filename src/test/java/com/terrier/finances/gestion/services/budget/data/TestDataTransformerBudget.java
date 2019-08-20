@@ -10,7 +10,6 @@ import static org.mockito.Mockito.spy;
 
 import java.time.Month;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -89,13 +88,11 @@ public class TestDataTransformerBudget {
 		cat2.getListeSSCategories().add(ssCat22);
 	}
 	
-	private BasicTextEncryptor e = new BasicTextEncryptor();
 	
 	@BeforeEach
 	public void initTransformer() throws DataNotFoundException{
 		transformer = spy(new DataTransformerBudget());
 		dataTransformerLigneDepense = spy(new DataTransformerLigneOperation());
-		e.setPassword("test");
 		transformer.setDataTransformerLigneDepense(dataTransformerLigneDepense);
 	}
 	
