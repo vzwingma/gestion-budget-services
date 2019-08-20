@@ -2,8 +2,6 @@ package com.terrier.finances.gestion.services.budget.data;
 
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -127,42 +125,13 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 
 
 	/**
-	 * Lecture de la date de mise à jour du budget
-	 * @param idBudget identifiant du budget
-	 * @return date de mise à jour
-	 */
-	public Date getDateMiseAJourBudget(String idBudget) {
-		try {
-			BudgetMensuel budgetMensuel = chargeBudgetMensuelById(idBudget);
-			if(budgetMensuel != null){
-				return budgetMensuel.getDateMiseAJour() != null ? budgetMensuel.getDateMiseAJour().getTime() : null;
-			}
-		} catch (BudgetNotFoundException e) {
-			LOGGER.error("Erreur lors de la recherche du budget [{}]", idBudget);
-		}
-		return null;
-	}
-
-	/**
 	 * Chargement du budget par id
 	 * @param idBudget identifiant du budget
 	 * @return budget mensuel
 	 */
 	public BudgetMensuel chargeBudgetMensuelById(String idBudget) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget d'id {}", idBudget);
-		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where("id").is(idBudget));
-		queryBudget.limit(1);
-		BudgetMensuelDTO budgetDTO = null;
-		try{
-			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class);
-		}
-		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement du budget d'id {}", idBudget, e);
-		}
-		if(budgetDTO == null){
-			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget ").append(idBudget).toString());
-		}
+		BudgetMensuelDTO budgetDTO = chargeBudgetMensuelDTO(idBudget);
 		return  dataTransformerBudget.transformDTOtoBO(budgetDTO);
 	}
 	/**
@@ -197,16 +166,11 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte));
 
 		List<BudgetMensuelDTO> budgets = new ArrayList<>();
-
-		// Année courante
-		Calendar annee = Calendar.getInstance();
-		for (int a = 2014; a <= annee.get(Calendar.YEAR); a++) {
-			try{
-				budgets.addAll(getMongoOperation().find(queryBudget, BudgetMensuelDTO.class));
-			}
-			catch(Exception e){
-				LOGGER.error("Erreur lors du chargement des budgets du compte {}", idCompte, e);
-			}
+		try{
+			budgets.addAll(getMongoOperation().find(queryBudget, BudgetMensuelDTO.class));
+		}
+		catch(Exception e){
+			LOGGER.error("Erreur lors du chargement des budgets du compte {}", idCompte, e);
 		}
 		if(budgets.isEmpty()){
 			LOGGER.error("Erreur lors du chargement des budgets du compte {} : la liste est vide", idCompte);
@@ -227,34 +191,21 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
 	public BudgetMensuelDTO[] getPremierDernierBudgets(String compte) throws DataNotFoundException{
-		Query query1erBudget = new Query();
-		query1erBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-		query1erBudget.with(new Sort(Sort.Direction.ASC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.ASC, ATTRIBUT_MOIS));
-		query1erBudget.limit(1);
-
-		Query querydernierBudget = new Query();
-		querydernierBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-		querydernierBudget.with(new Sort(Sort.Direction.DESC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.DESC, ATTRIBUT_MOIS));
-		querydernierBudget.limit(1);
 		try{
-			BudgetMensuelDTO premierbudget = null;
-			for (int a = 2014; a <= Calendar.getInstance().get(Calendar.YEAR); a++) {
-				premierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class);
-				if(premierbudget != null){
-					break;
-				}				
-			}
-
+			Query query1erBudget = new Query();
+			query1erBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
+			query1erBudget.with(new Sort(Sort.Direction.ASC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.ASC, ATTRIBUT_MOIS));
+			query1erBudget.limit(1);
+			
+			BudgetMensuelDTO premierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class);
 			LOGGER.debug("Premier budget trouvé -> {}", premierbudget);
-
-
-			BudgetMensuelDTO dernierbudget = null;
-			for (int a = Calendar.getInstance().get(Calendar.YEAR); a >= 2014; a--) {
-				dernierbudget = getMongoOperation().findOne(querydernierBudget, BudgetMensuelDTO.class);
-				if(dernierbudget != null){
-					break;
-				}				
-			}
+			
+			Query querydernierBudget = new Query();
+			querydernierBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
+			querydernierBudget.with(new Sort(Sort.Direction.DESC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.DESC, ATTRIBUT_MOIS));
+			querydernierBudget.limit(1);
+			
+			BudgetMensuelDTO dernierbudget = getMongoOperation().findOne(querydernierBudget, BudgetMensuelDTO.class);
 			LOGGER.debug("Dernier budget trouvé -> {}", dernierbudget);
 			return new BudgetMensuelDTO[]{premierbudget, dernierbudget};
 		}

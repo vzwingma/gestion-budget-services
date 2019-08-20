@@ -157,14 +157,16 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	public boolean isBudgetUpToDate(String idBudget, Date dateSurIHM, UserBusinessSession userSession) {
 
-		Date dateEnBDD = this.dataDepenses.getDateMiseAJourBudget(idBudget);
-		if(dateEnBDD != null){
-			return dateSurIHM.after(dateEnBDD);
+		try {
+			BudgetMensuel budgetMensuel =  this.dataDepenses.chargeBudgetMensuelById(idBudget);
+			if(budgetMensuel != null){
+				return budgetMensuel.getDateMiseAJour() != null ? dateSurIHM.after(budgetMensuel.getDateMiseAJour().getTime()) : null;
+			}
+		} catch (BudgetNotFoundException e) {
+			LOGGER.error("Erreur lors de la recherche du budget [{}]", idBudget);
 		}
-		else{
-			LOGGER.error("[REFRESH] Impossible de trouver la date de mise à jour du budget. Annulation du traitement de rafraichissement");
-			return false;
-		}
+		LOGGER.error("[REFRESH] Impossible de trouver la date de mise à jour du budget. Annulation du traitement de rafraichissement");
+		return false;
 	}
 
 
@@ -338,10 +340,10 @@ public class OperationsService extends AbstractBusinessService {
 			etatDepenseTransfert = EtatOperationEnum.PREVUE;
 			break;
 		}
-		
+
 		CompteBancaire compteSource = this.compteServices.getCompteById(idCompteSource, userSession.getUtilisateur().getId());
 		CompteBancaire compteCible = this.compteServices.getCompteById(idCompteDestination, userSession.getUtilisateur().getId());
-		
+
 		LigneOperation ligneTransfert = new LigneOperation(
 				ligneOperation.getSsCategorie(), 
 				"[de "+compteSource.getLibelle()+"] " + ligneOperation.getLibelle(), 

@@ -220,8 +220,12 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		Calendar passe = Calendar.getInstance();
 		passe.add(Calendar.HOUR_OF_DAY, -1);
 
-		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTKO"))).thenReturn(futur.getTime());
-		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTOK"))).thenReturn(passe.getTime());
+		BudgetMensuel ko = new BudgetMensuel();
+		ko.setDateMiseAJour(futur);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTKO"))).thenReturn(ko);
+		BudgetMensuel ok = new BudgetMensuel();
+		ok.setDateMiseAJour(passe);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"))).thenReturn(ok);
 
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		LOGGER.info("is Actif : {}", urlActif);
