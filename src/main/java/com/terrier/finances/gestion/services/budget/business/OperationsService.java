@@ -117,7 +117,7 @@ public class OperationsService extends AbstractBusinessService {
 				LOGGER.error("Le budget précédent celui de [{}/{}] : [{}/{}] est introuvable", mois, annee, moisPrecedent, anneePrecedente);
 			}
 			// Résultat mensuel mis à jour
-			calculEtSauvegardeBudget(budgetMensuel, userSession);
+			calculEtSauvegardeBudget(budgetMensuel);
 		}
 		return budgetMensuel;
 	}
@@ -153,9 +153,10 @@ public class OperationsService extends AbstractBusinessService {
 	/**
 	 * Charge la date de mise à jour du budget
 	 * @param idBudget identifiant du budget
+	 * @param dateSurIHM Date affichée
 	 * @return la date de mise à jour du  budget
 	 */
-	public boolean isBudgetUpToDate(String idBudget, Date dateSurIHM, UserBusinessSession userSession) {
+	public boolean isBudgetUpToDate(String idBudget, Date dateSurIHM) {
 
 		try {
 			BudgetMensuel budgetMensuel =  this.dataDepenses.chargeBudgetMensuelById(idBudget);
@@ -380,7 +381,7 @@ public class OperationsService extends AbstractBusinessService {
 				boolean maj = budget.getListeOperations().removeIf(op -> op.getId().equals(idOperation));
 				if(maj) {
 					LOGGER.info("Suppression d'une Opération : {}", idOperation);
-					return calculEtSauvegardeBudget(budget, userSession);
+					return calculEtSauvegardeBudget(budget);
 				}
 				else {
 					LOGGER.warn("[idBudget={}][idOperation={}] Impossible de suppression une opération. Introuvable", idBudget, idOperation);
@@ -438,7 +439,7 @@ public class OperationsService extends AbstractBusinessService {
 				LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
 			}
 			// Mise à jour du budget
-			calculEtSauvegardeBudget(budget, userSession);
+			calculEtSauvegardeBudget(budget);
 		}
 		else{
 			String idCompte = BudgetDataUtils.getCompteFromBudgetId(idBudget);
@@ -481,7 +482,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException 
 	 * @throws BudgetNotFoundException 
 	 */
-	private BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget, UserBusinessSession userSession) {
+	private BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget) {
 		budget.setDateMiseAJour(Calendar.getInstance());
 		calculBudget(budget);
 		dataDepenses.sauvegardeBudgetMensuel(budget);
@@ -574,7 +575,7 @@ public class OperationsService extends AbstractBusinessService {
 				.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
 				.forEach(op -> op.setEtat(EtatOperationEnum.REPORTEE));
 			}
-			return calculEtSauvegardeBudget(budgetMensuel, userSession);
+			return calculEtSauvegardeBudget(budgetMensuel);
 		}
 		return null;
 	}
