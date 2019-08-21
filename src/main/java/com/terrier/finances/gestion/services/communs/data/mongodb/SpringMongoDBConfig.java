@@ -32,7 +32,7 @@ public class SpringMongoDBConfig {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringMongoDBConfig.class);
 
-	
+
 	/**
 	 * 
 	 * @param host de la BDD
@@ -41,10 +41,10 @@ public class SpringMongoDBConfig {
 	 * @param password mot de passe
 	 * @param db nom de la BDD
 	 * @return Factory de connexion BDD
-	  */
-    @Bean
-    public MongoDbFactory mongoDbFactory() {
-    	
+	 */
+	@Bean
+	public MongoDbFactory mongoDbFactory() {
+
 		String db = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_DB);
 		String host = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_HOST);
 		String username = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_USERNAME);
@@ -61,10 +61,10 @@ public class SpringMongoDBConfig {
 				.retryWrites(true)
 				.sslEnabled(true)
 				.sslInvalidHostNameAllowed(true);
-		
+
 		LOGGER.info("[INIT] Configuration de la connexion vers MongoDB Atlas : [{}]", mongoURI.replaceAll(":(.)*@", "*"));
 		return new SimpleMongoDbFactory(new MongoClientURI(mongoURI, options));
-    }
+	}
 
 	/**
 	 * @return MongoOperations de connexion BDD
@@ -83,11 +83,9 @@ public class SpringMongoDBConfig {
 		if(envVar != null) {
 			return envVar;
 		}
-		else {
-			if(LOGGER.isWarnEnabled()) {
-				LOGGER.warn("La clé {} n'est définie");
-			}
-			 return null;
+		else if(LOGGER.isWarnEnabled()) {
+			LOGGER.warn("La clé {} n'est pas définie", cle);
 		}
+		return null;
 	}
 }
