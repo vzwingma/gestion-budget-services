@@ -117,12 +117,12 @@ public class ComptesService extends AbstractBusinessService {
 	}
 
 	/**
-	 * @param idUtilisateur
+	 * Charge les libelles des opérations
 	 * @param idCompte
 	 * @param annee
 	 * @return liste des libelles opérations
 	 */
-	public Set<String> getLibellesOperations(String idUtilisateur, String idCompte, int annee){
+	public Set<String> getLibellesOperations(String idCompte, int annee){
 		return this.dataDepenses.chargeLibellesOperations(idCompte, annee);
 	}
 }
