@@ -62,7 +62,10 @@ public class SpringMongoDBConfig {
 				.sslEnabled(true)
 				.sslInvalidHostNameAllowed(true);
 
-		LOGGER.info("[INIT] Configuration de la connexion vers MongoDB Atlas : [{}]", mongoURI.replaceAll(":(.)*@", "*"));
+		if(LOGGER.isInfoEnabled()) {
+			String mongoURItoLog = mongoURI.replaceAll(":(.)*@", "*");
+			LOGGER.info("[INIT] Configuration de la connexion vers MongoDB Atlas : [{}]", mongoURItoLog);
+		}
 		return new SimpleMongoDbFactory(new MongoClientURI(mongoURI, options));
 	}
 

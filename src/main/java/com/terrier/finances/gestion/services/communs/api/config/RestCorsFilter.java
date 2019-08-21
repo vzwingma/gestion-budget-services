@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * Filter permettant de faire des appels CrossDomain
  * Utile pour les appels REST depuis JQuery
  * @author vzwingma
+ * @deprecated N'est pas utilisé dans l'application. A supprimer
  *
  */
 @Deprecated
