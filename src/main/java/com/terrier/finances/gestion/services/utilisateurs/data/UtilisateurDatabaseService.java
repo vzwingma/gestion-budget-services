@@ -75,7 +75,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 					.stream()
 					.sorted((compte1, compte2) -> Integer.compare(compte1.getOrdre(), compte2.getOrdre()))
 					.collect(Collectors.toList());
-			LOGGER.info("{} comptes chargés : {} ", idUtilisateur, listeComptes.size(), listeComptes);
+			LOGGER.info("{} comptes chargés : {} ", listeComptes.size(), listeComptes);
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement des comptes", idUtilisateur, e);
