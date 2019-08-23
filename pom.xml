@@ -11,7 +11,7 @@
 
 	<groupId>io.github.vzwingma.finances.budget</groupId>
 	<artifactId>services</artifactId>
-	<version>7.4.0-SNAPSHOT</version>
+	<version>7.3.0</version>
 	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
 	<packaging>jar</packaging>
