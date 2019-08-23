@@ -66,7 +66,6 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		userOK.setId("test");
 		userOK.setLogin("Test");
 		userOK.setPassword(new BCryptPasswordEncoder().encode("Test"));
-		userOK.setMasterCleChiffrementDonnees("Sf35rwnRDc7v4SDXsnGHUg==");
 		when(mockDataDBUsers.chargeUtilisateur(eq("Test"))).thenReturn(null, userOK);
 		
 		
@@ -95,7 +94,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		Utilisateur userOK = new Utilisateur();
 		userOK.setId("345345");
 		userOK.setLogin("345345");
-		service.registerUserBusinessSession(userOK, "345345");
+		service.registerUserBusinessSession(userOK);
 		
 		LOGGER.info("Disconnect Failed");
 		getMockAPI().perform(
@@ -129,7 +128,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		userOK.setId("345345");
 		userOK.setLogin("Test");
 		userOK.setDernierAcces(LocalDateTime.now());
-		service.registerUserBusinessSession(userOK, "test");
+		service.registerUserBusinessSession(userOK);
 		LOGGER.info("LastTime OK {}", BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL);
 		getMockAPI().perform(
 				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345", "Test"))

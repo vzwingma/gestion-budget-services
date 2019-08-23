@@ -2,11 +2,9 @@ package com.terrier.finances.gestion.services.comptes.business;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
@@ -118,20 +115,14 @@ public class ComptesService extends AbstractBusinessService {
 			throw new DataNotFoundException("Données introuvables pour le compte " + idCompte);
 		}
 	}
-	
+
 	/**
-	 * @param idUtilisateur
+	 * Charge les libelles des opérations
 	 * @param idCompte
 	 * @param annee
 	 * @return liste des libelles opérations
 	 */
-	public Set<String> getLibellesOperations(String idUtilisateur, String idCompte, int annee){
-		try{
-			BasicTextEncryptor decryptor = getBusinessSession(idUtilisateur).getEncryptor();
-			return this.dataDepenses.chargeLibellesOperations(idCompte, annee, decryptor);
-		}
-		catch(UserNotAuthorizedException e){
-			return new HashSet<>();
-		}
+	public Set<String> getLibellesOperations(String idCompte, int annee){
+		return this.dataDepenses.chargeLibellesOperations(idCompte, annee);
 	}
 }

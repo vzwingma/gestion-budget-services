@@ -10,7 +10,6 @@ import static org.mockito.Mockito.spy;
 
 import java.time.Month;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -89,13 +88,11 @@ public class TestDataTransformerBudget {
 		cat2.getListeSSCategories().add(ssCat22);
 	}
 	
-	private BasicTextEncryptor e = new BasicTextEncryptor();
 	
 	@BeforeEach
 	public void initTransformer() throws DataNotFoundException{
 		transformer = spy(new DataTransformerBudget());
 		dataTransformerLigneDepense = spy(new DataTransformerLigneOperation());
-		e.setPassword("test");
 		transformer.setDataTransformerLigneDepense(dataTransformerLigneDepense);
 	}
 	
@@ -126,7 +123,7 @@ public class TestDataTransformerBudget {
 		/**
 		 * Transformation en DTO
 		 */
-		BudgetMensuelDTO dto = transformer.transformBOtoDTO(bo, e);
+		BudgetMensuelDTO dto = transformer.transformBOtoDTO(bo);
 		assertNotNull(dto);
 		
 		assertNotEquals(bo.getSoldeFin(), dto.getFinArgentAvance());
@@ -136,7 +133,7 @@ public class TestDataTransformerBudget {
 		/**
 		 * Transformation en BO
 		 */
-		BudgetMensuel bo2 = transformer.transformDTOtoBO(dto, e);
+		BudgetMensuel bo2 = transformer.transformDTOtoBO(dto);
 		assertEquals(bo.getSoldeFin(), bo2.getSoldeFin(), 1);
 		assertEquals(bo.getSoldeNow(), bo2.getSoldeNow(), 1);
 		

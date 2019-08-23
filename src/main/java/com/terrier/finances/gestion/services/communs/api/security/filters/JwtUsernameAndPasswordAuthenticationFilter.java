@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,6 +31,7 @@ import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.jsonwebtoken.Jwts;
@@ -59,8 +58,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	private UtilisateursService usersDetailsServices;
 
 
-	private Map<String, String> attempts = new HashMap<>();
-
 	public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager, UtilisateursService usersDetailsServices) {
 		this.authManager = authManager;
 		this.usersDetailsServices = usersDetailsServices;
@@ -81,14 +78,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 			ObjectMapper mapper = new ObjectMapper(factory).disableDefaultTyping();
 			AuthLoginAPIObject creds = mapper.readValue(request.getInputStream(), AuthLoginAPIObject.class);
 			LOGGER.info("[idUser=?] Authentification de [{}]", creds.getLogin());
-
 			// 2. Create auth object (contains credentials) which will be used by auth manager
 			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-					// Le mot de passe est en clair
 					creds.getLogin(), creds.getMotDePasse(), Collections.emptyList());
 
-			// Partage de la clé temporairement, le temps de faire l'authentification.
-			attempts.put(creds.getLogin(),  creds.getMotDePasse());
 			// 3. Authentication manager authenticate the user, and use UserDetailsServiceImpl::loadUserByUsername() method to load the user.
 			return authManager.authenticate(authToken);
 
@@ -107,28 +100,28 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 			Authentication auth) throws IOException, ServletException {
 
 		LOGGER.info("[idUser={}] Utilisateur authentifié", auth.getName());
-		Utilisateur utilisateur = usersDetailsServices.successfulAuthentication(auth, attempts.get(auth.getName()));
-		// Une fois que cette partie est faite. On efface l'attempt.
-		attempts.remove(auth.getName());
+		try {
+			Utilisateur utilisateur = this.usersDetailsServices.successfullAuthentication(auth);
+			Long now = Calendar.getInstance().getTimeInMillis();
+			String token = Jwts.builder()
+					.setSubject(auth.getName())
+					.setId(UUID.randomUUID().toString())
+					// Convert to list of strings. 
+					.claim(JwtConfigEnum.JWT_CLAIM_HEADER_AUTORITIES, auth.getAuthorities().stream()
+							.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+					.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, utilisateur.getId())
+					.setIssuedAt(new Date(now))
+					.setIssuer("Budget-Services v" + usersDetailsServices.getVersion())
+					.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
+					.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.JWT_SECRET_KEY.getBytes())
+					.compact();
 
-
-		Long now = Calendar.getInstance().getTimeInMillis();
-		String token = Jwts.builder()
-				.setSubject(utilisateur.getLogin())
-				.setId(UUID.randomUUID().toString())
-				// Convert to list of strings. 
-				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_AUTORITIES, auth.getAuthorities().stream()
-						.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, utilisateur.getId())
-				.setIssuedAt(new Date(now))
-				.setIssuer("Budget-Services v" + usersDetailsServices.getVersion())
-				.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
-				.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.JWT_SECRET_KEY.getBytes())
-				.compact();
-
-		// Add token to header
-		response.addHeader(JwtConfigEnum.JWT_HEADER_AUTH, JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token);
-		LOGGER.debug("[idUser={}] Token [{}]", auth.getName(), response.getHeader(JwtConfigEnum.JWT_HEADER_AUTH));
+			// Add token to header
+			response.addHeader(JwtConfigEnum.JWT_HEADER_AUTH, JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token);
+			LOGGER.debug("[idUser={}] Token [{}]", auth.getName(), response.getHeader(JwtConfigEnum.JWT_HEADER_AUTH));
+		} catch (DataNotFoundException e) {
+			LOGGER.error("[idUser={}] Impossible de charger les données de l'utilisateur", auth.getName());
+		}
 	}
 
 

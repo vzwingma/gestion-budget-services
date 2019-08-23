@@ -4,9 +4,6 @@
  */
 package com.terrier.finances.gestion.services.budget.model.transformer;
 
-import org.jasypt.util.text.BasicTextEncryptor;
-
-
 /**
  * Transformer de données entre les couches
  * @author vzwingma
@@ -20,13 +17,13 @@ public interface IDataTransformer<B, D> {
 	 * @param dto data object (Mongo)
 	 * @return bo business object
 	 */
-	public B transformDTOtoBO(D dto, BasicTextEncryptor decryptor);
+	public B transformDTOtoBO(D dto);
 	/**
 	 * Transformation d'un BO en TO
 	 * @return dto data object (Mongo)
 	 * @param bo business object
 	 */
-	public D transformBOtoDTO(B bo, BasicTextEncryptor encryptor);
+	public D transformBOtoDTO(B bo);
 	
 
 }

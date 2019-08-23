@@ -10,36 +10,5 @@ package com.terrier.finances.gestion.services.communs.data.mongodb;
  */
 public enum MongoDBConfigEnum {
 
-	MONGODB_CONFIG_DB("budget-app-dev"), 
-	MONGODB_CONFIG_HOST("ds113936.mlab.com"), 
-	MONGODB_CONFIG_PORT(13936),
-	MONGODB_CONFIG_USERNAME( "budget"),
-	MONGODB_CONFIG_PWD("budgetdev");
-	
-	
-	private int intDefaultValue;
-	private String defaultValue;
-	
-	private MongoDBConfigEnum(String defaultValue) {
-		this.defaultValue = defaultValue;
-	}
-	
-	
-	private MongoDBConfigEnum(int intDefaultValue) {
-		this.intDefaultValue = intDefaultValue;
-	}
-
-	/**
-	 * @return the defaultValue
-	 */
-	public String getDefaultValue() {
-		return defaultValue;
-	}
-	
-	/**
-	 * @return the defaultValue
-	 */
-	public int getIntDefaultValue() {
-		return intDefaultValue;
-	}
+	MONGODB_CONFIG_DB, MONGODB_CONFIG_HOST, MONGODB_CONFIG_USERNAME, MONGODB_CONFIG_PWD;
 }

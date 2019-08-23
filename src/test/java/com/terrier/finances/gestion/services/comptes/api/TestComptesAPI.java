@@ -1,6 +1,5 @@
 package com.terrier.finances.gestion.services.comptes.api;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -62,12 +61,12 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		user.setId("345345");
 		user.setLogin("345345");
 		user.setLibelle("345345");
-		serviceUser.registerUserBusinessSession(user, "345345");
+		serviceUser.registerUserBusinessSession(user);
 		Utilisateur user2 = new Utilisateur();
 		user2.setId("123123");
 		user2.setLogin("123123");
 		user2.setLibelle("123123");
-		serviceUser.registerUserBusinessSession(user2, "123123");
+		serviceUser.registerUserBusinessSession(user2);
 	}
 
 	@Test
@@ -182,12 +181,12 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		
 		Utilisateur user = new Utilisateur();
 		user.setId("TEEST");
-		serviceUser.registerUserBusinessSession(user, "null");
+		serviceUser.registerUserBusinessSession(user);
 		
 		Set<String> libelles = new HashSet<>();
 		libelles.add("OPE1");
 		libelles.add("OPE2");
-		when(mockDataDBBudget.chargeLibellesOperations(eq("TEST"), eq(2019), any())).thenReturn(libelles);
+		when(mockDataDBBudget.chargeLibellesOperations(eq("TEST"), eq(2019))).thenReturn(libelles);
 		
 		getMockAPI().perform(get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123")))
 		.andExpect(status().isOk())

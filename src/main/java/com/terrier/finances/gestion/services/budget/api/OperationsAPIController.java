@@ -200,7 +200,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			}
 		}
 		else if(uptodateto != null){
-			boolean isUpToDate = operationService.isBudgetUpToDate(idBudget, new Date(uptodateto), userSession);
+			boolean isUpToDate = operationService.isBudgetUpToDate(idBudget, new Date(uptodateto));
 			logger.info("[API][idBudget={}] isUpToDateto {} ? : {}",idBudget, uptodateto, isUpToDate );
 			if(isUpToDate){
 				return ResponseEntity.ok(true);

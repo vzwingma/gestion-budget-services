@@ -14,7 +14,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.Month;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -89,7 +88,6 @@ public class TestOperationsService {
 	@BeforeEach
 	public void initBusinessSession() throws DataNotFoundException{
 		UserBusinessSession mockUser = Mockito.mock(UserBusinessSession.class);
-		when(mockUser.getEncryptor()).thenReturn(new BasicTextEncryptor());
 		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
 		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
 
@@ -97,7 +95,7 @@ public class TestOperationsService {
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
-		authenticationService.registerUserBusinessSession(user, "clear");
+		authenticationService.registerUserBusinessSession(user);
 
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
@@ -134,7 +132,7 @@ public class TestOperationsService {
 	 */
 	@Test
 	public void testSetBudgetInactif() throws UserNotAuthorizedException, BudgetNotFoundException{
-		when(mockDBBudget.chargeBudgetMensuelById(anyString(), any())).thenReturn(this.budget);
+		when(mockDBBudget.chargeBudgetMensuelById(anyString())).thenReturn(this.budget);
 		try {
 			BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, new UserBusinessSession(new Utilisateur()));
 			assertEquals(EtatOperationEnum.REPORTEE, m.getListeOperations().get(0).getEtat());
@@ -201,8 +199,8 @@ public class TestOperationsService {
 	@Test
 	public void testSetLastOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException {
 
-		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(this.budget);
-		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("MOCK"));	
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
@@ -217,7 +215,7 @@ public class TestOperationsService {
 
 		assertTrue(operationsService.setLigneAsDerniereOperation(this.budget.getId(), "ID_op", new UserBusinessSession(user)));
 
-		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(any(BudgetMensuel.class), any(BasicTextEncryptor.class));
+		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(any(BudgetMensuel.class));
 	}
 
 
@@ -233,8 +231,8 @@ public class TestOperationsService {
 	@Test
 	public void testDelOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException {
 		LOGGER.info("testDelOperation");
-		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(this.budget);
-		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("MOCK"));	
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
 
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
@@ -256,8 +254,8 @@ public class TestOperationsService {
 	@Test
 	public void testCRUDOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException {
 		LOGGER.info("testCRUDOperation");
-		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(this.budget);
-		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("MOCK"));	
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
+		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);

@@ -87,15 +87,15 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo.setSoldeNow(1000D);
 		bo.setDateMiseAJour(Calendar.getInstance());
 		bo.setResultatMoisPrecedent(0D, 100D);
-		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo), any())).thenReturn(bo.getId());
-		when(mockDataDBBudget.chargeBudgetMensuel(eq(c1), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
-		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("Mock"));
+		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo))).thenReturn(bo.getId());
+		when(mockDataDBBudget.chargeBudgetMensuel(eq(c1), eq(Month.JANUARY), eq(2018))).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("Mock"));
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
-		serviceUser.registerUserBusinessSession(user, "clear");
+		serviceUser.registerUserBusinessSession(user);
 
 	}
 
@@ -150,14 +150,14 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		budget.setActif(false);
 		budget.setId();
 		when(mockDataDBBudget.chargeBudgetMensuelDTO(any())).thenReturn(budget);
-		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo);
-		when(mockDataDBBudget.sauvegardeBudgetMensuel(any(), any())).thenReturn(bo.getId());
+		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(bo);
+		when(mockDataDBBudget.sauvegardeBudgetMensuel(any())).thenReturn(bo.getId());
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
-		serviceUser.registerUserBusinessSession(user, "clear");
+		serviceUser.registerUserBusinessSession(user);
 
 		// OK
 
@@ -183,7 +183,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		.andExpect(status().is4xxClientError());
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
-		serviceUser.registerUserBusinessSession(user, "ms");
+		serviceUser.registerUserBusinessSession(user);
 
 		when(mockDataDBBudget.isBudgetActif(eq("TESTKO"))).thenReturn(Boolean.FALSE);
 		when(mockDataDBBudget.isBudgetActif(eq("TESTOK"))).thenReturn(Boolean.TRUE);
@@ -212,7 +212,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
-		serviceUser.registerUserBusinessSession(user, "ms");
+		serviceUser.registerUserBusinessSession(user);
 
 		Calendar futur = Calendar.getInstance();
 		futur.add(Calendar.HOUR_OF_DAY, 1);
@@ -220,8 +220,12 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		Calendar passe = Calendar.getInstance();
 		passe.add(Calendar.HOUR_OF_DAY, -1);
 
-		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTKO"), any())).thenReturn(futur.getTime());
-		when(mockDataDBBudget.getDateMiseAJourBudget(eq("TESTOK"), any())).thenReturn(passe.getTime());
+		BudgetMensuel ko = new BudgetMensuel();
+		ko.setDateMiseAJour(futur);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTKO"))).thenReturn(ko);
+		BudgetMensuel ok = new BudgetMensuel();
+		ok.setDateMiseAJour(passe);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"))).thenReturn(ok);
 
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		LOGGER.info("is Actif : {}", urlActif);
@@ -248,7 +252,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
-		serviceUser.registerUserBusinessSession(user, "ms");
+		serviceUser.registerUserBusinessSession(user);
 
 		BudgetMensuel bo = new BudgetMensuel();
 		CompteBancaire c1 = new CompteBancaire();
@@ -265,9 +269,9 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo.setSoldeNow(1000D);
 		bo.setDateMiseAJour(Calendar.getInstance());
 		bo.setResultatMoisPrecedent(0D, 100D);
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTKO"), any())).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTKO"))).thenReturn(bo);
 		bo.setActif(true);
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"), any())).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"))).thenReturn(bo);
 
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
@@ -432,11 +436,11 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo2.setSoldeNow(1000D);
 		bo2.setDateMiseAJour(Calendar.getInstance());
 		bo2.setResultatMoisPrecedent(0D, 100D);
-		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo2), any())).thenReturn(bo2.getId());
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C2_2018_1"), any())).thenReturn(bo2);
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C1_2018_1"), any())).thenReturn(bo);
-		when(mockDataDBBudget.chargeBudgetMensuel(eq(c2), eq(Month.JANUARY), eq(2018), any())).thenReturn(bo2);
-		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), any())).thenThrow(new BudgetNotFoundException("Mock"));
+		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo2))).thenReturn(bo2.getId());
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C2_2018_1"))).thenReturn(bo2);
+		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C1_2018_1"))).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuel(eq(c2), eq(Month.JANUARY), eq(2018))).thenReturn(bo2);
+		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("Mock"));
 
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.REMBOURSEMENT);
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE);
