@@ -73,7 +73,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 						.map(e -> new SimpleGrantedAuthority(e.getKey().name()))
 						.collect(Collectors.toList());
 
-				LOGGER.info("[SEC][idUser={}] Droits {}", utilisateur.getId(), grantedAuthorities); 
+				LOGGER.info("[SEC] Droits {}", grantedAuthorities); 
 				return new User(utilisateur.getLogin(), utilisateur.getPassword(), grantedAuthorities);
 			}
 			else{

@@ -39,31 +39,36 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	 * @param apiController
 	 * @throws UserNotAuthorizedException utilisateur inconnu
 	 */
-	private void manageHeaders(HttpServletRequest request, AbstractAPIController apiController) throws UserNotAuthorizedException {
+	public void manageHeaders(HttpServletRequest request, AbstractAPIController apiController) throws UserNotAuthorizedException {
 
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID);
 		if(corrIdHeader == null) {
 			corrIdHeader = UUID.randomUUID().toString();
 			request.setAttribute(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
 		}
+
+		org.slf4j.MDC.put(ApiConfigEnum.HEADER_CORRELATION_ID, new StringBuilder("[").append(ApiConfigEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
+		
+		String idUser = UNKNOWN_USER;
+		if(apiController != null) {
+			String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
+			if(jwtToken != null) {
+				try {
+					idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
+					request.setAttribute("userSession", apiController.getUtilisateur(jwtToken));
+				} catch (UserNotAuthorizedException e) {
+					LOGGER.warn("[idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
+					throw e;
+				}
+			}
+		}
+		
 		String corrIdAPIHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID);
 		if(corrIdAPIHeader == null) {
 			corrIdAPIHeader = UUID.randomUUID().toString();
 			request.setAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
 		}
-		apiController.updateMdckey(new StringBuilder("[").append(ApiConfigEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
 		
-		String idUser = UNKNOWN_USER;
-		String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
-		if(jwtToken != null) {
-			try {
-				idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
-				request.setAttribute("userSession", apiController.getUtilisateur(jwtToken));
-			} catch (UserNotAuthorizedException e) {
-				LOGGER.warn("[idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
-				throw e;
-			}
-		}
 		if(UNKNOWN_USER.equals(idUser)) {
 			LOGGER.info("[API={}][{} :: {}] anonyme", corrIdAPIHeader, request.getMethod(), request.getRequestURI());
 		}
@@ -71,7 +76,6 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 			LOGGER.info("[API={}][{} :: {}] authentifiée [idUser={}]", corrIdAPIHeader, request.getMethod(), request.getRequestURI(), idUser);
 		}
 	}
-
 
 
 	/* (non-Javadoc)
@@ -102,9 +106,9 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		
+
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiConfigEnum.HEADER_CORRELATION_ID);
-		
+
 		response.setHeader(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
 		String corrIdApiHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID);
 		response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);

@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 import com.terrier.finances.gestion.services.communs.api.security.filters.JwtTokenAuthenticationFilter;
 import com.terrier.finances.gestion.services.communs.api.security.filters.JwtUsernameAndPasswordAuthenticationFilter;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
@@ -35,6 +36,8 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UtilisateursService usersDetailsServices;
 
+	@Autowired
+	private IncomingRequestInterceptor interceptor;
 
 	
 	/**
@@ -54,7 +57,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 		} )
 		.and()
 		// Add a filter to validate user credentials and add token in the response header
-		.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), usersDetailsServices))
+		.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), usersDetailsServices, interceptor))
 		// Add a filter to validate the tokens with every request
 		.addFilterAfter(new JwtTokenAuthenticationFilter(), JwtUsernameAndPasswordAuthenticationFilter.class)
 		// authorization requests config

@@ -32,6 +32,8 @@ import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 import io.jsonwebtoken.Jwts;
@@ -57,10 +59,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
 	private UtilisateursService usersDetailsServices;
 
-
-	public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager, UtilisateursService usersDetailsServices) {
+	private IncomingRequestInterceptor interceptor;
+	
+	
+	public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager, UtilisateursService usersDetailsServices, IncomingRequestInterceptor interceptor) {
 		this.authManager = authManager;
 		this.usersDetailsServices = usersDetailsServices;
+		this.interceptor = interceptor;
 
 		// By default, UsernamePasswordAuthenticationFilter listens to "/login" path. Override de l'URL d'authentification
 		this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL, HttpMethod.POST.name()));
@@ -72,6 +77,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		try {
+			// Logger
+			interceptor.manageHeaders(request, null);
 			// 1. Get credentials from request
 			JsonFactory factory = new JsonFactory();
 			factory.setCharacterEscapes(new JsonpCharacterEscapes());
@@ -85,7 +92,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 			// 3. Authentication manager authenticate the user, and use UserDetailsServiceImpl::loadUserByUsername() method to load the user.
 			return authManager.authenticate(authToken);
 
-		} catch (IOException e) {
+		} catch (IOException | UserNotAuthorizedException e) {
 			throw new BadCredentialsException("Impossible de lire " + request);
 		}
 	}
@@ -118,9 +125,14 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
 			// Add token to header
 			response.addHeader(JwtConfigEnum.JWT_HEADER_AUTH, JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token);
-			LOGGER.debug("[idUser={}] Token [{}]", utilisateur.getId(), response.getHeader(JwtConfigEnum.JWT_HEADER_AUTH));
+			LOGGER.trace("Token [{}]", response.getHeader(JwtConfigEnum.JWT_HEADER_AUTH));
 		} catch (DataNotFoundException e) {
-			LOGGER.error("[idUser=?] Impossible de charger les données de l'utilisateur [{}]", auth.getName());
+			LOGGER.error("Impossible de charger les données de l'utilisateur [{}]", auth.getName());
+		}
+		try {
+			interceptor.postHandle(request, response, null, null);
+		} catch (Exception e) {
+			LOGGER.error("Erreur ",e );
 		}
 	}
 }

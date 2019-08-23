@@ -68,17 +68,17 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 	public List<CompteBancaire> chargeComptes(String idUtilisateur) throws DataNotFoundException{
 		List<CompteBancaire>  listeComptes = new ArrayList<>();
 		try{
-			LOGGER.info("[idUser={}] Chargement des comptes", idUtilisateur);
+			LOGGER.info("[idUser={}] Chargement des comptes de l'utilisateur", idUtilisateur);
 			Query queryBudget = new Query().addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(idUtilisateur)));
 
 			listeComptes = getMongoOperation().find(queryBudget, CompteBancaire.class)
 					.stream()
 					.sorted((compte1, compte2) -> Integer.compare(compte1.getOrdre(), compte2.getOrdre()))
 					.collect(Collectors.toList());
-			LOGGER.info("[idUser={}]  {} comptes chargés : {} ", idUtilisateur, listeComptes.size(), listeComptes);
+			LOGGER.info("{} comptes chargés : {} ", idUtilisateur, listeComptes.size(), listeComptes);
 		}
 		catch(Exception e){
-			LOGGER.error("[idUser={}] Erreur lors du chargement des comptes", idUtilisateur, e);
+			LOGGER.error("Erreur lors du chargement des comptes", idUtilisateur, e);
 			throw new DataNotFoundException("Erreur lors de la recherche des comptes");
 		}
 		return listeComptes;
@@ -94,7 +94,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 	 */
 	public CompteBancaire chargeCompteParId(String idCompte, String idUtilisateur) throws DataNotFoundException{
 		try{
-			LOGGER.info("[idUser={}][idCompte={}] Chargement du compte", idUtilisateur, idCompte);
+			LOGGER.info("[idCompte={}] Chargement du compte", idCompte);
 			Query queryBudget = new Query();
 			queryBudget
 				.addCriteria(Criteria.where("id").is(idCompte));
@@ -103,7 +103,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 				return compte;
 			}
 			else{
-				LOGGER.warn("[idUser={}][idCompte={}] Aucun compte n'existe pour l'utilisateur", idUtilisateur, idCompte);
+				LOGGER.warn("[idCompte={}] Aucun compte n'existe pour l'utilisateur", idCompte);
 				throw new DataNotFoundException("Aucun compte n'existe pour l'utilisateur courant");
 			}
 		}

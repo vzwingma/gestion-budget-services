@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
+import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
@@ -33,7 +34,7 @@ public abstract class AbstractAPIController {
 	 * Constructeur des API Controleur
 	 */
 	public AbstractAPIController() {
-		org.slf4j.MDC.put("key", "");
+		org.slf4j.MDC.put(ApiConfigEnum.HEADER_CORRELATION_ID, "");
 	}
 	
 	@Autowired
@@ -79,12 +80,5 @@ public abstract class AbstractAPIController {
 			return userSession;
 		}
 		throw new UserNotAuthorizedException("L'utilisateur n'est pas authentifié");
-	}
-	
-	/**
-	 * @param value
-	 */
-	public void updateMdckey(String value) {
-		org.slf4j.MDC.put("key", value);
 	}
 }
