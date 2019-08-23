@@ -1,5 +1,7 @@
 package com.terrier.finances.gestion.services.communs.api.interceptors;
 
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatus.Series;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
@@ -28,6 +31,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger( IncomingRequestInterceptor.class );
 
+	private static final String UNKNOWN_USER = "?";
 
 	/**
 	 * Traite les entêtes en entrée
@@ -37,17 +41,19 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	 */
 	private void manageHeaders(HttpServletRequest request, AbstractAPIController apiController) throws UserNotAuthorizedException {
 
-		StringBuilder valueLog = new StringBuilder();
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID);
-		if(corrIdHeader != null) {
-			valueLog.append("[API=").append(corrIdHeader).append("]");
+		if(corrIdHeader == null) {
+			corrIdHeader = UUID.randomUUID().toString();
+			request.setAttribute(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
 		}
-		else {
-			valueLog.append("[API]");
+		String corrIdAPIHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID);
+		if(corrIdAPIHeader == null) {
+			corrIdAPIHeader = UUID.randomUUID().toString();
+			request.setAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
 		}
-		apiController.updateMdckey(valueLog.toString());
+		apiController.updateMdckey(new StringBuilder("[").append(ApiConfigEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
 		
-		String idUser = "?";
+		String idUser = UNKNOWN_USER;
 		String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
 		if(jwtToken != null) {
 			try {
@@ -58,7 +64,12 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 				throw e;
 			}
 		}
-		LOGGER.info("[idUser={}] Requête [{}][{}]", idUser, request.getMethod(), request.getRequestURI());
+		if(UNKNOWN_USER.equals(idUser)) {
+			LOGGER.info("[API={}][{} :: {}] anonyme", corrIdAPIHeader, request.getMethod(), request.getRequestURI());
+		}
+		else {
+			LOGGER.info("[API={}][{} :: {}] authentifiée [idUser={}]", corrIdAPIHeader, request.getMethod(), request.getRequestURI(), idUser);
+		}
 	}
 
 
@@ -89,14 +100,20 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	 * Retour de l'appel
 	 */
 	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
-		super.afterCompletion(request, response, handler, ex);
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+			ModelAndView modelAndView) throws Exception {
+		
+		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiConfigEnum.HEADER_CORRELATION_ID);
+		
+		response.setHeader(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
+		String corrIdApiHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID);
+		response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
+		super.postHandle(request, response, handler, modelAndView);
 		if(HttpStatus.Series.resolve(response.getStatus()) == Series.SUCCESSFUL) {
-			LOGGER.info("Réponse [{}][{}] : [{}]", request.getMethod(), request.getRequestURI(), response.getStatus());
+			LOGGER.info("[API={}][{} :: {}] : [{}]", corrIdApiHeader, request.getMethod(), request.getRequestURI(), response.getStatus());
 		}
 		else {
-			LOGGER.warn("Réponse [{}][{}] : [{}]", request.getMethod(), request.getRequestURI(), response.getStatus());
+			LOGGER.warn("[API={}][{} :: {}] : [{}]", corrIdApiHeader, request.getMethod(), request.getRequestURI(), response.getStatus());
 		}
 	}
 }
