@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatus.Series;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -44,24 +45,20 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		else {
 			valueLog.append("[API]");
 		}
+		apiController.updateMdckey(valueLog.toString());
+		
+		String idUser = "?";
 		String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
 		if(jwtToken != null) {
-			String idUser = null;
 			try {
 				idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
-				valueLog.append("[idUser=").append(idUser).append("]");
-			}
-			catch (Exception e) {
-				idUser = "?";
-			}
-			try {
 				request.setAttribute("userSession", apiController.getUtilisateur(jwtToken));
 			} catch (UserNotAuthorizedException e) {
-				LOGGER.warn("[API={}][idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", corrIdHeader, idUser);
+				LOGGER.warn("[idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
 				throw e;
 			}
 		}
-		apiController.updateMdckey(valueLog.toString());
+		LOGGER.info("[idUser={}] Requête [{}][{}]", idUser, request.getMethod(), request.getRequestURI());
 	}
 
 
@@ -84,5 +81,22 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 			return false;
 		}
 		return true;
+	}
+
+
+
+	/**
+	 * Retour de l'appel
+	 */
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+			throws Exception {
+		super.afterCompletion(request, response, handler, ex);
+		if(HttpStatus.Series.resolve(response.getStatus()) == Series.SUCCESSFUL) {
+			LOGGER.info("Réponse [{}][{}] : [{}]", request.getMethod(), request.getRequestURI(), response.getStatus());
+		}
+		else {
+			LOGGER.warn("Réponse [{}][{}] : [{}]", request.getMethod(), request.getRequestURI(), response.getStatus());
+		}
 	}
 }

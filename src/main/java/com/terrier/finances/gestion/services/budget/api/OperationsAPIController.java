@@ -191,7 +191,7 @@ public class OperationsAPIController extends AbstractAPIController {
 
 		if(isActif){
 			boolean isBudgetActif = operationService.isBudgetMensuelActif(idBudget);
-			logger.info("[API][idBudget={}] isActif ? : {}",idBudget, isBudgetActif );
+			logger.info("[idBudget={}] isActif ? : {}",idBudget, isBudgetActif );
 			if(isBudgetActif){
 				return ResponseEntity.ok(true);
 			}
@@ -201,7 +201,7 @@ public class OperationsAPIController extends AbstractAPIController {
 		}
 		else if(uptodateto != null){
 			boolean isUpToDate = operationService.isBudgetUpToDate(idBudget, new Date(uptodateto));
-			logger.info("[API][idBudget={}] isUpToDateto {} ? : {}",idBudget, uptodateto, isUpToDate );
+			logger.info("[idBudget={}] isUpToDateto {} ? : {}",idBudget, uptodateto, isUpToDate );
 			if(isUpToDate){
 				return ResponseEntity.ok(true);
 			}

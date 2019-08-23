@@ -33,13 +33,13 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 	 */
 	public Utilisateur chargeUtilisateur(String login) throws DataNotFoundException{
 		try{
-			LOGGER.info("[idUser={}] Recherche de l'utilisateur", login);
+			LOGGER.info("[idUser=?] Recherche de l'utilisateur [{}]", login);
 			Query queryUser = new Query();
 			queryUser.addCriteria(Criteria.where("login").is(login));
 			return getMongoOperation().findOne(queryUser, Utilisateur.class);
 		}
 		catch(Exception e){
-			LOGGER.error("[idUser={}] Erreur lors de la recherche de l'utilisateur", login, e);
+			LOGGER.error("[idUser=?] Erreur lors de la recherche de l'utilisateur [{}]", login, e);
 			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + login);
 		}
 	}

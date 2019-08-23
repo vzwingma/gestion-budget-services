@@ -111,7 +111,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 */
 	public void changePassword(Utilisateur utilisateur, String oldPassword, String newPassword){
 
-		LOGGER.info("[SEC][idUser={}] Changement du mot de passe pour {}, ", utilisateur.getLogin(), utilisateur.getId());
+		LOGGER.info("[SEC][idUser={}] Changement du mot de passe pour {}, ", utilisateur.getId(), utilisateur.getId());
 		String newHashPassword = this.passwordEncoder.encode(newPassword);
 		LOGGER.info("[SEC][idUser={}] Nouveau hash du mot de passe : {}",utilisateur.getId(), newHashPassword);
 		utilisateur.setPassword(newHashPassword);

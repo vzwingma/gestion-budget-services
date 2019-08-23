@@ -99,9 +99,9 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication auth) throws IOException, ServletException {
 
-		LOGGER.info("[idUser={}] Utilisateur authentifié", auth.getName());
 		try {
 			Utilisateur utilisateur = this.usersDetailsServices.successfullAuthentication(auth);
+			LOGGER.info("[idUser={}] Utilisateur [{}] authentifié", utilisateur.getId(), auth.getName());
 			Long now = Calendar.getInstance().getTimeInMillis();
 			String token = Jwts.builder()
 					.setSubject(auth.getName())
@@ -118,11 +118,9 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
 			// Add token to header
 			response.addHeader(JwtConfigEnum.JWT_HEADER_AUTH, JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token);
-			LOGGER.debug("[idUser={}] Token [{}]", auth.getName(), response.getHeader(JwtConfigEnum.JWT_HEADER_AUTH));
+			LOGGER.debug("[idUser={}] Token [{}]", utilisateur.getId(), response.getHeader(JwtConfigEnum.JWT_HEADER_AUTH));
 		} catch (DataNotFoundException e) {
-			LOGGER.error("[idUser={}] Impossible de charger les données de l'utilisateur", auth.getName());
+			LOGGER.error("[idUser=?] Impossible de charger les données de l'utilisateur [{}]", auth.getName());
 		}
 	}
-
-
 }

@@ -33,7 +33,7 @@ public abstract class AbstractAPIController {
 	 * Constructeur des API Controleur
 	 */
 	public AbstractAPIController() {
-		org.slf4j.MDC.put("key", "[API]");
+		org.slf4j.MDC.put("key", "");
 	}
 	
 	@Autowired
