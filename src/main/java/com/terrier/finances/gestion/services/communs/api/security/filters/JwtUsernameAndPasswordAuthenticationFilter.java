@@ -50,9 +50,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtUsernameAndPasswordAuthenticationFilter.class);
 
-	public JwtUsernameAndPasswordAuthenticationFilter() {
-		MDC.put("key", "[SEC]");
-	}
 	
 	// Auth manager pour l'authentification
 	private AuthenticationManager authManager;

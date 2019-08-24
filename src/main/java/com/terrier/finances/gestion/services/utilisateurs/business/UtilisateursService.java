@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.services.communs.LogExecutionTime;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
@@ -57,15 +58,16 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 * Tentative d'auth sur les API
 	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
 	 */
+	@LogExecutionTime
 	@Override
 	public UserDetails loadUserByUsername(String login) {
 
-		LOGGER.info("[SEC][idUser=?] Tentative d'authentification de {}", login);
+		LOGGER.info("[idUser=?] Tentative d'authentification de {}", login);
 		Utilisateur utilisateur;
 		try {
 			utilisateur = dataDBUsers.chargeUtilisateur(login);
 			if(utilisateur != null){
-				LOGGER.info("[SEC][idUser={}] Utilisateur [{}] trouvé", utilisateur.getId(), login);
+				LOGGER.info("[idUser={}] Utilisateur [{}] trouvé", utilisateur.getId(), login);
 				List<GrantedAuthority> grantedAuthorities = utilisateur.getDroits()
 						.entrySet()
 						.stream()
@@ -73,16 +75,16 @@ public class UtilisateursService extends AbstractBusinessService implements User
 						.map(e -> new SimpleGrantedAuthority(e.getKey().name()))
 						.collect(Collectors.toList());
 
-				LOGGER.info("[SEC] Droits {}", grantedAuthorities); 
+				LOGGER.info(" Droits {}", grantedAuthorities); 
 				return new User(utilisateur.getLogin(), utilisateur.getPassword(), grantedAuthorities);
 			}
 			else{
-				LOGGER.error("[SEC][idUser=?] Erreur 2 : Utilisateur {} inconnu", login);
+				LOGGER.error("[idUser=?] Erreur 2 : Utilisateur {} inconnu", login);
 			}
 
 		} catch (DataNotFoundException e) {
 			// Uti
-			LOGGER.error("[SEC][idUser=?] Erreur 3 : Données introuvables pour l'utilisateur {}", login);
+			LOGGER.error("[idUser=?] Erreur 3 : Données introuvables pour l'utilisateur {}", login);
 		}
 		return null;
 	}
@@ -93,6 +95,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 * @param auth authentification
 	 * @throws DataNotFoundException 
 	 */
+	
 	public Utilisateur successfullAuthentication(Authentication auth) throws DataNotFoundException{
 		Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(auth.getName());
 		registerUserBusinessSession(utilisateur);
@@ -111,9 +114,9 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 */
 	public void changePassword(Utilisateur utilisateur, String oldPassword, String newPassword){
 
-		LOGGER.info("[SEC][idUser={}] Changement du mot de passe pour {}, ", utilisateur.getId(), utilisateur.getId());
+		LOGGER.info("[idUser={}] Changement du mot de passe pour {}, ", utilisateur.getId(), utilisateur.getId());
 		String newHashPassword = this.passwordEncoder.encode(newPassword);
-		LOGGER.info("[SEC][idUser={}] Nouveau hash du mot de passe : {}",utilisateur.getId(), newHashPassword);
+		LOGGER.info("[idUser={}] Nouveau hash du mot de passe : {}",utilisateur.getId(), newHashPassword);
 		utilisateur.setPassword(newHashPassword);
 		dataDBUsers.majUtilisateur(utilisateur);
 		registerUserBusinessSession(utilisateur);
@@ -125,7 +128,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 * @param masterKeyClear
 	 */
 	public void registerUserBusinessSession(Utilisateur utilisateur){
-		LOGGER.debug("[SEC][idUser={}] Enregistrement de la BusinessSession", utilisateur.getId());
+		LOGGER.debug("[idUser={}] Enregistrement de la BusinessSession", utilisateur.getId());
 		if(this.businessSessions.containsKey(utilisateur.getId())){
 			deconnexionBusinessSession(this.businessSessions.get(utilisateur.getId()));
 		}
