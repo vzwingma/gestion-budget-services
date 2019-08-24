@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.communs.LogExecutionTime;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
@@ -58,7 +57,6 @@ public class UtilisateursService extends AbstractBusinessService implements User
 	 * Tentative d'auth sur les API
 	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
 	 */
-	@LogExecutionTime
 	@Override
 	public UserDetails loadUserByUsername(String login) {
 
