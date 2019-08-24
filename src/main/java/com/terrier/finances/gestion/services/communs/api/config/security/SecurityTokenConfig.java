@@ -52,7 +52,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 		// handle an authorized attempts 
 		.exceptionHandling().authenticationEntryPoint((req, rsp, e) -> {
-			LOGGER.warn("[SEC] Erreur 401 : Accès non autorisé à l'URL [{}]", req.getRequestURI());
+			LOGGER.warn("Erreur 401 : Accès non autorisé à l'URL [{}]", req.getRequestURI());
 			rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		} )
 		.and()

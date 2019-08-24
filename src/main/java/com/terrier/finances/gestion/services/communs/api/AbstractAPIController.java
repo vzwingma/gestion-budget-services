@@ -67,6 +67,7 @@ public abstract class AbstractAPIController {
 	 * @return utilisateur si authentifié
 	 * @throws UserNotAuthorizedException erreur d'auter
 	 */
+
 	public UserBusinessSession getUtilisateur(String token) throws UserNotAuthorizedException{
 		UserBusinessSession userSession = null;
 		try{

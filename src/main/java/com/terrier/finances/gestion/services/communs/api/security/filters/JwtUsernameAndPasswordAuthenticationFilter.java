@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -50,9 +49,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtUsernameAndPasswordAuthenticationFilter.class);
 
-	public JwtUsernameAndPasswordAuthenticationFilter() {
-		MDC.put("key", "[SEC]");
-	}
 	
 	// Auth manager pour l'authentification
 	private AuthenticationManager authManager;

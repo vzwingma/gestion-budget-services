@@ -114,10 +114,10 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
 		super.postHandle(request, response, handler, modelAndView);
 		if(HttpStatus.Series.resolve(response.getStatus()) == Series.SUCCESSFUL) {
-			LOGGER.info("[API={}][{} :: {}] : [{}]", corrIdApiHeader, request.getMethod(), request.getRequestURI(), response.getStatus());
+			LOGGER.info("[API={}] Statut HTTP : [{}]", corrIdApiHeader, response.getStatus());
 		}
 		else {
-			LOGGER.warn("[API={}][{} :: {}] : [{}]", corrIdApiHeader, request.getMethod(), request.getRequestURI(), response.getStatus());
+			LOGGER.warn("[API={}] Statut HTTP : [{}]", corrIdApiHeader, response.getStatus());
 		}
 	}
 }
