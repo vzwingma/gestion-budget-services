@@ -464,8 +464,7 @@ public class OperationsService extends AbstractBusinessService {
 				.forEach(op -> op.setDerniereOperation(ligneId.equals(op.getId())));
 				// Mise à jour du budget
 				budget.setDateMiseAJour(Calendar.getInstance());
-				dataDepenses.sauvegardeBudgetMensuel(budget);
-				return true;
+				return dataDepenses.sauvegardeBudgetMensuel(budget) != null;
 			}
 
 		} catch (BudgetNotFoundException | DataNotFoundException e) {
