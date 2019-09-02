@@ -39,12 +39,18 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 	public List<CategorieOperation> chargeCategories() {
 		if(listeCategories.isEmpty()){
 			try{
-				LOGGER.info("Chargement des catégories en BDD");
+				LOGGER.trace("Chargement des catégories en BDD");
 				// Ajout des catégories
 				listeCategories = getMongoOperation().findAll(CategorieOperationDTO.class)
 						.stream()
 						.map(dto -> new DataTransformerCategorieOperations().transformDTOtoBO(dto))
 						.collect(Collectors.toList());
+				
+				LOGGER.info("> Chargement des {} catégories <", listeCategories.size());
+				listeCategories.stream().forEachOrdered(c -> {
+					LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
+					c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}][{}]		{}", s.isActif() ? "v" : "X", s.getId(), s));
+				});
 			}
 			catch(Exception e){
 				LOGGER.error("Erreur lors du chargement des catégories");

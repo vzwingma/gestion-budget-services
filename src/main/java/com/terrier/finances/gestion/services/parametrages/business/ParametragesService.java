@@ -2,8 +2,6 @@ package com.terrier.finances.gestion.services.parametrages.business;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +33,6 @@ public class ParametragesService extends AbstractBusinessService {
 
 	@Autowired
 	private ParametragesDatabaseService dataParams;
-
-	@PostConstruct
-	public void chargeCategories(){
-		List<CategorieOperation> listeCategories = dataParams.chargeCategories();
-		LOGGER.info("> Chargement des {} catégories <", listeCategories.size());
-		listeCategories.stream().forEachOrdered(c -> {
-			LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
-			c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}][{}]		{}", s.isActif() ? "v" : "X", s.getId(), s));
-		});
-	}
-
 
 
 	@Value("${budget.ui.session.validity.period:10}")
