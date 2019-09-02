@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
@@ -21,7 +22,7 @@ import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSess
  *
  */
 @Service
-public class AbstractBusinessService {
+public abstract class AbstractBusinessService extends AbstractHealthIndicator {
 	/**
 	 * Logger
 	 */
@@ -113,9 +114,13 @@ public class AbstractBusinessService {
 	public void setServiceComptes(ComptesService serviceComptes) {
 		this.serviceComptes = serviceComptes;
 	}
+	
+
 
 	@PreDestroy
 	public void endApp(){
 		LOGGER.info("[END] Service {}", this.getClass().getSimpleName());
 	}
+
+
 }

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -162,4 +163,10 @@ public class UtilisateursService extends AbstractBusinessService implements User
 		}
 		return false;
 	}
+	
+	@Override
+	protected void doHealthCheck(Builder builder) throws Exception {
+		builder.up().withDetail("Service", "Utilisateurs");
+	}
+	
 }

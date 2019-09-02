@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
@@ -83,4 +84,10 @@ public class ParametragesService extends AbstractBusinessService {
 		}
 		throw new DataNotFoundException("Catégorie introuvable");
 	}
+	
+	@Override
+	protected void doHealthCheck(Builder builder) throws Exception {
+		builder.up().withDetail("Service", "Paramétrages");
+	}
+	
 }
