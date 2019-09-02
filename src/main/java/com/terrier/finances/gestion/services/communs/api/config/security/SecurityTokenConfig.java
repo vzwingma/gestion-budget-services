@@ -73,9 +73,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").anonymous()
 			// Actuators
 			.antMatchers(HttpMethod.GET, "/actuator/**").anonymous()
-			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()
-			// Supervision : Autorisée
-			.antMatchers(HttpMethod.GET, "/admin/v1/statut").anonymous()		   
+			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()   
 			// must be an admin 
 			.antMatchers(HttpMethod.GET, "/admin/v1/password/**").hasRole("ADMIN")
 			// Any other request must be authenticated
