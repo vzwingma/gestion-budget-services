@@ -114,7 +114,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 							.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
 					.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, utilisateur.getId())
 					.setIssuedAt(new Date(now))
-					.setIssuer("Budget-Services v" + usersDetailsServices.getVersion())
+					.setIssuer("Budget-Services")
 					.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
 					.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.JWT_SECRET_KEY.getBytes())
 					.compact();

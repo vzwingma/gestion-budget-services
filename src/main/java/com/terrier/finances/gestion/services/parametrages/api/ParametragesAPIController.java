@@ -51,7 +51,9 @@ public class ParametragesAPIController extends AbstractAPIController {
     })
 	@GetMapping(value=BudgetApiUrlEnum.PARAMS_CATEGORIES)
 	public @ResponseBody ResponseEntity<List<CategorieOperation>> getCategories() throws DataNotFoundException{
-		logger.info("getCategories");
-		return getEntities(paramsServices.getCategories());
+		
+		List<CategorieOperation> listeCategories = paramsServices.getCategories();
+		logger.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1");
+		return getEntities(listeCategories);
 	}
 }
