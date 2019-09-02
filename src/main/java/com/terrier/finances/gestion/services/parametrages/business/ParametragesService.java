@@ -2,12 +2,11 @@ package com.terrier.finances.gestion.services.parametrages.business;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
@@ -34,17 +33,6 @@ public class ParametragesService extends AbstractBusinessService {
 
 	@Autowired
 	private ParametragesDatabaseService dataParams;
-
-	@PostConstruct
-	public void chargeCategories(){
-		List<CategorieOperation> listeCategories = dataParams.chargeCategories();
-		LOGGER.info("> Chargement des {} catégories <", listeCategories.size());
-		listeCategories.stream().forEachOrdered(c -> {
-			LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
-			c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}][{}]		{}", s.isActif() ? "v" : "X", s.getId(), s));
-		});
-	}
-
 
 
 	@Value("${budget.ui.session.validity.period:10}")
@@ -83,4 +71,10 @@ public class ParametragesService extends AbstractBusinessService {
 		}
 		throw new DataNotFoundException("Catégorie introuvable");
 	}
+	
+	@Override
+	protected void doHealthCheck(Builder builder) throws Exception {
+		builder.up().withDetail("Service", "Paramétrages");
+	}
+	
 }
