@@ -21,7 +21,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
         		.apiInfo(apiInfo())
         		.select()
-        		.apis(RequestHandlerSelectors.any())
+        		.apis(RequestHandlerSelectors.basePackage("com.terrier.finances.gestion.services"))
         		.paths(PathSelectors.any())
         		.build();                                           
     }
@@ -32,7 +32,6 @@ public class SwaggerConfig {
                 .description("Swagger des API de l'application de gestion de budget")
                 .contact(new Contact("Vincent Zwingmann", "", "vincent.zwingmann@gmail.com"))
                 .license("Apache License Version 2.0")
-                .licenseUrl("https://github.com/IBM-Bluemix/news-aggregator/blob/master/LICENSE")
                 .version("2.0")
                 .build();
     } 
