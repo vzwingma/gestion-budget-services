@@ -65,14 +65,17 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 			// Authorize Authenticate
 			.antMatchers(HttpMethod.POST, BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL).permitAll()
 			.antMatchers("/error").permitAll()
+			.antMatchers("/favicon.ico").permitAll()
 			// Authorize Swagger
-			.antMatchers(HttpMethod.GET, "/swagger-ui*").permitAll()
-			.antMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
-			.antMatchers(HttpMethod.GET, "/webjars/**").permitAll()
-			.antMatchers(HttpMethod.GET, "/csrf/**").permitAll()
-			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").permitAll()
+			.antMatchers(HttpMethod.GET, "/swagger-ui*").anonymous()
+			.antMatchers(HttpMethod.GET, "/swagger-resources/**").anonymous()
+			.antMatchers(HttpMethod.GET, "/webjars/**").anonymous()
+			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").anonymous()
+			// Actuators
+			.antMatchers(HttpMethod.GET, "/actuator/**").anonymous()
+			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()
 			// Supervision : Autorisée
-			.antMatchers(HttpMethod.GET, "/admin/v1/statut").permitAll()		   
+			.antMatchers(HttpMethod.GET, "/admin/v1/statut").anonymous()		   
 			// must be an admin 
 			.antMatchers(HttpMethod.GET, "/admin/v1/password/**").hasRole("ADMIN")
 			// Any other request must be authenticated

@@ -8,6 +8,7 @@ import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.admin.model.DependencyName;
@@ -28,6 +29,8 @@ public class StatusApplicationService extends AbstractBusinessService {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatusApplicationService.class);
 
+	@Value("${info.app.version:CURRENT}")
+	private String version;
 	
 	// Statut de l'application
 	private StatutDependencyAPIObject statutApplication;
@@ -35,13 +38,11 @@ public class StatusApplicationService extends AbstractBusinessService {
 	@PostConstruct
 	public void initApplication(){
 		this.statutApplication = new StatutDependencyAPIObject(DependencyName.APPLICATION);
-		this.statutApplication.setVersion(this.getVersion());
-		this.statutApplication.setDescription("Services Budget v" + this.getVersion() + " [" + this.getBuildTime() + "]");
 		this.statutApplication.updateStatusModule(DependencyName.APPLICATION, StatutStateEnum.OK);
 		this.statutApplication.addDependency(DependencyName.DATABASE, DependencyName.APPLICATION, "Base de données Mongo");
 		this.statutApplication.addDependency(DependencyName.REST_SERVICE, DependencyName.APPLICATION, "API");
 		
-		LOGGER.info("[INIT] Démarrage de l'application Services v{} [{}]", this.getVersion(), this.getBuildTime());
+		LOGGER.info("[INIT] Démarrage de l'application Services v{}", this.version);
 	}
 
 	
