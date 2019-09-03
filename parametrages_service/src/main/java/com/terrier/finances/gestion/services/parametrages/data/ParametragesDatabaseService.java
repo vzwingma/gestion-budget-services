@@ -14,6 +14,7 @@ import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperatio
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
 import com.terrier.finances.gestion.services.parametrages.model.CategorieOperationDTO;
+import com.terrier.finances.gestion.services.parametrages.model.transformer.DataTransformerCategorieOperations;
 
 /**
  * Service de données en MongoDB fournissant les paramètres
