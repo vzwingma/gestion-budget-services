@@ -1,7 +1,7 @@
 package com.terrier.finances.gestion.services.comptes.api;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +23,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
-import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
-import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
+import com.terrier.finances.gestion.services.communs.data.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.comptes.data.ComptesDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
-import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
+import com.terrier.finances.gestion.test.config.TestMockDBComptesConfig;
 import com.terrier.finances.gestion.test.config.TestRealAuthServices;
 
 /**
@@ -42,32 +38,27 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
  */
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
+@ContextConfiguration(classes={TestMockDBComptesConfig.class, TestRealAuthServices.class})
 public class TestComptesAPI extends AbstractTestsAPI {
 
 
 	@Autowired
-	private UtilisateurDatabaseService mockDataDBUsers;
-	@Autowired
-	private BudgetDatabaseService mockDataDBBudget;
+	private ComptesDatabaseService mockComptesDBService;
 
-	@Autowired
-	private UtilisateursService serviceUser;
-
-	
-	@BeforeEach
-	public void init() {
-		Utilisateur user = new Utilisateur();
-		user.setId("345345");
-		user.setLogin("345345");
-		user.setLibelle("345345");
-		serviceUser.registerUserBusinessSession(user);
-		Utilisateur user2 = new Utilisateur();
-		user2.setId("123123");
-		user2.setLogin("123123");
-		user2.setLibelle("123123");
-		serviceUser.registerUserBusinessSession(user2);
-	}
+//	
+//	@BeforeEach
+//	public void init() {
+//		Utilisateur user = new Utilisateur();
+//		user.setId("345345");
+//		user.setLogin("345345");
+//		user.setLibelle("345345");
+//		serviceUser.registerUserBusinessSession(user);
+//		Utilisateur user2 = new Utilisateur();
+//		user2.setId("123123");
+//		user2.setLogin("123123");
+//		user2.setLibelle("123123");
+//		serviceUser.registerUserBusinessSession(user2);
+//	}
 
 	@Test
 	public void testGetComptes() throws Exception {
@@ -77,7 +68,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		.andExpect(status().is4xxClientError());
 
 		
-		when(mockDataDBUsers.chargeComptes(eq("123123"))).thenReturn(null);
+		when(mockComptesDBService.chargeComptes(eq("123123"))).thenReturn(null);
 
 		List<CompteBancaire> comptes = new ArrayList<CompteBancaire>();
 		CompteBancaire c1 = new CompteBancaire();
@@ -92,7 +83,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		c2.setLibelle("Libelle2");
 		c2.setOrdre(2);		
 		comptes.add(c2);
-		when(mockDataDBUsers.chargeComptes(eq("345345"))).thenReturn(comptes);
+		when(mockComptesDBService.chargeComptes(eq("345345"))).thenReturn(comptes);
 
 		// Comptes KO
 		getMockAPI().perform(
@@ -124,8 +115,8 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		c1.setId("C1");
 		c1.setLibelle("Libelle1");
 		c1.setOrdre(1);
-		when(mockDataDBUsers.chargeCompteParId(eq("111"), eq("345345"))).thenReturn(c1);
-		when(mockDataDBUsers.chargeCompteParId(eq("111"), eq("123123"))).thenThrow(new DataNotFoundException("Mock : Compte 111 introuvable pour 123123"));
+		when(mockComptesDBService.chargeCompteParId(eq("111"), eq("345345"))).thenReturn(c1);
+		when(mockComptesDBService.chargeCompteParId(eq("111"), eq("123123"))).thenThrow(new DataNotFoundException("Mock : Compte 111 introuvable pour 123123"));
 		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111");
 		
 		// Compte KO
@@ -160,7 +151,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		fin.setAnnee(2018);
 		fin.setMois(2);
 
-		when(mockDataDBBudget.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuelDTO[]{ debut, fin});
+		when(mockComptesDBService.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuelDTO[]{ debut, fin});
 		getMockAPI().perform(
 				get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123")))
 			.andExpect(status().isOk())
@@ -179,14 +170,14 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		getMockAPI().perform(get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123")))
 		.andExpect(status().isNoContent());
 		
-		Utilisateur user = new Utilisateur();
-		user.setId("TEEST");
-		serviceUser.registerUserBusinessSession(user);
+//		Utilisateur user = new Utilisateur();
+//		user.setId("TEEST");
+//		serviceUser.registerUserBusinessSession(user);
 		
 		Set<String> libelles = new HashSet<>();
 		libelles.add("OPE1");
 		libelles.add("OPE2");
-		when(mockDataDBBudget.chargeLibellesOperations(eq("TEST"), eq(2019))).thenReturn(libelles);
+		when(mockComptesDBService.chargeLibellesOperations(eq("TEST"), eq(2019))).thenReturn(libelles);
 		
 		getMockAPI().perform(get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123")))
 		.andExpect(status().isOk())
