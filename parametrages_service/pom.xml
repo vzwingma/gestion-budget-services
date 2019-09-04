@@ -16,6 +16,7 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<sonar.projectKey>gestion-budget-service-parametrage</sonar.projectKey>
 	</properties>
 
 	<build>
@@ -27,14 +28,54 @@
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
 				</configuration>
-			</plugin>		
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
-
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources/config/dev</directory>
+					</resource>
+					<resource>
+						<directory>src/main/resources/config/prod</directory>
+						<excludes>
+							<exclude>*.*</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<build>
+				<finalName>service-parametrage</finalName>
+				<resources>
+					<resource>
+						<directory>src/main/resources/config/dev</directory>
+						<excludes>
+							<exclude>*.*</exclude>
+						</excludes>
+					</resource>
+					<resource>
+						<directory>src/main/resources/config/prod</directory>
+						<filtering>true</filtering>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
+	
 	<dependencies>
 		<dependency>
 			<groupId>io.github.vzwingma.finances.budget.services</groupId>

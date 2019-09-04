@@ -12,7 +12,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(basePackages = { 
 		"com.terrier.finances.gestion.services.parametrages.business",
 		"com.terrier.finances.gestion.services.communs.data.mongodb",
-		//"com.terrier.finances.gestion.services.communs.api.interceptors"
+		"com.terrier.finances.gestion.services.parametrages.api.config.security",
+		"com.terrier.finances.gestion.services.communs.api.interceptors"
 		})
 @PropertySource(value={"classpath:config.properties"}, ignoreResourceNotFound = true)
 public class AppConfig {

@@ -35,6 +35,6 @@ public class ParametragesApplication {
 	
 	@PostConstruct
 	public void startedApp() {
-		LOGGER.info("[INIT] Démarrage de l'application Services v{}", this.version);
+		LOGGER.info("[INIT] Démarrage des services Paramétrages v{}", this.version);
 	}
 }

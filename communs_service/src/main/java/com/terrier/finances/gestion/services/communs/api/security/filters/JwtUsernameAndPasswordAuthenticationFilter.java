@@ -1,11 +1,7 @@
 package com.terrier.finances.gestion.services.communs.api.security.filters;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,24 +15,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonpCharacterEscapes;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
-import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
-import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  * Authentification par login/mdp sur l'URL : {@link BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL}
@@ -53,14 +41,14 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	// Auth manager pour l'authentification
 	private AuthenticationManager authManager;
 
-	private UtilisateursService usersDetailsServices;
+//	private UtilisateursService usersDetailsServices;
 
 	private IncomingRequestInterceptor interceptor;
 	
 	
-	public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager, UtilisateursService usersDetailsServices, IncomingRequestInterceptor interceptor) {
+	public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager, IncomingRequestInterceptor interceptor) {
 		this.authManager = authManager;
-		this.usersDetailsServices = usersDetailsServices;
+//		this.usersDetailsServices = usersDetailsServices;
 		this.interceptor = interceptor;
 
 		// By default, UsernamePasswordAuthenticationFilter listens to "/login" path. Override de l'URL d'authentification
@@ -102,29 +90,29 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication auth) throws IOException, ServletException {
 
-		try {
-			Utilisateur utilisateur = this.usersDetailsServices.successfullAuthentication(auth);
-			LOGGER.info("[idUser={}] Utilisateur [{}] authentifié", utilisateur.getId(), auth.getName());
-			Long now = Calendar.getInstance().getTimeInMillis();
-			String token = Jwts.builder()
-					.setSubject(auth.getName())
-					.setId(UUID.randomUUID().toString())
-					// Convert to list of strings. 
-					.claim(JwtConfigEnum.JWT_CLAIM_HEADER_AUTORITIES, auth.getAuthorities().stream()
-							.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-					.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, utilisateur.getId())
-					.setIssuedAt(new Date(now))
-					.setIssuer("Budget-Services")
-					.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
-					.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.JWT_SECRET_KEY.getBytes())
-					.compact();
-
-			// Add token to header
-			response.addHeader(JwtConfigEnum.JWT_HEADER_AUTH, JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token);
-			LOGGER.trace("Token [{}]", response.getHeader(JwtConfigEnum.JWT_HEADER_AUTH));
-		} catch (DataNotFoundException e) {
-			LOGGER.error("Impossible de charger les données de l'utilisateur [{}]", auth.getName());
-		}
+//		try {
+//			Utilisateur utilisateur = this.usersDetailsServices.successfullAuthentication(auth);
+//			LOGGER.info("[idUser={}] Utilisateur [{}] authentifié", utilisateur.getId(), auth.getName());
+//			Long now = Calendar.getInstance().getTimeInMillis();
+//			String token = Jwts.builder()
+//					.setSubject(auth.getName())
+//					.setId(UUID.randomUUID().toString())
+//					// Convert to list of strings. 
+//					.claim(JwtConfigEnum.JWT_CLAIM_HEADER_AUTORITIES, auth.getAuthorities().stream()
+//							.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+//					.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, utilisateur.getId())
+//					.setIssuedAt(new Date(now))
+//					.setIssuer("Budget-Services")
+//					.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
+//					.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.JWT_SECRET_KEY.getBytes())
+//					.compact();
+//
+//			// Add token to header
+//			response.addHeader(JwtConfigEnum.JWT_HEADER_AUTH, JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token);
+//			LOGGER.trace("Token [{}]", response.getHeader(JwtConfigEnum.JWT_HEADER_AUTH));
+//		} catch (DataNotFoundException e) {
+//			LOGGER.error("Impossible de charger les données de l'utilisateur [{}]", auth.getName());
+//		}
 		try {
 			interceptor.postHandle(request, response, null, null);
 		} catch (Exception e) {

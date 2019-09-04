@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.api.config.security;
+package com.terrier.finances.gestion.services.parametrages.api.config.security;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,11 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 import com.terrier.finances.gestion.services.communs.api.security.filters.JwtTokenAuthenticationFilter;
 import com.terrier.finances.gestion.services.communs.api.security.filters.JwtUsernameAndPasswordAuthenticationFilter;
-import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 
 /**
  * Configuration des API. Autorisées par JWT
@@ -33,8 +30,6 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityTokenConfig.class);
-	@Autowired
-	private UtilisateursService usersDetailsServices;
 
 	@Autowired
 	private IncomingRequestInterceptor interceptor;
@@ -57,27 +52,24 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 		} )
 		.and()
 		// Add a filter to validate user credentials and add token in the response header
-		.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), usersDetailsServices, interceptor))
+		.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), interceptor))
 		// Add a filter to validate the tokens with every request
 		.addFilterAfter(new JwtTokenAuthenticationFilter(), JwtUsernameAndPasswordAuthenticationFilter.class)
+		;
 		// authorization requests config
-		.authorizeRequests()
-			// Authorize Authenticate
-			.antMatchers(HttpMethod.POST, BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL).permitAll()
-			.antMatchers("/error").permitAll()
-			.antMatchers("/favicon.ico").permitAll()
-			// Authorize Swagger
-			.antMatchers(HttpMethod.GET, "/swagger-ui*").anonymous()
-			.antMatchers(HttpMethod.GET, "/swagger-resources/**").anonymous()
-			.antMatchers(HttpMethod.GET, "/webjars/**").anonymous()
-			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").anonymous()
-			// Actuators
-			.antMatchers(HttpMethod.GET, "/actuator/**").anonymous()
-			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()   
-			// must be an admin 
-			.antMatchers(HttpMethod.GET, "/admin/v1/password/**").hasRole("ADMIN")
-			// Any other request must be authenticated
-			.anyRequest().authenticated(); 
+//		.authorizeRequests()
+//			.antMatchers("/error").permitAll()
+//			.antMatchers("/favicon.ico").permitAll()
+//			// Authorize Swagger
+//			.antMatchers(HttpMethod.GET, "/swagger-ui*").anonymous()
+//			.antMatchers(HttpMethod.GET, "/swagger-resources/**").anonymous()
+//			.antMatchers(HttpMethod.GET, "/webjars/**").anonymous()
+//			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").anonymous()
+//			// Actuators
+//			.antMatchers(HttpMethod.GET, "/actuator/**").anonymous()
+//			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()   
+//			// Any other request must be authenticated
+//			.anyRequest().authenticated(); 
 	}
 
 
@@ -86,7 +78,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 	// In addition, we need to define the password encoder also. So, auth manager can compare and verify passwords.
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(usersDetailsServices).passwordEncoder(passwordEncoder());
+	//	auth.userDetailsService(usersDetailsServices).passwordEncoder(passwordEncoder());
 	}
 	
 
