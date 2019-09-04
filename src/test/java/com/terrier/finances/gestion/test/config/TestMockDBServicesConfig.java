@@ -15,7 +15,6 @@ import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDataba
 		"com.terrier.finances.gestion.services.statut.business",
 		"com.terrier.finances.gestion.services.budget.business", 
 		"com.terrier.finances.gestion.services.comptes.business",		
-		"com.terrier.finances.gestion.services.parametrages.business",
 		"com.terrier.finances.gestion.services.budget.model.transformer",
 		"com.terrier.finances.gestion.services.communs.api.interceptors"})	
 public class TestMockDBServicesConfig {
@@ -23,7 +22,6 @@ public class TestMockDBServicesConfig {
 	private MongoTemplate mockDBTemplate = Mockito.mock(MongoTemplate.class);
 	private BudgetDatabaseService mockBudgetDBService = Mockito.mock(BudgetDatabaseService.class);
 	private UtilisateurDatabaseService mockUserDBService = Mockito.mock(UtilisateurDatabaseService.class);
-	private ParametragesDatabaseService mockParamsDBService = Mockito.mock(ParametragesDatabaseService.class);
 	
 	@Bean BudgetDatabaseService dataDepenses(){
 		return this.mockBudgetDBService;
@@ -38,10 +36,6 @@ public class TestMockDBServicesConfig {
 		return this.mockDBTemplate;
 	}
 	
-	@Bean ParametragesDatabaseService mockParamsDBService(){
-		return this.mockParamsDBService;
-	}
-
 	/**
 	 * @return the mockBudgetDBService
 	 */
@@ -54,12 +48,5 @@ public class TestMockDBServicesConfig {
 	 */
 	public UtilisateurDatabaseService getMockUserDBService() {
 		return mockUserDBService;
-	}
-
-	/**
-	 * @return the mockParamsDBService
-	 */
-	public ParametragesDatabaseService getMockParamsDBService() {
-		return mockParamsDBService;
 	}
 }

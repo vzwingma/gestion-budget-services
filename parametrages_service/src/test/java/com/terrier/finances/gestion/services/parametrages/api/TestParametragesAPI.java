@@ -22,8 +22,7 @@ import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatab
 import com.terrier.finances.gestion.services.parametrages.model.CategorieOperationDTO;
 import com.terrier.finances.gestion.services.parametrages.model.transformer.DataTransformerCategorieOperations;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
-import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
-import com.terrier.finances.gestion.test.config.TestRealAuthServices;
+import com.terrier.finances.gestion.test.config.TestMockDBParamConfig;
 
 
 /**
@@ -33,7 +32,7 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
  */
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
+@ContextConfiguration(classes={TestMockDBParamConfig.class})
 public class TestParametragesAPI extends AbstractTestsAPI  {
 
 

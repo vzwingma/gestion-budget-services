@@ -76,5 +76,4 @@ public class ParametragesService extends AbstractBusinessService {
 	protected void doHealthCheck(Builder builder) throws Exception {
 		builder.up().withDetail("Service", "Paramétrages");
 	}
-	
 }
