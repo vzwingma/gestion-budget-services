@@ -1,4 +1,7 @@
-package com.terrier.finances.gestion.services;
+/**
+ * 
+ */
+package com.terrier.finances.gestion.services.utilisateurs;
 
 import javax.annotation.PostConstruct;
 
@@ -8,29 +11,30 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
 /**
  * Démarrage de l'application
  * @author vzwingma
  *
  */
 @SpringBootApplication
-public class ServicesApplication {
+public class UtilisateursApplication {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ServicesApplication.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateursApplication.class);
 
 	@Value("${info.app.version:CURRENT}")
 	private String version;
 	
 	public static void main(String[] args) {
-		SpringApplication.run(ServicesApplication.class);
+		SpringApplication.run(UtilisateursApplication.class);
 	}
 	
 	@PostConstruct
 	public void startedApp() {
-		LOGGER.info("[INIT] Démarrage de l'application Services v{}", this.version);
+		LOGGER.info("[INIT] Démarrage des services Utilisateurs v{}", this.version);
 	}
 }

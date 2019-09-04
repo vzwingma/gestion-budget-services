@@ -5,5 +5,77 @@
     <artifactId>services</artifactId>
     <version>7.3.1-SNAPSHOT</version>
   </parent>
-  <artifactId>utilisateurs_service</artifactId>
+  
+	<groupId>io.github.vzwingma.finances.budget.services</groupId>
+	<artifactId>utilisateurs</artifactId>
+	<name>[Budget] Service Utilisateurs</name>
+	<description>Services Utilisateurs de l'application</description>
+	<packaging>jar</packaging>
+
+	<properties>
+		<sonar.projectKey>gestion-budget-service-utilisateurs</sonar.projectKey>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources/config/dev</directory>
+					</resource>
+					<resource>
+						<directory>src/main/resources/config/prod</directory>
+						<excludes>
+							<exclude>*.*</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<build>
+				<finalName>service-utilisateurs</finalName>
+				<resources>
+					<resource>
+						<directory>src/main/resources/config/dev</directory>
+						<excludes>
+							<exclude>*.*</exclude>
+						</excludes>
+					</resource>
+					<resource>
+						<directory>src/main/resources/config/prod</directory>
+						<filtering>true</filtering>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
+	
+	<dependencies>
+		<dependency>
+			<groupId>io.github.vzwingma.finances.budget.services</groupId>
+			<artifactId>communs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.github.vzwingma.finances.budget.services</groupId>
+			<artifactId>communs</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>			
+	</dependencies>
 </project>

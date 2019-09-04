@@ -146,7 +146,7 @@ public class UtilisateursService extends AbstractBusinessService implements User
 		return null;
 	}
 
-	@Override
+
 	public UserBusinessSession getBusinessSession(String idSession){
 		return this.businessSessions.get(idSession);
 	}

@@ -4,7 +4,7 @@
 package com.terrier.finances.gestion.services.utilisateurs.api;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,8 +31,7 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
-import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
-import com.terrier.finances.gestion.test.config.TestRealAuthServices;
+import com.terrier.finances.gestion.test.config.TestMockDBUtilisateursConfig;
 
 /**
  * @author vzwingma
@@ -40,7 +39,7 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
  */
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
+@ContextConfiguration(classes={TestMockDBUtilisateursConfig.class})
 public class TestUtilisateursAPI extends AbstractTestsAPI  {
 
 	/**
@@ -131,7 +130,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		service.registerUserBusinessSession(userOK);
 		LOGGER.info("LastTime OK {}", BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL);
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345", "Test"))
+				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
