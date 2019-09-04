@@ -14,10 +14,9 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
-import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
+import com.terrier.finances.gestion.services.communs.data.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.comptes.data.ComptesDatabaseService;
 
 
 /**
@@ -35,14 +34,7 @@ public class ComptesService extends AbstractBusinessService {
 	 * Utilisateurs
 	 */
 	@Autowired
-	private UtilisateurDatabaseService dataDBUsers;
-
-	/**
-	 * Lien vers les données
-	 */
-	@Autowired
-	private BudgetDatabaseService dataDepenses;
-
+	private ComptesDatabaseService dataDBComptes;
 
 
 	/**
@@ -51,7 +43,7 @@ public class ComptesService extends AbstractBusinessService {
 	 */
 	public boolean isCompteActif(String idCompte){
 		try {
-			return dataDBUsers.isCompteActif(idCompte);
+			return dataDBComptes.isCompteActif(idCompte);
 		} catch (DataNotFoundException e) {
 			return false;
 		}
@@ -65,7 +57,7 @@ public class ComptesService extends AbstractBusinessService {
 	 * @throws DataNotFoundException
 	 */
 	public CompteBancaire getCompteById(String idCompte, String idUtilisateur) throws DataNotFoundException{
-		CompteBancaire compte = dataDBUsers.chargeCompteParId(idCompte, idUtilisateur);
+		CompteBancaire compte = dataDBComptes.chargeCompteParId(idCompte, idUtilisateur);
 		if(compte != null){
 			LOGGER.debug("[idUser={}][idCompte={}] Compte chargé (actif ? {})", idUtilisateur, idCompte, compte.isActif());
 			return compte;
@@ -82,13 +74,12 @@ public class ComptesService extends AbstractBusinessService {
 	 * @throws DataNotFoundException
 	 */
 	public List<CompteBancaire> getComptesUtilisateur(String idUtilisateur) throws DataNotFoundException{
-		List<CompteBancaire> comptes = dataDBUsers.chargeComptes(idUtilisateur);
+		List<CompteBancaire> comptes = dataDBComptes.chargeComptes(idUtilisateur);
 		if(comptes != null){
 			return comptes;
 		}
 		throw new DataNotFoundException("Aucun compte trouvé pour l'utilisateur " + idUtilisateur);
 	}
-
 
 	/**
 	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
@@ -98,7 +89,7 @@ public class ComptesService extends AbstractBusinessService {
 	 */
 	public LocalDate[] getIntervallesBudgets(String idCompte) throws DataNotFoundException{
 
-		BudgetMensuelDTO[] premierDernierBudgets = this.dataDepenses.getPremierDernierBudgets(idCompte);
+		BudgetMensuelDTO[] premierDernierBudgets = this.dataDBComptes.getPremierDernierBudgets(idCompte);
 		if(premierDernierBudgets != null && premierDernierBudgets.length >= 2){
 
 
@@ -117,6 +108,8 @@ public class ComptesService extends AbstractBusinessService {
 		}
 	}
 
+	
+	
 	/**
 	 * Charge les libelles des opérations
 	 * @param idCompte
@@ -124,7 +117,7 @@ public class ComptesService extends AbstractBusinessService {
 	 * @return liste des libelles opérations
 	 */
 	public Set<String> getLibellesOperations(String idCompte, int annee){
-		return this.dataDepenses.chargeLibellesOperations(idCompte, annee);
+		return this.dataDBComptes.chargeLibellesOperations(idCompte, annee);
 	}
 
 	@Override

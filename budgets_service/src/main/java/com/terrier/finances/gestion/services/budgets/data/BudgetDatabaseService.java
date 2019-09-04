@@ -2,9 +2,7 @@ package com.terrier.finances.gestion.services.budgets.data;
 
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,45 +41,6 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	private static final String ATTRIBUT_COMPTE_ID = "compteBancaire.id";
 	private static final String ATTRIBUT_ANNEE = "annee";
 	private static final String ATTRIBUT_MOIS = "mois";
-
-
-
-	/**
-	 * Chargement des libellés des dépenses
-	 * @param annee année du budget
-	 * @param idCompte id du compte
-	 * @return liste des libellés
-	 */
-	public Set<String> chargeLibellesOperations(String idCompte, int annee) {
-		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
-		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte).and(ATTRIBUT_ANNEE).is(annee));
-		Set<String> libellesDepenses = new HashSet<>();
-		try{
-			List<BudgetMensuelDTO> budgetsDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class);
-			budgetsDTO
-			.parallelStream()
-			// liste dépenses transformées 
-			.map(budgetDTO -> getDataTransformerBudget().transformDTOtoBO(budgetDTO))
-			.forEach(budget -> {
-				if(budget != null && budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()){
-					budget.getListeOperations()
-					.parallelStream()
-					.forEach(operation -> {
-						if(operation != null){
-							libellesDepenses.add(operation.getLibelle());
-						}
-					});
-				}
-			});
-		}
-		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement des libellés des dépenses du compte {} de {}", idCompte, annee, e);
-		}
-		return libellesDepenses;
-	}
-
-
 
 	/**
 	 * Chargement du budget mensuel
