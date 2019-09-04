@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author vzwingma
  *
  */
-@Configuration
+@Deprecated
 public class TestMockAuthServicesConfig {
 
 

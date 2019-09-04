@@ -31,7 +31,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
  */
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-// @ContextConfiguration(classes={RessourcesConfig.class})
 public abstract class AbstractTestsAPI {
 
 	/**
@@ -45,7 +44,7 @@ public abstract class AbstractTestsAPI {
 
 	@Autowired
 	private WebApplicationContext wac;
-	
+
 	@BeforeEach
 	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
@@ -57,7 +56,7 @@ public abstract class AbstractTestsAPI {
 	public MockMvc getMockAPI() {
 		return mockMvc;
 	}
-	
+
 	/**
 	 * 
 	 * @param restObject
@@ -71,28 +70,24 @@ public abstract class AbstractTestsAPI {
 			return null;
 		}
 	}
-	
-	
+
+
 	public static String getTestToken(String id){
 		return getTestToken(id, id);
 	}
-	
-	public static String getTestToken(String id, String login){
+
+	private static String getTestToken(String id, String login){
 		Long now = System.currentTimeMillis();
 		String token = Jwts.builder()
 				.setSubject(login)
 				.setId(id)
 				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, id)
-				// Convert to list of strings. 
-//				.claim("authorities", auth.getAuthorities().stream()
-//						.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
 				.setIssuedAt(new Date(now))
 				.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
 				.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.JWT_SECRET_KEY.getBytes())
 				.compact();
-
 		// Add token to header
 		return JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token;
 	}
-	
+
 }
