@@ -28,29 +28,9 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<resources>
-					<resource>
-						<filtering>true</filtering>
-						<directory>src/main/resources/config/dev</directory>
-					</resource>
-					<resource>
-						<directory>src/main/resources/config/prod</directory>
-						<excludes>
-							<exclude>*.*</exclude>
-						</excludes>
-					</resource>
-				</resources>
-			</build>
-		</profile>
-		<profile>
 			<id>prod</id>
 			<build>
-				<finalName>service-parametrage</finalName>
+				<finalName>service-budgets</finalName>
 				<resources>
 					<resource>
 						<directory>src/main/resources/config/dev</directory>
