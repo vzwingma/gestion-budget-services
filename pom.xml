@@ -50,7 +50,6 @@
 		<module>parametrages_service</module>
 		<module>budgets_service</module>
 		<module>utilisateurs_service</module>
-		<module>administration_service</module>
 		<module>comptes_service</module>
 	</modules>
 
@@ -137,24 +136,6 @@
 						<excludes>
 							<exclude>*.*</exclude>
 						</excludes>
-					</resource>
-				</resources>
-			</build>
-		</profile>
-		<profile>
-			<id>prod</id>
-			<build>
-				<finalName>services</finalName>
-				<resources>
-					<resource>
-						<directory>src/main/resources/config/dev</directory>
-						<excludes>
-							<exclude>*.*</exclude>
-						</excludes>
-					</resource>
-					<resource>
-						<directory>src/main/resources/config/prod</directory>
-						<filtering>true</filtering>
 					</resource>
 				</resources>
 			</build>
