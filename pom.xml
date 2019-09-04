@@ -156,6 +156,18 @@
 			</build>
 		</profile>
 	</profiles>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Communs Services -->
+			<dependency>
+				<groupId>io.github.vzwingma.finances.budget.services</groupId>
+				<artifactId>communs</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<!-- Communs -->
 		<dependency>
@@ -295,17 +307,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-			<!-- Communs Services -->
-			<dependency>
-				<groupId>io.github.vzwingma.finances.budget.services</groupId>
-				<artifactId>communs</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<repositories>
 		<repository>

@@ -72,14 +72,14 @@ public abstract class AbstractTestsAPI {
 	}
 
 
+	/**
+	 * @param id
+	 * @return token de test
+	 */
 	public static String getTestToken(String id){
-		return getTestToken(id, id);
-	}
-
-	private static String getTestToken(String id, String login){
 		Long now = System.currentTimeMillis();
 		String token = Jwts.builder()
-				.setSubject(login)
+				.setSubject(id)
 				.setId(id)
 				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, id)
 				.setIssuedAt(new Date(now))
