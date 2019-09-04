@@ -31,6 +31,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
  */
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
+@Deprecated
 public abstract class AbstractTestsAPI {
 
 	/**

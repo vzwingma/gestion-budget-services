@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @ComponentScan(basePackages = { 
 		"com.terrier.finances.gestion.services.parametrages.business",
+		"com.terrier.finances.gestion.services.parametrages.data",
 		"com.terrier.finances.gestion.services.communs.data.mongodb",
 		"com.terrier.finances.gestion.services.parametrages.api.config.security",
 		"com.terrier.finances.gestion.services.communs.api.interceptors"

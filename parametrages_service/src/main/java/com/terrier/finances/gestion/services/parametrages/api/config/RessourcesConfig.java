@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.api.config;
+package com.terrier.finances.gestion.services.parametrages.api.config;
 
 import java.util.List;
 
@@ -20,11 +20,6 @@ import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRe
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {
-		"com.terrier.finances.gestion.services.admin.api",
-		"com.terrier.finances.gestion.services.statut.api",
-		"com.terrier.finances.gestion.services.comptes.api",
-		"com.terrier.finances.gestion.services.budget.api",
-		"com.terrier.finances.gestion.services.utilisateurs.api",
 		"com.terrier.finances.gestion.services.parametrages.api",
 		"com.terrier.finances.gestion.services.communs.api.config"
 })

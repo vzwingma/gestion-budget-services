@@ -22,7 +22,7 @@
 
 
 	<!-- Budget -->
-	<logger name="com.terrier.finances" level="DEBUG" additivity="false">
+	<logger name="com.terrier.finances.gestion.services.parametrages" level="DEBUG" additivity="false">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />		
 	</logger>	
