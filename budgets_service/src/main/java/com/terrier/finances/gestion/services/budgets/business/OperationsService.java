@@ -29,8 +29,8 @@ import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedEx
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerLigneOperation;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
+import com.terrier.finances.gestion.services.communs.data.model.UserBusinessSession;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
-import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
 /**
  * Service Métier : Operations
