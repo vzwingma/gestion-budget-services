@@ -124,6 +124,4 @@ public class ComptesService extends AbstractBusinessService {
 	protected void doHealthCheck(Builder builder) throws Exception {
 		builder.up().withDetail("Service", "Comptes");
 	}
-	
-	
 }
