@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budget.data;
+package com.terrier.finances.gestion.services.budgets.data;
 
 import java.time.Month;
 import java.util.ArrayList;
@@ -19,10 +19,10 @@ import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.services.budget.model.LigneDepenseDTO;
-import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget;
-import com.terrier.finances.gestion.services.communs.data.AbstractDatabaseService;
+import com.terrier.finances.gestion.services.budgets.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budgets.model.LigneDepenseDTO;
+import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerBudget;
+import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
 
 /**
  * DAO Dépenses vers MongoDB

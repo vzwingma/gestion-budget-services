@@ -48,6 +48,9 @@
 	<modules>
 		<module>communs_service</module>
 		<module>parametrages_service</module>
+		<module>budgets_service</module>
+		<module>utilisateurs_service</module>
+		<module>administration_service</module>
 	</modules>
 
 	<build>

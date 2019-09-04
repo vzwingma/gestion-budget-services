@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budget.business;
+package com.terrier.finances.gestion.services.budgets.business;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -26,8 +26,8 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneOperation;
+import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerLigneOperation;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;

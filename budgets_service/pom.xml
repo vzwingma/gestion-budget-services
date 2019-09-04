@@ -7,14 +7,15 @@
 		<artifactId>services</artifactId>
 		<version>7.3.1-SNAPSHOT</version>
 	</parent>
+
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
-	<artifactId>parametrages</artifactId>
-	<name>[Budget] Service Paramétrages</name>
-	<description>Services Paramétrages de l'application</description>
+	<artifactId>budgets</artifactId>
+	<name>[Budget] Service Budgets</name>
+	<description>Services Budgets de l'application</description>
 	<packaging>jar</packaging>
 
 	<properties>
-		<sonar.projectKey>gestion-budget-service-parametrages</sonar.projectKey>
+		<sonar.projectKey>gestion-budget-service-budgets</sonar.projectKey>
 	</properties>
 
 	<build>

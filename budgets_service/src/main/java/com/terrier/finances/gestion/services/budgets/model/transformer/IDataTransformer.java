@@ -2,7 +2,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.budget.model.transformer;
+package com.terrier.finances.gestion.services.budgets.model.transformer;
 
 /**
  * Transformer de données entre les couches

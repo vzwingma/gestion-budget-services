@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.budget.model.transformer;
+package com.terrier.finances.gestion.services.budgets.model.transformer;
 
 import java.time.Month;
 import java.util.Calendar;
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
-import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budgets.model.BudgetMensuelDTO;
 
 /**
  * DataTransformer
