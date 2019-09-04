@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,10 +38,10 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.budget.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.communs.data.model.UserBusinessSession;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
-import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 import com.terrier.finances.gestion.test.config.TestMockAuthServicesConfig;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
 

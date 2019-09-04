@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.budget.data;
+package com.terrier.finances.gestion.services.budgets.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -17,9 +17,10 @@ import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.budget.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerBudget;
-import com.terrier.finances.gestion.services.budget.model.transformer.DataTransformerLigneOperation;
+import com.terrier.finances.gestion.services.budgets.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerBudget;
+import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerLigneOperation;
+
 
 /**
  * @author PVZN02821

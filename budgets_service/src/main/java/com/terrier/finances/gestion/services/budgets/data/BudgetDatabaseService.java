@@ -142,38 +142,6 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 	}
 
 
-
-	/**
-	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
-	 * @param utilisateur utilisateur
-	 * @param compte id du compte
-	 * @return la date du premier budget décrit pour cet utilisateur
-	 */
-	public BudgetMensuelDTO[] getPremierDernierBudgets(String compte) throws DataNotFoundException{
-		try{
-			Query query1erBudget = new Query();
-			query1erBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-			query1erBudget.with(new Sort(Sort.Direction.ASC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.ASC, ATTRIBUT_MOIS));
-			query1erBudget.limit(1);
-			
-			BudgetMensuelDTO premierbudget = getMongoOperation().findOne(query1erBudget, BudgetMensuelDTO.class);
-			LOGGER.debug("Premier budget trouvé -> {}", premierbudget);
-			
-			Query querydernierBudget = new Query();
-			querydernierBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-			querydernierBudget.with(new Sort(Sort.Direction.DESC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.DESC, ATTRIBUT_MOIS));
-			querydernierBudget.limit(1);
-			
-			BudgetMensuelDTO dernierbudget = getMongoOperation().findOne(querydernierBudget, BudgetMensuelDTO.class);
-			LOGGER.debug("Dernier budget trouvé -> {}", dernierbudget);
-			return new BudgetMensuelDTO[]{premierbudget, dernierbudget};
-		}
-		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement de la date du premier budget de {}", compte, e);
-			throw new DataNotFoundException("Erreur lors du chargement de la date du premier budget de " + compte);
-		}
-	}
-
 	/**
 	 * 
 	 * @param idBudget
