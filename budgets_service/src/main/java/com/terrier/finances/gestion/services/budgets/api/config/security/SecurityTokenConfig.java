@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.parametrages.api.config.security;
+package com.terrier.finances.gestion.services.budgets.api.config.security;
 
 import javax.servlet.http.HttpServletResponse;
 

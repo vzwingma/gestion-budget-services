@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.parametrages.api.config;
+package com.terrier.finances.gestion.services.budgets.api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +28,8 @@ public class SwaggerConfig {
     
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Services Paramétrage de Gestion de Budget")
-                .description("Swagger des API Paramétrages de l'application de gestion de budget")
+                .title("Services Opérations de Gestion de Budget")
+                .description("Swagger des API Opérations de l'application de gestion de budget")
                 .contact(new Contact("Vincent Zwingmann", "", "vincent.zwingmann@gmail.com"))
                 .license("Apache License Version 2.0")
                 .version("2.0")
@@ -37,5 +37,5 @@ public class SwaggerConfig {
     } 
     
     
-    @Bean SecurityConfiguration security() { return new SecurityConfiguration(null, null, "Bearer", "Budget Services", "Bearer jwt_access_token", null, Boolean.TRUE); }
+    @Bean SecurityConfiguration security() { return new SecurityConfiguration(null, null, "Bearer", "Opérations Services", "Bearer jwt_access_token", null, Boolean.TRUE); }
 }
