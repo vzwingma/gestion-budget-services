@@ -22,8 +22,6 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<communs.version>9.0.0-SNAPSHOT</communs.version>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
-
-		<sonar.projectKey>gestion-budget-services</sonar.projectKey>
 	</properties>
 
 	<issueManagement>
@@ -31,7 +29,7 @@
 		<system>GitHub Issues</system>
 	</issueManagement>
 	<scm>
-		<url>https://github.com/vzwingma/gestion-budget-services/tree/webapp</url>
+		<url>https://github.com/vzwingma/gestion-budget-services/tree/master</url>
 		<connection>scm:git:git://github.com/vzwingma/gestion-budget-services.git</connection>
 		<developerConnection>scm:git:git@github.com:vzwingma/gestion-budget-services.git</developerConnection>
 		<tag>HEAD</tag>
@@ -180,6 +178,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>		
 		<!-- Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
