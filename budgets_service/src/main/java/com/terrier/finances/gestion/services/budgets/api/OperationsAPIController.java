@@ -2,7 +2,6 @@ package com.terrier.finances.gestion.services.budgets.api;
 
 import java.time.Month;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,9 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
@@ -314,7 +311,7 @@ public class OperationsAPIController extends AbstractAPIController {
 		logger.info("[idBudget={}][idOperation={}] createOrUpdateOperation", idBudget, idOperation);
 		if(operation != null && idBudget != null && userSession != null){
 			operation.setId(idOperation);
-			completeCategoriesOnOperation(operation);
+			operationService.completeCategoriesOnOperation(operation);
 			BudgetMensuel budgetUpdated = operationService.createOrUpdateOperation(idBudget, operation, userSession);
 			return getEntity(budgetUpdated);
 		}
@@ -359,7 +356,7 @@ public class OperationsAPIController extends AbstractAPIController {
 		logger.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
 		if(operation != null && idBudget != null){
 			operation.setId(idOperation);
-			completeCategoriesOnOperation(operation);
+			operationService.completeCategoriesOnOperation(operation);
 			BudgetMensuel budgetUpdated = operationService.createOperationIntercompte(idBudget, operation, idCompte, userSession);
 			return getEntity(budgetUpdated);
 		}
@@ -410,24 +407,6 @@ public class OperationsAPIController extends AbstractAPIController {
 		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + idOperation);
 	}
 	
-	/**
-	 * Réinjection des catégories dans les opérations du budget
-	 * @param budget
-	 */
-	private void completeCategoriesOnOperation(LigneOperation operation){
-		List<CategorieOperation> categories = operationService.getServiceParams().getCategories();
-		try {
-			CategorieOperation catFound = BudgetDataUtils.getCategorieById(operation.getIdSsCategorie(), categories);
-			if(catFound != null) {
-				operation.setSsCategorie(catFound);
-				return;
-			}
-		}
-		catch (Exception e) {
-			logger.warn("Impossible de retrouver la sous catégorie : {}", operation.getIdSsCategorie(), e);
-		}
-		logger.warn("Impossible de retrouver la sous catégorie : {} parmi la liste ci dessous. Le fonctionnement peut être incorrect. \n {}", operation.getIdSsCategorie(), categories);
 
-	}
 }
 

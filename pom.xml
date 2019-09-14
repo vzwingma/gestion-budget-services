@@ -148,6 +148,13 @@
 				<artifactId>communs</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>io.github.vzwingma.finances.budget.services</groupId>
+				<artifactId>communs</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -182,7 +189,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 		<!-- Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -292,6 +299,17 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest</artifactId>
 			<version>2.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

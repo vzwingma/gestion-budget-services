@@ -18,8 +18,8 @@ import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
 import com.terrier.finances.gestion.services.budgets.model.LigneDepenseDTO;
-import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
 
 /**
  * DataTransformer
@@ -35,7 +35,7 @@ public class DataTransformerLigneOperation implements IDataTransformer<LigneOper
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataTransformerLigneOperation.class);
 	
 	@Autowired
-	private ParametragesDatabaseService parametrageService;
+	private ParametragesAPIClient parametrageService;
 	
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.IDataTransformer#transformDTOtoBO(java.lang.Object, org.jasypt.util.text.BasicTextEncryptor)

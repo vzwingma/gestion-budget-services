@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -30,6 +31,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.interceptors.LogApiFilter;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.retry.Retry;
 
@@ -59,6 +61,7 @@ public abstract class AbstractHTTPClient {
 
 	private WebClient client;
 
+	
 	@PostConstruct
 	public void createWebClient() throws NoSuchAlgorithmException, KeyManagementException {
 
@@ -72,6 +75,7 @@ public abstract class AbstractHTTPClient {
 		sslcontext.init(null,  null, new java.security.SecureRandom());
 		HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
 
+
 		LOGGER.info("Création du Client : {}", getBaseURL());
 		this.client = WebClient.builder()
 				.baseUrl(getBaseURL())
@@ -82,11 +86,6 @@ public abstract class AbstractHTTPClient {
 
 				.build();
 	}
-
-	/**
-	 * @return l'URI du µService
-	 */
-	public abstract String getBaseURL();
 
 	/**
 	 * Crée les headers HTTP
@@ -248,6 +247,7 @@ public abstract class AbstractHTTPClient {
 	protected <R extends AbstractAPIObjectModel> Mono<R> callHTTPGetData(final String ressource, final Map<String, String> params, final Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
 		try{
 			return client.get().uri(ressource, new HashMap<>()).retrieve()
+					.onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new DataNotFoundException("")))
 					.bodyToMono(responseClassType)
 					.retryWhen(fixedRetry);
 		}
@@ -257,6 +257,26 @@ public abstract class AbstractHTTPClient {
 		return null;
 	}
 
+	/**
+	 * Appel HTTP GET
+	 * @param path Ressource 
+	 * @param params paramètres de l'URL (à part pour ne pas les tracer)
+	 * @return résultat de l'appel
+	 * @throws UserNotAuthorizedException  erreur d'authentification
+	 * @throws DataNotFoundException  erreur lors de l'appel
+	 */
+	protected <R extends AbstractAPIObjectModel> Flux<R> callHTTPGetListData(final String ressource, final Map<String, String> params, final Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
+		try{
+			return client.get().uri(ressource, new HashMap<>()).retrieve()
+					.onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new DataNotFoundException("")))
+					.bodyToFlux(responseClassType)
+					.retryWhen(fixedRetry);
+		}
+		catch(Exception e){
+			catchWebApplicationException(HttpMethod.GET, e);
+		}
+		return null;
+	}
 	//
 	//	/**
 	//	 * Appel DELETE
@@ -325,4 +345,10 @@ public abstract class AbstractHTTPClient {
 		LOGGER.error("[{}] Erreur lors de l'appel", verbe, ex);
 		//		}
 	}
+	
+
+	/**
+	 * @return l'URI du µService
+	 */
+	public abstract String getBaseURL();
 }

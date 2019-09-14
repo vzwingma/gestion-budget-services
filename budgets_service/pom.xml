@@ -52,5 +52,11 @@
 			<groupId>io.github.vzwingma.finances.budget.services</groupId>
 			<artifactId>communs</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.github.vzwingma.finances.budget.services</groupId>
+			<artifactId>communs</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>		
 	</dependencies>
 </project>

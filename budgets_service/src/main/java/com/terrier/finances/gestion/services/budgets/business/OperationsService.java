@@ -6,6 +6,7 @@ import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
+import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
@@ -26,11 +28,12 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
+import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerLigneOperation;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.communs.data.model.UserBusinessSession;
-import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 
 /**
  * Service Métier : Operations
@@ -53,8 +56,11 @@ public class OperationsService extends AbstractBusinessService {
 	private BudgetDatabaseService dataDepenses;
 
 	@Autowired
-	private ComptesService compteServices;
+	private ComptesAPIClient compteClientApi;
 
+	@Autowired 
+	private ParametragesAPIClient paramClientApi;
+	
 	private DataTransformerLigneOperation transformer = new DataTransformerLigneOperation();
 
 
@@ -70,7 +76,7 @@ public class OperationsService extends AbstractBusinessService {
 	public BudgetMensuel chargerBudgetMensuel(String idCompte, Month mois, int annee, UserBusinessSession userSession) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget {} de {}/{}", idCompte, mois, annee);
 
-		CompteBancaire compteBancaire = getServiceComptes().getCompteById(idCompte, userSession.getUtilisateur().getId());
+		CompteBancaire compteBancaire = compteClientApi.getCompteById(idCompte, userSession.getUtilisateur().getId());
 		if(compteBancaire != null){
 			if(compteBancaire.isActif()){
 				try {
@@ -204,7 +210,7 @@ public class OperationsService extends AbstractBusinessService {
 		// Init si dans le futur par rapport au démarrage
 		LocalDate datePremierBudget;
 		try{
-			datePremierBudget = getServiceComptes().getIntervallesBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
+			datePremierBudget = compteClientApi.getIntervallesBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
 		}
 		catch(DataNotFoundException e){
 			datePremierBudget = null;
@@ -266,7 +272,7 @@ public class OperationsService extends AbstractBusinessService {
 
 		BudgetMensuel budgetMensuel = chargerBudgetMensuel(idBudget, userSession);
 		if(budgetMensuel != null){
-			CompteBancaire compteBancaire = getServiceComptes().getCompteById(budgetMensuel.getCompteBancaire().getId(), userSession.getUtilisateur().getId());
+			CompteBancaire compteBancaire = compteClientApi.getCompteById(budgetMensuel.getCompteBancaire().getId(), userSession.getUtilisateur().getId());
 			if(compteBancaire != null){
 				// S'il y a eu cloture, on ne fait rien
 				return initNewBudget(compteBancaire, userSession, budgetMensuel.getMois(), budgetMensuel.getAnnee());
@@ -343,8 +349,8 @@ public class OperationsService extends AbstractBusinessService {
 			break;
 		}
 
-		CompteBancaire compteSource = this.compteServices.getCompteById(idCompteSource, userSession.getUtilisateur().getId());
-		CompteBancaire compteCible = this.compteServices.getCompteById(idCompteDestination, userSession.getUtilisateur().getId());
+		CompteBancaire compteSource = this.compteClientApi.getCompteById(idCompteSource, userSession.getUtilisateur().getId());
+		CompteBancaire compteCible = this.compteClientApi.getCompteById(idCompteDestination, userSession.getUtilisateur().getId());
 
 		LigneOperation ligneTransfert = new LigneOperation(
 				ligneOperation.getSsCategorie(), 
@@ -581,16 +587,48 @@ public class OperationsService extends AbstractBusinessService {
 		return null;
 	}
 
+	
+	/**
+	 * Réinjection des catégories dans les opérations du budget
+	 * @param budget
+	 */
+	public void completeCategoriesOnOperation(LigneOperation operation){
+		List<CategorieOperation> categories = paramClientApi.getCategories();
+		try {
+			CategorieOperation catFound = BudgetDataUtils.getCategorieById(operation.getIdSsCategorie(), categories);
+			if(catFound != null) {
+				operation.setSsCategorie(catFound);
+				return;
+			}
+		}
+		catch (Exception e) {
+			LOGGER.warn("Impossible de retrouver la sous catégorie : {}", operation.getIdSsCategorie(), e);
+		}
+		LOGGER.warn("Impossible de retrouver la sous catégorie : {} parmi la liste ci dessous. Le fonctionnement peut être incorrect. \n {}", operation.getIdSsCategorie(), categories);
+
+	}
+	
+	
+	
 	@Override
 	protected void doHealthCheck(Builder builder) throws Exception {
 		builder.up().withDetail("Service", "Opérations");
 	}
 	
 
+	
 	/**
 	 * @param dataDepenses the dataDepenses to set
 	 */
 	protected void setDataDepenses(BudgetDatabaseService dataDepenses) {
 		this.dataDepenses = dataDepenses;
+	}
+
+
+	/**
+	 * @return the paramClientApi
+	 */
+	public ParametragesAPIClient getParamClientApi() {
+		return paramClientApi;
 	}
 }

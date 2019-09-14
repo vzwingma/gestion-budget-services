@@ -43,10 +43,11 @@ public abstract class AbstractTestsClientAPI {
 	 * Init du client suivant le serveur Mock Créé
 	 * @throws KeyManagementException
 	 * @throws NoSuchAlgorithmException
+	 * @throws IOException 
 	 */
 	@BeforeEach
-	void initClient() throws KeyManagementException, NoSuchAlgorithmException {
-		testClient.setBaseURL("http://"+mockWebServer.getHostName()+":"+ mockWebServer.getPort());
+	void initClient() throws KeyManagementException, NoSuchAlgorithmException, IOException {
+		mockWebServer.start(8090);
 		testClient.createWebClient();
 	}
 	
