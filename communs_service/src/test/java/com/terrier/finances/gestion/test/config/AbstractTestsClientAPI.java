@@ -4,8 +4,6 @@
 package com.terrier.finances.gestion.test.config;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import com.terrier.finances.gestion.services.communs.api.interceptors.LogApiFilter;
 
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -24,33 +25,36 @@ import okhttp3.mockwebserver.MockWebServer;
  *
  */
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes={MockApiClient.class, LogApiFilter.class})
 public abstract class AbstractTestsClientAPI {
 
 	/**
 	 * Logger
 	 */
-	protected final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	protected final Logger LOGGER = LoggerFactory.getLogger(AbstractTestsClientAPI.class);
 	/*
 	 * Server API mock
 	 */
+	private MockWebServer mockWebServer;
 
-	private final MockWebServer mockWebServer = new MockWebServer();
-	
 	@Autowired
 	private MockApiClient testClient;
 
 	/**
-	 * Init du client suivant le serveur Mock Créé
-	 * @throws KeyManagementException
-	 * @throws NoSuchAlgorithmException
-	 * @throws IOException 
+	 * Init du serveur Mock Créé
+	 * @throws IOException erreur création serveur 
 	 */
 	@BeforeEach
-	void initClient() throws KeyManagementException, NoSuchAlgorithmException, IOException {
-		mockWebServer.start(8090);
-		testClient.createWebClient();
+	public void initServer() throws IOException {
+		if(this.mockWebServer == null) {
+			MockWebServer mockWebServer = new MockWebServer();
+			mockWebServer.start(getServerPort());
+			this.mockWebServer = mockWebServer;
+		}
 	}
-	
+
+	public abstract int getServerPort(); 
+
 	@AfterEach
 	void tearDown() throws IOException {
 		mockWebServer.shutdown();
@@ -61,7 +65,6 @@ public abstract class AbstractTestsClientAPI {
 	 * @return the mockWebServer
 	 */
 	public MockWebServer getMockWebServer() {
-		LOGGER.info("Mock Web Server : {}:{}", mockWebServer.getHostName(), mockWebServer.getPort());
 		return mockWebServer;
 	}
 

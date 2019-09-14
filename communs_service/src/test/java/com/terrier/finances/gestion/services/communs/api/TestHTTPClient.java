@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -25,9 +24,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.communs.api.interceptors.LogApiFilter;
 import com.terrier.finances.gestion.test.config.AbstractTestsClientAPI;
-import com.terrier.finances.gestion.test.config.MockApiClient;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -39,9 +36,10 @@ import okhttp3.mockwebserver.RecordedRequest;
 @RunWith(SpringRunner.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes={MockApiClient.class, LogApiFilter.class})
 public class TestHTTPClient extends AbstractTestsClientAPI {
 
+	
+	
 
 	@Test
 	void testCallGet() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {
@@ -96,5 +94,12 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 
 		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
 		assertEquals("/getData", recordedRequest.getPath());
+	}
+
+
+
+	@Override
+	public int getServerPort() {
+		return 8090;
 	}
 }

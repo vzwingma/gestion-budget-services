@@ -1,0 +1,51 @@
+/**
+ * 
+ */
+package com.terrier.finances.gestion.services.budgets.api.client;
+
+import java.time.LocalDate;
+import java.util.Collections;
+
+import org.springframework.stereotype.Service;
+
+import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
+
+/**
+ * Client de l'API Comptes 
+ * @author vzwingma
+ *
+ */
+@Service
+public class ComptesAPIClient extends AbstractHTTPClient {
+
+	/**
+	 * 
+	 * @param idCompte id du Compte
+	 * @param idUser id User
+	 * @return compte correspondant
+	 */
+	public CompteBancaire getCompteById(String idCompte, String idUser) {
+		try {
+			return callHTTPGetData(BudgetApiUrlEnum.COMPTES_ID_FULL, Collections.singletonMap(BudgetApiUrlEnum.PARAM_ID_COMPTE, idCompte), CompteBancaire.class).block();
+		} catch (UserNotAuthorizedException | DataNotFoundException e) {
+			LOGGER.error("Erreur lors de la recherche du compte", e);
+			return null;
+		}
+	}
+	
+	
+	public LocalDate[] getIntervallesBudgets(String idCompte) throws DataNotFoundException{
+		return null;
+	}
+	
+	
+	@Override
+	public String getBaseURL() {
+		return "http://localhost:8092";
+	}
+
+}

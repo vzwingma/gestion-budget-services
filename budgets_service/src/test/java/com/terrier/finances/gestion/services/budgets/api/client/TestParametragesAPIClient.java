@@ -6,12 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -22,10 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.communs.api.interceptors.LogApiFilter;
+import com.terrier.finances.gestion.test.config.AbstractTestsClientAPI;
 
 import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
 
@@ -36,20 +33,9 @@ import okhttp3.mockwebserver.RecordedRequest;
 @RunWith(SpringRunner.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes={TestParametragesAPIClient.class, ParametragesAPIClient.class, LogApiFilter.class})
-public class TestParametragesAPIClient {
+@ContextConfiguration(classes={ParametragesAPIClient.class})
+public class TestParametragesAPIClient extends AbstractTestsClientAPI {
 
-	
-	@Autowired
-	private MockWebServer mockWebServer;
-	
-	@Bean
-	public MockWebServer createServer() throws IOException {
-		MockWebServer web = new MockWebServer();
-		web.start(8091);
-		return web;
-	}
-	
 	@Autowired
 	private ParametragesAPIClient client;
 	
@@ -60,18 +46,17 @@ public class TestParametragesAPIClient {
 		c.setActif(true);
 		c.setLibelle("1");
 		ObjectMapper mapper = new ObjectMapper();
-		String outS = mapper.writerFor(CategorieOperation.class).writeValueAsString(c);
 		
-		mockWebServer.enqueue(
+		getMockWebServer().enqueue(
 				new MockResponse()
 					.setResponseCode(200)
 					.setHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
-					.setBody("["+outS.toString()+"]")
+					.setBody("["+mapper.writerFor(CategorieOperation.class).writeValueAsString(c)+"]")
 				);
 		
 		List<CategorieOperation> listeCategories = client.getCategories();
 		assertNotNull(listeCategories);
-		RecordedRequest recordedRequest = mockWebServer.takeRequest();
+		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
 		assertEquals("/parametres/v1/categories", recordedRequest.getPath());
 	}
 	
@@ -86,7 +71,7 @@ public class TestParametragesAPIClient {
 		ObjectMapper mapper = new ObjectMapper();
 		String outS = mapper.writerFor(CategorieOperation.class).writeValueAsString(c);
 		
-		mockWebServer.enqueue(
+		getMockWebServer().enqueue(
 				new MockResponse()
 					.setResponseCode(200)
 					.setHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -97,13 +82,15 @@ public class TestParametragesAPIClient {
 		assertNotNull(cResult);
 		assertEquals("1", cResult.getLibelle());
 		
-		RecordedRequest recordedRequest = mockWebServer.takeRequest();
+		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
 		assertEquals("/parametres/v1/categories", recordedRequest.getPath());
 	}
-	
-	@AfterEach
-	void tearDown() throws IOException {
-		mockWebServer.shutdown();
+
+
+
+	@Override
+	public int getServerPort() {
+		return 8091;
 	}
 }
 	

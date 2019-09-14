@@ -246,7 +246,7 @@ public abstract class AbstractHTTPClient {
 	 */
 	protected <R extends AbstractAPIObjectModel> Mono<R> callHTTPGetData(final String ressource, final Map<String, String> params, final Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
 		try{
-			return client.get().uri(ressource, new HashMap<>()).retrieve()
+			return client.get().uri(ressource, params).retrieve()
 					.onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new DataNotFoundException("")))
 					.bodyToMono(responseClassType)
 					.retryWhen(fixedRetry);
