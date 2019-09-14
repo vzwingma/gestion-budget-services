@@ -3,9 +3,9 @@
  */
 package com.terrier.finances.gestion.services.communs.api;
 
-import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -18,17 +18,11 @@ import javax.net.ssl.SSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.UnknownHttpStatusCodeException;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
@@ -37,6 +31,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedEx
 import com.terrier.finances.gestion.services.communs.api.interceptors.LogApiFilter;
 
 import reactor.core.publisher.Mono;
+import reactor.retry.Retry;
 
 /**
  * Classe d'un client HTTP
@@ -121,54 +116,18 @@ public abstract class AbstractHTTPClient {
 		};
 	}
 
-
+	
 	/**
-	 * @param <T>            Classe de l'objet attendu
-	 * @param ressource      ressource
-	 * @param methode        méthode HTTP utilisée
-	 * @param classeAttendue classe attendue
-	 * @param entity         entité à transmettre
-	 * @return réponse
-	 * @throws URISyntaxException  erreur de syntaxe
-	 * @throws ServiceExterneException erreur de service
+	 * Retry
 	 */
-	protected <T> ResponseEntity<T> callAndRetry(final String ressource, final HttpMethod methode,
-			final Class<T> classeAttendue, final HttpEntity<String> entity) throws URISyntaxException {
-		int nbAppels = 0;
-		Exception e = null;
+	private static Retry<?> fixedRetry = Retry.anyOf(WebClientResponseException .class)
+            .fixedBackoff(Duration.ofSeconds(2))
+            .retryMax(3)
+            .doOnRetry((exception) -> {
+                LOGGER.info("The exception is : " + exception);
 
-		while (nbAppels < this.nbEssais) {
-			//            PoolStats poolStats = this.connectionManager.getTotalStats();
+            });
 
-			//            LOG.debug("[Interface] [{}] Connexions : utilisées={}, louées={}, en attente={}, maximum={}", codeAppel,
-			//                    poolStats.getAvailable(), poolStats.getLeased(), poolStats.getPending(), poolStats.getMax());
-			LOGGER.info("Appel n°{}", nbAppels + 1);
-
-			try {
-				Mono<ClientResponse> exchangeResponse = client.method(methode).uri(ressource, new HashMap<>()).exchange();
-				ClientResponse response = exchangeResponse.block();
-
-				LOGGER.info("Réponse [{}] : [{}] ms", response.statusCode(), "TODO");
-				return response.toEntity(classeAttendue).block();
-			} catch (ResourceAccessException | HttpStatusCodeException | UnknownHttpStatusCodeException ex) {
-				if (HttpMethod.POST.equals(methode) || HttpMethod.PUT.equals(methode)) {
-					//                    msg.append(CONTENU_MSG).append(entity != null ? entity.getBody() : "null").append("]");
-				}
-				LOGGER.error("Réponse [{}] : [{}] ms", 	ex.getStackTrace(), "TODO");
-				e = ex;
-				nbAppels++;
-			}
-			try {
-				int wait = 1;
-				LOGGER.debug(" Attente de {}s avant l'appel suivant", wait);
-				Thread.sleep((long) wait * 1000);
-			} catch (InterruptedException ie) {
-				LOGGER.error("Erreur lors de l'attente avant rejeu");
-				Thread.currentThread().interrupt();
-			}
-		}
-		return null;
-	}
 
 
 	//
@@ -242,7 +201,7 @@ public abstract class AbstractHTTPClient {
 	 * @throws UserNotAuthorizedException  erreur d'authentification
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
-	protected boolean callHTTPGet(String path) throws UserNotAuthorizedException, DataNotFoundException{
+	protected Mono<Boolean> callHTTPGet(String path) throws UserNotAuthorizedException, DataNotFoundException{
 		return callHTTPGet(path, null);
 	}
 
@@ -255,15 +214,16 @@ public abstract class AbstractHTTPClient {
 	 * @throws UserNotAuthorizedException  erreur d'authentification
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
-	protected boolean callHTTPGet(String ressource, Map<String, String> params) throws UserNotAuthorizedException, DataNotFoundException{
+	protected Mono<Boolean> callHTTPGet(String ressource, Map<String, String> params) throws UserNotAuthorizedException, DataNotFoundException{
 		try{
-			ResponseEntity<Boolean> response = callAndRetry(ressource, HttpMethod.GET, Boolean.class, null);
-			return response.getStatusCode().is2xxSuccessful();
+			Mono<Boolean> response = client.get().uri(ressource, new HashMap<>()).retrieve().bodyToMono(Boolean.class).defaultIfEmpty(Boolean.TRUE);
+			LOGGER.info("Réponse [{}] : [{}] ms", response, "TODO");
+			return response;
 		}
 		catch(Exception e){
 			catchWebApplicationException(HttpMethod.GET, e);
 		}
-		return false;
+		return Mono.empty();
 	}
 
 	/**
@@ -274,7 +234,7 @@ public abstract class AbstractHTTPClient {
 	 * @throws UserNotAuthorizedException  erreur d'authentification
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
-	protected <R extends AbstractAPIObjectModel> R callHTTPGetData(String path, Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
+	protected <R extends AbstractAPIObjectModel> Mono<R> callHTTPGetData(String path, Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
 		return callHTTPGetData(path, null, responseClassType);
 	}
 	/**
@@ -285,16 +245,11 @@ public abstract class AbstractHTTPClient {
 	 * @throws UserNotAuthorizedException  erreur d'authentification
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
-	protected <R extends AbstractAPIObjectModel> R callHTTPGetData(final String ressource, final Map<String, String> params, final Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
+	protected <R extends AbstractAPIObjectModel> Mono<R> callHTTPGetData(final String ressource, final Map<String, String> params, final Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
 		try{
-			ResponseEntity<R> response = callAndRetry(ressource, HttpMethod.GET, responseClassType, null);
-			if (response != null) {
-				LOGGER.debug("Réponse : [{}]", response.getStatusCode());
-				if (response.getStatusCode().equals(HttpStatus.OK)) {
-					return response.getBody();
-				}
-				// Si code 201 HttpStatus.NO_CONTENT - Pas de body dans la réponse
-			}
+			return client.get().uri(ressource, new HashMap<>()).retrieve()
+					.bodyToMono(responseClassType)
+					.retryWhen(fixedRetry);
 		}
 		catch(Exception e){
 			catchWebApplicationException(HttpMethod.GET, e);

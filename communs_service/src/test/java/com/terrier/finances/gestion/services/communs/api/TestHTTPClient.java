@@ -5,7 +5,9 @@ package com.terrier.finances.gestion.services.communs.api;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
@@ -18,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
@@ -40,8 +43,6 @@ import okhttp3.mockwebserver.RecordedRequest;
 public class TestHTTPClient extends AbstractTestsClientAPI {
 
 
-
-
 	@Test
 	void testCallGet() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {
 
@@ -50,8 +51,29 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 					.setResponseCode(200)
 				);
 		
-		boolean response = getTestClient().callHTTPGet("/get");
-		assertTrue(response);
+		boolean resultat = getTestClient().callHTTPGet("/get").doOnSuccessOrError((a, e) -> {
+			if(e != null) {
+				fail();
+			}
+		}).block().booleanValue();
+		assertTrue(resultat);
+		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
+		assertEquals("/get", recordedRequest.getPath());
+	}
+	
+	
+
+	@Test
+	void testCallGetError() throws InterruptedException {
+
+		getMockWebServer()
+				.enqueue(new MockResponse().setResponseCode(404));
+
+		assertThrows(WebClientResponseException.class, ()  -> getTestClient().callHTTPGet("/get").doOnSuccessOrError((a, e) -> {
+			if(a != null) {
+				fail();
+			}
+		}).block());
 
 		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
 		assertEquals("/get", recordedRequest.getPath());
@@ -67,7 +89,7 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 				.setBody("{\"login\":\"Test\",\"motDePasse\":\"Test\"}")
 				);
 		
-		AuthLoginAPIObject response = getTestClient().callHTTPGetData("/getData", AuthLoginAPIObject.class);
+		AuthLoginAPIObject response = getTestClient().callHTTPGetData("/getData", AuthLoginAPIObject.class).block();
 		assertNotNull(response);
 		assertEquals("Test", response.getLogin());
 		assertEquals("Test", response.getMotDePasse());		
