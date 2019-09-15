@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budget.api;
+package com.terrier.finances.gestion.services.budgets.api;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,11 +18,11 @@ import java.util.Calendar;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
@@ -36,46 +36,51 @@ import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
+import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
+import com.terrier.finances.gestion.services.budgets.business.OperationsService;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.communs.data.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
-import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
-import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
+import com.terrier.finances.gestion.services.budgets.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
+import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
-import com.terrier.finances.gestion.test.config.TestRealAuthServices;
 
 /**
  * Test des opérations
  * @author vzwingma
  *
  */
-@ExtendWith(SpringExtension.class)
-@WebAppConfiguration
-@ContextConfiguration(classes={TestMockDBServicesConfig.class, TestRealAuthServices.class})
+@ExtendWith({SpringExtension.class })
+@ContextConfiguration(classes={TestMockBudgetServiceConfig.class, TestMockDBServicesConfig.class, TestOperationsAPI.class, OperationsAPIController.class, OperationsService.class})
+
 public class TestOperationsAPI extends AbstractTestsAPI {
 
 	@Autowired
-	private UtilisateurDatabaseService mockDataDBUsers;
-	@Autowired
 	private BudgetDatabaseService mockDataDBBudget;
+	
 	@Autowired
-	private ParametragesDatabaseService mockDataDBParams;
-	@Autowired
-	private UtilisateursService serviceUser;
+	private ParametragesAPIClient mockDataAPIParams;
 
+	@Autowired
+	private ComptesAPIClient mockDataAPIComptes;
+
+	
+	
 	private CompteBancaire c1;
 	private BudgetMensuel bo;
 
 	@BeforeEach
 	public void initBudget () throws DataNotFoundException, BudgetNotFoundException {
+		
+		MockitoAnnotations.initMocks(this);
+		
 		// Budget
 		c1 = new CompteBancaire();
 		c1.setActif(true);
 		c1.setId("C1");
 		c1.setLibelle("Libelle1");
 		c1.setOrdre(1);
-		when(mockDataDBUsers.chargeCompteParId(eq("C1"), anyString())).thenReturn(c1);
+		when(mockDataAPIComptes.getCompteById(eq("C1"), anyString())).thenReturn(c1);
 
 		bo = new BudgetMensuel();
 		bo.setCompteBancaire(c1);
@@ -88,6 +93,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo.setDateMiseAJour(Calendar.getInstance());
 		bo.setResultatMoisPrecedent(0D, 100D);
 		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo))).thenReturn(bo.getId());
+
 		when(mockDataDBBudget.chargeBudgetMensuel(eq(c1), eq(Month.JANUARY), eq(2018))).thenReturn(bo);
 		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("Mock"));
 
@@ -95,7 +101,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
-		serviceUser.registerUserBusinessSession(user);
+		//serviceUser.registerUserBusinessSession(user);
 
 	}
 
@@ -112,7 +118,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Test
 	public void testGetBudgetWrongCompte() throws Exception {
 
-		when(mockDataDBUsers.chargeCompteParId(eq("unknown"), eq("test"))).thenThrow(new DataNotFoundException("Compte introuvable"));
+		when(mockDataAPIComptes.getCompteById(eq("unknown"), eq("test"))).thenThrow(new DataNotFoundException("Compte introuvable"));
 
 		String urlWrongCompte =  BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018";
 		LOGGER.info("Wrong Compte : {}", urlWrongCompte);
@@ -157,7 +163,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		user.setId("userTest");
 		user.setLibelle("userTest");
 		user.setLogin("userTest");
-		serviceUser.registerUserBusinessSession(user);
+//		serviceUser.registerUserBusinessSession(user);
 
 		// OK
 
@@ -183,7 +189,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		.andExpect(status().is4xxClientError());
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
-		serviceUser.registerUserBusinessSession(user);
+//		serviceUser.registerUserBusinessSession(user);
 
 		when(mockDataDBBudget.isBudgetActif(eq("TESTKO"))).thenReturn(Boolean.FALSE);
 		when(mockDataDBBudget.isBudgetActif(eq("TESTOK"))).thenReturn(Boolean.TRUE);
@@ -212,7 +218,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
-		serviceUser.registerUserBusinessSession(user);
+	//	serviceUser.registerUserBusinessSession(user);
 
 		Calendar futur = Calendar.getInstance();
 		futur.add(Calendar.HOUR_OF_DAY, 1);
@@ -252,7 +258,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		Utilisateur user = new Utilisateur();
 		user.setId("userTest");
-		serviceUser.registerUserBusinessSession(user);
+//		serviceUser.registerUserBusinessSession(user);
 
 		BudgetMensuel bo = new BudgetMensuel();
 		CompteBancaire c1 = new CompteBancaire();
@@ -423,7 +429,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		c2.setId("C2");
 		c2.setLibelle("C2");
 		c2.setOrdre(1);
-		when(mockDataDBUsers.chargeCompteParId(eq("C2"), anyString())).thenReturn(c2);
+		when(mockDataAPIComptes.getCompteById(eq("C2"), anyString())).thenReturn(c2);
 
 
 		BudgetMensuel bo2 = new BudgetMensuel();
@@ -446,8 +452,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE);
 		sscat.setCategorieParente(cat);
 
-		when(mockDataDBParams.chargeCategories()).thenReturn(Arrays.asList(cat, sscat));
-		when(mockDataDBParams.getCategorieParId(eq(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.name()))).thenReturn(sscat);
+		when(mockDataAPIParams.getCategories()).thenReturn(Arrays.asList(cat, sscat));
+		when(mockDataAPIParams.getCategorieParId(eq(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.name()))).thenReturn(sscat);
 		
 		LigneOperation opIntercompte = new LigneOperation(sscat, "OPInter", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
 		opIntercompte.setId("OPInter");

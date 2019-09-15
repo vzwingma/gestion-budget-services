@@ -406,7 +406,5 @@ public class OperationsAPIController extends AbstractAPIController {
 		}
 		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + idOperation);
 	}
-	
-
 }
 

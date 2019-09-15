@@ -9,6 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +28,10 @@ import io.jsonwebtoken.Claims;
 public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
     
 
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenAuthenticationFilter.class);
 
 	/* (non-Javadoc)
 	 * @see org.springframework.web.filter.OncePerRequestFilter#doFilterInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, javax.servlet.FilterChain)
@@ -64,7 +70,7 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
                 // It needs a list of authorities, which has type of GrantedAuthority interface, where SimpleGrantedAuthority is an implementation of that interface
                  UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                                  username, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-                 
+                 LOGGER.info("JWT Auth : OK [{}]", auth);
                  // 6. Authenticate the user
                  // Now, user is authenticated
                  SecurityContextHolder.getContext().setAuthentication(auth);

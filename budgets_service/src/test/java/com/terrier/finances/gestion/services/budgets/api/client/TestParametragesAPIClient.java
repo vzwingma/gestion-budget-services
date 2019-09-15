@@ -32,7 +32,6 @@ import okhttp3.mockwebserver.RecordedRequest;
  */
 @RunWith(SpringRunner.class)
 @ExtendWith(SpringExtension.class)
-@WebAppConfiguration
 @ContextConfiguration(classes={ParametragesAPIClient.class})
 public class TestParametragesAPIClient extends AbstractTestsClientAPI {
 

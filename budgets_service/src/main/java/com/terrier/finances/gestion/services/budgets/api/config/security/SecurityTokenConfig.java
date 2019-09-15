@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -55,21 +56,20 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 		.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), interceptor))
 		// Add a filter to validate the tokens with every request
 		.addFilterAfter(new JwtTokenAuthenticationFilter(), JwtUsernameAndPasswordAuthenticationFilter.class)
-		;
 		// authorization requests config
-//		.authorizeRequests()
-//			.antMatchers("/error").permitAll()
-//			.antMatchers("/favicon.ico").permitAll()
-//			// Authorize Swagger
-//			.antMatchers(HttpMethod.GET, "/swagger-ui*").anonymous()
-//			.antMatchers(HttpMethod.GET, "/swagger-resources/**").anonymous()
-//			.antMatchers(HttpMethod.GET, "/webjars/**").anonymous()
-//			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").anonymous()
-//			// Actuators
-//			.antMatchers(HttpMethod.GET, "/actuator/**").anonymous()
-//			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()   
-//			// Any other request must be authenticated
-//			.anyRequest().authenticated(); 
+		.authorizeRequests()
+			.antMatchers("/error").permitAll()
+			.antMatchers("/favicon.ico").permitAll()
+			// Authorize Swagger
+			.antMatchers(HttpMethod.GET, "/swagger-ui*").anonymous()
+			.antMatchers(HttpMethod.GET, "/swagger-resources/**").anonymous()
+			.antMatchers(HttpMethod.GET, "/webjars/**").anonymous()
+			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").anonymous()
+			// Actuators
+			.antMatchers(HttpMethod.GET, "/actuator/**").anonymous()
+			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()   
+			// Any other request must be authenticated
+			.anyRequest().authenticated(); 
 	}
 
 

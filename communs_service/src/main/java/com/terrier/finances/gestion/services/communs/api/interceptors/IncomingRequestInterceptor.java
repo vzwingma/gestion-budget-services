@@ -53,14 +53,16 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		if(apiController != null) {
 			String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
 			if(jwtToken != null) {
-				// TODO : 
-//				try {
-//					idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
-//					request.setAttribute("userSession", apiController.getUtilisateur(jwtToken));
-//				} catch (UserNotAuthorizedException e) {
-//					LOGGER.warn("[idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
-//					throw e;
-//				}
+				try {
+					idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
+					request.setAttribute("userSession", apiController.getUtilisateur(jwtToken));
+				} catch (UserNotAuthorizedException e) {
+					LOGGER.warn("[idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
+					throw e;
+				}
+			}
+			else {
+				LOGGER.warn("JwTToken introuvable");
 			}
 		}
 		

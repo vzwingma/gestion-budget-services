@@ -20,7 +20,6 @@ import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRe
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {
-		"com.terrier.finances.gestion.services.parametrages.api",
 		"com.terrier.finances.gestion.services.communs.api.config"
 })
 public class RessourcesConfig implements WebMvcConfigurer{

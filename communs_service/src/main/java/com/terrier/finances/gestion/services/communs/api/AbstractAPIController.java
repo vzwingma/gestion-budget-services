@@ -11,6 +11,10 @@ import org.springframework.http.ResponseEntity;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
+import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
+import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.communs.data.model.UserBusinessSession;
 
 /**
  * Classe abstraite d'un API Controller
@@ -53,26 +57,30 @@ public abstract class AbstractAPIController {
 	    return new ResponseEntity<>(restObjectModel, httpHeaders, HttpStatus.OK);
 	}
 	
-//
-//	/**
-//	 * Chargement de l'utilisateur
-//	 * @param token token JWT
-//	 * @return utilisateur si authentifié
-//	 * @throws UserNotAuthorizedException erreur d'auter
-//	 */
-//
-//	public UserBusinessSession getUtilisateur(String token) throws UserNotAuthorizedException{
-//		UserBusinessSession userSession = null;
-//		try{
-//			String idUser = (String)JwtConfigEnum.getJWTClaims(token).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
-//			userSession = serviceUtilisateurs.getBusinessSession(idUser);
-//		}
-//		catch (Exception e) {
-//			logger.warn("Erreur lors du décodage du token [{}]", token, e);
-//		}
-//		if(userSession != null){
-//			return userSession;
-//		}
-//		throw new UserNotAuthorizedException("L'utilisateur n'est pas authentifié");
-//	}
+	
+	
+	/**
+	 * Chargement de l'utilisateur
+	 * @param token token JWT
+	 * @return utilisateur si authentifié
+	 * @throws UserNotAuthorizedException erreur d'auter
+	 */
+	
+	public UserBusinessSession getUtilisateur(String token) throws UserNotAuthorizedException{
+		UserBusinessSession userSession = null;
+		try{
+			String idUser = (String)JwtConfigEnum.getJWTClaims(token).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
+			Utilisateur utilisateur = new Utilisateur();
+			utilisateur.setId(idUser);
+			utilisateur.setLogin(idUser);
+			userSession = new UserBusinessSession(utilisateur);
+		}
+		catch (Exception e) {
+			logger.warn("Erreur lors du décodage du token [{}]", token, e);
+		}
+		if(userSession != null){
+			return userSession;
+		}
+		throw new UserNotAuthorizedException("L'utilisateur n'est pas authentifié");
+	}
 }

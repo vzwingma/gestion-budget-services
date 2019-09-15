@@ -6,14 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
+import com.terrier.finances.gestion.services.communs.api.security.DefaultUserDetailService;
 import com.terrier.finances.gestion.services.communs.api.security.filters.JwtTokenAuthenticationFilter;
 import com.terrier.finances.gestion.services.communs.api.security.filters.JwtUsernameAndPasswordAuthenticationFilter;
 
@@ -34,7 +37,8 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private IncomingRequestInterceptor interceptor;
 
-	
+	@Autowired
+	private DefaultUserDetailService defaultUserDetailService;
 	/**
 	 * configuration Sécurité
 	 */
@@ -47,15 +51,12 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 		// handle an authorized attempts 
 		.exceptionHandling().authenticationEntryPoint((req, rsp, e) -> {
-			LOGGER.warn("Erreur 401 : Accès non autorisé à l'URL [{}]", req.getRequestURI());
+			LOGGER.warn("[401] : Accès non autorisé à l'URL [{}]", req.getRequestURI());
 			rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		} )
 		.and()
-		// Add a filter to validate user credentials and add token in the response header
-		.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), interceptor))
 		// Add a filter to validate the tokens with every request
-		.addFilterAfter(new JwtTokenAuthenticationFilter(), JwtUsernameAndPasswordAuthenticationFilter.class)
-		;
+		.addFilterAfter(new JwtTokenAuthenticationFilter(), LogoutFilter.class);
 		// authorization requests config
 //		.authorizeRequests()
 //			.antMatchers("/error").permitAll()
@@ -78,7 +79,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 	// In addition, we need to define the password encoder also. So, auth manager can compare and verify passwords.
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-	//	auth.userDetailsService(usersDetailsServices).passwordEncoder(passwordEncoder());
+	//	auth.userDetailsService(defaultUserDetailService).passwordEncoder(passwordEncoder());
 	}
 	
 

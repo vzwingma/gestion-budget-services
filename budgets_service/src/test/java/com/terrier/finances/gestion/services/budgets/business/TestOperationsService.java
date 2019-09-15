@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budget.business;
+package com.terrier.finances.gestion.services.budgets.business;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,11 +17,9 @@ import java.time.Month;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -40,10 +38,8 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.communs.data.model.UserBusinessSession;
-import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
-import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.TestMockAuthServicesConfig;
-import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
+import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 
 /**
  * Test opération Service
@@ -51,7 +47,7 @@ import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={TestMockDBServicesConfig.class, TestMockAuthServicesConfig.class})
+@ContextConfiguration(classes={TestMockBudgetServiceConfig.class, TestMockAuthServicesConfig.class})
 public class TestOperationsService {
 
 	/**
@@ -60,20 +56,17 @@ public class TestOperationsService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestOperationsService.class);
 
 	@Autowired
-	private TestMockAuthServicesConfig mocksAuthConfig;
-
-	@Autowired
 	private BudgetDatabaseService mockDBBudget;
 
 	@Autowired
 	private OperationsService operationsService;
 
-	@Autowired
-	private UtilisateurDatabaseService mockDataDBUsers;
+//	@Autowired
+//	private UtilisateurDatabaseService mockDataDBUsers;
 
-	@Autowired
-	@Qualifier("mockAuthService")
-	private UtilisateursService authenticationService;
+//	@Autowired
+//	@Qualifier("mockAuthService")
+//	private UtilisateursService authenticationService;
 
 	private BudgetMensuel budget;
 
@@ -87,15 +80,15 @@ public class TestOperationsService {
 	 */
 	@BeforeEach
 	public void initBusinessSession() throws DataNotFoundException{
-		UserBusinessSession mockUser = Mockito.mock(UserBusinessSession.class);
-		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
-		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
-
-		user = new Utilisateur();
-		user.setId("userTest");
-		user.setLibelle("userTest");
-		user.setLogin("userTest");
-		authenticationService.registerUserBusinessSession(user);
+//		UserBusinessSession mockUser = Mockito.mock(UserBusinessSession.class);
+//		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
+//		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
+//
+//		user = new Utilisateur();
+//		user.setId("userTest");
+//		user.setLibelle("userTest");
+//		user.setLogin("userTest");
+//		authenticationService.registerUserBusinessSession(user);
 
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
@@ -118,8 +111,8 @@ public class TestOperationsService {
 		compte.setLibelle("TEST COMPTE");
 		compte.setOrdre(0);
 
-		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(compte);
-		when(operationsService.getServiceComptes().getCompteById(anyString(), anyString())).thenReturn(compte);
+//		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(compte);
+//		when(operationsService.getServiceComptes().getCompteById(anyString(), anyString())).thenReturn(compte);
 		
 		this.budget.setCompteBancaire(compte);
 

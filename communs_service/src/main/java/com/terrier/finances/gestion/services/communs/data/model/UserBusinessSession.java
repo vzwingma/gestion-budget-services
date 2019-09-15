@@ -7,6 +7,7 @@ import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
  * @author vzwingma
  *
  */
+@Deprecated
 public class UserBusinessSession {
 
 	// Utilisateur métier, associé à la session

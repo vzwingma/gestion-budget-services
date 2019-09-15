@@ -29,7 +29,6 @@ import com.terrier.finances.gestion.services.communs.data.model.BudgetMensuelDTO
 import com.terrier.finances.gestion.services.comptes.data.ComptesDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBComptesConfig;
-import com.terrier.finances.gestion.test.config.TestRealAuthServices;
 
 /**
  * Test de l'API compte
@@ -38,7 +37,7 @@ import com.terrier.finances.gestion.test.config.TestRealAuthServices;
  */
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes={TestMockDBComptesConfig.class, TestRealAuthServices.class})
+@ContextConfiguration(classes={TestMockDBComptesConfig.class})
 public class TestComptesAPI extends AbstractTestsAPI {
 
 
