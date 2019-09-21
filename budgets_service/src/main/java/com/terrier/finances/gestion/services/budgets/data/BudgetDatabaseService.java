@@ -2,7 +2,10 @@ package com.terrier.finances.gestion.services.budgets.data;
 
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,6 +226,30 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 		}
 	}
 
+	/**
+	 * Chargement des libellés des dépenses
+	 * @param annee année du budget
+	 * @param idCompte id du compte
+	 * @return liste des libellés
+	 */
+	public Set<String> chargeLibellesOperations(String idCompte, int annee) {
+		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
+		Query queryBudget = new Query();
+		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte).and(ATTRIBUT_ANNEE).is(annee));
+		Set<String> libellesDepenses = new HashSet<>();
+		try{
+			libellesDepenses = findByQuery(queryBudget)
+					.parallelStream()
+					// liste dépenses transformées 
+					.flatMap(budgetDTO -> budgetDTO.getListeDepenses().stream().map(operation -> operation.getLibelle()))
+					.collect(Collectors.toSet());
+		}
+		catch(Exception e){
+			LOGGER.error("Erreur lors du chargement des libellés des dépenses du compte {} de {}", idCompte, annee, e);
+		}
+		return libellesDepenses;
+	}
+	
 	/**
 	 * @return the dataTransformerBudget
 	 */

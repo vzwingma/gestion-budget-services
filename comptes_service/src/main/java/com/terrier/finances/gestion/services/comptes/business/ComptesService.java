@@ -1,7 +1,6 @@
 package com.terrier.finances.gestion.services.comptes.business;
 
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,15 +79,6 @@ public class ComptesService extends AbstractBusinessService {
 
 	
 	
-	/**
-	 * Charge les libelles des opérations
-	 * @param idCompte
-	 * @param annee
-	 * @return liste des libelles opérations
-	 */
-	public Set<String> getLibellesOperations(String idCompte, int annee){
-		return this.dataDBComptes.chargeLibellesOperations(idCompte, annee);
-	}
 
 	@Override
 	protected void doHealthCheck(Builder builder) throws Exception {

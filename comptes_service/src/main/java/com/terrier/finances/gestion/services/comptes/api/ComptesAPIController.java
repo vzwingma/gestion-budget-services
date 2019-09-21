@@ -4,7 +4,6 @@
 package com.terrier.finances.gestion.services.comptes.api;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,12 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
-import com.terrier.finances.gestion.communs.operations.model.api.LibellesOperationsAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
@@ -93,40 +90,6 @@ public class ComptesAPIController extends AbstractAPIController {
 
 
 
-
-	/**
-	 * Liste des libellés des opérations d'un compte (tout mois confondu)
-	 * @param idUtilisateur id Utilisateur
-	 * @param idCompte idCompte
-	 * @param annee année
-	 * @throws UserNotAuthorizedException 
-	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Libelles des opérations des budgets de l'année pour un compte")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Opération réussie"),
-			@ApiResponse(code = 204, message = "Aucune donnée"),
-			@ApiResponse(code = 401, message = "L'utilisateur doit être authentifié"),
-			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables")
-	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
-	})		
-	@GetMapping(value=BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES)
-	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestAttribute("idProprietaire") String idProprietaire, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
-		logger.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);
-		if(idProprietaire != null) {
-			Set<String> libelles = comptesService.getLibellesOperations(idCompte, annee);
-			if(libelles != null && !libelles.isEmpty()){
-				LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();
-				libellesO.setIdCompte(idCompte);
-				libellesO.setLibellesOperations(libelles);
-				return getEntity(libellesO);
-			}
-		}
-		return ResponseEntity.noContent().build();
-	}
 
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {

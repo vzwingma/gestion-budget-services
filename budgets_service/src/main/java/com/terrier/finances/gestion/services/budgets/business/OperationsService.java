@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -636,6 +637,15 @@ public class OperationsService extends AbstractBusinessService {
 	}
 	
 
+	/**
+	 * Charge les libelles des opérations
+	 * @param idCompte
+	 * @param annee
+	 * @return liste des libelles opérations
+	 */
+	public Set<String> getLibellesOperations(String idCompte, int annee){
+		return this.dataDepenses.chargeLibellesOperations(idCompte, annee);
+	}
 	
 	/**
 	 * @param dataDepenses the dataDepenses to set

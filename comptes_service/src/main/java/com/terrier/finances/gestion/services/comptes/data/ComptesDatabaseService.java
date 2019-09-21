@@ -1,9 +1,7 @@
 package com.terrier.finances.gestion.services.comptes.data;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
-import com.terrier.finances.gestion.services.comptes.model.BudgetMensuelDTO;
 
 /**
  * Service de données en MongoDB fournissant les infos des utilisateurs et comptes
@@ -30,9 +27,6 @@ public class ComptesDatabaseService extends AbstractDatabaseService<CompteBancai
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(ComptesDatabaseService.class);
 
-	private static final String ATTRIBUT_COMPTE_ID = "compteBancaire.id";
-	private static final String ATTRIBUT_ANNEE = "annee";
-	
 	/**
 	 * Chargement des comptes
 	 * @param utilisateur utilisateur 
@@ -112,29 +106,5 @@ public class ComptesDatabaseService extends AbstractDatabaseService<CompteBancai
 	}
 
 
-	/**
-	 * Chargement des libellés des dépenses
-	 * @param annee année du budget
-	 * @param idCompte id du compte
-	 * @return liste des libellés
-	 */
-	public Set<String> chargeLibellesOperations(String idCompte, int annee) {
-		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
-		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte).and(ATTRIBUT_ANNEE).is(annee));
-		Set<String> libellesDepenses = new HashSet<>();
-		try{
-			List<BudgetMensuelDTO> budgetsDTO = getMongoOperation().find(queryBudget, BudgetMensuelDTO.class);
 
-			libellesDepenses = budgetsDTO
-					.parallelStream()
-					// liste dépenses transformées 
-					.flatMap(budgetDTO -> budgetDTO.getListeDepenses().stream().map(operation -> operation.getLibelle()))
-					.collect(Collectors.toSet());
-		}
-		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement des libellés des dépenses du compte {} de {}", idCompte, annee, e);
-		}
-		return libellesDepenses;
-	}
 }

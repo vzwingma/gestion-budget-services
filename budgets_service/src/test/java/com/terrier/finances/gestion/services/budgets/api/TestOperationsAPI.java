@@ -14,6 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Month;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -506,5 +508,30 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(opupdate)))
 		.andExpect(status().isOk());
+	}
+	
+	
+	/**
+	 * Tests libellés
+	 * @throws Exception
+	 */
+	@Test
+	public void testLibelles() throws Exception {
+		String path = BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES_FULL.replace("{idCompte}", "TEST") + "?annee=2019";
+		getMockAPI().perform(get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123")))
+		.andExpect(status().isNoContent());
+		
+//		Utilisateur user = new Utilisateur();
+//		user.setId("TEEST");
+//		serviceUser.registerUserBusinessSession(user);
+		
+		Set<String> libelles = new HashSet<>();
+		libelles.add("OPE1");
+		libelles.add("OPE2");
+		when(mockDataDBBudget.chargeLibellesOperations(eq("TEST"), eq(2019))).thenReturn(libelles);
+		
+		getMockAPI().perform(get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123")))
+		.andExpect(status().isOk())
+		.andExpect(content().string("{\"idCompte\":\"TEST\",\"libellesOperations\":[\"OPE1\",\"OPE2\"]}"));
 	}
 }
