@@ -53,7 +53,6 @@
 		<dependency>
 			<groupId>io.github.vzwingma.finances.budget.services</groupId>
 			<artifactId>communs</artifactId>
-			<version>${project.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>			

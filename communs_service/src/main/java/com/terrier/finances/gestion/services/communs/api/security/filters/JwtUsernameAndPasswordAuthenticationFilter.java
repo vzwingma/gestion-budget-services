@@ -23,7 +23,6 @@ import com.fasterxml.jackson.core.JsonpCharacterEscapes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 
 /**
@@ -63,7 +62,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// Logger
-			interceptor.manageHeaders(request, null);
+			interceptor.manageHeaders(request);
 			// 1. Get credentials from request
 			JsonFactory factory = new JsonFactory();
 			factory.setCharacterEscapes(new JsonpCharacterEscapes());
@@ -77,7 +76,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 			// 3. Authentication manager authenticate the user, and use UserDetailsServiceImpl::loadUserByUsername() method to load the user.
 			return authManager.authenticate(authToken);
 
-		} catch (IOException | UserNotAuthorizedException e) {
+		} catch (IOException e) {
 			throw new BadCredentialsException("Impossible de lire " + request);
 		}
 	}

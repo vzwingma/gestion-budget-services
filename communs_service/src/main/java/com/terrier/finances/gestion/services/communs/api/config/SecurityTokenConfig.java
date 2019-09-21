@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 import com.terrier.finances.gestion.services.communs.api.security.filters.JwtTokenAuthenticationFilter;
 
@@ -37,11 +36,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 		// handle an authorized attempts 
 		.exceptionHandling().authenticationEntryPoint((req, rsp, e) -> {
-			try {
-				interceptor.manageHeaders(req, null);
-			} catch (UserNotAuthorizedException e1) {
-				// Rien, c'est le but
-			}
+			interceptor.manageHeaders(req);
 			rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		} )
 		.and()

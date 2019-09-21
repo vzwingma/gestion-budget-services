@@ -37,7 +37,6 @@ import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.communs.data.model.UserBusinessSession;
 import com.terrier.finances.gestion.test.config.TestMockAuthServicesConfig;
 import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 
@@ -83,12 +82,8 @@ public class TestOperationsService {
 //		UserBusinessSession mockUser = Mockito.mock(UserBusinessSession.class);
 //		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
 //		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
-//
-//		user = new Utilisateur();
-//		user.setId("userTest");
-//		user.setLibelle("userTest");
-//		user.setLogin("userTest");
-//		authenticationService.registerUserBusinessSession(user);
+		user = new Utilisateur();
+		user.setId("userTest");
 
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
@@ -127,7 +122,7 @@ public class TestOperationsService {
 	public void testSetBudgetInactif() throws UserNotAuthorizedException, BudgetNotFoundException{
 		when(mockDBBudget.chargeBudgetMensuelById(anyString())).thenReturn(this.budget);
 		try {
-			BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, new UserBusinessSession(new Utilisateur()));
+			BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, "test");
 			assertEquals(EtatOperationEnum.REPORTEE, m.getListeOperations().get(0).getEtat());
 		}
 		catch (Exception e) {
@@ -206,7 +201,7 @@ public class TestOperationsService {
 		op2.setDerniereOperation(false);
 		budget.getListeOperations().add(op2);
 
-		assertTrue(operationsService.setLigneAsDerniereOperation(this.budget.getId(), "ID_op", new UserBusinessSession(user)));
+		assertTrue(operationsService.setLigneAsDerniereOperation(this.budget.getId(), "ID_op", user.getId()));
 
 		verify(mockDBBudget, atLeastOnce()).sauvegardeBudgetMensuel(any(BudgetMensuel.class));
 	}
@@ -230,7 +225,7 @@ public class TestOperationsService {
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
-		BudgetMensuel budgetDel = operationsService.deleteOperation(this.budget.getId(), "TEST1", new UserBusinessSession(user));
+		BudgetMensuel budgetDel = operationsService.deleteOperation(this.budget.getId(), "TEST1", user.getId());
 		assertEquals(0, budgetDel.getListeOperations().size());
 		
 		LOGGER.info("/testDelOperation");
@@ -266,14 +261,14 @@ public class TestOperationsService {
 		LigneOperation opNew = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
 		opNew.setId("OP3");
 
-		BudgetMensuel budgetOP3 = operationsService.createOrUpdateOperation(this.budget.getId(), opNew, new UserBusinessSession(user));
+		BudgetMensuel budgetOP3 = operationsService.createOrUpdateOperation(this.budget.getId(), opNew, user.getId());
 		assertEquals(4, budgetOP3.getListeOperations().size());
 
 		LOGGER.info("testCRUDOperation - Delete existing Ope");
 		LigneOperation opDel = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", null, false);
 		opDel.setId("OP1");
 
-		BudgetMensuel budgetDel = operationsService.createOrUpdateOperation(this.budget.getId(), opDel, new UserBusinessSession(user));
+		BudgetMensuel budgetDel = operationsService.createOrUpdateOperation(this.budget.getId(), opDel, user.getId());
 		assertEquals(3, budgetDel.getListeOperations().size());
 		
 		
@@ -283,7 +278,7 @@ public class TestOperationsService {
 		LOGGER.info("testCRUDOperation - Update Ope");
 		LigneOperation opUpdate = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
 		opUpdate.setId("OP3");
-		BudgetMensuel budgetUpdate = operationsService.createOrUpdateOperation(this.budget.getId(), opUpdate, new UserBusinessSession(user));
+		BudgetMensuel budgetUpdate = operationsService.createOrUpdateOperation(this.budget.getId(), opUpdate, user.getId());
 		assertEquals(3, budgetUpdate.getListeOperations().size());
 		assertEquals(549, budgetUpdate.getSoldeFin());
 		assertEquals(213, budgetUpdate.getSoldeNow());

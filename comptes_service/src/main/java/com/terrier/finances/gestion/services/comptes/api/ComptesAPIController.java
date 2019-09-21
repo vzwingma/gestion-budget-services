@@ -26,7 +26,6 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
-import com.terrier.finances.gestion.services.communs.data.model.UserBusinessSession;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 
 import io.swagger.annotations.Api;
@@ -66,9 +65,9 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST)
-	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestAttribute("userSession") UserBusinessSession userSession) throws DataNotFoundException, UserNotAuthorizedException{
+	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
 		logger.info("getComptes");
-		return getEntities(comptesService.getComptesUtilisateur(userSession.getUtilisateur().getId()));
+		return getEntities(comptesService.getComptesUtilisateur(idProprietaire));
 	}
 
 	/**
@@ -89,9 +88,9 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path")
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID)
-	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestAttribute("userSession") UserBusinessSession userSession) throws DataNotFoundException, UserNotAuthorizedException{
+	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
 		logger.info("[idCompte={}] getCompte", idCompte);
-		return getEntity(comptesService.getCompteById(idCompte, userSession.getUtilisateur().getId()));
+		return getEntity(comptesService.getCompteById(idCompte, idProprietaire));
 	}
 
 
@@ -113,17 +112,19 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES)
-	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte,  @RequestAttribute("userSession") UserBusinessSession userSession) throws DataNotFoundException, UserNotAuthorizedException{
+	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte,  @RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
 		logger.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
-
-		LocalDate[] intervalles = comptesService.getIntervallesBudgets(idCompte);
-		if(intervalles != null && intervalles.length >= 2){
-			IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
-			intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[0]));
-			intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[1]));
-			return getEntity(intervallesAPI);	
+		if(idProprietaire != null) {
+			LocalDate[] intervalles = comptesService.getIntervallesBudgets(idCompte);
+			if(intervalles != null && intervalles.length >= 2){
+				IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
+				intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[0]));
+				intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[1]));
+				return getEntity(intervallesAPI);	
+			}
+			throw new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte);
 		}
-		throw new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte);
+		throw new UserNotAuthorizedException("Impossible de charger les données d'un utilisateur anonyme");
 	}
 
 
@@ -147,14 +148,16 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
 	})		
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES)
-	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations( @RequestAttribute("userSession") UserBusinessSession userSession, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
+	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestAttribute("idProprietaire") String idProprietaire, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
 		logger.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);
-		Set<String> libelles = comptesService.getLibellesOperations(idCompte, annee);
-		if(libelles != null && !libelles.isEmpty()){
-			LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();
-			libellesO.setIdCompte(idCompte);
-			libellesO.setLibellesOperations(libelles);
-			return getEntity(libellesO);
+		if(idProprietaire != null) {
+			Set<String> libelles = comptesService.getLibellesOperations(idCompte, annee);
+			if(libelles != null && !libelles.isEmpty()){
+				LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();
+				libellesO.setIdCompte(idCompte);
+				libellesO.setLibellesOperations(libelles);
+				return getEntity(libellesO);
+			}
 		}
 		return ResponseEntity.noContent().build();
 	}

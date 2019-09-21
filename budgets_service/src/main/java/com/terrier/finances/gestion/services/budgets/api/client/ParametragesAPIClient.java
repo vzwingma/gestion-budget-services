@@ -3,8 +3,6 @@ package com.terrier.finances.gestion.services.budgets.api.client;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;

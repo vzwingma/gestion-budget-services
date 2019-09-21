@@ -10,14 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatus.Series;
 import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 
 /**
  * Request inteceptor pour charger le correlationID et le userSession
@@ -35,12 +33,12 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 
 	/**
 	 * Traite les entêtes en entrée
-	 * @param request
-	 * @param apiController
+	 * @param request requete
 	 * @throws UserNotAuthorizedException utilisateur inconnu
 	 */
-	public void manageHeaders(HttpServletRequest request, AbstractAPIController apiController) throws UserNotAuthorizedException {
+	public void manageHeaders(HttpServletRequest request) {
 
+		// Logger des CorrId
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID);
 		if(corrIdHeader == null) {
 			corrIdHeader = UUID.randomUUID().toString();
@@ -48,30 +46,31 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		org.slf4j.MDC.put(ApiConfigEnum.HEADER_CORRELATION_ID, new StringBuilder("[").append(ApiConfigEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
-		
+
+		// Injection de la session User à partir du JWT
 		String idUser = UNKNOWN_USER;
-		if(apiController != null) {
-			String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
-			if(jwtToken != null) {
-				try {
-					idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
-					request.setAttribute("userSession", apiController.getUtilisateur(jwtToken));
-				} catch (UserNotAuthorizedException e) {
-					LOGGER.warn("[idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
-					throw e;
-				}
-			}
-			else {
-				LOGGER.warn("JwTToken introuvable");
+
+		String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
+		if(jwtToken != null) {
+			try {
+				idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
+				request.setAttribute("idProprietaire", JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID));
+			} catch (SecurityException e) {
+				LOGGER.warn("[idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
+				throw e;
 			}
 		}
-		
+		else {
+			LOGGER.warn("JwTToken introuvable");
+		}
+
+		// Log API CorrId
 		String corrIdAPIHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID);
 		if(corrIdAPIHeader == null) {
 			corrIdAPIHeader = UUID.randomUUID().toString();
 			request.setAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
 		}
-		
+
 		if(UNKNOWN_USER.equals(idUser)) {
 			LOGGER.info("[API={}][{} :: {}] anonyme", corrIdAPIHeader, request.getMethod(), request.getRequestURI());
 		}
@@ -86,18 +85,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		try {
-			if(handler instanceof HandlerMethod) {
-				HandlerMethod handlerMethod = (HandlerMethod)handler;
-				if(handlerMethod.getBean() instanceof AbstractAPIController) {
-					manageHeaders(request, (AbstractAPIController)handlerMethod.getBean());
-				}
-			}
-		}
-		catch (UserNotAuthorizedException e) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value(), "Utilisateur non authentifié");
-			return false;
-		}
+		manageHeaders(request);
 		return true;
 	}
 
@@ -111,12 +99,11 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 			ModelAndView modelAndView) throws Exception {
 
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiConfigEnum.HEADER_CORRELATION_ID);
-
 		response.setHeader(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
 		String corrIdApiHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID);
 		response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
 		super.postHandle(request, response, handler, modelAndView);
-		LOGGER.debug("postHandle {}", request.getRequestURI());
+
 		if(HttpStatus.Series.resolve(response.getStatus()) == Series.SUCCESSFUL) {
 			LOGGER.info("[API={}] Statut HTTP : [{}]", corrIdApiHeader, response.getStatus());
 		}

@@ -26,7 +26,6 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.business.OperationsService;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
-import com.terrier.finances.gestion.services.communs.data.model.UserBusinessSession;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -52,7 +51,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	
 	/**
 	 * Retour le budget d'un utilisateur
-	 * @param idUtilisateur id de l'utilisateur
+	 * @param idProprietaire id de l'utilisateur
 	 * @param idCompte id du compte
 	 * @param mois mois du budget
 	 * @param annee du budget
@@ -78,13 +77,13 @@ public class OperationsAPIController extends AbstractAPIController {
 			@RequestParam("idCompte") String idCompte, 
 			@RequestParam("mois") Integer mois, 
 			@RequestParam("annee") Integer annee, 
-			@RequestAttribute("userSession") UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException {
+			@RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException {
 		logger.info("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
 
 		if(mois != null && annee != null){
 			try{
 				Month month = Month.of(mois);
-				return getEntity(operationService.chargerBudgetMensuel(idCompte, month, annee, userSession));
+				return getEntity(operationService.chargerBudgetMensuel(idCompte, month, annee, idProprietaire));
 			}
 			catch(NumberFormatException e){
 				throw new DataNotFoundException("Erreur dans les paramètres en entrée");
@@ -98,7 +97,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour du budget
 	 * @param idBudget id du budget
-	 * @param idUtilisateur idUtilisateur
+	 * @param idProprietaire idProprietaire
 	 * @param budget budget
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
@@ -118,11 +117,11 @@ public class OperationsAPIController extends AbstractAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ID)
 	public @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
 			@PathVariable("idBudget") String idBudget, 
-			@RequestAttribute("userSession") UserBusinessSession userSession) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
+			@RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
 
 		logger.info("[idBudget={}] chargeBudget", idBudget);
 		if(idBudget != null){
-			return getEntity(operationService.chargerBudgetMensuel(idBudget, userSession));
+			return getEntity(operationService.chargerBudgetMensuel(idBudget, idProprietaire));
 		}
 		throw new DataNotFoundException("Impossible de charger le budget");
 	}
@@ -131,7 +130,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour du budget
 	 * @param idBudget id du budget
-	 * @param idUtilisateur idUtilisateur
+	 * @param idProprietaire idProprietaire
 	 * @param budget budget
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
@@ -149,10 +148,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	})	
 
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
-	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestAttribute("userSession") UserBusinessSession userSession) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		logger.info("[idBudget={}] reinitialisation", idBudget);
-		if(idBudget != null){
-			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, userSession);
+		if(idBudget != null && idProprietaire != null){
+			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, idProprietaire);
 			return getEntity(budgetUpdated);
 		}
 		throw new DataNotFoundException("Impossible de réinitialiser le budget");
@@ -181,7 +180,6 @@ public class OperationsAPIController extends AbstractAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<Boolean> isBudgetActif(
 			@PathVariable("idBudget") String idBudget, 
-			@RequestAttribute("userSession") UserBusinessSession userSession,
 			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif,  @RequestParam(value="uptodateto", required=false) Long uptodateto) throws UserNotAuthorizedException, BudgetNotFoundException {
 
 		logger.info("[idBudget={}] actif ? : {}, uptodateto ? {}", idBudget, isActif, uptodateto );
@@ -232,11 +230,11 @@ public class OperationsAPIController extends AbstractAPIController {
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<BudgetMensuel> setBudgetActif(
 			@PathVariable("idBudget") String idBudget,
-			@RequestAttribute("userSession") UserBusinessSession userSession,
+			@RequestAttribute("idProprietaire") String idProprietaire,
 			@RequestParam(value="actif") Boolean setActif) throws UserNotAuthorizedException, BudgetNotFoundException {
 
 		logger.info("[idBudget={}] set Actif : {}", idBudget, setActif );
-		BudgetMensuel budgetActif = operationService.setBudgetActif(idBudget, setActif, userSession);
+		BudgetMensuel budgetActif = operationService.setBudgetActif(idBudget, setActif, idProprietaire);
 		return getEntity(budgetActif);
 	}
 
@@ -265,10 +263,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	public ResponseEntity<Boolean> setAsDerniereOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation, 
-			@RequestAttribute("userSession") UserBusinessSession userSession) throws UserNotAuthorizedException, BudgetNotFoundException {
+			@RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException {
 
 		logger.info("[idBudget={}][idOperation={}] setAsDerniereOperation", idBudget, idOperation);
-		boolean resultat = operationService.setLigneAsDerniereOperation(idBudget, idOperation, userSession);
+		boolean resultat = operationService.setLigneAsDerniereOperation(idBudget, idOperation, idProprietaire);
 		if(resultat){
 			return ResponseEntity.ok().build();
 		}
@@ -281,7 +279,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour d'une opération
 	 * @param idBudget id du budget
-	 * @param idUtilisateur idUtilisateur
+	 * @param idProprietaire idProprietaire
 	 * @param operation opération à mettre à jour
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
@@ -305,14 +303,14 @@ public class OperationsAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<BudgetMensuel> createOrUpdateOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
-			@RequestAttribute("userSession") UserBusinessSession userSession, 
+			@RequestAttribute("idProprietaire") String idProprietaire,
 			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
 		logger.info("[idBudget={}][idOperation={}] createOrUpdateOperation", idBudget, idOperation);
-		if(operation != null && idBudget != null && userSession != null){
+		if(operation != null && idBudget != null && idProprietaire != null){
 			operation.setId(idOperation);
 			operationService.completeCategoriesOnOperation(operation);
-			BudgetMensuel budgetUpdated = operationService.createOrUpdateOperation(idBudget, operation, userSession);
+			BudgetMensuel budgetUpdated = operationService.createOrUpdateOperation(idBudget, operation, idProprietaire);
 			return getEntity(budgetUpdated);
 		}
 		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + operation);
@@ -323,7 +321,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour d'une opération
 	 * @param idBudget id du budget
-	 * @param idUtilisateur idUtilisateur
+	 * @param idProprietaire idProprietaire
 	 * @param operation opération à mettre à jour
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
@@ -350,14 +348,14 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
 			@PathVariable("idCompte") String idCompte,
-			@RequestAttribute("userSession") UserBusinessSession userSession, 
+			@RequestAttribute("idProprietaire") String idProprietaire, 
 			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
 		logger.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
 		if(operation != null && idBudget != null){
 			operation.setId(idOperation);
 			operationService.completeCategoriesOnOperation(operation);
-			BudgetMensuel budgetUpdated = operationService.createOperationIntercompte(idBudget, operation, idCompte, userSession);
+			BudgetMensuel budgetUpdated = operationService.createOperationIntercompte(idBudget, operation, idCompte, idProprietaire);
 			return getEntity(budgetUpdated);
 		}
 		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + operation);
@@ -366,7 +364,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour d'une opération
 	 * @param idBudget id du budget
-	 * @param idUtilisateur idUtilisateur
+	 * @param idProprietaire idProprietaire
 	 * @param operation opération à mettre à jour
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
@@ -391,12 +389,12 @@ public class OperationsAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<BudgetMensuel> deleteOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
-			@RequestAttribute("userSession") UserBusinessSession userSession
+			@RequestAttribute("idProprietaire") String idProprietaire
 		) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		
-		if(idOperation != null && idBudget != null && userSession != null){
+		if(idOperation != null && idBudget != null && idProprietaire != null){
 			logger.info("[idBudget={}][idOperation={}] deleteOperation", idBudget, idOperation);
-			BudgetMensuel budgetUpdated = operationService.deleteOperation(idBudget, idOperation, userSession);
+			BudgetMensuel budgetUpdated = operationService.deleteOperation(idBudget, idOperation, idProprietaire);
 			if(budgetUpdated != null) {
 				return getEntity(budgetUpdated);
 			}
