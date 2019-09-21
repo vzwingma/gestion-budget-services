@@ -16,7 +16,7 @@ import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDataba
  *
  */
 @Repository
-public class UtilisateurDatabaseService extends AbstractDatabaseService {
+public class UtilisateurDatabaseService extends AbstractDatabaseService<Utilisateur> {
 
 	/**
 	 * Logger
@@ -31,7 +31,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 			LOGGER.info("[idUser=?] Recherche de l'utilisateur [{}]", login);
 			Query queryUser = new Query();
 			queryUser.addCriteria(Criteria.where("login").is(login));
-			return getMongoOperation().findOne(queryUser, Utilisateur.class);
+			return findOneByQuery(queryUser);
 		}
 		catch(Exception e){
 			LOGGER.error("[idUser=?] Erreur lors de la recherche de l'utilisateur [{}]", login, e);
@@ -45,7 +45,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService {
 	 */
 	public void majUtilisateur(Utilisateur utilisateur){
 		try{
-			getMongoOperation().save(utilisateur);
+			save(utilisateur);
 		}
 		catch(Exception e){
 			LOGGER.error("[idUser={}] Erreur lors de la sauvegarde de l'utilisateur", utilisateur.getId(), e);

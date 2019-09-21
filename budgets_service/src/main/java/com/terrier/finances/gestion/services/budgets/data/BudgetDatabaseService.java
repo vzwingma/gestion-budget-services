@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -27,7 +28,7 @@ import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDataba
  *
  */
 @Repository
-public class BudgetDatabaseService extends AbstractDatabaseService {
+public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuelDTO> {
 
 	/**
 	 * Logger
@@ -53,7 +54,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and(ATTRIBUT_MOIS).is(mois.getValue() -1).and(ATTRIBUT_ANNEE).is(annee));
 		BudgetMensuelDTO budgetDTO = null;
 		try{
-			budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class);
+			budgetDTO = findOneByQuery(queryBudget);
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement du budget mensuel", e);
@@ -102,7 +103,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		LOGGER.info("Chargement du budget [{}]", idBudget);
 		BudgetMensuelDTO budgetDTO = null;
 		try{
-			budgetDTO = getMongoOperation().findById(idBudget, BudgetMensuelDTO.class);
+			budgetDTO = findById(idBudget);
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement du budget du compte {}", idBudget, e);
@@ -125,7 +126,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 
 		List<BudgetMensuelDTO> budgets = new ArrayList<>();
 		try{
-			budgets.addAll(getMongoOperation().find(queryBudget, BudgetMensuelDTO.class));
+			budgets.addAll(findByQuery(queryBudget));
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement des budgets du compte {}", idCompte, e);
@@ -151,7 +152,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		LOGGER.info("Chargement du budget {} ", idBudget);
 		Query queryBudget = new Query().addCriteria(Criteria.where("id").is(idBudget));
 		try{
-			BudgetMensuelDTO budgetDTO = getMongoOperation().findOne(queryBudget, BudgetMensuelDTO.class);
+			BudgetMensuelDTO budgetDTO = findOneByQuery(queryBudget);
 			if(budgetDTO != null && budgetDTO.getListeDepenses() != null){
 				return budgetDTO.getListeDepenses();
 			}
@@ -180,7 +181,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		BudgetMensuelDTO budgetDTO = dataTransformerBudget.transformBOtoDTO(budgetBO);
 		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budgetDTO.getCompteBancaire().getLibelle(), budgetDTO.getMois() + 1, budgetDTO.getAnnee());
 		try{
-			getMongoOperation().save(budgetDTO);
+			save(budgetDTO);
 			LOGGER.info("Budget {} sauvegardé ", budgetDTO.getId());
 			return budgetDTO.getId();
 		}
@@ -190,6 +191,37 @@ public class BudgetDatabaseService extends AbstractDatabaseService {
 		}
 	}
 
+
+	/**
+	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
+	 * @param utilisateur utilisateur
+	 * @param compte id du compte
+	 * @return la date du premier budget décrit pour cet utilisateur
+	 */
+	public BudgetMensuelDTO[] getPremierDernierBudgets(String compte) throws DataNotFoundException{
+		try{
+			Query query1erBudget = new Query();
+			query1erBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
+			query1erBudget.with(new Sort(Sort.Direction.ASC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.ASC, ATTRIBUT_MOIS));
+			query1erBudget.limit(1);
+			
+			BudgetMensuelDTO premierbudget = findOneByQuery(query1erBudget);
+			LOGGER.debug("Premier budget trouvé -> {}", premierbudget);
+			
+			Query querydernierBudget = new Query();
+			querydernierBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
+			querydernierBudget.with(new Sort(Sort.Direction.DESC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.DESC, ATTRIBUT_MOIS));
+			querydernierBudget.limit(1);
+			
+			BudgetMensuelDTO dernierbudget = findOneByQuery(querydernierBudget);
+			LOGGER.debug("Dernier budget trouvé -> {}", dernierbudget);
+			return new BudgetMensuelDTO[]{premierbudget, dernierbudget};
+		}
+		catch(Exception e){
+			LOGGER.error("Erreur lors du chargement de la date du premier budget de {}", compte, e);
+			throw new DataNotFoundException("Erreur lors du chargement de la date du premier budget de " + compte);
+		}
+	}
 
 	/**
 	 * @return the dataTransformerBudget

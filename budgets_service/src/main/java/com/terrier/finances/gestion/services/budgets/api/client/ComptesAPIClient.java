@@ -3,7 +3,6 @@
  */
 package com.terrier.finances.gestion.services.budgets.api.client;
 
-import java.time.LocalDate;
 import java.util.Collections;
 
 import org.springframework.stereotype.Service;
@@ -36,12 +35,7 @@ public class ComptesAPIClient extends AbstractHTTPClient {
 			return null;
 		}
 	}
-	
-	
-	public LocalDate[] getIntervallesBudgets(String idCompte) throws DataNotFoundException{
-		return null;
-	}
-	
+
 	
 	@Override
 	public String getBaseURL() {

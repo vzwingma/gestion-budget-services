@@ -144,6 +144,28 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 
+	@Test
+	public void testIntervalles() throws Exception {
+		String path = BudgetApiUrlEnum.BUDGETS_COMPTE_INTERVALLES_FULL.replace("{idCompte}", "TEST");
+		getMockAPI().perform(get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("TEST")))
+		.andExpect(status().is4xxClientError());
+		
+		BudgetMensuelDTO debut = new BudgetMensuelDTO();
+		debut.setAnnee(2018);
+		debut.setMois(1);
+		
+		BudgetMensuelDTO fin = new BudgetMensuelDTO();
+		fin.setAnnee(2018);
+		fin.setMois(2);
+
+		when(mockDataDBBudget.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuelDTO[]{ debut, fin});
+		getMockAPI().perform(
+				get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123")))
+			.andExpect(status().isOk())
+			.andExpect(content().string("{\"datePremierBudget\":17563,\"dateDernierBudget\":17622}"));
+	}
+	
+	
 
 
 	@Test

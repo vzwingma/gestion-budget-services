@@ -30,6 +30,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.budgets.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerLigneOperation;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 
@@ -207,7 +208,7 @@ public class OperationsService extends AbstractBusinessService {
 		// Init si dans le futur par rapport au démarrage
 		LocalDate datePremierBudget;
 		try{
-			datePremierBudget = compteClientApi.getIntervallesBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
+			datePremierBudget = getIntervallesBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
 		}
 		catch(DataNotFoundException e){
 			datePremierBudget = null;
@@ -244,6 +245,35 @@ public class OperationsService extends AbstractBusinessService {
 		}
 		else{
 			return null;
+		}
+	}
+	
+	
+
+	/**
+	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
+	 * @param utilisateur utilisateur
+	 * @param idCompte id du compte
+	 * @return la date du premier budget décrit pour cet utilisateur
+	 */
+	public LocalDate[] getIntervallesBudgets(String idCompte) throws DataNotFoundException{
+
+		BudgetMensuelDTO[] premierDernierBudgets = this.dataDepenses.getPremierDernierBudgets(idCompte);
+		if(premierDernierBudgets != null && premierDernierBudgets.length >= 2){
+
+
+			LocalDate premier = BudgetDateTimeUtils.localDateFirstDayOfMonth();
+			if(premierDernierBudgets[0] != null){
+				premier = premier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[0].getMois() + 1L).with(ChronoField.YEAR, premierDernierBudgets[0].getAnnee());
+			}
+			LocalDate dernier = BudgetDateTimeUtils.localDateFirstDayOfMonth();
+			if(premierDernierBudgets[1] != null){
+				dernier = dernier.with(ChronoField.MONTH_OF_YEAR, premierDernierBudgets[1].getMois() + 1L).with(ChronoField.YEAR, premierDernierBudgets[1].getAnnee()).plusMonths(1);
+			}
+			return new LocalDate[]{premier, dernier};
+		}
+		else{
+			throw new DataNotFoundException("Données introuvables pour le compte " + idCompte);
 		}
 	}
 

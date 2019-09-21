@@ -1,6 +1,5 @@
 package com.terrier.finances.gestion.services.comptes.api;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,7 +25,6 @@ import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.comptes.data.ComptesDatabaseService;
-import com.terrier.finances.gestion.services.comptes.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBComptesConfig;
 
@@ -134,28 +132,6 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		.andExpect(status().isOk())
 		.andExpect(content().string("{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true}"));;		
 	}	
-	
-	
-	@Test
-	public void testIntervalles() throws Exception {
-		String path = BudgetApiUrlEnum.COMPTES_INTERVALLES_FULL.replace("{idCompte}", "TEST");
-		getMockAPI().perform(get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("TEST")))
-		.andExpect(status().is4xxClientError());
-		
-		BudgetMensuelDTO debut = new BudgetMensuelDTO();
-		debut.setAnnee(2018);
-		debut.setMois(1);
-		
-		BudgetMensuelDTO fin = new BudgetMensuelDTO();
-		fin.setAnnee(2018);
-		fin.setMois(2);
-
-		when(mockComptesDBService.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuelDTO[]{ debut, fin});
-		getMockAPI().perform(
-				get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("{\"datePremierBudget\":17563,\"dateDernierBudget\":17622}"));
-	}
 	
 	
 	

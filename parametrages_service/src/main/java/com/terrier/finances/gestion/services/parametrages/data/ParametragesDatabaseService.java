@@ -22,7 +22,7 @@ import com.terrier.finances.gestion.services.parametrages.model.transformer.Data
  *
  */
 @Repository
-public class ParametragesDatabaseService extends AbstractDatabaseService {
+public class ParametragesDatabaseService extends AbstractDatabaseService<CategorieOperationDTO> {
 
 	/**
 	 * Liste des catégories (A usage interne uniquement !!! Pour réponse : Clonage obligatoire)
@@ -41,7 +41,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService {
 			try{
 				LOGGER.trace("Chargement des catégories en BDD");
 				// Ajout des catégories
-				listeCategories = getMongoOperation().findAll(CategorieOperationDTO.class)
+				listeCategories = findAll()
 						.stream()
 						.map(dto -> new DataTransformerCategorieOperations().transformDTOtoBO(dto))
 						.collect(Collectors.toList());

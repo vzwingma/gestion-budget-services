@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.services.budgets.api;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,8 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
+import com.terrier.finances.gestion.communs.comptes.model.api.IntervallesCompteAPIObject;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
@@ -424,6 +427,38 @@ public class OperationsAPIController extends AbstractAPIController {
 	}
 
 
+	/**
+	 * Retourne le compte
+	 * @param idCompte id du compte
+	 * @return compte associé
+	 * @throws DataNotFoundException erreur données non trouvées
+	 * @throws UserNotAuthorizedException 
+	 */
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Intervalles des budgets pour un compte")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Opération réussie"),
+			@ApiResponse(code = 401, message = "L'utilisateur doit être authentifié"),
+			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
+			@ApiResponse(code = 404, message = "Données introuvables")
+	})
+	@ApiImplicitParams(value={
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
+	})	
+	@GetMapping(value=BudgetApiUrlEnum.BUDGETS_COMPTE_INTERVALLES)
+	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte,  @RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+		logger.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
+		if(idProprietaire != null) {
+			LocalDate[] intervalles = this.operationService.getIntervallesBudgets(idCompte);
+			if(intervalles != null && intervalles.length >= 2){
+				IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
+				intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[0]));
+				intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[1]));
+				return getEntity(intervallesAPI);	
+			}
+			throw new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte);
+		}
+		throw new UserNotAuthorizedException("Impossible de charger les données d'un utilisateur anonyme");
+	}
 
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
