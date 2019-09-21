@@ -17,6 +17,7 @@ import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperatio
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.parametrages.business.ParametragesService;
 
 import io.swagger.annotations.Api;
@@ -56,4 +57,12 @@ public class ParametragesAPIController extends AbstractAPIController {
 		logger.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1");
 		return getEntities(listeCategories);
 	}
+
+	@Override
+	public List<AbstractHTTPClient> getHTTPClients() {
+		return null;
+	}
+	
+	
+	
 }

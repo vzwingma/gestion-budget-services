@@ -10,12 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatus.Series;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 
 /**
  * Request inteceptor pour charger le correlationID et le userSession
@@ -36,21 +38,17 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	 * @param request requete
 	 * @throws UserNotAuthorizedException utilisateur inconnu
 	 */
-	public void manageHeaders(HttpServletRequest request) {
+	public void manageHeaders(HttpServletRequest request, AbstractAPIController controller) {
 
 		// Logger des CorrId
-		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID);
-		if(corrIdHeader == null) {
-			corrIdHeader = UUID.randomUUID().toString();
-			request.setAttribute(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
-		}
-
+		final String corrIdHeader = request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) : UUID.randomUUID().toString();
+		request.setAttribute(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
 		org.slf4j.MDC.put(ApiConfigEnum.HEADER_CORRELATION_ID, new StringBuilder("[").append(ApiConfigEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
+
 
 		// Injection de la session User à partir du JWT
 		String idUser = UNKNOWN_USER;
-
-		String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
+		final String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
 		if(jwtToken != null) {
 			try {
 				idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
@@ -64,11 +62,8 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		// Log API CorrId
-		String corrIdAPIHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID);
-		if(corrIdAPIHeader == null) {
-			corrIdAPIHeader = UUID.randomUUID().toString();
-			request.setAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
-		}
+		final String corrIdAPIHeader = request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : UUID.randomUUID().toString();
+		request.setAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
 
 		if(UNKNOWN_USER.equals(idUser)) {
 			LOGGER.info("[API={}][{} :: {}] anonyme", corrIdAPIHeader, request.getMethod(), request.getRequestURI());
@@ -76,6 +71,17 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		else {
 			LOGGER.info("[API={}][{} :: {}] authentifiée [idUser={}]", corrIdAPIHeader, request.getMethod(), request.getRequestURI(), idUser);
 		}
+
+		// Injection des Token et CorrId dans la chaine
+		if(controller.getHTTPClients() != null && !controller.getHTTPClients().isEmpty()) {
+			controller.getHTTPClients()
+			.parallelStream()
+			.forEach(c -> {
+				c.setJwtToken(jwtToken);
+				c.setCorrelationId(corrIdHeader);
+			});
+		}
+
 	}
 
 
@@ -84,10 +90,15 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		manageHeaders(request);
+		// Ajout des headers
+		if(handler instanceof HandlerMethod) {
+			HandlerMethod handlerMethod = (HandlerMethod)handler;
+			if(handlerMethod.getBean() instanceof AbstractAPIController) {
+				manageHeaders(request, ((AbstractAPIController)handlerMethod.getBean()));
+			}
+		}
 		return true;
 	}
-
 
 
 	/**
@@ -99,6 +110,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiConfigEnum.HEADER_CORRELATION_ID);
 		response.setHeader(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
+		
 		String corrIdApiHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID);
 		response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
 		super.postHandle(request, response, handler, modelAndView);

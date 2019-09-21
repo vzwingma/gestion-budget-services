@@ -29,7 +29,6 @@ import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
-import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerLigneOperation;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
@@ -57,8 +56,7 @@ public class OperationsService extends AbstractBusinessService {
 	@Autowired
 	private ComptesAPIClient compteClientApi;
 
-	@Autowired 
-	private ParametragesAPIClient paramClientApi;
+
 	
 	private DataTransformerLigneOperation transformer = new DataTransformerLigneOperation();
 
@@ -592,8 +590,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * Réinjection des catégories dans les opérations du budget
 	 * @param budget
 	 */
-	public void completeCategoriesOnOperation(LigneOperation operation){
-		List<CategorieOperation> categories = paramClientApi.getCategories();
+	public void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperation> categories){
 		try {
 			CategorieOperation catFound = BudgetDataUtils.getCategorieById(operation.getIdSsCategorie(), categories);
 			if(catFound != null) {
@@ -608,13 +605,6 @@ public class OperationsService extends AbstractBusinessService {
 
 	}
 	
-	
-	
-	@Override
-	protected void doHealthCheck(Builder builder) throws Exception {
-		builder.up().withDetail("Service", "Opérations");
-	}
-	
 
 	
 	/**
@@ -623,12 +613,21 @@ public class OperationsService extends AbstractBusinessService {
 	protected void setDataDepenses(BudgetDatabaseService dataDepenses) {
 		this.dataDepenses = dataDepenses;
 	}
+	
+	
+	
+	@Override
+	protected void doHealthCheck(Builder builder) throws Exception {
+		builder.up().withDetail("Service", "Opérations");
+	}
 
 
 	/**
-	 * @return the paramClientApi
+	 * @return the compteClientApi
 	 */
-	public ParametragesAPIClient getParamClientApi() {
-		return paramClientApi;
+	public ComptesAPIClient getCompteClientApi() {
+		return compteClientApi;
 	}
+	
+
 }

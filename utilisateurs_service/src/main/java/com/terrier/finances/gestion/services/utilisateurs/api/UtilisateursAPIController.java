@@ -4,6 +4,7 @@
 package com.terrier.finances.gestion.services.utilisateurs.api;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.UserAccessForbiddenException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
@@ -151,4 +153,12 @@ public class UtilisateursAPIController extends AbstractAPIController {
 		}
 		throw new DataNotFoundException("[token=?] Impossible de trouver l'utilisateur");
 	}
+
+	@Override
+	public List<AbstractHTTPClient> getHTTPClients() {
+		return null;
+	}
+	
+	
+	
 }

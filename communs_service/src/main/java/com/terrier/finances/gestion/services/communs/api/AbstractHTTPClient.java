@@ -27,9 +27,10 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
+import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.communs.api.interceptors.LogApiFilter;
+import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -57,11 +58,16 @@ public abstract class AbstractHTTPClient {
 
 
 	@Autowired
-	private LogApiFilter logFilter;
+	private CallAPIInterceptor callAPIInterceptor;
 
 	private WebClient client;
 
+	// Token JWT
+	private String jwtToken;
 	
+	// CorrelationId
+	private String correlationId;
+
 	@PostConstruct
 	public void createWebClient() throws NoSuchAlgorithmException, KeyManagementException {
 
@@ -80,26 +86,34 @@ public abstract class AbstractHTTPClient {
 		this.client = WebClient.builder()
 				.baseUrl(getBaseURL())
 				// Headers
-				.defaultHeaders(createHeaders())
+				.defaultHeaders(
+						(headers) -> {
+							headers.add(ACCEPT_CHARSET_HEADER_NAME, ACCEPT_CHARSET);
+							headers.add(ACCEPT_HEADER_NAME, MediaType.APPLICATION_JSON_VALUE);
+							headers.add(CONTENT_TYPE_HEADER_NAME, MediaType.APPLICATION_JSON_UTF8_VALUE);
+				})
 				// Log Filter
-				.filter(logFilter)
-
+				.filter(callAPIInterceptor)
 				.build();
 	}
 
+	
+	/**
+	 * @return l'URI du µService
+	 */
+	public abstract String getBaseURL();
+	
+	
+	
 	/**
 	 * Crée les headers HTTP
 	 *
 	 * @return {@link org.apache.http.HttpHeaders} headers
 	 */
-	protected Consumer<HttpHeaders> createHeaders() {
+	protected Consumer<HttpHeaders> createRequestHeaders() {
 		return (headers) -> {
-			headers.add(ACCEPT_CHARSET_HEADER_NAME, ACCEPT_CHARSET);
-			headers.add(ACCEPT_HEADER_NAME, MediaType.APPLICATION_JSON_VALUE);
-			headers.add(CONTENT_TYPE_HEADER_NAME, MediaType.APPLICATION_JSON_UTF8_VALUE);
-
 			// Correlation ID
-			String corrID = UUID.randomUUID().toString();
+			String corrID = this.correlationId != null ? this.correlationId : UUID.randomUUID().toString();
 			org.slf4j.MDC.put(ApiConfigEnum.HEADER_CORRELATION_ID, "["+ApiConfigEnum.LOG_CORRELATION_ID+"="+corrID+"]");
 			headers.add(ApiConfigEnum.HEADER_CORRELATION_ID, corrID);
 
@@ -107,25 +121,22 @@ public abstract class AbstractHTTPClient {
 			org.slf4j.MDC.put(ApiConfigEnum.HEADER_API_CORRELATION_ID, "[API="+apiCorrID+"]");
 			headers.add(ApiConfigEnum.HEADER_API_CORRELATION_ID, apiCorrID);
 
-			//		if(getJwtToken() != null){
-			//			headers.add(JwtConfigEnum.JWT_HEADER_AUTH, getJwtToken());
-			//			LOGGER.debug("[JWT Token={}]", getJwtToken());
-			//		}
-
+			if(this.jwtToken != null){
+				headers.add(JwtConfigEnum.JWT_HEADER_AUTH, this.jwtToken);
+			}
 		};
 	}
 
-	
 	/**
 	 * Retry
 	 */
 	private static Retry<?> fixedRetry = Retry.anyOf(WebClientResponseException .class)
-            .fixedBackoff(Duration.ofSeconds(2))
-            .retryMax(3)
-            .doOnRetry((exception) -> {
-                LOGGER.info("The exception is : " + exception);
+			.fixedBackoff(Duration.ofSeconds(2))
+			.retryMax(3)
+			.doOnRetry((exception) -> {
+				LOGGER.info("The exception is : " + exception);
 
-            });
+			});
 
 
 
@@ -215,7 +226,13 @@ public abstract class AbstractHTTPClient {
 	 */
 	protected Mono<Boolean> callHTTPGet(String ressource, Map<String, String> params) throws UserNotAuthorizedException, DataNotFoundException{
 		try{
-			Mono<Boolean> response = client.get().uri(ressource, new HashMap<>()).retrieve().bodyToMono(Boolean.class).defaultIfEmpty(Boolean.TRUE);
+			Mono<Boolean> response = this.client
+						.get()
+						.uri(ressource, new HashMap<>())
+						.headers(createRequestHeaders())
+						.retrieve()
+							.bodyToMono(Boolean.class)
+							.defaultIfEmpty(Boolean.TRUE);
 			LOGGER.info("Réponse [{}] : [{}] ms", response, "TODO");
 			return response;
 		}
@@ -246,10 +263,14 @@ public abstract class AbstractHTTPClient {
 	 */
 	protected <R extends AbstractAPIObjectModel> Mono<R> callHTTPGetData(final String ressource, final Map<String, String> params, final Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
 		try{
-			return client.get().uri(ressource, params).retrieve()
-					.onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new DataNotFoundException("")))
-					.bodyToMono(responseClassType)
-					.retryWhen(fixedRetry);
+			return this.client
+						.get()
+						.uri(ressource, params)
+						.headers(createRequestHeaders())
+						.retrieve()
+							.onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new DataNotFoundException("")))
+							.bodyToMono(responseClassType)
+							.retryWhen(fixedRetry);
 		}
 		catch(Exception e){
 			catchWebApplicationException(HttpMethod.GET, e);
@@ -267,10 +288,14 @@ public abstract class AbstractHTTPClient {
 	 */
 	protected <R extends AbstractAPIObjectModel> Flux<R> callHTTPGetListData(final String ressource, final Map<String, String> params, final Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
 		try{
-			return client.get().uri(ressource, new HashMap<>()).retrieve()
-					.onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new DataNotFoundException("")))
-					.bodyToFlux(responseClassType)
-					.retryWhen(fixedRetry);
+			return this.client
+						.get()
+						.uri(ressource, new HashMap<>())
+						.headers(createRequestHeaders())
+						.retrieve()
+							.onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new DataNotFoundException("")))
+							.bodyToFlux(responseClassType)
+							.retryWhen(fixedRetry);
 		}
 		catch(Exception e){
 			catchWebApplicationException(HttpMethod.GET, e);
@@ -345,10 +370,20 @@ public abstract class AbstractHTTPClient {
 		LOGGER.error("[{}] Erreur lors de l'appel", verbe, ex);
 		//		}
 	}
-	
 
 	/**
-	 * @return l'URI du µService
+	 * Injecte le token JWT
+	 * @param jwtToken
+	 * @return le client avec le jwt token
 	 */
-	public abstract String getBaseURL();
+	public void setJwtToken(String jwtToken) {
+		this.jwtToken = jwtToken;
+	}
+	
+	/**
+	 * @param correlationId the correlationId to set
+	 */
+	public void setCorrelationId(String correlationId) {
+		this.correlationId = correlationId;
+	}
 }

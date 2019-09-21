@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.terrier.finances.gestion.services.communs.api.interceptors.LogApiFilter;
+import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
 
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -25,7 +25,7 @@ import okhttp3.mockwebserver.MockWebServer;
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={MockApiClient.class, LogApiFilter.class})
+@ContextConfiguration(classes={MockApiClient.class, CallAPIInterceptor.class})
 public abstract class AbstractTestsClientAPI {
 
 	/**

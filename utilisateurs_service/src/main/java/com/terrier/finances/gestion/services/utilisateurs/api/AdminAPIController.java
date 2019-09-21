@@ -3,6 +3,8 @@
  */
 package com.terrier.finances.gestion.services.utilisateurs.api;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
 
@@ -76,5 +79,12 @@ public class AdminAPIController extends AbstractAPIController {
 			logger.error(returnErr);
 			return returnErr;
 		}
+	}
+
+	@Override
+	public List<AbstractHTTPClient> getHTTPClients() {
+		return null;
 	}	
+	
+	
 }

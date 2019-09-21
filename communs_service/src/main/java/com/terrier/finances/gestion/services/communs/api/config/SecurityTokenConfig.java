@@ -36,7 +36,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 		// handle an authorized attempts 
 		.exceptionHandling().authenticationEntryPoint((req, rsp, e) -> {
-			interceptor.manageHeaders(req);
+			interceptor.manageHeaders(req, null);
 			rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		} )
 		.and()

@@ -62,7 +62,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// Logger
-			interceptor.manageHeaders(request);
+			interceptor.manageHeaders(request, null);
 			// 1. Get credentials from request
 			JsonFactory factory = new JsonFactory();
 			factory.setCharacterEscapes(new JsonpCharacterEscapes());

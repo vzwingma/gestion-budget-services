@@ -22,7 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
-import com.terrier.finances.gestion.services.communs.api.interceptors.LogApiFilter;
+import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -34,7 +34,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
  */
 @EnableWebMvc
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={LogApiFilter.class })
+@ContextConfiguration(classes={CallAPIInterceptor.class })
 @WebAppConfiguration
 public abstract class AbstractTestsAPI {
 

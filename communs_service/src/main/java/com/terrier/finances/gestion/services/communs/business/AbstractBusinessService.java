@@ -29,6 +29,4 @@ public abstract class AbstractBusinessService extends AbstractHealthIndicator {
 	public void endApp(){
 		LOGGER.info("[END] Service {}", this.getClass().getSimpleName());
 	}
-
-
 }

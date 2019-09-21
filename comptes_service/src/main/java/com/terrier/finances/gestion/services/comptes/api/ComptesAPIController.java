@@ -26,6 +26,7 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
 
 import io.swagger.annotations.Api;
@@ -162,4 +163,10 @@ public class ComptesAPIController extends AbstractAPIController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@Override
+	public List<AbstractHTTPClient> getHTTPClients() {
+		return null;
+	}
+
+	
 }

@@ -1,7 +1,9 @@
 package com.terrier.finances.gestion.services.budgets.api;
 
 import java.time.Month;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,11 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
@@ -24,8 +28,11 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
+import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
 import com.terrier.finances.gestion.services.budgets.business.OperationsService;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
+import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -48,6 +55,11 @@ public class OperationsAPIController extends AbstractAPIController {
 	@Autowired
 	private OperationsService operationService;
 
+	@Autowired 
+	private ParametragesAPIClient paramClientApi;
+
+	@Autowired
+	private ComptesAPIClient compteClientApi;
 	
 	/**
 	 * Retour le budget d'un utilisateur
@@ -76,10 +88,14 @@ public class OperationsAPIController extends AbstractAPIController {
 	public  @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
 			@RequestParam("idCompte") String idCompte, 
 			@RequestParam("mois") Integer mois, 
-			@RequestParam("annee") Integer annee, 
+			@RequestParam("annee") Integer annee,
+			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
 			@RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException {
 		logger.info("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
 
+		// Injection du Token
+		this.operationService.getCompteClientApi().setJwtToken(jwtToken);
+		
 		if(mois != null && annee != null){
 			try{
 				Month month = Month.of(mois);
@@ -304,12 +320,13 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
 			@RequestAttribute("idProprietaire") String idProprietaire,
+			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
 			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
 		logger.info("[idBudget={}][idOperation={}] createOrUpdateOperation", idBudget, idOperation);
 		if(operation != null && idBudget != null && idProprietaire != null){
 			operation.setId(idOperation);
-			operationService.completeCategoriesOnOperation(operation);
+			operationService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
 			BudgetMensuel budgetUpdated = operationService.createOrUpdateOperation(idBudget, operation, idProprietaire);
 			return getEntity(budgetUpdated);
 		}
@@ -349,12 +366,13 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idOperation") String idOperation,
 			@PathVariable("idCompte") String idCompte,
 			@RequestAttribute("idProprietaire") String idProprietaire, 
+			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
 			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
 		logger.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
 		if(operation != null && idBudget != null){
 			operation.setId(idOperation);
-			operationService.completeCategoriesOnOperation(operation);
+			operationService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
 			BudgetMensuel budgetUpdated = operationService.createOperationIntercompte(idBudget, operation, idCompte, idProprietaire);
 			return getEntity(budgetUpdated);
 		}
@@ -403,6 +421,13 @@ public class OperationsAPIController extends AbstractAPIController {
 			}
 		}
 		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + idOperation);
+	}
+
+
+
+	@Override
+	public List<AbstractHTTPClient> getHTTPClients() {
+		return Arrays.asList(this.compteClientApi, this.paramClientApi);
 	}
 }
 

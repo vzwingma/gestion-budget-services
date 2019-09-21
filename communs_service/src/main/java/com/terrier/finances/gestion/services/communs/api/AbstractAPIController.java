@@ -52,4 +52,10 @@ public abstract class AbstractAPIController {
 	    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 	    return new ResponseEntity<>(restObjectModel, httpHeaders, HttpStatus.OK);
 	}
+	
+
+	/**
+	 * @return Retourne les clients HTTP utilisés pour injection du JWT Token
+	 */
+	public abstract List<AbstractHTTPClient> getHTTPClients();
 }
