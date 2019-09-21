@@ -73,7 +73,7 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
                 // It needs a list of authorities, which has type of GrantedAuthority interface, where SimpleGrantedAuthority is an implementation of that interface
                  UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                                  username, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-                 LOGGER.info("JWT Auth : OK [{}]", auth);
+                 LOGGER.trace("JWT Auth : OK [{}]", auth);
                  // 6. Authenticate the user
                  // Now, user is authenticated
                  SecurityContextHolder.getContext().setAuthentication(auth);

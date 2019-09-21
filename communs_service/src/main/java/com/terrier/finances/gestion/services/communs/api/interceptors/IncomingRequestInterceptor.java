@@ -57,7 +57,6 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 				request.setAttribute("idProprietaire", JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID));
 			} catch (SecurityException e) {
 				LOGGER.warn("[idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
-				throw e;
 			}
 		}
 		else {
