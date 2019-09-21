@@ -31,6 +31,7 @@ import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRe
  * @author vzwingma
  *
  */
+@Deprecated
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter   {
 	/**
 	 * Logger

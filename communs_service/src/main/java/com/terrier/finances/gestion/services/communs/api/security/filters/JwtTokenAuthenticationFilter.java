@@ -1,6 +1,7 @@
 package com.terrier.finances.gestion.services.communs.api.security.filters;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,9 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
             if(username != null) {
                 @SuppressWarnings("unchecked")
                 List<String> authorities = (List<String>) claims.get("authorities");
-                
+                if(authorities == null) {
+                	authorities = new ArrayList<String>();
+                }
                 // 5. Create auth object
                 // UsernamePasswordAuthenticationToken: A built-in object, used by spring to represent the current authenticated / being authenticated user.
                 // It needs a list of authorities, which has type of GrantedAuthority interface, where SimpleGrantedAuthority is an implementation of that interface

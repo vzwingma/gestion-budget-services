@@ -10,10 +10,10 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
 import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
-import com.terrier.finances.gestion.services.budgets.api.config.security.SecurityTokenConfig;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerLigneOperation;
+import com.terrier.finances.gestion.services.communs.api.config.SecurityTokenConfig;
 import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 
 @Configuration
