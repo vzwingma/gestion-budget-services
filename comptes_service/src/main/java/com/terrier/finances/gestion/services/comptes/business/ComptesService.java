@@ -15,8 +15,8 @@ import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
-import com.terrier.finances.gestion.services.communs.data.model.BudgetMensuelDTO;
 import com.terrier.finances.gestion.services.comptes.data.ComptesDatabaseService;
+import com.terrier.finances.gestion.services.comptes.model.BudgetMensuelDTO;
 
 
 /**

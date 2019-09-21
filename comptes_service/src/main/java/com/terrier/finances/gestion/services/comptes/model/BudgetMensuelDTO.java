@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.communs.data.model;
+package com.terrier.finances.gestion.services.comptes.model;
 
 import java.io.Serializable;
 import java.time.Month;
@@ -18,7 +18,7 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 /**
  * Budget du mois
  * @author vzwingma
- * @deprecated : a déplacer dans le µS Budget
+ * @deprecated : changer la database compte pour ne pas utiliser Budget
  */
 @Document(collection = "budgets")
 public class BudgetMensuelDTO implements Serializable {
