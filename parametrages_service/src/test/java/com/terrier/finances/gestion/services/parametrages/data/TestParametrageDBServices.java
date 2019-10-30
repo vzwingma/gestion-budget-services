@@ -45,7 +45,7 @@ public class TestParametrageDBServices {
 		MongoOperations mockMongo = mock(MongoOperations.class);
 		when(mockMongo.findAll(CategorieOperationDTO.class)).thenReturn(categoriesFromDB);
 		
-		when(db.getMongoOperation()).thenReturn(mockMongo);
+		db.setMongoOperations(mockMongo);
 		
 		List<CategorieOperation> cats = db.chargeCategories();
 		assertNotNull(cats);
@@ -89,7 +89,7 @@ public class TestParametrageDBServices {
 		
 		MongoOperations mockMongo = mock(MongoOperations.class);
 		when(mockMongo.findAll(CategorieOperationDTO.class)).thenReturn(categoriesFromDB);
-		when(db.getMongoOperation()).thenReturn(mockMongo);
+		db.setMongoOperations(mockMongo);
 		
 		CategorieOperation cat = db.getCategorieParId("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a");
 		assertNotNull(cat);
@@ -143,7 +143,7 @@ public class TestParametrageDBServices {
 
 		MongoOperations mockMongo = mock(MongoOperations.class);
 		when(mockMongo.findAll(CategorieOperationDTO.class)).thenReturn(categoriesFromDB);
-		when(db.getMongoOperation()).thenReturn(mockMongo);
+		db.setMongoOperations(mockMongo);
 		
 		CategorieOperation cat = db.getCategorieParId("ID8");
 		assertNotNull(cat);

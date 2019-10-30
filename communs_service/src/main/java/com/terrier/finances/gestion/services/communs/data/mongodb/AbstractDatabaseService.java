@@ -63,16 +63,13 @@ public abstract class AbstractDatabaseService<D> {
 		return this.mongoOperations.findAll(entityClass);
 	}
 
-
 	/**
-	 * @return opérations MongoDB
-	 * Utiliser les méthodes find
+	 * @param set les mongo Operations (pour les mocks)
 	 */
-	@Deprecated
-	public MongoOperations getMongoOperation(){
-		return mongoOperations;
+	public void setMongoOperations(MongoOperations mongoOperations){
+		this.mongoOperations = mongoOperations;
 	}
-	
+
 	
 
 	@SuppressWarnings("unchecked")
