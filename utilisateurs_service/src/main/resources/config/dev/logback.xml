@@ -7,7 +7,7 @@
 		</encoder>
 	</appender>
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>D://EnvDevs//Perso//services-utilisateurs.log</file>
+		<file>C://Users//vzwingma//Documents//projets//perso//services-utilisateurs.log</file>
 		<append>false</append>
 		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
 			by default -->
