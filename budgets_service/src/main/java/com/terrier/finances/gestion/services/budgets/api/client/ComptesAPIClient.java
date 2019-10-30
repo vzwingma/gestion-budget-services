@@ -29,7 +29,7 @@ public class ComptesAPIClient extends AbstractHTTPClient {
 	 */
 	public CompteBancaire getCompteById(String idCompte, String idUser) {
 		try {
-			return callHTTPGetData(BudgetApiUrlEnum.COMPTES_ID_FULL, Collections.singletonMap(BudgetApiUrlEnum.PARAM_ID_COMPTE, idCompte), CompteBancaire.class).block();
+			return callHTTPGetData(BudgetApiUrlEnum.COMPTES_ID_FULL, Collections.singletonMap(BudgetApiUrlEnum.URL_PARAM_ID_COMPTE, idCompte), CompteBancaire.class).block();
 		} catch (UserNotAuthorizedException | DataNotFoundException e) {
 			LOGGER.error("Erreur lors de la recherche du compte", e);
 			return null;
