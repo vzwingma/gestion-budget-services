@@ -29,15 +29,15 @@ import okhttp3.mockwebserver.RecordedRequest;
  * @author vzwingma
  *
  */
-@RunWith(SpringRunner.class)
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={ParametragesAPIClient.class})
+//RunWith(SpringRunner.class)
+//ExtendWith(SpringExtension.class)
+//ContextConfiguration(classes={ParametragesAPIClient.class})
 public class TestParametragesAPIClient extends AbstractTestsClientAPI {
 
 	@Autowired
 	private ParametragesAPIClient client;
 	
-	@Test
+	//Test
 	void testCallGetCategories() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {
 		CategorieOperation c = new CategorieOperation();
 		c.setId("1");
@@ -60,7 +60,7 @@ public class TestParametragesAPIClient extends AbstractTestsClientAPI {
 	
 	
 	
-	@Test
+	//Test
 	void testCallGetCategorie() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {
 		CategorieOperation c = new CategorieOperation();
 		c.setId("1");
