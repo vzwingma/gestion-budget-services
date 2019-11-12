@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.github.vzwingma.finances.budget</groupId>
+		<artifactId>services</artifactId>
+		<version>7.3.1-SNAPSHOT</version>
+	</parent>
+	<groupId>io.github.vzwingma.finances.budget.services</groupId>
+	<artifactId>comptes</artifactId>
+	<name>[Budget] Service Comptes</name>
+	<description>Services Comptes de l'application</description>
+	<packaging>jar</packaging>
+
+	<properties>
+		<sonar.projectKey>gestion-budget-service-comptes</sonar.projectKey>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>prod</id>
+			<build>
+				<finalName>service-comptes</finalName>
+				<resources>
+					<resource>
+						<directory>src/main/resources/config/dev</directory>
+						<excludes>
+							<exclude>*.*</exclude>
+						</excludes>
+					</resource>
+					<resource>
+						<directory>src/main/resources/config/prod</directory>
+						<filtering>true</filtering>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.github.vzwingma.finances.budget.services</groupId>
+			<artifactId>communs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.github.vzwingma.finances.budget.services</groupId>
+			<artifactId>communs</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

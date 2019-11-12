@@ -1,9 +1,0 @@
-# Issu de la dernière image OpenJDK 8
-FROM openjdk:8-alpine
-MAINTAINER vincent.zwingmann@gmail.com
-
-# Copy de l'archive
-COPY services.jar /opt/services.jar
-
-# Lancement de l'appli
-CMD java -jar /opt/services.jar

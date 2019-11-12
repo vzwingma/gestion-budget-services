@@ -14,7 +14,7 @@
 	<version>7.3.1-SNAPSHOT</version>
 	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,8 +22,6 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<communs.version>9.0.0-SNAPSHOT</communs.version>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
-
-		<sonar.projectKey>gestion-budget-services</sonar.projectKey>
 	</properties>
 
 	<issueManagement>
@@ -31,7 +29,7 @@
 		<system>GitHub Issues</system>
 	</issueManagement>
 	<scm>
-		<url>https://github.com/vzwingma/gestion-budget-services/tree/webapp</url>
+		<url>https://github.com/vzwingma/gestion-budget-services/tree/master</url>
 		<connection>scm:git:git://github.com/vzwingma/gestion-budget-services.git</connection>
 		<developerConnection>scm:git:git@github.com:vzwingma/gestion-budget-services.git</developerConnection>
 		<tag>HEAD</tag>
@@ -45,13 +43,16 @@
 		</developer>
 	</developers>
 
+	<modules>
+		<module>communs_service</module>
+		<module>parametrages_service</module>
+		<module>budgets_service</module>
+		<module>utilisateurs_service</module>
+		<module>comptes_service</module>
+	</modules>
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -137,25 +138,26 @@
 				</resources>
 			</build>
 		</profile>
-		<profile>
-			<id>prod</id>
-			<build>
-				<finalName>services</finalName>
-				<resources>
-					<resource>
-						<directory>src/main/resources/config/dev</directory>
-						<excludes>
-							<exclude>*.*</exclude>
-						</excludes>
-					</resource>
-					<resource>
-						<directory>src/main/resources/config/prod</directory>
-						<filtering>true</filtering>
-					</resource>
-				</resources>
-			</build>
-		</profile>
 	</profiles>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Communs Services -->
+			<dependency>
+				<groupId>io.github.vzwingma.finances.budget.services</groupId>
+				<artifactId>communs</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.vzwingma.finances.budget.services</groupId>
+				<artifactId>communs</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<!-- Communs -->
 		<dependency>
@@ -182,6 +184,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<!-- Security -->
 		<dependency>
@@ -289,11 +296,28 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest</artifactId>
 			<version>2.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>
@@ -310,4 +334,5 @@
 			<url>https://mvnrepository.com/artifact</url>
 		</repository>
 	</repositories>
+
 </project>
