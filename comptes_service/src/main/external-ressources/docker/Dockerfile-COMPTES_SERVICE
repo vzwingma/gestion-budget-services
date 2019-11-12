@@ -3,7 +3,7 @@ FROM openjdk:8-alpine
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
-COPY service-parametrages.jar /opt/service-comptes.jar
+COPY service-comptes.jar /opt/service-comptes.jar
 
 # Lancement de l'appli
 CMD java -jar /opt/service-comptes.jar
