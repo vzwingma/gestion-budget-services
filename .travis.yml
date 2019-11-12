@@ -23,7 +23,7 @@ before_install:
     mvn versions:set -DnewVersion=$VERSION; 
     mvn versions:commit;
 install: 
-  - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
+  - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services -DskipTests=true
 
 script:
   # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB.
