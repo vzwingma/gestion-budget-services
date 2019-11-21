@@ -1,10 +1,10 @@
 package com.terrier.finances.gestion.services.utilisateurs.business;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -13,19 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
+import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
-import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSession;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  * Service Utilisateurs
@@ -33,7 +32,7 @@ import com.terrier.finances.gestion.services.utilisateurs.model.UserBusinessSess
  *
  */
 @Service
-public class UtilisateursService extends AbstractBusinessService implements UserDetailsService {
+public class UtilisateursService extends AbstractBusinessService {
 
 	/**
 	 * Logger
@@ -50,45 +49,48 @@ public class UtilisateursService extends AbstractBusinessService implements User
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	/**
-	 * Session coté Business
-	 */
-	private Map<String, UserBusinessSession> businessSessions = new HashMap<>();
+
 
 	/**
 	 * Tentative d'auth sur les API
-	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
+	 * @param login login du user
+	 * @param motPasse mot de passe
+	 * @return token JWT
 	 */
-	@Override
-	public UserDetails loadUserByUsername(String login) {
+	public String authenticate(String login, String motPasse) {
+		Utilisateur utilisateur = authenticateUser(login, motPasse);
+		if(utilisateur != null) {
+			return createToken(utilisateur);
+		}
+		return null;
+
+	}
+
+	/**
+	 * @param login login du user
+	 * @param motPasse mot de passe du user
+	 * @return utilisateur authentifié
+	 */
+	private Utilisateur authenticateUser(String login, String motPasse) {
 
 		LOGGER.info("[idUser=?] Tentative d'authentification de {}", login);
 		Utilisateur utilisateur;
 		try {
 			utilisateur = dataDBUsers.chargeUtilisateur(login);
-			if(utilisateur != null){
+			if(utilisateur != null && this.passwordEncoder.matches(motPasse, utilisateur.getPassword())){
 				LOGGER.info("[idUser={}] Utilisateur [{}] trouvé", utilisateur.getId(), login);
-				List<GrantedAuthority> grantedAuthorities = utilisateur.getDroits()
-						.entrySet()
-						.stream()
-						.filter(Entry::getValue)
-						.map(e -> new SimpleGrantedAuthority(e.getKey().name()))
-						.collect(Collectors.toList());
-
-				LOGGER.info(" Droits {}", grantedAuthorities); 
-				return new User(utilisateur.getLogin(), utilisateur.getPassword(), grantedAuthorities);
+				LOGGER.info(" Droits {}", utilisateur.getDroits()); 
+				return utilisateur;
 			}
 			else{
 				LOGGER.error("[idUser=?] Erreur 2 : Utilisateur {} inconnu", login);
 			}
-
 		} catch (DataNotFoundException e) {
-			// Uti
 			LOGGER.error("[idUser=?] Erreur 3 : Données introuvables pour l'utilisateur {}", login);
 		}
 		return null;
@@ -96,14 +98,38 @@ public class UtilisateursService extends AbstractBusinessService implements User
 
 
 	/**
+	 * @param utilisateur
+	 * @return le token JWT correspondant
+	 */
+	private String createToken(Utilisateur utilisateur) {
+		LOGGER.info("[idUser={}] Utilisateur [{}] authentifié", utilisateur.getId(), utilisateur.getLogin());
+		Long now = Calendar.getInstance().getTimeInMillis();
+		String token = Jwts.builder()
+				.setSubject(utilisateur.getLogin())
+				.setId(UUID.randomUUID().toString())
+				// Convert to list of strings. 
+				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_AUTORITIES, 
+						utilisateur.getDroits().entrySet().stream()
+						.filter(e -> e.getValue())
+						.map(e -> e.getKey()).collect(Collectors.toList()))
+				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, utilisateur.getId())
+				.setIssuedAt(new Date(now))
+				.setIssuer("Budget-Services")
+				.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
+				.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.JWT_SECRET_KEY.getBytes())
+				.compact();
+		LOGGER.info("[idUser={}] Token JWT [{}]", utilisateur.getId(), token);
+		return token;
+	}
+
+	/**
 	 * Une fois l'authentification réalisée, enregistrement de la session business
 	 * @param auth authentification
 	 * @throws DataNotFoundException 
 	 */
-	
+
 	public Utilisateur successfullAuthentication(Authentication auth) throws DataNotFoundException{
 		Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(auth.getName());
-		registerUserBusinessSession(utilisateur);
 		// Enregistrement de la date du dernier accès à maintenant
 		LocalDateTime dernierAcces = utilisateur.getDernierAcces();
 		utilisateur.setDernierAcces(LocalDateTime.now());
@@ -124,55 +150,35 @@ public class UtilisateursService extends AbstractBusinessService implements User
 		LOGGER.info("[idUser={}] Nouveau hash du mot de passe : {}",utilisateur.getId(), newHashPassword);
 		utilisateur.setPassword(newHashPassword);
 		dataDBUsers.majUtilisateur(utilisateur);
-		registerUserBusinessSession(utilisateur);
 	}
 
 	/**
-	 * Injection de la masterkey sur l'encryptor associé à l'utilisateur
-	 * @param utilisateur
-	 * @param masterKeyClear
-	 */
-	public void registerUserBusinessSession(Utilisateur utilisateur){
-		LOGGER.debug("[idUser={}] Enregistrement de la BusinessSession", utilisateur.getId());
-		if(this.businessSessions.containsKey(utilisateur.getId())){
-			deconnexionBusinessSession(this.businessSessions.get(utilisateur.getId()));
-		}
-		this.businessSessions.putIfAbsent(utilisateur.getId(), new UserBusinessSession(utilisateur));
-	}
-
-
-	/**
-	 * @param idSession
+	 * @param idUtilisateur
 	 * @return date de dernier accès
 	 */
-	public LocalDateTime getLastAccessDate(String idSession){
-		if(this.businessSessions.get(idSession) != null){
-			return this.businessSessions.get(idSession).getUtilisateur().getDernierAcces();
+	public Map<UtilisateurPrefsEnum, String> getPrefsUtilisateur(String idUtilisateur){
+		try {
+			Utilisateur utilisateur = dataDBUsers.chargeUtilisateurById(idUtilisateur);
+			return utilisateur.getPrefsUtilisateur();
+		} catch (DataNotFoundException e) {
+			return null;
 		}
-		return null;
 	}
-
-
-	public UserBusinessSession getBusinessSession(String idSession){
-		return this.businessSessions.get(idSession);
-	}
-
-
 	/**
-	 * Déconnexion de la session Business
-	 * @param idSession
-	 * @return résultat de la déconnexion
+	 * @param idUtilisateur
+	 * @return date de dernier accès
 	 */
-	public boolean deconnexionBusinessSession(UserBusinessSession userSession ){
-		if(userSession != null){
-			return this.businessSessions.remove(userSession.getUtilisateur().getId()) != null;
+	public LocalDateTime getLastAccessDate(String idUtilisateur){
+		try {
+			Utilisateur utilisateur = dataDBUsers.chargeUtilisateurById(idUtilisateur);
+			return utilisateur.getDernierAcces();
+		} catch (DataNotFoundException e) {
+			return null;
 		}
-		return false;
 	}
-	
+
 	@Override
 	protected void doHealthCheck(Builder builder) throws Exception {
 		builder.up().withDetail("Service", "Utilisateurs");
 	}
-	
 }

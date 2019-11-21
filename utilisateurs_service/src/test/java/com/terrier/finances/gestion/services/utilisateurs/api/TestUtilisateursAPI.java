@@ -28,7 +28,6 @@ import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBUtilisateursConfig;
@@ -47,8 +46,6 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestUtilisateursAPI.class);
 
-	@Autowired
-	private UtilisateursService service;
 	@Autowired
 	private UtilisateurDatabaseService mockDataDBUsers;
 
@@ -93,8 +90,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		Utilisateur userOK = new Utilisateur();
 		userOK.setId("345345");
 		userOK.setLogin("345345");
-		service.registerUserBusinessSession(userOK);
-		
+
 		LOGGER.info("Disconnect Failed");
 		getMockAPI().perform(
 				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("userTest22"))
@@ -127,7 +123,6 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		userOK.setId("345345");
 		userOK.setLogin("Test");
 		userOK.setDernierAcces(LocalDateTime.now());
-		service.registerUserBusinessSession(userOK);
 		LOGGER.info("LastTime OK {}", BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL);
 		getMockAPI().perform(
 				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345"))
