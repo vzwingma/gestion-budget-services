@@ -198,7 +198,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException erreur données
 	 */
 	private BudgetMensuel initNewBudget(CompteBancaire compteBancaire, String idProprietaire, Month mois, int annee) throws BudgetNotFoundException,CompteClosedException, DataNotFoundException{
-		LOGGER.info("[INIT] Initialisation du budget {} de {}/{}", compteBancaire.getLibelle(), mois, annee);
+		LOGGER.info("Initialisation du budget {} de {}/{}", compteBancaire.getLibelle(), mois, annee);
 		BudgetMensuel budget = new BudgetMensuel();
 		budget.setNewBudget(true);
 		budget.setActif(true);
@@ -238,7 +238,7 @@ public class OperationsService extends AbstractBusinessService {
 			budget.setListeOperations(new ArrayList<LigneOperation>());
 		}
 
-		LOGGER.info("[INIT] Sauvegarde du nouveau budget {}", budget);
+		LOGGER.info("Sauvegarde du nouveau budget {}", budget);
 		String idBudget = this.dataDepenses.sauvegardeBudgetMensuel(budget);
 		if(idBudget != null){
 			budget.setId(idBudget);
