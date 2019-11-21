@@ -446,7 +446,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 	})	
-	@GetMapping(value=BudgetApiUrlEnum.COMPTES_INTERVALLES)
+	@GetMapping(value=BudgetApiUrlEnum.BUDGET_COMPTE_INTERVALLES)
 	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte,  @RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
 		logger.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
 		if(idProprietaire != null) {
