@@ -8,6 +8,7 @@
   
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>utilisateurs</artifactId>
+	<version>8.0.0-SNAPSHOT</version>
 	<name>[Budget] Service Utilisateurs</name>
 	<description>Services Utilisateurs de l'application</description>
 	<packaging>jar</packaging>

@@ -9,6 +9,7 @@
 	</parent>
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>comptes</artifactId>
+	<version>8.0.0-SNAPSHOT</version>
 	<name>[Budget] Service Comptes</name>
 	<description>Services Comptes de l'application</description>
 	<packaging>jar</packaging>
