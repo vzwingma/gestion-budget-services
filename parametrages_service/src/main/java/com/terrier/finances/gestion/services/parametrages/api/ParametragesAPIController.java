@@ -58,11 +58,11 @@ public class ParametragesAPIController extends AbstractAPIController {
 		return getEntities(listeCategories);
 	}
 
+	/**
+	 * Liste des clients HTTPS nécessaires vers les autres µS
+	 */
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
 		return null;
 	}
-	
-	
-	
 }
