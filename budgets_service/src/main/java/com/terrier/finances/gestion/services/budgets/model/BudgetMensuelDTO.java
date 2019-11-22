@@ -11,7 +11,6 @@ import java.util.Map;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 
@@ -60,7 +59,6 @@ public class BudgetMensuelDTO implements Serializable {
 	/**
 	 * Liste des dépenses
 	 */
-	@JsonIgnore
 	private List<LigneDepenseDTO> listeDepenses = new ArrayList<>();
 
 	/**
@@ -174,7 +172,6 @@ public class BudgetMensuelDTO implements Serializable {
 	/**
 	 * @return the listeDepenses
 	 */
-	@JsonIgnore
 	public List<LigneDepenseDTO> getListeDepenses() {
 		return listeDepenses;
 	}
@@ -182,7 +179,6 @@ public class BudgetMensuelDTO implements Serializable {
 	/**
 	 * @param listeDepenses the listeDepenses to set
 	 */
-	@JsonIgnore
 	public void setListeDepenses(List<LigneDepenseDTO> listeDepenses) {
 		this.listeDepenses = listeDepenses;
 	}
