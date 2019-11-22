@@ -24,7 +24,8 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService<Utilisat
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateurDatabaseService.class);
 
 	/**
-	 * @return la liste des catégories
+	 * @param login : login utilisateur
+	 * @return Utilisateur
 	 */
 	public Utilisateur chargeUtilisateur(String login) throws DataNotFoundException{
 		try{
@@ -40,6 +41,19 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService<Utilisat
 	}
 
 
+	/**
+	 * @return la liste des catégories
+	 */
+	public Utilisateur chargeUtilisateurById(String id) throws DataNotFoundException{
+		try{
+			LOGGER.info("[idUser={}] Recherche de l'utilisateur", id);
+			return findById(id);
+		}
+		catch(Exception e){
+			LOGGER.error("[idUser={}] Erreur lors de la recherche de l'utilisateur [{}]", id, e);
+			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + id);
+		}
+	}
 	/**
 	 * Met à jour l'utilisateur en BDD
 	 */

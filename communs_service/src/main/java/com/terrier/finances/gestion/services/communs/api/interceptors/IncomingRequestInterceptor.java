@@ -49,16 +49,12 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		// Injection de la session User à partir du JWT
 		String idUser = UNKNOWN_USER;
 		final String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
-		if(jwtToken != null) {
-			try {
-				idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
-				request.setAttribute("idProprietaire", JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID));
-			} catch (SecurityException e) {
-				LOGGER.warn("[idUser={}] Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
-			}
+		if(jwtToken != null && JwtConfigEnum.getJWTClaims(jwtToken) != null) {
+			idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
+			request.setAttribute("idProprietaire", JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID));
 		}
 		else {
-			LOGGER.warn("JwTToken introuvable");
+			LOGGER.warn("[idUser={}] JwTToken introuvable ou incorrect. Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
 		}
 
 		// Log API CorrId
@@ -73,7 +69,9 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		// Injection des Token et CorrId dans la chaine
-		if(controller.getHTTPClients() != null && !controller.getHTTPClients().isEmpty()) {
+		if(controller != null 
+				&& controller.getHTTPClients() != null 
+				&& !controller.getHTTPClients().isEmpty()) {
 			controller.getHTTPClients()
 			.parallelStream()
 			.forEach(c -> {
@@ -81,7 +79,6 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 				c.setCorrelationId(corrIdHeader);
 			});
 		}
-
 	}
 
 
@@ -110,7 +107,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiConfigEnum.HEADER_CORRELATION_ID);
 		response.setHeader(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
-		
+
 		String corrIdApiHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID);
 		response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
 		super.postHandle(request, response, handler, modelAndView);

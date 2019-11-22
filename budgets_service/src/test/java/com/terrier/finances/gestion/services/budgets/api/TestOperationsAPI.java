@@ -148,7 +148,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 	@Test
 	public void testIntervalles() throws Exception {
-		String path = BudgetApiUrlEnum.COMPTES_INTERVALLES_FULL.replace("{idCompte}", "TEST");
+		String path = BudgetApiUrlEnum.BUDGET_COMPTE_INTERVALLES_FULL.replace("{idCompte}", "TEST");
 		getMockAPI().perform(get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("TEST")))
 		.andExpect(status().is4xxClientError());
 		
