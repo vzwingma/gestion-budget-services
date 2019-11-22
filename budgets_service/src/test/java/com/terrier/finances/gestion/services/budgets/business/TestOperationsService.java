@@ -37,7 +37,6 @@ import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.test.config.TestMockAuthServicesConfig;
 import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 
 /**
@@ -46,7 +45,7 @@ import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={TestMockBudgetServiceConfig.class, TestMockAuthServicesConfig.class})
+@ContextConfiguration(classes={TestMockBudgetServiceConfig.class})
 public class TestOperationsService {
 
 	/**
@@ -60,13 +59,6 @@ public class TestOperationsService {
 	@Autowired
 	private OperationsService operationsService;
 
-//	@Autowired
-//	private UtilisateurDatabaseService mockDataDBUsers;
-
-//	@Autowired
-//	@Qualifier("mockAuthService")
-//	private UtilisateursService authenticationService;
-
 	private BudgetMensuel budget;
 
 	private CompteBancaire compte = new CompteBancaire();
@@ -79,9 +71,6 @@ public class TestOperationsService {
 	 */
 	@BeforeEach
 	public void initBusinessSession() throws DataNotFoundException{
-//		UserBusinessSession mockUser = Mockito.mock(UserBusinessSession.class);
-//		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
-//		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
 		user = new Utilisateur();
 		user.setId("userTest");
 
@@ -105,10 +94,7 @@ public class TestOperationsService {
 		compte.setId("CID");
 		compte.setLibelle("TEST COMPTE");
 		compte.setOrdre(0);
-
-//		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(compte);
-//		when(operationsService.getServiceComptes().getCompteById(anyString(), anyString())).thenReturn(compte);
-		
+	
 		this.budget.setCompteBancaire(compte);
 
 		this.budget.setId(BudgetDataUtils.getBudgetId(compte, Month.JANUARY, 2018));

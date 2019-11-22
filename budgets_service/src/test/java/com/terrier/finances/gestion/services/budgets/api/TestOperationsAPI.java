@@ -497,11 +497,11 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	 */
 	@Test
 	public void testLibelles() throws Exception {
-		String path = BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES_FULL.replace("{idCompte}", "TEST") + "?annee=2019";
+		String path = BudgetApiUrlEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES_FULL.replace("{idCompte}", "TEST") + "?annee=2019";
 		getMockAPI().perform(get(path)
 				.header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123"))
 				.requestAttr(ID_USER, "123123"))
-		.andExpect(status().is4xxClientError());
+		.andExpect(status().isNoContent());
 				
 		Set<String> libelles = new HashSet<>();
 		libelles.add("OPE1");

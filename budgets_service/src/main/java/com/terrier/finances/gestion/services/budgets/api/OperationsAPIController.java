@@ -340,10 +340,16 @@ public class OperationsAPIController extends AbstractAPIController {
 		if(operation != null && idBudget != null && idProprietaire != null){
 			operation.setId(idOperation);
 			operationService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
-			BudgetMensuel budgetUpdated = operationService.createOrUpdateOperation(idBudget, operation, idProprietaire);
-			return getEntity(budgetUpdated);
+			try {
+				return getEntity(operationService.createOrUpdateOperation(idBudget, operation, idProprietaire));
+			}
+			catch (CompteClosedException e) {
+				return ResponseEntity.unprocessableEntity().build();
+			}
 		}
-		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + operation);
+		else {
+			return ResponseEntity.badRequest().build();
+		}
 	}
 
 
@@ -384,12 +390,17 @@ public class OperationsAPIController extends AbstractAPIController {
 
 		logger.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
 		if(operation != null && idBudget != null){
-			operation.setId(idOperation);
-			operationService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
-			BudgetMensuel budgetUpdated = operationService.createOperationIntercompte(idBudget, operation, idCompte, idProprietaire);
-			return getEntity(budgetUpdated);
+			try {
+				operation.setId(idOperation);
+				operationService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
+				BudgetMensuel budgetUpdated = operationService.createOperationIntercompte(idBudget, operation, idCompte, idProprietaire);
+				return getEntity(budgetUpdated);
+			}
+			catch (CompteClosedException e) {
+				return ResponseEntity.unprocessableEntity().build();
+			}
 		}
-		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + operation);
+		return ResponseEntity.badRequest().build();
 	}
 
 	/**
@@ -491,7 +502,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
 	})		
-	@GetMapping(value=BudgetApiUrlEnum.COMPTES_OPERATIONS_LIBELLES)
+	@GetMapping(value=BudgetApiUrlEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES)
 	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestAttribute("idProprietaire") String idProprietaire, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
 		logger.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);
 		if(idProprietaire != null) {
