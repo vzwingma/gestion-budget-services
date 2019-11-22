@@ -11,15 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
@@ -34,13 +30,8 @@ import okhttp3.mockwebserver.RecordedRequest;
  * @author vzwingma
  *
  */
-@RunWith(SpringRunner.class)
 @ExtendWith(SpringExtension.class)
-@WebAppConfiguration
 public class TestHTTPClient extends AbstractTestsClientAPI {
-
-	
-	
 
 	@Test
 	void testCallGet() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {
@@ -50,11 +41,10 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 					.setResponseCode(200)
 				);
 		
-		boolean resultat = getTestClient().callHTTPGet("/get").doOnSuccessOrError((a, e) -> {
-			if(e != null) {
-				fail();
-			}
-		}).block().booleanValue();
+		boolean resultat = getTestClient().callHTTPGet("/get")
+				.doOnError(e -> fail())
+				.block()
+				.booleanValue();
 		assertTrue(resultat);
 		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
 		assertEquals("/get", recordedRequest.getPath());
@@ -68,17 +58,16 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 		getMockWebServer()
 				.enqueue(new MockResponse().setResponseCode(404));
 
-		assertThrows(WebClientResponseException.class, ()  -> getTestClient().callHTTPGet("/get").doOnSuccessOrError((a, e) -> {
-			if(a != null) {
-				fail();
-			}
-		}).block());
+		assertThrows(WebClientResponseException.class, () 
+				-> getTestClient().callHTTPGet("/get")
+					.doOnSuccess(s -> fail())
+					.block());
 
 		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
 		assertEquals("/get", recordedRequest.getPath());
 	}
 
-	@Ignore
+	@Test
 	void testCallGetData() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException {
 		
 		getMockWebServer().enqueue(
