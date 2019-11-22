@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.services.budgets.api.client;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,20 +21,29 @@ import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 public class ParametragesAPIClient extends AbstractHTTPClient {
 
 	
-	private List<CategorieOperation> categories;
+	private List<CategorieOperation> categoriesSsCategories;
 	
-	
-	//PostConstruct
+
+	/**
+	 * Liste des catégories
+	 * @return liste de catégories
+	 */
 	public List<CategorieOperation> getCategories(){
-		if(categories == null) {
+		if(categoriesSsCategories == null) {
 			try {
-				categories = callHTTPGetListData(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL, null, CategorieOperation.class)
+				categoriesSsCategories = new ArrayList<>();
+				List<CategorieOperation> categories = callHTTPGetListData(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL, null, CategorieOperation.class)
 				.collectList().block();
+				categoriesSsCategories.addAll(categories);
+				categories.stream()
+					.map(c -> c.getListeSSCategories())
+					.forEach(ssCats -> categoriesSsCategories.addAll(ssCats));
+				
 			} catch (UserNotAuthorizedException | DataNotFoundException e) {
 			LOGGER.warn("Impossible de charger les catégories");
 			}
 		}
-		return categories;
+		return categoriesSsCategories;
 	}
 	
 	/**
@@ -42,6 +52,7 @@ public class ParametragesAPIClient extends AbstractHTTPClient {
 	 * @return catégorie correspondante. Null sinon
 	 */
 	public CategorieOperation getCategorieParId(String id) {
+		
 		Optional<CategorieOperation> categorie =  getCategories().stream().filter(c -> id.equals(c.getId())).findFirst();
 		if(categorie.isPresent()) {
 			return categorie.get();
