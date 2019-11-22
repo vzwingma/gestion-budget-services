@@ -42,6 +42,8 @@ public abstract class AbstractTestsAPI {
 	 * Logger
 	 */
 	protected final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	
+	public static final String ID_USER = "idProprietaire";
 	/*
 	 * Client API mock
 	 */

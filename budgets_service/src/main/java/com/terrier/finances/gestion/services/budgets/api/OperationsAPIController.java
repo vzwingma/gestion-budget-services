@@ -65,7 +65,7 @@ public class OperationsAPIController extends AbstractAPIController {
 
 	@Autowired
 	private ComptesAPIClient compteClientApi;
-	
+
 	/**
 	 * Retour le budget d'un utilisateur
 	 * @param idProprietaire id de l'utilisateur
@@ -95,22 +95,25 @@ public class OperationsAPIController extends AbstractAPIController {
 			@RequestParam("mois") Integer mois, 
 			@RequestParam("annee") Integer annee,
 			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
-			@RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException {
+			@RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException {
 		logger.info("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
 
 		// Injection du Token
 		this.operationService.getCompteClientApi().setJwtToken(jwtToken);
-		
+
 		if(mois != null && annee != null){
 			try{
 				Month month = Month.of(mois);
 				return getEntity(operationService.chargerBudgetMensuel(idCompte, month, annee, idProprietaire));
 			}
 			catch(NumberFormatException e){
-				throw new DataNotFoundException("Erreur dans les paramètres en entrée");
+				return ResponseEntity.badRequest().build();
+			}
+			catch (BudgetNotFoundException | DataNotFoundException e) {
+				return ResponseEntity.notFound().build();
 			}
 		}
-		throw new BudgetNotFoundException("Erreur dans les paramètres en entrée");
+		return ResponseEntity.badRequest().build();
 	}
 
 
@@ -142,9 +145,14 @@ public class OperationsAPIController extends AbstractAPIController {
 
 		logger.info("[idBudget={}] chargeBudget", idBudget);
 		if(idBudget != null){
-			return getEntity(operationService.chargerBudgetMensuel(idBudget, idProprietaire));
+			try {
+				return getEntity(operationService.chargerBudgetMensuel(idBudget, idProprietaire));
+			}
+			catch (DataNotFoundException | BudgetNotFoundException e) {
+				logger.error("[idBudget={}] Impossible de charger le budget", idBudget);
+			}
 		}
-		throw new DataNotFoundException("Impossible de charger le budget");
+		return ResponseEntity.notFound().build();
 	}
 
 
@@ -338,7 +346,7 @@ public class OperationsAPIController extends AbstractAPIController {
 		throw new DataNotFoundException("Impossible de mettre à jour le budget " + idBudget + " avec l'opération " + operation);
 	}
 
-	
+
 
 	/**
 	 * Mise à jour d'une opération
@@ -413,8 +421,8 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
 			@RequestAttribute("idProprietaire") String idProprietaire
-		) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
-		
+			) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+
 		if(idOperation != null && idBudget != null && idProprietaire != null){
 			logger.info("[idBudget={}][idOperation={}] deleteOperation", idBudget, idOperation);
 			BudgetMensuel budgetUpdated = operationService.deleteOperation(idBudget, idOperation, idProprietaire);
@@ -497,8 +505,8 @@ public class OperationsAPIController extends AbstractAPIController {
 		}
 		return ResponseEntity.noContent().build();
 	}
-	
-	
+
+
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
 		return Arrays.asList(this.compteClientApi, this.paramClientApi);
