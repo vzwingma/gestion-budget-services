@@ -11,7 +11,7 @@
 	<logger name="org.hibernate" level="INFO" />
 	<logger name="org.mongodb.driver" level="INFO" />
 	<!-- interrogation -->
-	<logger name="com.terrier.finances.gestion.services.parametrages" level="INFO" additivity="false">
+	<logger name="com.terrier.finances.gestion.services.budgets" level="INFO" additivity="false">
 		<appender-ref ref="CONSOLE" />
 	</logger>
 

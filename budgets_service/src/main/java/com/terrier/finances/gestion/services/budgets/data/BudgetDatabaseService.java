@@ -65,7 +65,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 		if(budgetDTO == null){
 			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee).toString());
 		}
-		LOGGER.debug("	> Réception du DTO : {}", budgetDTO.getId());
+		LOGGER.debug("	> Réception du DTO : {}. {} opérations", budgetDTO.getId(), budgetDTO.getListeDepenses().size());
 		return dataTransformerBudget.transformDTOtoBO(budgetDTO);
 	}
 

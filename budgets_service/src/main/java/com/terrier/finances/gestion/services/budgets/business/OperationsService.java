@@ -589,8 +589,9 @@ public class OperationsService extends AbstractBusinessService {
 
 
 		}
-		LOGGER.debug("Solde prévu		| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
-		LOGGER.debug("Solde réel (+ marge)	| {}	| {}",  budget.getSoldeNow() + budget.getMarge(), budget.getSoldeFin() + budget.getMarge());
+		LOGGER.debug("Solde prévu	| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
+		LOGGER.debug("Marge 		| {}", budget.getMarge());
+		LOGGER.debug("Solde réel	| {}	| {}",  budget.getSoldeNow() + budget.getMarge(), budget.getSoldeFin() + budget.getMarge());
 	}
 
 	/**
