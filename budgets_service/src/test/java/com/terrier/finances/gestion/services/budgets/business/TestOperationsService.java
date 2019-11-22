@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.services.budgets.business;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,7 +37,9 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
 import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 
 /**
@@ -45,7 +48,7 @@ import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={TestMockBudgetServiceConfig.class})
+@ContextConfiguration(classes={TestMockBudgetServiceConfig.class,  OperationsService.class, CallAPIInterceptor.class})
 public class TestOperationsService {
 
 	/**
@@ -56,6 +59,9 @@ public class TestOperationsService {
 	@Autowired
 	private BudgetDatabaseService mockDBBudget;
 
+	@Autowired
+	private ComptesAPIClient mockCompteClientApi;
+	
 	@Autowired
 	private OperationsService operationsService;
 
@@ -175,6 +181,8 @@ public class TestOperationsService {
 
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
+		when(mockCompteClientApi.getCompteById(anyString(), eq(user.getId()))).thenReturn(new CompteBancaire());
+		
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
@@ -212,7 +220,7 @@ public class TestOperationsService {
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
 		BudgetMensuel budgetDel = operationsService.deleteOperation(this.budget.getId(), "TEST1", user.getId());
-		assertEquals(0, budgetDel.getListeOperations().size());
+		assertNull(budgetDel.getListeOperations());
 		
 		LOGGER.info("/testDelOperation");
 
