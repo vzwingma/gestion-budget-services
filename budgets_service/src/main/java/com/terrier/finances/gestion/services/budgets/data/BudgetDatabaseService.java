@@ -205,7 +205,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 		try{
 			Query query1erBudget = new Query();
 			query1erBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-			query1erBudget.with(new Sort(Sort.Direction.ASC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.ASC, ATTRIBUT_MOIS));
+			query1erBudget.with(Sort.by(Sort.Direction.ASC, ATTRIBUT_ANNEE, ATTRIBUT_MOIS));
 			query1erBudget.limit(1);
 			
 			BudgetMensuelDTO premierbudget = findOneByQuery(query1erBudget);
@@ -213,7 +213,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 			
 			Query querydernierBudget = new Query();
 			querydernierBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-			querydernierBudget.with(new Sort(Sort.Direction.DESC, ATTRIBUT_ANNEE)).with(new Sort(Sort.Direction.DESC, ATTRIBUT_MOIS));
+			querydernierBudget.with(Sort.by(Sort.Direction.DESC, ATTRIBUT_ANNEE, ATTRIBUT_MOIS));
 			querydernierBudget.limit(1);
 			
 			BudgetMensuelDTO dernierbudget = findOneByQuery(querydernierBudget);
