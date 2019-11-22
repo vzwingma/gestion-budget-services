@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.github.vzwingma.finances.budget</groupId>
 		<artifactId>services</artifactId>
-		<version>7.3.1-SNAPSHOT</version>
+		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
