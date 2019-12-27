@@ -220,14 +220,14 @@ public class TestOperationsService {
 		LigneOperation opNew = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
 		opNew.setId("OP3");
 
-		BudgetMensuel budgetOP3 = operationsService.createOrUpdateOperation(this.budget.getId(), opNew, user.getId());
+		BudgetMensuel budgetOP3 = operationsService.updateOperationInBudget(this.budget.getId(), opNew, user.getId());
 		assertEquals(4, budgetOP3.getListeOperations().size());
 
 		LOGGER.info("testCRUDOperation - Delete existing Ope");
 		LigneOperation opDel = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", null, false);
 		opDel.setId("OP1");
 
-		BudgetMensuel budgetDel = operationsService.createOrUpdateOperation(this.budget.getId(), opDel, user.getId());
+		BudgetMensuel budgetDel = operationsService.updateOperationInBudget(this.budget.getId(), opDel, user.getId());
 		assertEquals(3, budgetDel.getListeOperations().size());
 		
 		
@@ -237,7 +237,7 @@ public class TestOperationsService {
 		LOGGER.info("testCRUDOperation - Update Ope");
 		LigneOperation opUpdate = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
 		opUpdate.setId("OP3");
-		BudgetMensuel budgetUpdate = operationsService.createOrUpdateOperation(this.budget.getId(), opUpdate, user.getId());
+		BudgetMensuel budgetUpdate = operationsService.updateOperationInBudget(this.budget.getId(), opUpdate, user.getId());
 		assertEquals(3, budgetUpdate.getListeOperations().size());
 		assertEquals(549, budgetUpdate.getSoldeFin());
 		assertEquals(213, budgetUpdate.getSoldeNow());
