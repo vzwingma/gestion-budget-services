@@ -341,7 +341,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			operation.setId(idOperation);
 			operationService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
 			try {
-				return getEntity(operationService.createOrUpdateOperation(idBudget, operation, idProprietaire));
+				return getEntity(operationService.updateOperationInBudget(idBudget, operation, idProprietaire));
 			}
 			catch (CompteClosedException e) {
 				return ResponseEntity.unprocessableEntity().build();

@@ -93,7 +93,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo.setSoldeFin(0D);
 		bo.setSoldeNow(1000D);
 		bo.setDateMiseAJour(Calendar.getInstance());
-		bo.setResultatMoisPrecedent(0D, 100D);
+		bo.setResultatMoisPrecedent(0D);
 		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo))).thenReturn(bo.getId());
 
 		when(mockDataDBBudget.chargeBudgetMensuel(eq(c1), eq(Month.JANUARY), eq(2018))).thenReturn(bo);
@@ -277,7 +277,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo.setSoldeFin(0D);
 		bo.setSoldeNow(1000D);
 		bo.setDateMiseAJour(Calendar.getInstance());
-		bo.setResultatMoisPrecedent(0D, 100D);
+		bo.setResultatMoisPrecedent(0D);
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTKO"))).thenReturn(bo);
 		bo.setActif(true);
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"))).thenReturn(bo);
@@ -445,7 +445,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		bo2.setSoldeFin(0D);
 		bo2.setSoldeNow(1000D);
 		bo2.setDateMiseAJour(Calendar.getInstance());
-		bo2.setResultatMoisPrecedent(0D, 100D);
+		bo2.setResultatMoisPrecedent(0D);
 		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo2))).thenReturn(bo2.getId());
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C2_2018_1"))).thenReturn(bo2);
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C1_2018_1"))).thenReturn(bo);
