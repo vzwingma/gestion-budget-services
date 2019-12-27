@@ -1,6 +1,5 @@
 package com.terrier.finances.gestion.services.budgets.business;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,8 +13,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,7 +81,7 @@ public class TestOperationsService {
 
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
-		this.budget.setResultatMoisPrecedent(0D, 0D);
+		this.budget.setResultatMoisPrecedent(0D);
 		this.budget.razCalculs();
 		CategorieOperation dep = new CategorieOperation(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
@@ -137,44 +134,17 @@ public class TestOperationsService {
 		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
 		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
 
-		assertEquals(0, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
-		assertEquals(123, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
-
-
-		this.budget.setResultatMoisPrecedent(0D, 100D);
+		this.budget.setResultatMoisPrecedent(0D);
 		this.operationsService.calculBudget(budget);
 		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
 		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
-
-		assertEquals(100, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
-		assertEquals(223, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
-
-
-		CategorieOperation reserveSSCat = new CategorieOperation(IdsCategoriesEnum.RESERVE);
-		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.SALAIRE);
-		reserveSSCat.setCategorieParente(cat);
-
-		LigneOperation reserve = new LigneOperation(reserveSSCat, "TESTRESERVE", TypeOperationEnum.CREDIT, "100", EtatOperationEnum.REALISEE, false);
-		this.budget.getListeOperations().add(reserve);
-		this.operationsService.calculBudget(budget);
-		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
-		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
-
-		assertEquals(200, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
-		assertEquals(323, Double.valueOf(this.budget.getSoldeReelFin()).intValue());
 
 		// Pour éviter le doublon du recalcul ci dessous
-		this.budget.setResultatMoisPrecedent(0D, 0D);
-
-		LigneOperation piocheReserve = new LigneOperation(reserveSSCat, "PIOCHERESERVE", TypeOperationEnum.DEPENSE, "50", EtatOperationEnum.REALISEE, false);
-		this.budget.getListeOperations().add(piocheReserve);
-		this.operationsService.calculBudget(budget);
+		this.budget.setResultatMoisPrecedent(0D);
 
 		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
 		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
-
-		assertEquals(150, Double.valueOf(this.budget.getSoldeReelNow()).intValue());
-		assertEquals(273, Double.valueOf(this.budget.getSoldeReelFin()).intValue());		
+	
 
 	}
 

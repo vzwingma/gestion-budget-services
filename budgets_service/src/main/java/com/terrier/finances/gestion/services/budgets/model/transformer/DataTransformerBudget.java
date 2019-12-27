@@ -57,7 +57,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 			}
 			bo.setListeOperations(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses()));
 			bo.setMois(Month.of(dto.getMois() + 1));
-			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(dto.getResultatMoisPrecedent()) : 0D, dto.getMargeMoisPrecedent() != null ? Double.valueOf(dto.getMargeMoisPrecedent()) : 0D);
+			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(dto.getResultatMoisPrecedent()) : 0D);
 
 			/*
 			 * Budget clos : utilisation des valeurs calculées
@@ -128,9 +128,6 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 		
 		dto.setMois(bo.getMois().getValue() - 1);
 		dto.setResultatMoisPrecedent(bo.getMoisPrecedentResultat() != null ? bo.getMoisPrecedentResultat().toString() : null);
-		dto.setMargeMoisPrecedent(bo.getMoisPrecedentMarge() != null ? bo.getMoisPrecedentMarge().toString() : null);
-
-		
 		dto.setFinArgentAvance( String.valueOf(bo.getSoldeFin()));
 		dto.setNowArgentAvance( String.valueOf(bo.getSoldeNow()));
 

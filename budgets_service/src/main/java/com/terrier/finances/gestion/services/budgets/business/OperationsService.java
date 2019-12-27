@@ -22,7 +22,6 @@ import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
-import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
@@ -112,7 +111,7 @@ public class OperationsService extends AbstractBusinessService {
 			try{
 				LOGGER.debug("Chargement du budget du mois précédent du compte actif {} : {}/{}", compteBancaire.getId(), moisPrecedent, anneePrecedente);
 				BudgetMensuel budgetPrecedent = this.dataDepenses.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente);
-				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin(), budgetPrecedent.getMarge());
+				budgetMensuel.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin());
 			}
 			catch(BudgetNotFoundException e){
 				LOGGER.error("Le budget précédent celui de [{}/{}] : [{}/{}] est introuvable", mois, annee, moisPrecedent, anneePrecedente);
@@ -229,7 +228,7 @@ public class OperationsService extends AbstractBusinessService {
 			LOGGER.warn("Le budget {} n'a jamais existé", compteBancaire.getLibelle());
 			budget.setSoldeFin(0D);
 			budget.setSoldeNow(0D);
-			budget.setResultatMoisPrecedent(0D, 0D);
+			budget.setResultatMoisPrecedent(0D);
 			budget.setListeOperations(new ArrayList<LigneOperation>());
 		}
 
@@ -320,7 +319,7 @@ public class OperationsService extends AbstractBusinessService {
 			calculBudget(budgetPrecedent);
 			budget.setCompteBancaire(budgetPrecedent.getCompteBancaire());
 			// #116 : Le résultat du moins précédent est le compte réel, pas le compte avancé
-			budget.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin(), budgetPrecedent.getMarge());
+			budget.setResultatMoisPrecedent(budgetPrecedent.getSoldeFin());
 			budget.setDateMiseAJour(Calendar.getInstance());
 			if(budgetPrecedent.getListeOperations() != null){
 
@@ -532,10 +531,7 @@ public class OperationsService extends AbstractBusinessService {
 		for (LigneOperation operation : budget.getListeOperations()) {
 			LOGGER.trace("     > {}", operation);
 			Double valeurOperation = operation.getValeur();
-			/*
-			 * #121 : La réserve n'est pas une véritable opération. Elle n'est pas prise en compte dans les calculs 
-			 */
-			if(!IdsCategoriesEnum.RESERVE.getId().equals(operation.getIdSsCategorie())){
+
 				/**
 				 *  Calcul par catégorie
 				 */
@@ -580,13 +576,8 @@ public class OperationsService extends AbstractBusinessService {
 				else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 					budget.ajouteASoldeFin(valeurOperation);
 				}
-			}
-
-
 		}
 		LOGGER.debug("Solde prévu	| {}	| {}", budget.getSoldeNow(), budget.getSoldeFin());
-		LOGGER.debug("Marge 		| {}", budget.getMarge());
-		LOGGER.debug("Solde réel	| {}	| {}",  budget.getSoldeNow() + budget.getMarge(), budget.getSoldeFin() + budget.getMarge());
 	}
 
 	/**
