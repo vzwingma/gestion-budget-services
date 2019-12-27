@@ -20,7 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<communs.version>9.1.0-SNAPSHOT</communs.version>
+		<communs.version>9.1.1-SNAPSHOT</communs.version>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
 
@@ -145,12 +145,12 @@
 			<dependency>
 				<groupId>io.github.vzwingma.finances.budget.services</groupId>
 				<artifactId>communs</artifactId>
-				<version>${project.version}</version>
+				<version>8.3.0</version>
 			</dependency>
 			<dependency>
 				<groupId>io.github.vzwingma.finances.budget.services</groupId>
 				<artifactId>communs</artifactId>
-				<version>${project.version}</version>
+				<version>8.3.0</version>
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
@@ -304,11 +304,11 @@
 			<artifactId>mockwebserver</artifactId>
 			<scope>test</scope>
 		</dependency>
-			<dependency>
+		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
 			<scope>test</scope>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
