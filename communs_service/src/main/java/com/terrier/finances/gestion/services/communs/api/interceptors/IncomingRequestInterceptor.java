@@ -33,6 +33,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 
 	private static final String UNKNOWN_USER = "?";
 
+	private static final String GUID_REGEX = "[0-9a-fA-F-]{36}";
 	/**
 	 * Traite les entêtes en entrée
 	 * @param request requete
@@ -106,10 +107,17 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 			ModelAndView modelAndView) throws Exception {
 
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiConfigEnum.HEADER_CORRELATION_ID);
-		response.setHeader(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
+		// Allow only GUID
+		if (corrIdHeader.matches(GUID_REGEX)) {
+			response.setHeader(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
+		}
 
 		String corrIdApiHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID);
-		response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
+		// Allow only GUID
+		if (corrIdApiHeader.matches(GUID_REGEX)) {
+			response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
+		}
+
 		super.postHandle(request, response, handler, modelAndView);
 
 		if(HttpStatus.Series.resolve(response.getStatus()) == Series.SUCCESSFUL) {

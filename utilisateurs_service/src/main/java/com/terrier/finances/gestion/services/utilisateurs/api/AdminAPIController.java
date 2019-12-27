@@ -3,6 +3,7 @@
  */
 package com.terrier.finances.gestion.services.utilisateurs.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,7 @@ public class AdminAPIController extends AbstractAPIController {
 
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
-		return null;
+		return new ArrayList<AbstractHTTPClient>();
 	}	
 	
 	

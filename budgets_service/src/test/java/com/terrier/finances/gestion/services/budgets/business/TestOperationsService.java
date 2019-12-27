@@ -11,7 +11,6 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
 import java.time.Month;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -91,9 +90,8 @@ public class TestOperationsService {
 		test1.setId("TEST1");
 		this.budget.getListeOperations().add(test1);
 
-		LocalDate now = LocalDate.now();
-		this.budget.setMois(now.getMonth());
-		this.budget.setAnnee(now.getYear());
+		this.budget.setMois(Month.JANUARY);
+		this.budget.setAnnee(2018);
 		compte = new CompteBancaire();
 		compte.setActif(true);
 		compte.setId("CID");
@@ -146,7 +144,7 @@ public class TestOperationsService {
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
 		when(mockCompteClientApi.getCompteById(anyString(), eq(user.getId()))).thenReturn(new CompteBancaire());
-		
+		when(mockDBBudget.sauvegardeBudgetMensuel(any())).thenReturn("OK");
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
