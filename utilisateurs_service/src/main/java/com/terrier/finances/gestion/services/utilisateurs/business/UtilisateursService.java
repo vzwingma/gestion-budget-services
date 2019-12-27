@@ -104,6 +104,10 @@ public class UtilisateursService extends AbstractBusinessService {
 	private String createToken(Utilisateur utilisateur) {
 		LOGGER.info("[idUser={}] Utilisateur [{}] authentifié", utilisateur.getId(), utilisateur.getLogin());
 		Long now = Calendar.getInstance().getTimeInMillis();
+		if("JwtSecretKey".equals(JwtConfigEnum.JWT_SECRET_KEY)) {
+			LOGGER.warn("La clé de signature SECURITY_JWT_SECRET_KEY n'a pas été paramétrée [{}]", JwtConfigEnum.SECURITY_JWT_SECRET_KEY);
+		}
+		
 		String token = Jwts.builder()
 				.setSubject(utilisateur.getLogin())
 				.setId(UUID.randomUUID().toString())
@@ -143,13 +147,19 @@ public class UtilisateursService extends AbstractBusinessService {
 	 * @param newPassword nouveau mot de passe
 	 * @return résultat de l'opération
 	 */
-	public void changePassword(Utilisateur utilisateur, String oldPassword, String newPassword){
+	public void changePassword(String idUtilisateur, String oldPassword, String newPassword){
 
-		LOGGER.info("[idUser={}] Changement du mot de passe pour {}, ", utilisateur.getId(), utilisateur.getId());
+		LOGGER.info("[idUser={}] Changement du mot de passe",idUtilisateur);
 		String newHashPassword = this.passwordEncoder.encode(newPassword);
-		LOGGER.info("[idUser={}] Nouveau hash du mot de passe : {}",utilisateur.getId(), newHashPassword);
-		utilisateur.setPassword(newHashPassword);
-		dataDBUsers.majUtilisateur(utilisateur);
+		LOGGER.info("[idUser={}] Nouveau hash du mot de passe : {}",idUtilisateur, newHashPassword);
+		Utilisateur user;
+		try {
+			user = dataDBUsers.chargeUtilisateurById(idUtilisateur);
+			user.setPassword(newHashPassword);
+			dataDBUsers.majUtilisateur(user);
+		} catch (DataNotFoundException e) {
+			LOGGER.info("[idUser={}] Impossible de trouver l'utilisateur", idUtilisateur);
+		}
 	}
 
 	/**

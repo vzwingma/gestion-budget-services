@@ -95,7 +95,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@RequestParam("mois") Integer mois, 
 			@RequestParam("annee") Integer annee,
 			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
-			@RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException {
+			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws UserNotAuthorizedException {
 		logger.info("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
 
 		// Injection du Token
@@ -141,7 +141,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ID)
 	public @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
 			@PathVariable("idBudget") String idBudget, 
-			@RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
+			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException{
 
 		logger.info("[idBudget={}] chargeBudget", idBudget);
 		if(idBudget != null){
@@ -177,7 +177,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	})	
 
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
-	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		logger.info("[idBudget={}] reinitialisation", idBudget);
 		if(idBudget != null && idProprietaire != null){
 			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, idProprietaire);
@@ -259,7 +259,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<BudgetMensuel> setBudgetActif(
 			@PathVariable("idBudget") String idBudget,
-			@RequestAttribute("idProprietaire") String idProprietaire,
+			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire,
 			@RequestParam(value="actif") Boolean setActif) throws UserNotAuthorizedException, BudgetNotFoundException {
 
 		logger.info("[idBudget={}] set Actif : {}", idBudget, setActif );
@@ -292,7 +292,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	public ResponseEntity<Boolean> setAsDerniereOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation, 
-			@RequestAttribute("idProprietaire") String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException {
+			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException {
 
 		logger.info("[idBudget={}][idOperation={}] setAsDerniereOperation", idBudget, idOperation);
 		boolean resultat = operationService.setLigneAsDerniereOperation(idBudget, idOperation, idProprietaire);
@@ -332,7 +332,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<BudgetMensuel> createOrUpdateOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
-			@RequestAttribute("idProprietaire") String idProprietaire,
+			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire,
 			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
 			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
@@ -384,7 +384,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
 			@PathVariable("idCompte") String idCompte,
-			@RequestAttribute("idProprietaire") String idProprietaire, 
+			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire, 
 			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
 			@RequestBody LigneOperation operation) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
@@ -431,7 +431,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<BudgetMensuel> deleteOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
-			@RequestAttribute("idProprietaire") String idProprietaire
+			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire
 			) throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
 		if(idOperation != null && idBudget != null && idProprietaire != null){
@@ -466,7 +466,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_COMPTE_INTERVALLES)
-	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte,  @RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte,  @RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
 		logger.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
 		if(idProprietaire != null) {
 			LocalDate[] intervalles = this.operationService.getIntervallesBudgets(idCompte);
@@ -503,7 +503,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
 	})		
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES)
-	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestAttribute("idProprietaire") String idProprietaire, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
+	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) throws UserNotAuthorizedException{
 		logger.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);
 		if(idProprietaire != null) {
 			Set<String> libelles = this.operationService.getLibellesOperations(idCompte, annee);

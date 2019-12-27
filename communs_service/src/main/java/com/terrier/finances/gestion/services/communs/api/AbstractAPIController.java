@@ -24,7 +24,8 @@ public abstract class AbstractAPIController {
 	 * Logger
 	 */
 	public final Logger logger = LoggerFactory.getLogger(this.getClass());
-		
+
+	public static final String ID_USER = "idProprietaire";
 	/**
 	 * Constructeur des API Controleur
 	 */

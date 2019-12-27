@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 import com.terrier.finances.gestion.services.communs.api.security.filters.JwtTokenAuthenticationFilter;
 
@@ -53,7 +54,8 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").anonymous()
 			// Actuators
 			.antMatchers(HttpMethod.GET, "/actuator/**").anonymous()
-			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()   
+			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()
+			.antMatchers(HttpMethod.POST, BudgetApiUrlEnum.USERS_AUTHENTICATE_FULL +"*").anonymous()
 			// Any other request must be authenticated
 			.anyRequest().authenticated(); 
 	}
