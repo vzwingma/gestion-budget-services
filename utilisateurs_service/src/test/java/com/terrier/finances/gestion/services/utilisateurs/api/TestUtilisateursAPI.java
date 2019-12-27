@@ -96,11 +96,11 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("userTest22"))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isUnauthorized());
+		.andExpect(status().is4xxClientError());
 		
 		LOGGER.info("Disconnect OK");
 		getMockAPI().perform(
-				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345"))
+				post(BudgetApiUrlEnum.USERS_DISCONNECT_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345")).requestAttr(ID_USER, "345345")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNoContent());
@@ -123,9 +123,10 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		userOK.setId("345345");
 		userOK.setLogin("Test");
 		userOK.setDernierAcces(LocalDateTime.now());
+		when(mockDataDBUsers.chargeUtilisateurById(eq("345345"))).thenReturn(userOK);
 		LOGGER.info("LastTime OK {}", BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL);
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345"))
+				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345")).requestAttr(ID_USER, "345345")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

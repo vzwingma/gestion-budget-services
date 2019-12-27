@@ -14,6 +14,8 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -215,12 +217,13 @@ public class TestOperationsService {
 		LOGGER.info("testDelOperation");
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
-
+		when(mockCompteClientApi.getCompteById(anyString(), eq(user.getId()))).thenReturn(new CompteBancaire());
+		
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
 		BudgetMensuel budgetDel = operationsService.deleteOperation(this.budget.getId(), "TEST1", user.getId());
-		assertNull(budgetDel.getListeOperations());
+		assertEquals(0, budgetDel.getListeOperations().size());
 		
 		LOGGER.info("/testDelOperation");
 
