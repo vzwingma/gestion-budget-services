@@ -300,7 +300,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Test
 	public void testGetBudget() throws Exception {
 
-		String urlBadBudget = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", "C2_2018_1");
+		String urlBadBudget = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", "C3_2018_1");
 		LOGGER.info("Bad Budget : {}", urlBadBudget);
 
 		getMockAPI().perform(

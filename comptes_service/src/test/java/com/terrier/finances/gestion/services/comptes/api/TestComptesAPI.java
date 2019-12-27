@@ -40,20 +40,6 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	@Autowired
 	private ComptesDatabaseService mockComptesDBService;
 
-//	
-//	@BeforeEach
-//	public void init() {
-//		Utilisateur user = new Utilisateur();
-//		user.setId("345345");
-//		user.setLogin("345345");
-//		user.setLibelle("345345");
-//		serviceUser.registerUserBusinessSession(user);
-//		Utilisateur user2 = new Utilisateur();
-//		user2.setId("123123");
-//		user2.setLogin("123123");
-//		user2.setLibelle("123123");
-//		serviceUser.registerUserBusinessSession(user2);
-//	}
 
 	@Test
 	public void testGetComptes() throws Exception {
@@ -80,15 +66,9 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		comptes.add(c2);
 		when(mockComptesDBService.chargeComptes(eq("345345"))).thenReturn(comptes);
 
-		// Comptes KO
-		getMockAPI().perform(
-				get(BudgetApiUrlEnum.COMPTES_LIST_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123"))
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotFound());
 		// Comptes OK		
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.COMPTES_LIST_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345"))
+				get(BudgetApiUrlEnum.COMPTES_LIST_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345")).requestAttr(ID_USER, "345345")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
@@ -114,17 +94,12 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		when(mockComptesDBService.chargeCompteParId(eq("111"), eq("123123"))).thenThrow(new DataNotFoundException("Mock : Compte 111 introuvable pour 123123"));
 		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111");
 		
-		// Compte KO
-		LOGGER.info("testCompte : {}", path);
-		getMockAPI().perform(
-				get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("123123"))
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotFound());
+		// Compte OK
+
 		
 		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111");
 		getMockAPI().perform(
-				get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345"))
+				get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345")).requestAttr(ID_USER, "345345")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
