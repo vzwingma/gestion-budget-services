@@ -462,7 +462,9 @@ public class OperationsService extends AbstractBusinessService {
 					budget.getListeOperations().add(ligneUpdatedOperation);
 				}
 				// Si frais remboursable : ajout du remboursement en prévision
-				if(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())){
+				if(ligneOperation.getSsCategorie() != null
+						&& ligneOperation.getCategorie() != null 
+						&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())){
 					budget.getListeOperations().add(addOperationRemboursement(ligneOperation, idProprietaire));
 				}
 			}
