@@ -5,5 +5,8 @@
 /bin/
 /target/
 /log/
-
+/src-old/
+*.prefs
 src/main/java/com/terrier/finances/gestion/services/communs/data/mongodb/MongoDBConfigEnum\.java
+*.class
+*.log
