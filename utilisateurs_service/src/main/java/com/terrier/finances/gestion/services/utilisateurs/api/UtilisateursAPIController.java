@@ -4,6 +4,7 @@
 package com.terrier.finances.gestion.services.utilisateurs.api;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -101,7 +102,6 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	public ResponseEntity<String> disconnect(@RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
 		logger.info("Disconnect : true");
 		return ResponseEntity.noContent().build();
-		//		throw new DataNotFoundException("[idUser="+idProprietaire+"] Impossible de déconnecter l'utilisateur");
 	}
 
 	/**
@@ -162,6 +162,6 @@ public class UtilisateursAPIController extends AbstractAPIController {
 
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
-		return null;
+		return new ArrayList<AbstractHTTPClient>();
 	}
 }

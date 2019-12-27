@@ -71,16 +71,10 @@ public abstract class AbstractHTTPClient {
 	@PostConstruct
 	public void createWebClient() throws NoSuchAlgorithmException, KeyManagementException {
 
-		// Register des converters
-		//		clientConfig.register(new ListAPIObjectModelReader<AbstractAPIObjectModel>());
-		//		clientConfig.register(new APIObjectModelReader<AbstractAPIObjectModel>());
-
-		// TODO : Ajouter ClientHttpRequestFactory
 		// Install the all-trusting trust manager
 		SSLContext sslcontext = SSLContext.getInstance("TLS");
 		sslcontext.init(null,  null, new java.security.SecureRandom());
 		HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
-
 
 		LOGGER.info("Création du Client : {}", getBaseURL());
 		this.client = WebClient.builder()
@@ -134,76 +128,9 @@ public abstract class AbstractHTTPClient {
 			.fixedBackoff(Duration.ofSeconds(2))
 			.retryMax(3)
 			.doOnRetry((exception) -> {
-				LOGGER.info("The exception is : " + exception);
-
+				LOGGER.info("Erreur lors des appels : {}", exception);
 			});
 
-
-
-	//
-	//	/**
-	//	 * Appel POST vers les API Services
-	//	 * @param path chemin
-	//	 * @param params paramètres
-	//	 * @param dataToSend body à envoyer
-	//	 * @param responseClassType réponse type
-	//	 * @return réponse
-	//	 * @throws UserNotAuthorizedException  erreur d'authentification
-	//	 * @throws DataNotFoundException  erreur lors de l'appel
-	//	 */
-	//	protected <Q extends AbstractAPIObjectModel> Response callHTTPPost(String path, Q dataToSend) throws UserNotAuthorizedException, DataNotFoundException {
-	//		if(path != null){
-	//			try{
-	//				Response response = getInvocation(path).post(getEntity(dataToSend));
-	//				LOGGER.debug("Réponse : {}", response);
-	//				return response;
-	//			}
-	//			catch(Exception e){
-	//				catchWebApplicationException(HttpMethod.POST, e);
-	//			}
-	//		}
-	//		return null;
-	//	}
-	//
-	//	/**
-	//	 * Appel POST vers les API Services
-	//	 * @param path chemin
-	//	 * @param dataToSend body à envoyer
-	//	 * @param responseClassType réponse type
-	//	 * @return réponse
-	//	 * @throws UserNotAuthorizedException  erreur d'authentification
-	//	 * @throws DataNotFoundException  erreur lors de l'appel
-	//	 */
-	//	protected  <Q extends AbstractAPIObjectModel, R extends AbstractAPIObjectModel>
-	//	R callHTTPPost(String path, Q dataToSend, Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
-	//		return callHTTPPost(path, null, dataToSend, responseClassType);
-	//	}
-	//
-	//
-	//	/**
-	//	 * Appel POST vers les API Services
-	//	 * @param path chemin
-	//	 * @param params paramètres
-	//	 * @param dataToSend body à envoyer
-	//	 * @param responseClassType réponse type
-	//	 * @return réponse
-	//	 * @throws UserNotAuthorizedException 
-	//	 * @throws DataNotFoundException 
-	//	 */
-	//	protected <Q extends AbstractAPIObjectModel, R extends AbstractAPIObjectModel> 
-	//	R callHTTPPost(String path, Map<String, String> params, Q dataToSend, Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
-	//		if(path != null){
-	//			try{
-	//				R response = getInvocation(path, params).post(getEntity(dataToSend), responseClassType);
-	//				LOGGER.debug("Réponse : {}", response);
-	//				return response;
-	//			}
-	//			catch(Exception e){
-	//				catchWebApplicationException(HttpMethod.POST, e);
-	//			}
-	//		}
-	//		return null;
-	//	}
 	/**
 	 * Appel HTTP GET
 	 * @param path paramètres de l'URL
@@ -302,50 +229,6 @@ public abstract class AbstractHTTPClient {
 		}
 		return null;
 	}
-	//
-	//	/**
-	//	 * Appel DELETE
-	//	 * @param path racine de l'URL
-	//	 * @param responseClassType reponse
-	//	 * @return résultat de l'appel
-	//	 */
-	//	protected <R extends AbstractAPIObjectModel> R callHTTPDeleteData(String path, Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
-	//		if(path != null){
-	//			try{
-	//				R response = getInvocation(path).delete(responseClassType);
-	//				LOGGER.debug("Réponse : [{}]", response);
-	//				return response;
-	//			}
-	//			catch(Exception e){
-	//				catchWebApplicationException(HttpMethod.DELETE, e);
-	//			}
-	//		}
-	//		return null;
-	//	}
-	//
-	//
-	//	/**
-	//	 * Appel HTTP GET List
-	//	 * @param path racine de l'URL
-	//	 * @return résultat de l'appel
-	//	 * @throws UserNotAuthorizedException  erreur d'authentification
-	//	 * @throws DataNotFoundException  erreur lors de l'appel
-	//	 */
-	//	protected <R extends AbstractAPIObjectModel> List<R> callHTTPGetListData(String path) throws UserNotAuthorizedException, DataNotFoundException{
-	//		if(path != null){
-	//			try{
-	//				@SuppressWarnings("unchecked")
-	//				List<R> response = getInvocation(path).get(List.class);
-	//				LOGGER.debug("Réponse : [{}]", response);
-	//				return response;
-	//			}
-	//			catch(Exception e){
-	//				catchWebApplicationException(HttpMethod.GET, e);
-	//			}
-	//		}
-	//		return new ArrayList<>();
-	//	}
-
 
 
 	/**
@@ -356,19 +239,7 @@ public abstract class AbstractHTTPClient {
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
 	private void catchWebApplicationException(HttpMethod verbe,  Exception ex) throws UserNotAuthorizedException, DataNotFoundException {
-		//		if(ex instanceof WebApplicationException) {
-		//			WebApplicationException e = (WebApplicationException)ex;
-		//			LOGGER.error("[{}] Erreur [{}] lors de l'appel ", verbe, e.getResponse().getStatus());
-		//			if(e.getResponse().getStatusInfo().equals(Status.UNAUTHORIZED)) {
-		//				throw new UserNotAuthorizedException("Utilisateur non authentifié");
-		//			}
-		//			else if(Status.INTERNAL_SERVER_ERROR.equals(e.getResponse().getStatusInfo()) || Status.BAD_REQUEST.equals(e.getResponse().getStatusInfo())) {
-		//				throw new DataNotFoundException("Erreur lors de l'appel au service");
-		//			}
-		//		}
-		//		else {
 		LOGGER.error("[{}] Erreur lors de l'appel", verbe, ex);
-		//		}
 	}
 
 	/**
