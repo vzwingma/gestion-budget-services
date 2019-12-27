@@ -104,6 +104,10 @@ public class UtilisateursService extends AbstractBusinessService {
 	private String createToken(Utilisateur utilisateur) {
 		LOGGER.info("[idUser={}] Utilisateur [{}] authentifié", utilisateur.getId(), utilisateur.getLogin());
 		Long now = Calendar.getInstance().getTimeInMillis();
+		if("JwtSecretKey".equals(JwtConfigEnum.JWT_SECRET_KEY)) {
+			LOGGER.warn("La clé de signature SECURITY_JWT_SECRET_KEY n'a pas été paramétrée [{}]", JwtConfigEnum.SECURITY_JWT_SECRET_KEY);
+		}
+		
 		String token = Jwts.builder()
 				.setSubject(utilisateur.getLogin())
 				.setId(UUID.randomUUID().toString())
