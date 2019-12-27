@@ -147,13 +147,19 @@ public class UtilisateursService extends AbstractBusinessService {
 	 * @param newPassword nouveau mot de passe
 	 * @return résultat de l'opération
 	 */
-	public void changePassword(Utilisateur utilisateur, String oldPassword, String newPassword){
+	public void changePassword(String idUtilisateur, String oldPassword, String newPassword){
 
-		LOGGER.info("[idUser={}] Changement du mot de passe pour {}, ", utilisateur.getId(), utilisateur.getId());
+		LOGGER.info("[idUser={}] Changement du mot de passe",idUtilisateur);
 		String newHashPassword = this.passwordEncoder.encode(newPassword);
-		LOGGER.info("[idUser={}] Nouveau hash du mot de passe : {}",utilisateur.getId(), newHashPassword);
-		utilisateur.setPassword(newHashPassword);
-		dataDBUsers.majUtilisateur(utilisateur);
+		LOGGER.info("[idUser={}] Nouveau hash du mot de passe : {}",idUtilisateur, newHashPassword);
+		Utilisateur user;
+		try {
+			user = dataDBUsers.chargeUtilisateurById(idUtilisateur);
+			user.setPassword(newHashPassword);
+			dataDBUsers.majUtilisateur(user);
+		} catch (DataNotFoundException e) {
+			LOGGER.info("[idUser={}] Impossible de trouver l'utilisateur", idUtilisateur);
+		}
 	}
 
 	/**

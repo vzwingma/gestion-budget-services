@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,18 +60,16 @@ public class AdminAPIController extends AbstractAPIController {
             @ApiResponse(code = 404, message = "Ressource introuvable")
     })
 	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="login", required=true, value="Login de l'utilisateur", paramType="header"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="oldpassword", required=true, value="Ancien mot de passe de l'utilisateur", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="newpassword", required=true, value="Nouveau mot de passe de l'utilisateur", paramType="path")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.ADMIN_ACCESS)
-	public String password(@PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword) throws UserNotAuthorizedException{
+	public String password(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire,
+			@PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword) throws UserNotAuthorizedException{
 		logger.info("Changement du mot de passe");
-		Utilisateur utilisateur = null; //userSession.getUtilisateur();
-		if(utilisateur != null){
-			authService.changePassword(utilisateur, oldpassword, newPassword);
-			String returnOK = "Le mot de passe de "+utilisateur.getLogin()+ " a bien été modifié : \n " + utilisateur.toFullString();
-			logger.error(returnOK);
+		if(idProprietaire != null){
+			authService.changePassword(idProprietaire, oldpassword, newPassword);
+			String returnOK = "Le mot de passe de "+idProprietaire+ " a bien été modifié";
 			return returnOK;
 		}
 		else{

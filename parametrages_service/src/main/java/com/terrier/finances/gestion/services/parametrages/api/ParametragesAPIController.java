@@ -3,6 +3,7 @@
  */
 package com.terrier.finances.gestion.services.parametrages.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,6 @@ public class ParametragesAPIController extends AbstractAPIController {
 	 */
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
-		return null;
+		return new ArrayList<AbstractHTTPClient>();
 	}
 }
