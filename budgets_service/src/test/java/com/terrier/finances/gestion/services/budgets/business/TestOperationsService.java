@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.services.budgets.business;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,8 +37,9 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.test.config.TestMockAuthServicesConfig;
+import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
 import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 
 /**
@@ -46,7 +48,7 @@ import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={TestMockBudgetServiceConfig.class, TestMockAuthServicesConfig.class})
+@ContextConfiguration(classes={TestMockBudgetServiceConfig.class,  OperationsService.class, CallAPIInterceptor.class})
 public class TestOperationsService {
 
 	/**
@@ -58,14 +60,10 @@ public class TestOperationsService {
 	private BudgetDatabaseService mockDBBudget;
 
 	@Autowired
+	private ComptesAPIClient mockCompteClientApi;
+	
+	@Autowired
 	private OperationsService operationsService;
-
-//	@Autowired
-//	private UtilisateurDatabaseService mockDataDBUsers;
-
-//	@Autowired
-//	@Qualifier("mockAuthService")
-//	private UtilisateursService authenticationService;
 
 	private BudgetMensuel budget;
 
@@ -79,9 +77,6 @@ public class TestOperationsService {
 	 */
 	@BeforeEach
 	public void initBusinessSession() throws DataNotFoundException{
-//		UserBusinessSession mockUser = Mockito.mock(UserBusinessSession.class);
-//		when(mocksAuthConfig.getMockAuthService().getBusinessSession(anyString())).thenReturn(mockUser);
-//		this.operationsService.setServiceUtilisateurs(mocksAuthConfig.getMockAuthService());
 		user = new Utilisateur();
 		user.setId("userTest");
 
@@ -105,10 +100,7 @@ public class TestOperationsService {
 		compte.setId("CID");
 		compte.setLibelle("TEST COMPTE");
 		compte.setOrdre(0);
-
-//		when(mockDataDBUsers.chargeCompteParId(anyString(), anyString())).thenReturn(compte);
-//		when(operationsService.getServiceComptes().getCompteById(anyString(), anyString())).thenReturn(compte);
-		
+	
 		this.budget.setCompteBancaire(compte);
 
 		this.budget.setId(BudgetDataUtils.getBudgetId(compte, Month.JANUARY, 2018));
@@ -189,6 +181,8 @@ public class TestOperationsService {
 
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
+		when(mockCompteClientApi.getCompteById(anyString(), eq(user.getId()))).thenReturn(new CompteBancaire());
+		
 		CategorieOperation cat = new CategorieOperation("SCAT_ID");
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
@@ -226,7 +220,7 @@ public class TestOperationsService {
 		CategorieOperation sscat = new CategorieOperation("CAT_ID");
 		sscat.setCategorieParente(cat);
 		BudgetMensuel budgetDel = operationsService.deleteOperation(this.budget.getId(), "TEST1", user.getId());
-		assertEquals(0, budgetDel.getListeOperations().size());
+		assertNull(budgetDel.getListeOperations());
 		
 		LOGGER.info("/testDelOperation");
 

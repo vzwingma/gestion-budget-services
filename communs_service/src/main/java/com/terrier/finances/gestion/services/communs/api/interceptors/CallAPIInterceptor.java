@@ -37,10 +37,8 @@ public class CallAPIInterceptor implements ExchangeFilterFunction {
 			LOGGER.debug("Contenu envoyé \n [{}]", request.body());
 		}
 		Mono<ClientResponse> response = next.exchange(request);
-		response.doAfterSuccessOrError((r, e) -> {
-			LOGGER.info("Statut HTTP : [{}]", r.statusCode());
-		});
-		
+		response.doOnSuccess(r -> LOGGER.info("Statut HTTP : [{}]", r.statusCode()));
+
 		return response;
 	}
 

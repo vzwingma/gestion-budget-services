@@ -90,7 +90,7 @@ public abstract class AbstractHTTPClient {
 						(headers) -> {
 							headers.add(ACCEPT_CHARSET_HEADER_NAME, ACCEPT_CHARSET);
 							headers.add(ACCEPT_HEADER_NAME, MediaType.APPLICATION_JSON_VALUE);
-							headers.add(CONTENT_TYPE_HEADER_NAME, MediaType.APPLICATION_JSON_UTF8_VALUE);
+							headers.add(CONTENT_TYPE_HEADER_NAME, MediaType.APPLICATION_JSON_VALUE);
 				})
 				// Log Filter
 				.filter(callAPIInterceptor)
@@ -251,7 +251,7 @@ public abstract class AbstractHTTPClient {
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
 	protected <R extends AbstractAPIObjectModel> Mono<R> callHTTPGetData(String path, Class<R> responseClassType) throws UserNotAuthorizedException, DataNotFoundException{
-		return callHTTPGetData(path, null, responseClassType);
+		return callHTTPGetData(path, new HashMap<String, String>(), responseClassType);
 	}
 	/**
 	 * Appel HTTP GET

@@ -27,7 +27,7 @@ public class APIObjectMessageConverter<T extends AbstractAPIObjectModel> impleme
 	public APIObjectMessageConverter() {
 		JsonFactory factory = new JsonFactory();
 		factory.setCharacterEscapes(new JsonpCharacterEscapes());
-		mapper = new ObjectMapper(factory).disableDefaultTyping();
+		mapper = new ObjectMapper(factory).deactivateDefaultTyping();
 	}
 
 
