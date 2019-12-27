@@ -81,7 +81,7 @@ public class TestConverters {
 		bo.setSoldeNow(1000D);
 		Calendar c = Calendar.getInstance();
 		bo.setDateMiseAJour(c);
-		bo.setResultatMoisPrecedent(0D, 100D);
+		bo.setResultatMoisPrecedent(0D);
 		
 		CategorieOperation cat = new CategorieOperation();
 		cat.setCategorie(true);
@@ -107,7 +107,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":"+c.getTimeInMillis()+",\"compteBancaire\":{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},\"moisPrecedentResultat\":0.0,\"moisPrecedentMarge\":100.0,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":0.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":"+c.getTimeInMillis()+",\"compteBancaire\":{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},\"moisPrecedentResultat\":0.0,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":0.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);
@@ -115,9 +115,8 @@ public class TestConverters {
 		
 		BudgetMensuel boRead = (BudgetMensuel)modelRead;
 		assertEquals(bo.getId(), boRead.getId());
-		assertEquals(bo.getMarge().doubleValue(), boRead.getMarge().doubleValue());
-		assertEquals(bo.getSoldeReelFin(), boRead.getSoldeReelFin(), 1);
-		assertEquals(bo.getSoldeReelNow(), boRead.getSoldeReelNow(), 1);
+		assertEquals(bo.getSoldeFin(), boRead.getSoldeFin(), 1);
+		assertEquals(bo.getSoldeNow(), boRead.getSoldeNow(), 1);
 		
 		assertEquals(1, boRead.getTotalParCategories().size());
 		assertEquals("IdTest", boRead.getTotalParCategories().keySet().iterator().next());
@@ -152,7 +151,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":null,\"annee\":0,\"actif\":false,\"dateMiseAJour\":null,\"compteBancaire\":null,\"moisPrecedentResultat\":null,\"moisPrecedentMarge\":0.0,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":1000.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":null,\"annee\":0,\"actif\":false,\"dateMiseAJour\":null,\"compteBancaire\":null,\"moisPrecedentResultat\":null,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":1000.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);

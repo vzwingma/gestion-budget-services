@@ -36,8 +36,12 @@ public class ParametragesAPIClient extends AbstractHTTPClient {
 				.collectList().block();
 				categoriesSsCategories.addAll(categories);
 				categories.stream()
-					.map(c -> c.getListeSSCategories())
-					.forEach(ssCats -> categoriesSsCategories.addAll(ssCats));
+					.forEach(c -> {
+						c.getListeSSCategories().stream().forEach(ssCats -> {
+							ssCats.setCategorieParente(c);
+						});
+						categoriesSsCategories.addAll(c.getListeSSCategories());	
+					});
 				
 			} catch (UserNotAuthorizedException | DataNotFoundException e) {
 			LOGGER.warn("Impossible de charger les catégories");
