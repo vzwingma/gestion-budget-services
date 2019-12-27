@@ -98,7 +98,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT)
-	public ResponseEntity<String> disconnect(@RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public ResponseEntity<String> disconnect(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
 		logger.info("Disconnect : true");
 		return ResponseEntity.noContent().build();
 		//		throw new DataNotFoundException("[idUser="+idProprietaire+"] Impossible de déconnecter l'utilisateur");
@@ -119,7 +119,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.USERS_ACCESS_DATE)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
 		if(idProprietaire != null){
 			LocalDateTime lastAccess = authService.getLastAccessDate(idProprietaire);
 			logger.info("LastAccessTime : {}", lastAccess);
@@ -148,7 +148,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.USERS_PREFS)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@RequestAttribute("idProprietaire") String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
 		if(idProprietaire != null){
 			Map<UtilisateurPrefsEnum, String> prefsUtilisateur = authService.getPrefsUtilisateur(idProprietaire);
 			logger.info("Preferences Utilisateur : {}", prefsUtilisateur);

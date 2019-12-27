@@ -51,7 +51,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		final String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
 		if(jwtToken != null && JwtConfigEnum.getJWTClaims(jwtToken) != null) {
 			idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
-			request.setAttribute("idProprietaire", JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID));
+			request.setAttribute(AbstractAPIController.ID_USER, JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID));
 		}
 		else {
 			LOGGER.warn("[idUser={}] JwTToken introuvable ou incorrect. Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
