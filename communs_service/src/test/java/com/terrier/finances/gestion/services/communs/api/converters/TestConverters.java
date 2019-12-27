@@ -107,7 +107,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":"+c.getTimeInMillis()+",\"compteBancaire\":{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},\"moisPrecedentResultat\":0.0,\"moisPrecedentMarge\":100.0,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":0.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":"+c.getTimeInMillis()+",\"compteBancaire\":{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},\"moisPrecedentResultat\":0.0,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":0.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);
@@ -151,7 +151,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":null,\"annee\":0,\"actif\":false,\"dateMiseAJour\":null,\"compteBancaire\":null,\"moisPrecedentResultat\":null,\"moisPrecedentMarge\":0.0,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":1000.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":null,\"annee\":0,\"actif\":false,\"dateMiseAJour\":null,\"compteBancaire\":null,\"moisPrecedentResultat\":null,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":1000.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);

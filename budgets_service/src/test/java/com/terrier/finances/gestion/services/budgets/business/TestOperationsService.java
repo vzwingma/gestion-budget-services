@@ -138,14 +138,6 @@ public class TestOperationsService {
 		this.operationsService.calculBudget(budget);
 		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
 		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
-
-		// Pour éviter le doublon du recalcul ci dessous
-		this.budget.setResultatMoisPrecedent(0D);
-
-		assertEquals(0, Double.valueOf(this.budget.getSoldeNow()).intValue());
-		assertEquals(123, Double.valueOf(this.budget.getSoldeFin()).intValue());
-	
-
 	}
 
 	@Test
