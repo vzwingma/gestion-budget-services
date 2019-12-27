@@ -5,12 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +22,6 @@ import okhttp3.mockwebserver.RecordedRequest;
  * @author vzwingma
  *
  */
-@RunWith(SpringRunner.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes={ ComptesAPIClient.class})
 public class TestComptesAPIClient extends AbstractTestsClientAPI {
@@ -43,7 +40,7 @@ public class TestComptesAPIClient extends AbstractTestsClientAPI {
 		getMockWebServer().enqueue(
 				new MockResponse()
 					.setResponseCode(200)
-					.setHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
+					.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 					.setBody(new ObjectMapper().writerFor(CompteBancaire.class).writeValueAsString(compte))
 				);
 		

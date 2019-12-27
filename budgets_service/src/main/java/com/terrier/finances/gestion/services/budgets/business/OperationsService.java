@@ -58,12 +58,7 @@ public class OperationsService extends AbstractBusinessService {
 	@Autowired
 	private ComptesAPIClient compteClientApi;
 
-
-	
 	private DataTransformerLigneOperation transformer = new DataTransformerLigneOperation();
-
-
-
 
 	/**
 	 * Chargement du budget du mois courant

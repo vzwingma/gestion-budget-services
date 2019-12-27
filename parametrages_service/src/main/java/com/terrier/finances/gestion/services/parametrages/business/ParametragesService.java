@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.stereotype.Service;
 
@@ -28,27 +27,8 @@ public class ParametragesService extends AbstractBusinessService {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(ParametragesService.class);
 
-	private String uiValiditySessionPeriod;
-
-
 	@Autowired
 	private ParametragesDatabaseService dataParams;
-
-
-	@Value("${budget.ui.session.validity.period:10}")
-	public void setUiValiditySessionPeriod(String uiValiditySessionPeriod){
-		LOGGER.info("Suivi des sessions utilisateurs. Durée de validité d'une session : {} minutes", uiValiditySessionPeriod);
-		this.uiValiditySessionPeriod = uiValiditySessionPeriod;
-	}
-
-
-
-	/**
-	 * @return the uiValiditySessionPeriod
-	 */
-	public String getUiValiditySessionPeriod() {
-		return uiValiditySessionPeriod;
-	}
 
 	/**
 	 * @return liste des catégories

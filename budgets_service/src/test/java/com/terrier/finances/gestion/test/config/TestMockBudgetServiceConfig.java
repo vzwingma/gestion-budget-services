@@ -28,7 +28,6 @@ public class TestMockBudgetServiceConfig {
 	}
 	
 
-	
 	@Bean
 	public BudgetDatabaseService budgetDatabaseService() {
 		return Mockito.mock(BudgetDatabaseService.class);
