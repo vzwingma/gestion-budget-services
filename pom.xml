@@ -20,7 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<communs.version>9.1.1-SNAPSHOT</communs.version>
+		<communs.version>9.1.2-SNAPSHOT</communs.version>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
 
