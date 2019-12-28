@@ -153,9 +153,8 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 	 */
 	public List<LigneDepenseDTO> chargerLignesDepenses(String idBudget) throws DataNotFoundException{
 		LOGGER.info("Chargement du budget {} ", idBudget);
-		Query queryBudget = new Query().addCriteria(Criteria.where("id").is(idBudget));
 		try{
-			BudgetMensuelDTO budgetDTO = findOneByQuery(queryBudget);
+			BudgetMensuelDTO budgetDTO = findById(idBudget);
 			if(budgetDTO != null && budgetDTO.getListeDepenses() != null){
 				return budgetDTO.getListeDepenses();
 			}
