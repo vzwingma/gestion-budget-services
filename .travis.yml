@@ -136,14 +136,18 @@ after_deploy:
   - URL_START=$MASSIVEGRID_URL"startenv?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN" ;
   - curl $URL_START ;
   # Redéploiement   
-  - echo "Redéploiement des µServicess de la version $VERSION_DOCKER sur MassiveGrid : $ENV";
+  - echo "Redéploiement des µServices $VERSION_DOCKER sur MassiveGrid $ENV" ;
   - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=budgets-$VERSION_DOCKER&nodeId=$NODE_BUDGETS_ID" ;
+  - echo $URL_REDEPLOY ;
   - curl -X POST $URL_REDEPLOY ;
   - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=comptes-$VERSION_DOCKER&nodeId=$NODE_COMPTES_ID" ;
+  - echo $URL_REDEPLOY ;
   - curl -X POST $URL_REDEPLOY ;
   - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=parametrages-$VERSION_DOCKER&nodeId=$NODE_PARAMS_ID" ;
+  - echo $URL_REDEPLOY ;
   - curl -X POST $URL_REDEPLOY ;
   - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=utilisateurs-$VERSION_DOCKER&nodeId=$NODE_UTILISATEURS_ID" ;
+  - echo $URL_REDEPLOY ;
   - curl -X POST $URL_REDEPLOY ;      
   # Arrêt   
   - echo "Arrêt de l'environnement $ENV" ;
