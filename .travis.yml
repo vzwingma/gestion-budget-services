@@ -114,18 +114,15 @@ deploy:
 after_deploy:
   - echo "Déploiement sur MassiveGrid"
   - ENV="";
-  - NODE_ID=0;
   - if [[ $TRAVIS_BRANCH == v* ]]; 
     then 
         ENV="budget";
-        NODE_ID=26686;
         NODE_BUDGETS_ID=41433;
         NODE_COMPTES_ID=41434;
         NODE_PARAMS_ID=41436;
         NODE_UTILISATEURS_ID=41435;        
     else
-        ENV="budget-rec";
-        NODE_ID=26374;        
+        ENV="budget-rec"; 
         NODE_BUDGETS_ID=41433;
         NODE_COMPTES_ID=41434;
         NODE_PARAMS_ID=41436;
