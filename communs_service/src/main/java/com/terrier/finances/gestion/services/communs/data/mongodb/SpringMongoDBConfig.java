@@ -11,12 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientOptions.Builder;
-import com.mongodb.MongoClientURI;
-import com.mongodb.WriteConcern;
+import org.springframework.data.mongodb.core.SimpleMongoClientDbFactory;
 
 /**
  * Configuration de connexion à la BDD via des variables d'environnement
@@ -54,19 +49,14 @@ public class SpringMongoDBConfig {
 		String mongoURI = new StringBuilder("mongodb+srv://")
 				.append(username).append(":").append(password)
 				.append("@").append(host).append("/").append(db)
+				.append("?retryWrites=true&w=majority")
 				.toString();
-		// Mongo Options
-		Builder options = MongoClientOptions.builder()
-				.writeConcern(WriteConcern.MAJORITY)
-				.retryWrites(true)
-				.sslEnabled(true)
-				.sslInvalidHostNameAllowed(true);
 
 		if(LOGGER.isInfoEnabled()) {
 			String mongoURItoLog = mongoURI.replaceAll(":(.)*@", "*");
 			LOGGER.info("[INIT] Configuration de la connexion vers MongoDB Atlas : [{}]", mongoURItoLog);
 		}
-		return new SimpleMongoDbFactory(new MongoClientURI(mongoURI, options));
+		return new SimpleMongoClientDbFactory(mongoURI);
 	}
 
 	/**
