@@ -11,7 +11,7 @@
 
 	<groupId>io.github.vzwingma.finances.budget</groupId>
 	<artifactId>services</artifactId>
-	<version>8.1.1-SNAPSHOT</version>
+	<version>11.0.0-SNAPSHOT</version>
 	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
 	<packaging>pom</packaging>
@@ -19,17 +19,14 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>11</maven.compiler.target>
-		<communs.version>7.4.0-SNAPSHOT</communs.version>
-		<spring.version>5.1.5.RELEASE</spring.version>
+		<communs.version>11.0.0-SNAPSHOT</communs.version>
+		<spring.version>5.2.2.RELEASE</spring.version>
 		<mongo.data.version>3.9.0</mongo.data.version>
-		<spring.security.version>5.1.5.RELEASE</spring.security.version>
-		<jackson.version>2.9.6</jackson.version>
-		<jersey.version>2.27</jersey.version>
+		<spring.security.version>5.2.2.RELEASE</spring.security.version>
+		<jackson.version>2.10.1</jackson.version>
+		<jersey.version>2.29.1</jersey.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<communs.version>9.1.3-SNAPSHOT</communs.version>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		
 		<sonar.projectKey>gestion-budget-services</sonar.projectKey>
@@ -67,7 +64,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
 				<configuration>
 					<release>${maven.compiler.target}</release>
 				</configuration>
@@ -75,7 +71,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>versions-maven-plugin</artifactId>
-				<version>2.5</version>
 				<configuration>
 					<generateBackupPoms>false</generateBackupPoms>
 				</configuration>
@@ -122,7 +117,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.0</version>
 				<configuration>
 					<argLine>
 						--illegal-access=permit
@@ -132,7 +126,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.22.0</version>
 				<configuration>
 					<argLine>
 						--illegal-access=permit
