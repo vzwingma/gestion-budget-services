@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>io.github.vzwingma.finances.budget</groupId>
 		<artifactId>services</artifactId>
-		<version>8.1.1-SNAPSHOT</version>
+		<version>11.0.0-SNAPSHOT</version>
 	</parent>
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>comptes</artifactId>
-	<version>8.1.0</version>
+	<version>11.0.0-SNAPSHOT</version>
 	<name>[Budget] Service Comptes</name>
 	<description>Services Comptes de l'application</description>
 	<packaging>jar</packaging>

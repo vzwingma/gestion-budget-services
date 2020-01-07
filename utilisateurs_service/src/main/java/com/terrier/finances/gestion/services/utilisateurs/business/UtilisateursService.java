@@ -24,7 +24,7 @@ import com.terrier.finances.gestion.services.communs.business.AbstractBusinessSe
 import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 /**
  * Service Utilisateurs
@@ -120,7 +120,7 @@ public class UtilisateursService extends AbstractBusinessService {
 				.setIssuedAt(new Date(now))
 				.setIssuer("Budget-Services")
 				.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
-				.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.getJwtSecretKey().getBytes())
+				.signWith(Keys.hmacShaKeyFor(JwtConfigEnum.getJwtSecretKey().getBytes()))
 				.compact();
 		LOGGER.info("[idUser={}] Token JWT [{}]", utilisateur.getId(), token);
 		return token;

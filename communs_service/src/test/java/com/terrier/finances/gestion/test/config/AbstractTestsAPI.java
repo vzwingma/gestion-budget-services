@@ -25,7 +25,7 @@ import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 /**
  * Classe abstraite des tests d'API
@@ -87,7 +87,7 @@ public abstract class AbstractTestsAPI {
 				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, id)
 				.setIssuedAt(new Date(now))
 				.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
-				.signWith(SignatureAlgorithm.HS512, JwtConfigEnum.getJwtSecretKey().getBytes())
+				.signWith(Keys.hmacShaKeyFor(JwtConfigEnum.getJwtSecretKey().getBytes()))
 				.compact();
 		// Add token to header
 		return JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token;
