@@ -108,13 +108,13 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 
 		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiConfigEnum.HEADER_CORRELATION_ID);
 		// Allow only GUID
-		if (corrIdHeader.matches(GUID_REGEX)) {
+		if (corrIdHeader != null && corrIdHeader.matches(GUID_REGEX)) {
 			response.setHeader(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
 		}
 
 		String corrIdApiHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID);
 		// Allow only GUID
-		if (corrIdApiHeader.matches(GUID_REGEX)) {
+		if (corrIdApiHeader != null && corrIdApiHeader.matches(GUID_REGEX)) {
 			response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
 		}
 
