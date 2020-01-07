@@ -1,5 +1,5 @@
 # Issu de la dernière image OpenJDK 11
-FROM openjdk:11-alpine
+FROM openjdk:14-jdk-alpine
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
