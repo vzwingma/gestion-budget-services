@@ -460,13 +460,16 @@ public class OperationsService extends AbstractBusinessService {
 				else {
 					LOGGER.debug("Ajout de l'opération {} dans le budget {}", ligneUpdatedOperation, budget);
 					budget.getListeOperations().add(ligneUpdatedOperation);
+					
+					// Si frais remboursable : ajout du remboursement en prévision
+					// #62 : et en mode création
+					if(ligneOperation.getSsCategorie() != null
+							&& ligneOperation.getCategorie() != null 
+							&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())){
+						budget.getListeOperations().add(addOperationRemboursement(ligneOperation, idProprietaire));
+					}
 				}
-				// Si frais remboursable : ajout du remboursement en prévision
-				if(ligneOperation.getSsCategorie() != null
-						&& ligneOperation.getCategorie() != null 
-						&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())){
-					budget.getListeOperations().add(addOperationRemboursement(ligneOperation, idProprietaire));
-				}
+				
 			}
 			else {
 				LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
