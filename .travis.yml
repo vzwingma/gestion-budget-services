@@ -30,6 +30,17 @@ jobs:
       install: 
         - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
 
+      script:
+        # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB de la version en cours
+        - if [[ $TRAVIS_BRANCH == "master" ]];
+          then 
+            echo "ReTag de snapshot"; 
+            git tag -d snapshot; 
+            git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services :refs/tags/snapshot; 
+            git tag snapshot; 
+            git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services --tags; 
+          fi
+
       deploy:
       # Déploiement des releases sur tag : snapshot ou version 
         - provider: releases
@@ -44,17 +55,7 @@ jobs:
           on:
             repo: vzwingma/gestion-budget-services
             tags: true
-    - script:
-        # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB de la version en cours
-        - if [[ $TRAVIS_BRANCH == "master" ]];
-          then 
-            echo "ReTag de snapshot"; 
-            git tag -d snapshot; 
-            git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services :refs/tags/snapshot; 
-            git tag snapshot; 
-            git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services --tags; 
-          fi
-       name: "ReTag Snapshot"
+
 
      ############################
      #   PUBLISH SUR DOCKER
