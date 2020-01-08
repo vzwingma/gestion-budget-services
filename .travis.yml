@@ -119,7 +119,9 @@ jobs:
      ############################
      #   DEPLOY SUR MASSIVEGRID
      ############################
-    - stage: start MassiveGrid
+    - stage: "Start MassiveGrid"
+      name: "Démarrage MassiveGrid"
+      install: skip
       script:
         - echo "Démarrage sur MassiveGrid"
         - ENV="";
@@ -127,46 +129,82 @@ jobs:
           then 
               ENV="budget";   
           else
-              ENV="budget-rec";                  
+              ENV="budget-rec";
           fi;
         # Démarrage 
         - echo "Démarrage de l'environnement $ENV";
         - URL_START=$MASSIVEGRID_URL"startenv?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN" ;
         # curl $URL_START ;
     - stage: deploy on MassiveGrid
+      install: skip
+      name: "Deploy Utilisateurs"
       script:
-        - echo "Déploiement sur MassiveGrid"
+        - echo "Déploiement Utilisateurs sur MassiveGrid"
         - ENV="";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
           then 
               ENV="budget";
-              NODE_BUDGETS_ID=41433;
-              NODE_COMPTES_ID=41434;
-              NODE_PARAMS_ID=41436;
               NODE_UTILISATEURS_ID=41435;        
           else
               ENV="budget-rec"; 
-              NODE_BUDGETS_ID=41433;
-              NODE_COMPTES_ID=41434;
-              NODE_PARAMS_ID=41436;
               NODE_UTILISATEURS_ID=41435;                        
+          fi;
+        # Redéploiement   
+        - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=utilisateurs-$VERSION_DOCKER&nodeId=$NODE_UTILISATEURS_ID" ;
+        - echo $URL_REDEPLOY ;
+        # curl -X POST $URL_REDEPLOY ;      
+      name: "Deploy Budgets"
+      script:
+        - echo "Déploiement Budgets sur MassiveGrid"
+        - ENV="";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              ENV="budget";
+              NODE_BUDGETS_ID=41433;     
+          else
+              ENV="budget-rec"; 
+              NODE_BUDGETS_ID=41433;                 
           fi;
         # Redéploiement   
         - echo "Redéploiement des µServices $VERSION_DOCKER sur MassiveGrid $ENV" ;
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=budgets-$VERSION_DOCKER&nodeId=$NODE_BUDGETS_ID" ;
         - echo $URL_REDEPLOY ;
         # curl -X POST $URL_REDEPLOY ;
+      name: "Deploy Comptes"
+      script:
+        - echo "Déploiement Comptes sur MassiveGrid"
+        - ENV="";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              ENV="budget";
+              NODE_COMPTES_ID=41434;     
+          else
+              ENV="budget-rec"; 
+              NODE_COMPTES_ID=41434;                     
+          fi;
+        # Redéploiement   
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=comptes-$VERSION_DOCKER&nodeId=$NODE_COMPTES_ID" ;
         - echo $URL_REDEPLOY ;
         # curl -X POST $URL_REDEPLOY ;
+      name: "Deploy Paramètres"
+      script:
+        - echo "Déploiement Paramètres sur MassiveGrid"
+        - ENV="";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              ENV="budget";
+              NODE_PARAMS_ID=41436;   
+          else
+              ENV="budget-rec"; 
+              NODE_PARAMS_ID=41436;                
+          fi;
+        # Redéploiement   
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=parametrages-$VERSION_DOCKER&nodeId=$NODE_PARAMS_ID" ;
         - echo $URL_REDEPLOY ;
-        # curl -X POST $URL_REDEPLOY ;
-        - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=utilisateurs-$VERSION_DOCKER&nodeId=$NODE_UTILISATEURS_ID" ;
-        - echo $URL_REDEPLOY ;
-        # curl -X POST $URL_REDEPLOY ;      
-      
+        # curl -X POST $URL_REDEPLOY ;                        
     - stage: stop MassiveGrid
+      name: "Stop MassiveGrid"  
+      install: skip
       script:
         - echo "Arrêt sur MassiveGrid"
         - ENV="";
