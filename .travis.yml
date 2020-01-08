@@ -49,10 +49,10 @@ jobs:
           cleanup: false
           overwrite: true
           file: 
-          - ~/build/vzwingma/gestion-budget-services/parametrages_service/target/service-parametrages.jar
-          - ~/build/vzwingma/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar
-          - ~/build/vzwingma/gestion-budget-services/budgets_service/target/service-budgets.jar
-          - ~/build/vzwingma/gestion-budget-services/comptes_service/target/service-comptes.jar
+          - /home/travis/build/vzwingma/gestion-budget-services/parametrages_service/target/service-parametrages.jar
+          - /home/travis/build/vzwingma/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar
+          - /home/travis/build/vzwingma/gestion-budget-services/budgets_service/target/service-budgets.jar
+          - /home/travis/build/vzwingma/gestion-budget-services/comptes_service/target/service-comptes.jar
           on:
             repo: vzwingma/gestion-budget-services
             tags: true
