@@ -154,7 +154,7 @@ jobs:
         - echo $URL_REDEPLOY ;
         # curl -X POST $URL_REDEPLOY ;      
       name: "Deploy Budgets"
-      script:
+    - script:
         - echo "Déploiement Budgets sur MassiveGrid"
         - ENV="";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -171,7 +171,7 @@ jobs:
         - echo $URL_REDEPLOY ;
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Comptes"
-      script:
+    - script:
         - echo "Déploiement Comptes sur MassiveGrid"
         - ENV="";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -187,7 +187,7 @@ jobs:
         - echo $URL_REDEPLOY ;
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Paramètres"
-      script:
+    - script:
         - echo "Déploiement Paramètres sur MassiveGrid"
         - ENV="";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
