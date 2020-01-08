@@ -62,9 +62,9 @@ jobs:
      ############################
     - stage: "Publish to DockerHUB"
       name: "Publication vers DockerHub"
-      if: branch = master
       install: skip
       ### Service Paramétrages
+      if: branch = master
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
         - echo "Construction de l'image Docker Service Parametrages"; 
@@ -84,7 +84,8 @@ jobs:
       name: "Publish Paramétrages"
     
     ### Service Utilisateurs
-    - script:
+    - if: branch = master
+      script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
          
         - echo "Construction de l'image Docker Service Utilisateurs"; 
@@ -104,7 +105,8 @@ jobs:
       name: "Publish Utilisateurs"
       
     ### Service Comptes
-    - script:
+    - if: branch = master
+      script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
 
         - echo "Construction de l'image Docker Service Comptes"; 
@@ -124,7 +126,8 @@ jobs:
       name: "Publish Comptes"
       
     ### Service Budget
-    - script:
+    - if: branch = master
+      script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
 
         - echo "Construction de l'image Docker Service Budget"; 
@@ -186,7 +189,9 @@ jobs:
         - echo $URL_REDEPLOY ;
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Utilisateurs"        
-    - script:
+      
+    - if: branch = master
+      script:
         - echo "Déploiement Budgets sur MassiveGrid"
         - ENV="";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -203,7 +208,9 @@ jobs:
         - echo $URL_REDEPLOY ;
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Budgets"
-    - script:
+      
+    - if: branch = master
+      script:
         - echo "Déploiement Comptes sur MassiveGrid"
         - ENV="";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -219,7 +226,9 @@ jobs:
         - echo $URL_REDEPLOY ;
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Comptes"
-    - script:
+      
+    - if: branch = master
+      script:
         - echo "Déploiement Paramètres sur MassiveGrid"
         - ENV="";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
