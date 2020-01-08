@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
 
-import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
+import com.terrier.finances.gestion.communs.api.security.ApiHeaderIdEnum;
 
 import reactor.core.publisher.Mono;
 
@@ -31,7 +31,7 @@ public class CallAPIInterceptor implements ExchangeFilterFunction {
 	public Mono<ClientResponse> filter(ClientRequest request, ExchangeFunction next) {
 		
 
-		String apiCorrID = request.headers().getValuesAsList(ApiConfigEnum.HEADER_API_CORRELATION_ID).stream().findAny().orElse("?");
+		String apiCorrID = request.headers().getValuesAsList(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID).stream().findAny().orElse("?");
 		LOGGER.info("[API={}] {} :: {}", apiCorrID, request.method(), request.url());
 		if (HttpMethod.POST.equals(request.method()) || HttpMethod.PUT.equals(request.method())) {
 			LOGGER.debug("Contenu envoyé \n [{}]", request.body());
