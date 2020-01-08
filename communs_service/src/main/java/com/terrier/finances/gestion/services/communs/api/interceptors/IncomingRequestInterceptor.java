@@ -14,7 +14,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
+import com.terrier.finances.gestion.communs.api.security.ApiHeaderIdEnum;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
@@ -42,9 +42,9 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	public void manageHeaders(HttpServletRequest request, AbstractAPIController controller) {
 
 		// Logger des CorrId
-		final String corrIdHeader = request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) : UUID.randomUUID().toString();
-		request.setAttribute(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
-		org.slf4j.MDC.put(ApiConfigEnum.HEADER_CORRELATION_ID, new StringBuilder("[").append(ApiConfigEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
+		final String corrIdHeader = request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) : UUID.randomUUID().toString();
+		request.setAttribute(ApiHeaderIdEnum.HEADER_CORRELATION_ID, corrIdHeader);
+		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_CORRELATION_ID, new StringBuilder("[").append(ApiHeaderIdEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
 
 
 		// Injection de la session User à partir du JWT
@@ -59,8 +59,8 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		// Log API CorrId
-		final String corrIdAPIHeader = request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : UUID.randomUUID().toString();
-		request.setAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
+		final String corrIdAPIHeader = request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) != null ? request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) : UUID.randomUUID().toString();
+		request.setAttribute(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
 
 		if(UNKNOWN_USER.equals(idUser)) {
 			LOGGER.info("[API={}][{} :: {}] anonyme", corrIdAPIHeader, request.getMethod(), request.getRequestURI());
@@ -106,16 +106,16 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 
-		String corrIdHeader =  request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiConfigEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiConfigEnum.HEADER_CORRELATION_ID);
+		String corrIdHeader =  request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiHeaderIdEnum.HEADER_CORRELATION_ID);
 		// Allow only GUID
-		if (corrIdHeader.matches(GUID_REGEX)) {
-			response.setHeader(ApiConfigEnum.HEADER_CORRELATION_ID, corrIdHeader);
+		if (corrIdHeader != null && corrIdHeader.matches(GUID_REGEX)) {
+			response.setHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID, corrIdHeader);
 		}
 
-		String corrIdApiHeader =  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiConfigEnum.HEADER_API_CORRELATION_ID);
+		String corrIdApiHeader =  request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID);
 		// Allow only GUID
-		if (corrIdApiHeader.matches(GUID_REGEX)) {
-			response.setHeader(ApiConfigEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
+		if (corrIdApiHeader != null && corrIdApiHeader.matches(GUID_REGEX)) {
+			response.setHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
 		}
 
 		super.postHandle(request, response, handler, modelAndView);

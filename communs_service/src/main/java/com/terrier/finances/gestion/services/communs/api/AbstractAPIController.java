@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
+import com.terrier.finances.gestion.communs.api.security.ApiHeaderIdEnum;
 
 /**
  * Classe abstraite d'un API Controller
@@ -30,7 +30,7 @@ public abstract class AbstractAPIController {
 	 * Constructeur des API Controleur
 	 */
 	public AbstractAPIController() {
-		org.slf4j.MDC.put(ApiConfigEnum.HEADER_CORRELATION_ID, "");
+		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_CORRELATION_ID, "");
 	}
 
 	/**

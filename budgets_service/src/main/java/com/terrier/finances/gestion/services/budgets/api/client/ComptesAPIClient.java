@@ -7,6 +7,7 @@ import java.util.Collections;
 
 import org.springframework.stereotype.Service;
 
+import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
@@ -38,8 +39,8 @@ public class ComptesAPIClient extends AbstractHTTPClient {
 
 	
 	@Override
-	public String getBaseURL() {
-		return "http://localhost:8092";
+	public ApiUrlConfigEnum getConfigServiceURI() {
+		return ApiUrlConfigEnum.APP_CONFIG_URL_COMPTES;
 	}
 
 }

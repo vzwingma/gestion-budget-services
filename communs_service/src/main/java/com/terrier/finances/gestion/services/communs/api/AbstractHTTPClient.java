@@ -26,8 +26,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-import com.terrier.finances.gestion.communs.api.security.ApiConfigEnum;
+import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
+import com.terrier.finances.gestion.communs.api.security.ApiHeaderIdEnum;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
+import com.terrier.finances.gestion.communs.utils.config.EnvVarConfigUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
@@ -49,10 +51,8 @@ public abstract class AbstractHTTPClient {
 	public static final String ACCEPT_CHARSET_HEADER_NAME = "accept-charset";
 	public static final String ACCEPT_HEADER_NAME = "Accept";
 	public static final String CONTENT_TYPE_HEADER_NAME = "Content-type";
-
 	// Charset utilisé dans les fichiers XML
 	private static final String ACCEPT_CHARSET = "UTF-8";
-
 	// Nombre d'essais lors d'un premier échec lors de l'appel à un service externe
 	protected final int nbEssais = 2;
 
@@ -95,9 +95,14 @@ public abstract class AbstractHTTPClient {
 	/**
 	 * @return l'URI du µService
 	 */
-	public abstract String getBaseURL();
+	public abstract ApiUrlConfigEnum getConfigServiceURI();
 	
-	
+	/**
+	 * @return l'URL issue des envs var
+	 */
+	private String getBaseURL() {
+		return EnvVarConfigUtils.getStringEnvVar(getConfigServiceURI());
+	}
 	
 	/**
 	 * Crée les headers HTTP
@@ -108,12 +113,12 @@ public abstract class AbstractHTTPClient {
 		return (headers) -> {
 			// Correlation ID
 			String corrID = this.correlationId != null ? this.correlationId : UUID.randomUUID().toString();
-			org.slf4j.MDC.put(ApiConfigEnum.HEADER_CORRELATION_ID, "["+ApiConfigEnum.LOG_CORRELATION_ID+"="+corrID+"]");
-			headers.add(ApiConfigEnum.HEADER_CORRELATION_ID, corrID);
+			org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_CORRELATION_ID, "["+ApiHeaderIdEnum.LOG_CORRELATION_ID+"="+corrID+"]");
+			headers.add(ApiHeaderIdEnum.HEADER_CORRELATION_ID, corrID);
 
 			String apiCorrID = UUID.randomUUID().toString();
-			org.slf4j.MDC.put(ApiConfigEnum.HEADER_API_CORRELATION_ID, "[API="+apiCorrID+"]");
-			headers.add(ApiConfigEnum.HEADER_API_CORRELATION_ID, apiCorrID);
+			org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, "[API="+apiCorrID+"]");
+			headers.add(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, apiCorrID);
 
 			if(this.jwtToken != null){
 				headers.add(JwtConfigEnum.JWT_HEADER_AUTH, this.jwtToken);

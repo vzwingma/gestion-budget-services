@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
@@ -65,8 +66,8 @@ public class ParametragesAPIClient extends AbstractHTTPClient {
 	}
 	
 	@Override
-	public String getBaseURL() {
-		return "http://localhost:8091";
+	public ApiUrlConfigEnum getConfigServiceURI() {
+		return ApiUrlConfigEnum.APP_CONFIG_URL_PARAMS;
 	}
 
 }

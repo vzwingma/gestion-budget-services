@@ -90,6 +90,6 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 
 	@Override
 	public int getServerPort() {
-		return 8090;
+		return 8092;
 	}
 }
