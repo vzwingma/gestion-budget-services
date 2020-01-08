@@ -1,5 +1,5 @@
-sudo: required
 language: java
+os: linux
 services:
   - docker
 cache:
@@ -44,8 +44,8 @@ jobs:
       deploy:
       # Déploiement des releases sur tag : snapshot ou version 
         - provider: releases
-          api-key: $GITHUB_API_KEY
-          skip_cleanup: true
+          token: $GITHUB_API_KEY
+          cleanup: false
           overwrite: true
           file: 
           - ~/build/vzwingma/gestion-budget-services/parametrages_service/target/service-parametrages.jar
@@ -55,7 +55,6 @@ jobs:
           on:
             repo: vzwingma/gestion-budget-services
             tags: true
-
 
      ############################
      #   PUBLISH SUR DOCKER
