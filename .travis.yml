@@ -62,6 +62,7 @@ jobs:
      ############################
     - stage: "Publish to DockerHUB"
       name: "Publication vers DockerHub"
+      if: branch = master
       install: skip
       ### Service Paramétrages
       script:
@@ -147,6 +148,7 @@ jobs:
      ############################
     - stage: "Start MassiveGrid"
       name: "Démarrage MassiveGrid"
+      if: branch = master
       install: skip
       script:
         - echo "Démarrage sur MassiveGrid"
@@ -166,6 +168,7 @@ jobs:
      #   DEPLOY SUR MASSIVEGRID
      ############################
     - stage: deploy on MassiveGrid
+      if: branch = master
       install: skip
       script:
         - echo "Déploiement Utilisateurs sur MassiveGrid"
@@ -238,6 +241,7 @@ jobs:
      ############################
     - stage: stop MassiveGrid
       name: "Stop MassiveGrid"
+      if: branch = master
       install: skip
       script:
         - echo "Arrêt sur MassiveGrid"
