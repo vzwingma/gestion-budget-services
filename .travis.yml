@@ -45,7 +45,6 @@ jobs:
             repo: vzwingma/gestion-budget-services
             tags: true
     - script:
-        if: branch = master
         # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB de la version en cours
         - if [[ $TRAVIS_BRANCH == "master" ]];
           then 
@@ -62,9 +61,7 @@ jobs:
      ############################
     - stage: "Publish to DockerHUB"
       name: "Publication vers DockerHub"
-      if: branch = master
       install: skip
-      
       ### Service Paramétrages
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
@@ -149,9 +146,6 @@ jobs:
      ############################
     - stage: "Start MassiveGrid"
       name: "Démarrage MassiveGrid"
-      
-      if: branch = master
-      
       install: skip
       script:
         - echo "Démarrage sur MassiveGrid"
@@ -243,9 +237,6 @@ jobs:
      ############################
     - stage: stop MassiveGrid
       name: "Stop MassiveGrid"
-      
-      if: branch = master
-      
       install: skip
       script:
         - echo "Arrêt sur MassiveGrid"
