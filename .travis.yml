@@ -64,8 +64,8 @@ jobs:
       ### Service Paramétrages
       install: skip      
       script:
-        - if [[ $TRAVIS_BRANCH == v* || $TRAVIS_BRANCH == "snapshot"TRAVIS_BRANCH == snapshot ]] ;
-        then
+        - if [[ $TRAVIS_BRANCH == v* || $TRAVIS_BRANCH == "snapshot" ]];
+          then
             docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
             
             if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -87,14 +87,14 @@ jobs:
             fi;
             docker tag vzwingmann/gestion_budget_services:parametrages-travis vzwingmann/gestion_budget_services:parametrages-$VERSION_RELEASE ; 
             docker push vzwingmann/gestion_budget_services:parametrages-$VERSION_RELEASE ; 
-        fi;
+          fi;
       name: "Publish Paramétrages"
     
     ### Service Utilisateurs
     - install: skip
       script:
-        - if [[ $TRAVIS_BRANCH == v* || $TRAVIS_BRANCH == "snapshot" ]] ;
-        then
+        - if [[ $TRAVIS_BRANCH == v* || $TRAVIS_BRANCH == "snapshot" ]];
+          then
             docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
             
             if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -116,14 +116,14 @@ jobs:
             fi;
             docker tag vzwingmann/gestion_budget_services:utilisateurs-travis vzwingmann/gestion_budget_services:utilisateurs-$VERSION_RELEASE ; 
             docker push vzwingmann/gestion_budget_services:utilisateurs-$VERSION_RELEASE ; 
-        fi;
+          fi;
       name: "Publish Utilisateurs"
       
     ### Service Comptes
     - install: skip
       script:
-        - if [[ $TRAVIS_BRANCH == v* || $TRAVIS_BRANCH == "snapshot" ]] ;
-        then
+        - if [[ $TRAVIS_BRANCH == v* || $TRAVIS_BRANCH == "snapshot" ]];
+          then
             docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
             
             if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -145,14 +145,14 @@ jobs:
             fi;
             docker tag vzwingmann/gestion_budget_services:comptes-travis vzwingmann/gestion_budget_services:comptes-$VERSION_RELEASE ; 
             docker push vzwingmann/gestion_budget_services:comptes-$VERSION_RELEASE ; 
-        fi;
+          fi;
       name: "Publish Comptes"
       
     ### Service Budget
     - install: skip
       script:
-        - if [[ $TRAVIS_BRANCH == v* || $TRAVIS_BRANCH == "snapshot" ]] ;
-        then
+        - if [[ $TRAVIS_BRANCH == v* || $TRAVIS_BRANCH == "snapshot" ]];
+          then
             docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
             
             if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -174,7 +174,7 @@ jobs:
             fi;
             docker tag vzwingmann/gestion_budget_services:budgets-travis vzwingmann/gestion_budget_services:budgets-$VERSION_RELEASE ; 
             docker push vzwingmann/gestion_budget_services:budgets-$VERSION_RELEASE ; 
-        fi;
+          fi;
       name: "Publish Budgets"  
       
      ############################
