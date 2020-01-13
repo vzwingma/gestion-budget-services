@@ -28,7 +28,7 @@
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
-		
+
 		<sonar.projectKey>gestion-budget-services</sonar.projectKey>
 	</properties>
 
@@ -60,6 +60,7 @@
 	</modules>
 
 	<build>
+		<finalName>${project.name}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

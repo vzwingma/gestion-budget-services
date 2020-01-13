@@ -1,5 +1,5 @@
-sudo: required
 language: java
+os: linux
 services:
   - docker
 cache:
@@ -9,144 +9,283 @@ git:
   depth: false
 # Notification SLACK
 notifications:
-  slack: terrier-zed:zBgR60L3Sf7vLgxKqVonmaMT
-before_install:
-# Version tagguée > Application de la version sur Maven
-  - if [[ $TRAVIS_BRANCH == v* ]]; 
-    then 
-        VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
-    else 
-        VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec  -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
-        VERSION=$(echo $VERSION | sed -r 's/(-SNAPSHOT)+//gi')-SNAPSHOT; 
-    fi; 
-    echo "Application de la version Services $VERSION"; 
-    mvn versions:set -DnewVersion=$VERSION; 
-    mvn versions:commit;
-install: 
-  - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
+  slack: 
+    secure: "vsOHo4Chai7jU0W7VBZvJLowJhGBSaIlz6ioXqIMRYa2cdXudgwq23i2EDQ65hAj8gJLrMwMc5il105qV8WdExaaomwM1fmm4onmDXKFGTVsemG+X9rul2Y0ii2VklvmKw7jBdEKbJwE3/zmtYV7+rcI1FDP4/jNQklvkMODBK8vPrvLGapSl8K9Gfuhnf5RIJimHLPPK1584YlF7WXjq47Dce420bG6VdACrQ2OJiDcubei1MM+ov6sTaAin4jc1URrPegXjEKt4ckQK+HderVwy6SZMWoPXDG3uSC0p+7YTlOnFeMIA0TJku7ueCtEkjg14k+vJJTjGLXE41MB0h37n9PBWeWUwxF4xRbKtWmynMXbABPoEjwFJrnVoY8cr6AWcFeguat/y3iTRMaYI7LxiWhAyMyPJ0QoJfQNqN/ZkvExOae96Eb7Oy9UzSJ5gPefuNlcmqBM69cabgZH2PHVig88HFHyTKBul1vXXiSTcnPavjQq3eY2NR8pTqye7LJggc3rAEhmmai7AXjEajaBoUWRib1jIHDNMNYsQxbs2I4Onwgu4XCLEZdrzXTWFPmDr0wdpO2mm5z1uNdqqQUrFbdvWAUvKUVuQzhAuF+3DQuPuP7r2mGTn0Macb/KJ6rrqNpx+A3iHbQ7uvhwv0QJJh7jxLPz+dR83FxmtWQ="
 
-script:
-  # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB.
-  - if [[ $TRAVIS_BRANCH == "master" ]];
-    then 
-      echo "ReTag de snapshot"; 
-      git tag -d snapshot; 
-      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services :refs/tags/snapshot; 
-      git tag snapshot; 
-      git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services --tags; 
-    else 
-      echo "Pas de reTag de snapshot"; 
-    fi
+jobs:
+  include:
+    - stage: Build and Publish to GitHub
+      before_install:
+      # Version tagguée > Application de la version sur Maven
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          else 
+              VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec  -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
+              VERSION=$(echo $VERSION | sed -r 's/(-SNAPSHOT)+//gi')-SNAPSHOT; 
+          fi; 
+          echo "Application de la version Services $VERSION"; 
+          mvn versions:set -DnewVersion=$VERSION; 
+          mvn versions:commit;
+          
+      install: 
+        - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
 
-# Déploiement des releaes sur tag : snapshot ou version 
-before_deploy:
-  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-   # Service Paramétrages
-  - echo "Construction de l'image Docker Service Parametrages"; 
-  - cp ~/build/vzwingma/gestion-budget-services/parametrages_service/target/service-parametrages.jar ~/build/vzwingma/gestion-budget-services/parametrages_service/src/main/external-ressources/docker/service-parametrages.jar
-  - cd ~/build/vzwingma/gestion-budget-services/parametrages_service/src/main/external-ressources/docker
-  - docker build -t vzwingmann/gestion_budget_services:parametrages-travis -f Dockerfile-PARAMS_SERVICE .;
-  - VERSION_DOCKER="snapshot";
-  - if [[ $TRAVIS_BRANCH == v* ]]; 
-    then 
-        VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
-        docker tag vzwingmann/gestion_budget_services:parametrages-travis vzwingmann/gestion_budget_services:parametrages-$VERSION_DOCKER_TAG ; 
-        docker push vzwingmann/gestion_budget_services:parametrages-$VERSION_DOCKER_TAG ; 
-        VERSION_DOCKER="latest";
-    fi;
-  - docker tag vzwingmann/gestion_budget_services:parametrages-travis vzwingmann/gestion_budget_services:parametrages-$VERSION_DOCKER ; 
-  - docker push vzwingmann/gestion_budget_services:parametrages-$VERSION_DOCKER ; 
-   # Service Budget
-  - echo "Construction de l'image Docker Service Budget"; 
-  - cp ~/build/vzwingma/gestion-budget-services/budgets_service/target/service-budgets.jar ~/build/vzwingma/gestion-budget-services/budgets_service/src/main/external-ressources/docker/service-budgets.jar
-  - cd ~/build/vzwingma/gestion-budget-services/budgets_service/src/main/external-ressources/docker
-  - docker build -t vzwingmann/gestion_budget_services:budgets-travis -f Dockerfile-BUDGETS_SERVICE .;
-  - VERSION_DOCKER="snapshot";
-  - if [[ $TRAVIS_BRANCH == v* ]]; 
-    then 
-        VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
-        docker tag vzwingmann/gestion_budget_services:budgets-travis vzwingmann/gestion_budget_services:budgets-$VERSION_DOCKER_TAG ; 
-        docker push vzwingmann/gestion_budget_services:budgets-$VERSION_DOCKER_TAG ; 
-        VERSION_DOCKER="latest";
-    fi;
-  - docker tag vzwingmann/gestion_budget_services:budgets-travis vzwingmann/gestion_budget_services:budgets-$VERSION_DOCKER ; 
-  - docker push vzwingmann/gestion_budget_services:budgets-$VERSION_DOCKER ; 
-   # Service Comptes
-  - echo "Construction de l'image Docker Service Comptes"; 
-  - cp ~/build/vzwingma/gestion-budget-services/comptes_service/target/service-comptes.jar ~/build/vzwingma/gestion-budget-services/comptes_service/src/main/external-ressources/docker/service-comptes.jar
-  - cd ~/build/vzwingma/gestion-budget-services/comptes_service/src/main/external-ressources/docker
-  - docker build -t vzwingmann/gestion_budget_services:comptes-travis -f Dockerfile-COMPTES_SERVICE .;
-  - VERSION_DOCKER="snapshot";
-  - if [[ $TRAVIS_BRANCH == v* ]]; 
-    then 
-        VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
-        docker tag vzwingmann/gestion_budget_services:comptes-travis vzwingmann/gestion_budget_services:comptes-$VERSION_DOCKER_TAG ; 
-        docker push vzwingmann/gestion_budget_services:comptes-$VERSION_DOCKER_TAG ; 
-        VERSION_DOCKER="latest";
-    fi;
-  - docker tag vzwingmann/gestion_budget_services:comptes-travis vzwingmann/gestion_budget_services:comptes-$VERSION_DOCKER ; 
-  - docker push vzwingmann/gestion_budget_services:comptes-$VERSION_DOCKER ; 
-   # Service Utilisateurs
-  - echo "Construction de l'image Docker Service Utilisateurs"; 
-  - cp ~/build/vzwingma/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar ~/build/vzwingma/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker/service-utilisateurs.jar
-  - cd ~/build/vzwingma/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker
-  - docker build -t vzwingmann/gestion_budget_services:utilisateurs-travis -f Dockerfile-UTILISATEURS_SERVICE .;
-  - VERSION_DOCKER="snapshot";
-  - if [[ $TRAVIS_BRANCH == v* ]]; 
-    then 
-        VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
-        docker tag vzwingmann/gestion_budget_services:utilisateurs-travis vzwingmann/gestion_budget_services:utilisateurs-$VERSION_DOCKER_TAG ; 
-        docker push vzwingmann/gestion_budget_services:utilisateurs-$VERSION_DOCKER_TAG ; 
-        VERSION_DOCKER="latest";
-    fi;
-  - docker tag vzwingmann/gestion_budget_services:utilisateurs-travis vzwingmann/gestion_budget_services:utilisateurs-$VERSION_DOCKER ; 
-  - docker push vzwingmann/gestion_budget_services:utilisateurs-$VERSION_DOCKER ; 
-deploy:
-# Déploiement des releaes sur tag : snapshot ou version 
-  - provider: releases
-    api-key: $GITHUB_API_KEY
-    skip_cleanup: true
-    overwrite: true
-    file: /home/travis/build/vzwingma/gestion-budget-services/target/webapps/services.jar
-    on:
-      repo: vzwingma/gestion-budget-services
-      tags: true
-after_deploy:
-  - echo "Déploiement sur MassiveGrid"
-  - ENV="";
-  - if [[ $TRAVIS_BRANCH == v* ]]; 
-    then 
-        ENV="budget";
-        NODE_BUDGETS_ID=41433;
-        NODE_COMPTES_ID=41434;
-        NODE_PARAMS_ID=41436;
-        NODE_UTILISATEURS_ID=41435;        
-    else
-        ENV="budget-rec"; 
-        NODE_BUDGETS_ID=41433;
-        NODE_COMPTES_ID=41434;
-        NODE_PARAMS_ID=41436;
-        NODE_UTILISATEURS_ID=41435;                        
-    fi;
-  # Démarrage 
-  - echo "Démarrage de l'environnement $ENV";
-  - URL_START=$MASSIVEGRID_URL"startenv?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN" ;
-  - curl $URL_START ;
-  # Redéploiement   
-  - echo "Redéploiement des µServices $VERSION_DOCKER sur MassiveGrid $ENV" ;
-  - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=budgets-$VERSION_DOCKER&nodeId=$NODE_BUDGETS_ID" ;
-  - echo $URL_REDEPLOY ;
-  - curl -X POST $URL_REDEPLOY ;
-  - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=comptes-$VERSION_DOCKER&nodeId=$NODE_COMPTES_ID" ;
-  - echo $URL_REDEPLOY ;
-  - curl -X POST $URL_REDEPLOY ;
-  - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=parametrages-$VERSION_DOCKER&nodeId=$NODE_PARAMS_ID" ;
-  - echo $URL_REDEPLOY ;
-  - curl -X POST $URL_REDEPLOY ;
-  - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=utilisateurs-$VERSION_DOCKER&nodeId=$NODE_UTILISATEURS_ID" ;
-  - echo $URL_REDEPLOY ;
-  - curl -X POST $URL_REDEPLOY ;      
-  # Arrêt   
-  - echo "Arrêt de l'environnement $ENV" ;
-  - URL_STOP=$MASSIVEGRID_URL"stopenv?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN" ;
-  - curl $URL_STOP ;
+      script:
+        # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB de la version en cours
+        - if [[ $TRAVIS_BRANCH == "master" ]];
+          then 
+            echo "ReTag de snapshot"; 
+            git tag -d snapshot; 
+            git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services :refs/tags/snapshot; 
+            git tag snapshot; 
+            git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services --tags; 
+          fi
+      deploy:
+      # Déploiement des releases sur tag : snapshot ou version 
+        - provider: releases
+          token: $GITHUB_API_KEY
+          skip_cleanup: true
+          overwrite: true
+          file: 
+          - /home/travis/build/vzwingma/gestion-budget-services/parametrages_service/target/service-parametrages.jar
+          - /home/travis/build/vzwingma/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar
+          - /home/travis/build/vzwingma/gestion-budget-services/budgets_service/target/service-budgets.jar
+          - /home/travis/build/vzwingma/gestion-budget-services/comptes_service/target/service-comptes.jar
+          on:
+            repo: vzwingma/gestion-budget-services
+            tags: true
+
+     ############################
+     #   PUBLISH SUR DOCKER
+     ############################
+    - stage: "Publish to DockerHUB"
+      name: "Publication vers DockerHub"
+      install: skip
+      ### Service Paramétrages
+      if: branch = master
+      script:
+        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+        - echo "Construction de l'image Docker Service Parametrages"; 
+        
+        - VERSION_RELEASE_GIT=snapshot
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          fi;        
+        - wget -O '~/build/vzwingma/gestion-budget-services/parametrages_service/src/main/external-ressources/docker/service-parametrages.jar' https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-parametrages.jar
+        - cd ~/build/vzwingma/gestion-budget-services/parametrages_service/src/main/external-ressources/docker
+        - docker build -t vzwingmann/gestion_budget_services:parametrages-travis -f Dockerfile-PARAMS_SERVICE .;
+
+        - VERSION_DOCKER="snapshot";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+              docker tag vzwingmann/gestion_budget_services:parametrages-travis vzwingmann/gestion_budget_services:parametrages-$VERSION_DOCKER_TAG ; 
+              docker push vzwingmann/gestion_budget_services:parametrages-$VERSION_DOCKER_TAG ; 
+              VERSION_DOCKER="latest";
+          fi;
+        - docker tag vzwingmann/gestion_budget_services:parametrages-travis vzwingmann/gestion_budget_services:parametrages-$VERSION_DOCKER ; 
+        - docker push vzwingmann/gestion_budget_services:parametrages-$VERSION_DOCKER ; 
+      name: "Publish Paramétrages"
+    
+    ### Service Utilisateurs
+    - if: branch = snapshot
+      script:
+        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+         
+        - echo "Construction de l'image Docker Service Utilisateurs"; 
+       
+        - VERSION_RELEASE_GIT=snapshot
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          fi;        
+        - wget -O '~/build/vzwingma/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker/service-utilisateurs.jar' https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-utilisateurs.jar
+        - cd ~/build/vzwingma/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker
+        - docker build -t vzwingmann/gestion_budget_services:utilisateurs-travis -f Dockerfile-UTILISATEURS_SERVICE .;
+        - VERSION_DOCKER="snapshot";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+              docker tag vzwingmann/gestion_budget_services:utilisateurs-travis vzwingmann/gestion_budget_services:utilisateurs-$VERSION_DOCKER_TAG ; 
+              docker push vzwingmann/gestion_budget_services:utilisateurs-$VERSION_DOCKER_TAG ; 
+              VERSION_DOCKER="latest";
+          fi;
+        - docker tag vzwingmann/gestion_budget_services:utilisateurs-travis vzwingmann/gestion_budget_services:utilisateurs-$VERSION_DOCKER ; 
+        - docker push vzwingmann/gestion_budget_services:utilisateurs-$VERSION_DOCKER ; 
+      name: "Publish Utilisateurs"
+      
+    ### Service Comptes
+    - if: branch = snapshot
+      script:
+        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+
+        - echo "Construction de l'image Docker Service Comptes"; 
+        
+        - VERSION_RELEASE_GIT=snapshot
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          fi;        
+        - wget -O '~/build/vzwingma/gestion-budget-services/comptes_service/src/main/external-ressources/docker/service-comptes.jar' https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-comptes.jar
+        - cd ~/build/vzwingma/gestion-budget-services/comptes_service/src/main/external-ressources/docker
+        - docker build -t vzwingmann/gestion_budget_services:comptes-travis -f Dockerfile-COMPTES_SERVICE .;
+        - VERSION_DOCKER="snapshot";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+              docker tag vzwingmann/gestion_budget_services:comptes-travis vzwingmann/gestion_budget_services:comptes-$VERSION_DOCKER_TAG ; 
+              docker push vzwingmann/gestion_budget_services:comptes-$VERSION_DOCKER_TAG ; 
+              VERSION_DOCKER="latest";
+          fi;
+        - docker tag vzwingmann/gestion_budget_services:comptes-travis vzwingmann/gestion_budget_services:comptes-$VERSION_DOCKER ; 
+        - docker push vzwingmann/gestion_budget_services:comptes-$VERSION_DOCKER ; 
+      name: "Publish Comptes"
+      
+    ### Service Budget
+    - if: branch = snapshot
+      script:
+        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+
+        - echo "Construction de l'image Docker Service Budget"; 
+      
+        - VERSION_RELEASE_GIT=snapshot
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          fi;        
+        - wget -O '~/build/vzwingma/gestion-budget-services/budgets_service/src/main/external-ressources/docker/service-budgets.jar' https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-budgets.jar
+        - cd ~/build/vzwingma/gestion-budget-services/budgets_service/src/main/external-ressources/docker
+        - docker build -t vzwingmann/gestion_budget_services:budgets-travis -f Dockerfile-BUDGETS_SERVICE .;
+        - VERSION_DOCKER="snapshot";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_DOCKER_TAG=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+              docker tag vzwingmann/gestion_budget_services:budgets-travis vzwingmann/gestion_budget_services:budgets-$VERSION_DOCKER_TAG ; 
+              docker push vzwingmann/gestion_budget_services:budgets-$VERSION_DOCKER_TAG ; 
+              VERSION_DOCKER="latest";
+          fi;
+        - docker tag vzwingmann/gestion_budget_services:budgets-travis vzwingmann/gestion_budget_services:budgets-$VERSION_DOCKER ; 
+        - docker push vzwingmann/gestion_budget_services:budgets-$VERSION_DOCKER ; 
+      name: "Publish Budgets"  
+      
+     ############################
+     #   START MASSIVEGRID
+     ############################
+    - stage: "Start MassiveGrid"
+      name: "Démarrage MassiveGrid"
+      if: branch = master
+      install: skip
+      script:
+        - echo "Démarrage sur MassiveGrid"
+        - ENV="";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              ENV="budget";   
+          else
+              ENV="budget-rec";
+          fi;
+        # Démarrage 
+        - echo "Démarrage de l'environnement $ENV";
+        - URL_START=$MASSIVEGRID_URL"startenv?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN" ;
+        # curl $URL_START ;
+        
+     ############################
+     #   DEPLOY SUR MASSIVEGRID
+     ############################
+    - stage: deploy on MassiveGrid
+      if: branch = master
+      install: skip
+      script:
+        - echo "Déploiement Utilisateurs sur MassiveGrid"
+        - ENV="";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              ENV="budget";
+              NODE_UTILISATEURS_ID=41435;        
+          else
+              ENV="budget-rec"; 
+              NODE_UTILISATEURS_ID=41435;                        
+          fi;
+        # Redéploiement   
+        - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=utilisateurs-$VERSION_DOCKER&nodeId=$NODE_UTILISATEURS_ID" ;
+        - echo $URL_REDEPLOY ;
+        # curl -X POST $URL_REDEPLOY ;
+      name: "Deploy Utilisateurs"        
+      
+    - if: branch = master
+      script:
+        - echo "Déploiement Budgets sur MassiveGrid"
+        - ENV="";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              ENV="budget";
+              NODE_BUDGETS_ID=41433;     
+          else
+              ENV="budget-rec"; 
+              NODE_BUDGETS_ID=41433;                 
+          fi;
+        # Redéploiement   
+        - echo "Redéploiement des µServices $VERSION_DOCKER sur MassiveGrid $ENV" ;
+        - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=budgets-$VERSION_DOCKER&nodeId=$NODE_BUDGETS_ID" ;
+        - echo $URL_REDEPLOY ;
+        # curl -X POST $URL_REDEPLOY ;
+      name: "Deploy Budgets"
+      
+    - if: branch = master
+      script:
+        - echo "Déploiement Comptes sur MassiveGrid"
+        - ENV="";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              ENV="budget";
+              NODE_COMPTES_ID=41434;     
+          else
+              ENV="budget-rec"; 
+              NODE_COMPTES_ID=41434;                     
+          fi;
+        # Redéploiement   
+        - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=comptes-$VERSION_DOCKER&nodeId=$NODE_COMPTES_ID" ;
+        - echo $URL_REDEPLOY ;
+        # curl -X POST $URL_REDEPLOY ;
+      name: "Deploy Comptes"
+      
+    - if: branch = master
+      script:
+        - echo "Déploiement Paramètres sur MassiveGrid"
+        - ENV="";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              ENV="budget";
+              NODE_PARAMS_ID=41436;   
+          else
+              ENV="budget-rec"; 
+              NODE_PARAMS_ID=41436;                
+          fi;
+        # Redéploiement   
+        - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=parametrages-$VERSION_DOCKER&nodeId=$NODE_PARAMS_ID" ;
+        - echo $URL_REDEPLOY ;
+        # curl -X POST $URL_REDEPLOY ;
+      name: "Deploy Paramètres"      
+
+     ############################
+     #      STOP MASSIVEGRID
+     ############################
+    - stage: stop MassiveGrid
+      name: "Stop MassiveGrid"
+      if: branch = master
+      install: skip
+      script:
+        - echo "Arrêt sur MassiveGrid"
+        - ENV="";
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              ENV="budget";   
+          else
+              ENV="budget-rec";                  
+          fi;
+        # Arrêt   
+        - echo "Arrêt de l'environnement $ENV" ;
+        - URL_STOP=$MASSIVEGRID_URL"stopenv?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN" ;
+        # curl $URL_STOP ;            
