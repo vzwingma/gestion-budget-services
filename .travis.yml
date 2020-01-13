@@ -175,7 +175,7 @@ jobs:
      ############################
     - stage: "Start MassiveGrid"
       name: "Démarrage MassiveGrid"
-      if: branch = master
+    - if: branch = snapshot or branch == v* 
       install: skip
       script:
         - echo "Démarrage sur MassiveGrid"
@@ -195,7 +195,7 @@ jobs:
      #   DEPLOY SUR MASSIVEGRID
      ############################
     - stage: deploy on MassiveGrid
-      if: branch = master
+    - if: branch = snapshot or branch == v* 
       install: skip
       script:
         - echo "Déploiement Utilisateurs sur MassiveGrid"
@@ -214,7 +214,7 @@ jobs:
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Utilisateurs"        
       
-    - if: branch = master
+    - if: branch = snapshot or branch == v* 
       script:
         - echo "Déploiement Budgets sur MassiveGrid"
         - ENV="";
@@ -233,7 +233,7 @@ jobs:
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Budgets"
       
-    - if: branch = master
+    - if: branch = snapshot or branch == v* 
       script:
         - echo "Déploiement Comptes sur MassiveGrid"
         - ENV="";
@@ -251,7 +251,7 @@ jobs:
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Comptes"
       
-    - if: branch = master
+    - if: branch = snapshot or branch == v* 
       script:
         - echo "Déploiement Paramètres sur MassiveGrid"
         - ENV="";
@@ -274,7 +274,7 @@ jobs:
      ############################
     - stage: stop MassiveGrid
       name: "Stop MassiveGrid"
-      if: branch = master
+    - if: branch = snapshot or branch == v* 
       install: skip
       script:
         - echo "Arrêt sur MassiveGrid"
