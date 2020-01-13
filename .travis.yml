@@ -67,9 +67,16 @@ jobs:
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
         - echo "Construction de l'image Docker Service Parametrages"; 
-        # cp ~/build/vzwingma/gestion-budget-services/parametrages_service/target/service-parametrages.jar ~/build/vzwingma/gestion-budget-services/parametrages_service/src/main/external-ressources/docker/service-parametrages.jar
+        
+        - VERSION_RELEASE_GIT=snapshot
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          fi;        
+        - wget -O '~/build/vzwingma/gestion-budget-services/parametrages_service/src/main/external-ressources/docker/service-parametrages.jar' https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-parametrages.jar
         - cd ~/build/vzwingma/gestion-budget-services/parametrages_service/src/main/external-ressources/docker
         - docker build -t vzwingmann/gestion_budget_services:parametrages-travis -f Dockerfile-PARAMS_SERVICE .;
+
         - VERSION_DOCKER="snapshot";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
           then 
@@ -83,12 +90,18 @@ jobs:
       name: "Publish Paramétrages"
     
     ### Service Utilisateurs
-    - if: branch = master
+    - if: branch = snapshot
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
          
         - echo "Construction de l'image Docker Service Utilisateurs"; 
-        # cp ~/build/vzwingma/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar ~/build/vzwingma/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker/service-utilisateurs.jar
+       
+        - VERSION_RELEASE_GIT=snapshot
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          fi;        
+        - wget -O '~/build/vzwingma/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker/service-utilisateurs.jar' https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-utilisateurs.jar
         - cd ~/build/vzwingma/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker
         - docker build -t vzwingmann/gestion_budget_services:utilisateurs-travis -f Dockerfile-UTILISATEURS_SERVICE .;
         - VERSION_DOCKER="snapshot";
@@ -104,12 +117,18 @@ jobs:
       name: "Publish Utilisateurs"
       
     ### Service Comptes
-    - if: branch = master
+    - if: branch = snapshot
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
 
         - echo "Construction de l'image Docker Service Comptes"; 
-        - cp ~/build/vzwingma/gestion-budget-services/comptes_service/target/service-comptes.jar ~/build/vzwingma/gestion-budget-services/comptes_service/src/main/external-ressources/docker/service-comptes.jar
+        
+        - VERSION_RELEASE_GIT=snapshot
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          fi;        
+        - wget -O '~/build/vzwingma/gestion-budget-services/comptes_service/src/main/external-ressources/docker/service-comptes.jar' https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-comptes.jar
         - cd ~/build/vzwingma/gestion-budget-services/comptes_service/src/main/external-ressources/docker
         - docker build -t vzwingmann/gestion_budget_services:comptes-travis -f Dockerfile-COMPTES_SERVICE .;
         - VERSION_DOCKER="snapshot";
@@ -125,12 +144,18 @@ jobs:
       name: "Publish Comptes"
       
     ### Service Budget
-    - if: branch = master
+    - if: branch = snapshot
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
 
         - echo "Construction de l'image Docker Service Budget"; 
-        - cp ~/build/vzwingma/gestion-budget-services/budgets_service/target/service-budgets.jar ~/build/vzwingma/gestion-budget-services/budgets_service/src/main/external-ressources/docker/service-budgets.jar
+      
+        - VERSION_RELEASE_GIT=snapshot
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          fi;        
+        - wget -O '~/build/vzwingma/gestion-budget-services/budgets_service/src/main/external-ressources/docker/service-budgets.jar' https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-budgets.jar
         - cd ~/build/vzwingma/gestion-budget-services/budgets_service/src/main/external-ressources/docker
         - docker build -t vzwingmann/gestion_budget_services:budgets-travis -f Dockerfile-BUDGETS_SERVICE .;
         - VERSION_DOCKER="snapshot";
