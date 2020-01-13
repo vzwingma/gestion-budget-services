@@ -74,7 +74,7 @@ jobs:
               VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
           fi;        
         - cd ~/build/vzwingma/gestion-budget-services/parametrages_service/src/main/external-ressources/docker          
-        - wget https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-parametrages.jar
+        - wget -q https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-parametrages.jar
         - docker build -t vzwingmann/gestion_budget_services:parametrages-travis -f Dockerfile-PARAMS_SERVICE .;
 
         - VERSION_DOCKER="snapshot";
@@ -102,7 +102,7 @@ jobs:
               VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
           fi;        
         - cd ~/build/vzwingma/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker          
-        - wget https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-utilisateurs.jar
+        - wget -q https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-utilisateurs.jar
         - docker build -t vzwingmann/gestion_budget_services:utilisateurs-travis -f Dockerfile-UTILISATEURS_SERVICE .;
         - VERSION_DOCKER="snapshot";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -129,7 +129,7 @@ jobs:
               VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
           fi;        
         - cd ~/build/vzwingma/gestion-budget-services/comptes_service/src/main/external-ressources/docker
-        - wget https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-comptes.jar
+        - wget -q https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-comptes.jar
         - docker build -t vzwingmann/gestion_budget_services:comptes-travis -f Dockerfile-COMPTES_SERVICE .;
         - VERSION_DOCKER="snapshot";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
@@ -156,7 +156,7 @@ jobs:
               VERSION_RELEASE_GIT=$(echo $TRAVIS_BRANCH | cut -b 2-); 
           fi;        
         - cd ~/build/vzwingma/gestion-budget-services/budgets_service/src/main/external-ressources/docker
-        - wget https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-budgets.jar
+        - wget -q https://github.com/vzwingma/gestion-budget-services/releases/download/$VERSION_RELEASE_GIT/service-budgets.jar
         - docker build -t vzwingmann/gestion_budget_services:budgets-travis -f Dockerfile-BUDGETS_SERVICE .;
         - VERSION_DOCKER="snapshot";
         - if [[ $TRAVIS_BRANCH == v* ]]; 
