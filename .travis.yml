@@ -41,15 +41,11 @@ jobs:
             git tag snapshot; 
             git push https://$GITHUB_API_KEY@github.com/vzwingma/gestion-budget-services --tags; 
           fi
-        - ls /home/travis/build/vzwingma/gestion-budget-services/parametrages_service/target/
-        - ls /home/travis/build/vzwingma/gestion-budget-services/utilisateurs_service/target/
-        - ls /home/travis/build/vzwingma/gestion-budget-services/budgets_service/target/
-        - ls /home/travis/build/vzwingma/gestion-budget-services/comptes_service/target/
       deploy:
       # Déploiement des releases sur tag : snapshot ou version 
         - provider: releases
           token: $GITHUB_API_KEY
-          cleanup: false
+          skip_cleanup: true
           overwrite: true
           file: 
           - /home/travis/build/vzwingma/gestion-budget-services/parametrages_service/target/service-parametrages.jar
