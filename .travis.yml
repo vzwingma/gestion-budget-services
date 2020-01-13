@@ -63,7 +63,7 @@ jobs:
       name: "Publication vers DockerHub"
       install: skip
       ### Service Paramétrages
-      if: branch = snapshot or branch == v* 
+      if: branch = snapshot
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
         - echo "Construction de l'image Docker Service Parametrages"; 
@@ -90,7 +90,7 @@ jobs:
       name: "Publish Paramétrages"
     
     ### Service Utilisateurs
-    - if: branch = snapshot or branch == v* 
+    - if: branch = snapshot
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
          
@@ -117,7 +117,7 @@ jobs:
       name: "Publish Utilisateurs"
       
     ### Service Comptes
-    - if: branch = snapshot or branch == v* 
+    - if: branch = snapshot
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
 
@@ -144,7 +144,7 @@ jobs:
       name: "Publish Comptes"
       
     ### Service Budget
-    - if: branch = snapshot or branch == v* 
+    - if: branch = snapshot
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
 
@@ -175,7 +175,7 @@ jobs:
      ############################
     - stage: "Start MassiveGrid"
       name: "Démarrage MassiveGrid"
-    - if: branch = snapshot or branch == v* 
+    - if: branch = snapshot
       install: skip
       script:
         - echo "Démarrage sur MassiveGrid"
@@ -195,7 +195,7 @@ jobs:
      #   DEPLOY SUR MASSIVEGRID
      ############################
     - stage: deploy on MassiveGrid
-    - if: branch = snapshot or branch == v* 
+    - if: branch = snapshot
       install: skip
       script:
         - echo "Déploiement Utilisateurs sur MassiveGrid"
@@ -214,7 +214,7 @@ jobs:
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Utilisateurs"        
       
-    - if: branch = snapshot or branch == v* 
+    - if: branch = snapshot
       script:
         - echo "Déploiement Budgets sur MassiveGrid"
         - ENV="";
@@ -233,7 +233,7 @@ jobs:
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Budgets"
       
-    - if: branch = snapshot or branch == v* 
+    - if: branch = snapshot
       script:
         - echo "Déploiement Comptes sur MassiveGrid"
         - ENV="";
@@ -251,7 +251,7 @@ jobs:
         # curl -X POST $URL_REDEPLOY ;
       name: "Deploy Comptes"
       
-    - if: branch = snapshot or branch == v* 
+    - if: branch = snapshot
       script:
         - echo "Déploiement Paramètres sur MassiveGrid"
         - ENV="";
@@ -274,7 +274,7 @@ jobs:
      ############################
     - stage: stop MassiveGrid
       name: "Stop MassiveGrid"
-    - if: branch = snapshot or branch == v* 
+    - if: branch = snapshot
       install: skip
       script:
         - echo "Arrêt sur MassiveGrid"
