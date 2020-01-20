@@ -192,7 +192,7 @@ jobs:
         # Démarrage 
         - echo "Démarrage de l'environnement $ENV";
         - URL_START=$MASSIVEGRID_URL"startenv?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN" ;
-        # curl $URL_START ;
+        - curl $URL_START ;
         
      ############################
      #   DEPLOY SUR MASSIVEGRID
@@ -214,7 +214,7 @@ jobs:
         # Redéploiement   
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=utilisateurs-$VERSION_DOCKER&nodeId=$NODE_UTILISATEURS_ID" ;
         - echo $URL_REDEPLOY ;
-        # curl -X POST $URL_REDEPLOY ;
+        - curl -X POST $URL_REDEPLOY ;
       name: "Deploy Utilisateurs"        
       
     - if: (branch = snapshot OR (tag =~ ^v))
@@ -234,7 +234,7 @@ jobs:
         - echo "Redéploiement des µServices $VERSION_DOCKER sur MassiveGrid $ENV" ;
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=budgets-$VERSION_DOCKER&nodeId=$NODE_BUDGETS_ID" ;
         - echo $URL_REDEPLOY ;
-        # curl -X POST $URL_REDEPLOY ;
+        - curl -X POST $URL_REDEPLOY ;
       name: "Deploy Budgets"
       
     - if: (branch = snapshot OR (tag =~ ^v))
@@ -253,7 +253,7 @@ jobs:
         # Redéploiement   
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=comptes-$VERSION_DOCKER&nodeId=$NODE_COMPTES_ID" ;
         - echo $URL_REDEPLOY ;
-        # curl -X POST $URL_REDEPLOY ;
+        - curl -X POST $URL_REDEPLOY ;
       name: "Deploy Comptes"
       
     - if: (branch = snapshot OR (tag =~ ^v))
@@ -272,7 +272,7 @@ jobs:
         # Redéploiement   
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=parametrages-$VERSION_DOCKER&nodeId=$NODE_PARAMS_ID" ;
         - echo $URL_REDEPLOY ;
-        # curl -X POST $URL_REDEPLOY ;
+        - curl -X POST $URL_REDEPLOY ;
       name: "Deploy Paramètres"      
 
      ############################
