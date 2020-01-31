@@ -83,8 +83,8 @@ jobs:
           then 
               docker tag vzwingmann/gestion_budget_services:parametrages-travis vzwingmann/gestion_budget_services:parametrages-latest;
               docker push vzwingmann/gestion_budget_services:parametrages-latest;
+              VERSION_RELEASE=$(echo $TRAVIS_BRANCH | cut -b 2-);
           fi;
-        - VERSION_RELEASE=$(echo $TRAVIS_BRANCH | cut -b 2-);
         - docker tag vzwingmann/gestion_budget_services:parametrages-travis vzwingmann/gestion_budget_services:parametrages-$VERSION_RELEASE; 
         - docker push vzwingmann/gestion_budget_services:parametrages-$VERSION_RELEASE;
       name: "Publish Paramétrages"
@@ -111,8 +111,8 @@ jobs:
           then 
               docker tag vzwingmann/gestion_budget_services:utilisateurs-travis vzwingmann/gestion_budget_services:utilisateurs-latest; 
               docker push vzwingmann/gestion_budget_services:utilisateurs-latest;
+              VERSION_RELEASE=$(echo $TRAVIS_BRANCH | cut -b 2-);
           fi;
-        - VERSION_RELEASE=$(echo $TRAVIS_BRANCH | cut -b 2-);
         - docker tag vzwingmann/gestion_budget_services:utilisateurs-travis vzwingmann/gestion_budget_services:utilisateurs-$VERSION_RELEASE; 
         - docker push vzwingmann/gestion_budget_services:utilisateurs-$VERSION_RELEASE;
       name: "Publish Utilisateurs"
@@ -139,8 +139,8 @@ jobs:
           then 
               docker tag vzwingmann/gestion_budget_services:comptes-travis vzwingmann/gestion_budget_services:comptes-latest ; 
               docker push vzwingmann/gestion_budget_services:comptes-latest ; 
+              VERSION_RELEASE=$(echo $TRAVIS_BRANCH | cut -b 2-);
           fi;
-        - VERSION_RELEASE=$(echo $TRAVIS_BRANCH | cut -b 2-);
         - docker tag vzwingmann/gestion_budget_services:comptes-travis vzwingmann/gestion_budget_services:comptes-$VERSION_RELEASE ; 
         - docker push vzwingmann/gestion_budget_services:comptes-$VERSION_RELEASE ; 
       name: "Publish Comptes"
@@ -203,13 +203,14 @@ jobs:
       script:
         - echo "Déploiement Utilisateurs sur MassiveGrid";
         - ENV="";
+        - NODE_UTILISATEURS_ID=41435; 
         - if [[ $TRAVIS_BRANCH == v* ]]; 
           then 
               ENV="budget";
-              NODE_UTILISATEURS_ID=41435;        
+              VERSION_DOCKER="latest";
           else
-              ENV="budget-rec"; 
-              NODE_UTILISATEURS_ID=41435;                        
+              ENV="budget-rec";  
+              VERSION_DOCKER="snapshot";              
           fi;
         # Redéploiement   
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=utilisateurs-$VERSION_DOCKER&nodeId=$NODE_UTILISATEURS_ID" ;
@@ -222,13 +223,14 @@ jobs:
       script:
         - echo "Déploiement Budgets sur MassiveGrid";
         - ENV="";
+        - NODE_BUDGETS_ID=41433;
         - if [[ $TRAVIS_BRANCH == v* ]]; 
           then 
               ENV="budget";
-              NODE_BUDGETS_ID=41433;     
+              VERSION_DOCKER="latest";
           else
               ENV="budget-rec"; 
-              NODE_BUDGETS_ID=41433;                 
+              VERSION_DOCKER="snapshot";              
           fi;
         # Redéploiement   
         - echo "Redéploiement des µServices $VERSION_DOCKER sur MassiveGrid $ENV" ;
@@ -242,13 +244,14 @@ jobs:
       script:
         - echo "Déploiement Comptes sur MassiveGrid";
         - ENV="";
+        - NODE_COMPTES_ID=41434; 
         - if [[ $TRAVIS_BRANCH == v* ]]; 
           then 
               ENV="budget";
-              NODE_COMPTES_ID=41434;     
+              VERSION_DOCKER="latest";
           else
               ENV="budget-rec"; 
-              NODE_COMPTES_ID=41434;                     
+              VERSION_DOCKER="snapshot";                     
           fi;
         # Redéploiement   
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=comptes-$VERSION_DOCKER&nodeId=$NODE_COMPTES_ID" ;
@@ -261,13 +264,14 @@ jobs:
       script:
         - echo "Déploiement Paramètres sur MassiveGrid";
         - ENV="";
+        - NODE_PARAMS_ID=41436;
         - if [[ $TRAVIS_BRANCH == v* ]]; 
           then 
               ENV="budget";
-              NODE_PARAMS_ID=41436;   
+              VERSION_DOCKER="latest";
           else
               ENV="budget-rec"; 
-              NODE_PARAMS_ID=41436;                
+              VERSION_DOCKER="snapshot";
           fi;
         # Redéploiement   
         - URL_REDEPLOY=$MASSIVEGRID_URL"redeploycontainers?envName=$ENV&session=$MASSIVEGRID_USER_TOKEN&tag=parametrages-$VERSION_DOCKER&nodeId=$NODE_PARAMS_ID" ;
