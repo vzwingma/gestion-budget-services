@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.terrier.finances.gestion.communs.api.filters.LogApiFilter;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
@@ -37,7 +38,6 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
 import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 
 /**
@@ -46,7 +46,7 @@ import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={TestMockBudgetServiceConfig.class,  OperationsService.class, CallAPIInterceptor.class})
+@ContextConfiguration(classes={TestMockBudgetServiceConfig.class,  OperationsService.class, LogApiFilter.class})
 public class TestOperationsService {
 
 	/**

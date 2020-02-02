@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.test.config;
+package com.terrier.finances.gestion.services.communs.api;
 
 import java.io.IOException;
 
@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
+import com.terrier.finances.gestion.communs.api.filters.LogApiFilter;
+import com.terrier.finances.gestion.test.config.MockApiClient;
 
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -25,7 +26,7 @@ import okhttp3.mockwebserver.MockWebServer;
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={MockApiClient.class, CallAPIInterceptor.class})
+@ContextConfiguration(classes={MockApiClient.class, LogApiFilter.class})
 public abstract class AbstractTestsClientAPI {
 
 	/**

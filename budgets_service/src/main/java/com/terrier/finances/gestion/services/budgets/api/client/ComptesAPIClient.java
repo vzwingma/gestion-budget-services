@@ -20,17 +20,24 @@ import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
  *
  */
 @Service
-public class ComptesAPIClient extends AbstractHTTPClient {
+public class ComptesAPIClient extends AbstractHTTPClient<CompteBancaire> {
+
+	
+	
+	public ComptesAPIClient() {
+		super(CompteBancaire.class);
+	}
+
 
 	/**
-	 * 
+	 * Recherche du compte
 	 * @param idCompte id du Compte
 	 * @param idUser id User
 	 * @return compte correspondant
 	 */
 	public CompteBancaire getCompteById(String idCompte, String idUser) {
 		try {
-			return callHTTPGetData(BudgetApiUrlEnum.COMPTES_ID_FULL, Collections.singletonMap(BudgetApiUrlEnum.PARAM_ID_COMPTE, idCompte), CompteBancaire.class).block();
+			return callHTTPGetData(BudgetApiUrlEnum.COMPTES_ID_FULL, Collections.singletonMap(BudgetApiUrlEnum.PARAM_ID_COMPTE, idCompte)).block();
 		} catch (UserNotAuthorizedException | DataNotFoundException e) {
 			LOGGER.error("Erreur lors de la recherche du compte", e);
 			return null;
