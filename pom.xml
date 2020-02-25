@@ -11,7 +11,7 @@
 
 	<groupId>io.github.vzwingma.finances.budget</groupId>
 	<artifactId>services</artifactId>
-	<version>11.0.0-SNAPSHOT</version>
+	<version>11.1.0</version>
 	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
 	<packaging>pom</packaging>
@@ -26,8 +26,6 @@
 		<mongo.data.version>3.9.0</mongo.data.version>
 		<spring.security.version>5.2.2.RELEASE</spring.security.version>
 		<jackson.version>2.10.1</jackson.version>
-		<jersey.version>2.29.1</jersey.version>
-		
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
