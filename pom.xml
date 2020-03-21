@@ -11,7 +11,7 @@
 
 	<groupId>io.github.vzwingma.finances.budget</groupId>
 	<artifactId>services</artifactId>
-	<version>11.1.0-SNAPSHOT</version>
+	<version>11.2.0</version>
 	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
 	<packaging>pom</packaging>
@@ -20,7 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>11</maven.compiler.target>
 
-		<communs.version>11.2.0-SNAPSHOT</communs.version>
+		<communs.version>11.3.0-SNAPSHOT</communs.version>
 		<spring.security.version>5.2.2.RELEASE</spring.security.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
@@ -175,12 +175,12 @@
 			<dependency>
 				<groupId>io.github.vzwingma.finances.budget.services</groupId>
 				<artifactId>communs</artifactId>
-				<version>11.1.0-SNAPSHOT</version>
+				<version>11.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>io.github.vzwingma.finances.budget.services</groupId>
 				<artifactId>communs</artifactId>
-				<version>11.1.0-SNAPSHOT</version>
+				<version>11.2.0</version>
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
