@@ -20,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 
 /**
  * Authentification par Token JWT
@@ -62,7 +63,11 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
                  SecurityContextHolder.getContext().setAuthentication(auth);
             }
 
-		} catch (Exception e) {
+		} catch (ExpiredJwtException e) {
+			LOGGER.error("Le token JWT [{}] est expiré", header);
+			SecurityContextHolder.clearContext();
+		}
+		catch (Exception e) {
 			SecurityContextHolder.clearContext();
 		}
 		chain.doFilter(request, response);

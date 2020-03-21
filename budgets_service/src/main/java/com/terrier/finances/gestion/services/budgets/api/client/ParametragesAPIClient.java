@@ -19,12 +19,14 @@ import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
  *
  */
 @Service
-public class ParametragesAPIClient extends AbstractHTTPClient {
+public class ParametragesAPIClient extends AbstractHTTPClient<CategorieOperation> {
 
-	
+
 	private List<CategorieOperation> categoriesSsCategories;
-	
 
+	public ParametragesAPIClient() {
+		super(CategorieOperation.class);
+	}
 	/**
 	 * Liste des catégories
 	 * @return liste de catégories
@@ -33,38 +35,38 @@ public class ParametragesAPIClient extends AbstractHTTPClient {
 		if(categoriesSsCategories == null) {
 			try {
 				categoriesSsCategories = new ArrayList<>();
-				List<CategorieOperation> categories = callHTTPGetListData(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL, null, CategorieOperation.class)
-				.collectList().block();
+				List<CategorieOperation> categories = callHTTPGetListData(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL)
+						.block();
 				categoriesSsCategories.addAll(categories);
 				categories.stream()
-					.forEach(c -> {
-						c.getListeSSCategories().stream().forEach(ssCats -> {
-							ssCats.setCategorieParente(c);
-						});
-						categoriesSsCategories.addAll(c.getListeSSCategories());	
+				.forEach(c -> {
+					c.getListeSSCategories().stream().forEach(ssCats -> {
+						ssCats.setCategorieParente(c);
 					});
-				
+					categoriesSsCategories.addAll(c.getListeSSCategories());	
+				});
+
 			} catch (UserNotAuthorizedException | DataNotFoundException e) {
-			LOGGER.warn("Impossible de charger les catégories");
+				LOGGER.warn("Impossible de charger les catégories");
 			}
 		}
 		return categoriesSsCategories;
 	}
-	
+
 	/**
 	 * Recherche d'une catégorie
 	 * @param id de la catégorie
 	 * @return catégorie correspondante. Null sinon
 	 */
 	public CategorieOperation getCategorieParId(String id) {
-		
+
 		Optional<CategorieOperation> categorie =  getCategories().stream().filter(c -> id.equals(c.getId())).findFirst();
 		if(categorie.isPresent()) {
 			return categorie.get();
 		}
 		return null;
 	}
-	
+
 	@Override
 	public ApiUrlConfigEnum getConfigServiceURI() {
 		return ApiUrlConfigEnum.APP_CONFIG_URL_PARAMS;

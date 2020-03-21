@@ -21,8 +21,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
+import com.terrier.finances.gestion.communs.api.filters.LogApiFilter;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
-import com.terrier.finances.gestion.services.communs.api.interceptors.CallAPIInterceptor;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -34,7 +34,7 @@ import io.jsonwebtoken.security.Keys;
  */
 @EnableWebMvc
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={CallAPIInterceptor.class })
+@ContextConfiguration(classes={LogApiFilter.class })
 @WebAppConfiguration
 public abstract class AbstractTestsAPI {
 

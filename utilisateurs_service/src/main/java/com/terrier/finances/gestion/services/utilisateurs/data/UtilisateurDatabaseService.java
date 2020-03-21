@@ -50,7 +50,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService<Utilisat
 			return findById(id);
 		}
 		catch(Exception e){
-			LOGGER.error("[idUser={}] Erreur lors de la recherche de l'utilisateur [{}]", id, e);
+			LOGGER.error("[idUser={}] Erreur lors de la recherche de l'utilisateur", id, e);
 			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + id);
 		}
 	}
