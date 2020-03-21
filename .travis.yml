@@ -168,7 +168,6 @@ jobs:
               docker tag vzwingmann/gestion_budget_services:budgets-travis vzwingmann/gestion_budget_services:budgets-latest ; 
               docker push vzwingmann/gestion_budget_services:budgets-latest ; 
           fi;
-        - VERSION_RELEASE=$(echo $TRAVIS_BRANCH | cut -b 2-);
         - docker tag vzwingmann/gestion_budget_services:budgets-travis vzwingmann/gestion_budget_services:budgets-$VERSION_RELEASE ; 
         - docker push vzwingmann/gestion_budget_services:budgets-$VERSION_RELEASE ; 
       name: "Publish Budgets"  

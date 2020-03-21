@@ -92,9 +92,9 @@ public class OperationsAPIController extends AbstractAPIController {
 
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_QUERY)
 	public  @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
-			@RequestParam("idCompte") String idCompte, 
-			@RequestParam("mois") Integer mois, 
-			@RequestParam("annee") Integer annee,
+						@RequestParam("idCompte") String idCompte, 
+						@RequestParam("mois") Integer mois, 
+						@RequestParam("annee") Integer annee,
 			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
 			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws UserNotAuthorizedException {
 		logger.info("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
@@ -519,6 +519,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
 		return Arrays.asList(this.compteClientApi, this.paramClientApi);
