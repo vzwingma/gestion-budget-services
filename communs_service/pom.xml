@@ -5,11 +5,12 @@
 	<parent>
 		<groupId>io.github.vzwingma.finances.budget</groupId>
 		<artifactId>services</artifactId>
-		<version>11.1.0</version>
+		<version>11.1.0-SNAPSHOT</version>
 	</parent>
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>communs</artifactId>
 	<version>11.1.0-SNAPSHOT</version>
+
 	<name>[Budget] Communs Services</name>
 	<description>Communs aux Services de l'application</description>
 	<packaging>jar</packaging>
@@ -42,7 +43,7 @@
 		<dependency>
 			<groupId>io.projectreactor.netty</groupId>
 			<artifactId>reactor-netty</artifactId>
-			
+
 		</dependency>
 		<dependency>
 			<groupId>io.projectreactor.addons</groupId>
