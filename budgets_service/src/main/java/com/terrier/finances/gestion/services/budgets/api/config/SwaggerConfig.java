@@ -16,13 +16,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig extends AbstractSwaggerConfig {                                    
 
 	@Override
-	public String getDescription() {
-		return "Swagger des API Opérations de l'application de gestion de budget";
-	}
-
-	@Override
-	public String getTitle() {
-		return "Services Opérations de Gestion de Budget";
+	public String getNomService() {
+		return "Opérations";
 	} 
 
 

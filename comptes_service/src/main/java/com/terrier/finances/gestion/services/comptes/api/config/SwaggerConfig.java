@@ -16,14 +16,7 @@ public class SwaggerConfig extends AbstractSwaggerConfig {
 
 
 	@Override
-	public String getDescription() {
-		return "Swagger des API Comptes de l'application de gestion de budget";
-	}
-
-	@Override
-	public String getTitle() {
-		return "Services Comptes de Gestion de Budget";
+	public String getNomService() {
+		return " Comptes";
 	} 
-    
-    
 }

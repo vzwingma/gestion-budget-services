@@ -13,15 +13,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig extends AbstractSwaggerConfig {                                    
-  
 
 	@Override
-	public String getDescription() {
-		return "Swagger des API Paramétrages de l'application de gestion de budget";
-	}
-
-	@Override
-	public String getTitle() {
-		return "Services Paramétrage de Gestion de Budget";
+	public String getNomService() {
+		return "Paramétrages";
 	} 
 }

@@ -36,8 +36,8 @@ public abstract class AbstractSwaggerConfig {
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title(getTitle())
-                .description(getDescription())
+                .title("Gestion de Budgets : µService " + getNomService())
+                .description("API du service " + getNomService() + " de l'application")
                 .contact(new Contact("Vincent Zwingmann", "", "vincent.zwingmann@gmail.com"))
                 .license("Apache License Version 2.0")
                 .version("2.0")
@@ -45,14 +45,9 @@ public abstract class AbstractSwaggerConfig {
     } 
     
     /**
-     * @return description de l'API
+     * @return nom du service
      */
-    public abstract String getDescription();
-    
-    /**
-     * @return titre de l'API
-     */
-    public abstract String getTitle();
+    public abstract String getNomService();
     
     /**
      * @return Config de Sécurité
