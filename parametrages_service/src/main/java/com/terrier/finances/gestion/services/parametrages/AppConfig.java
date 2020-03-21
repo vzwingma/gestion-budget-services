@@ -10,12 +10,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableAsync
 @EnableWebMvc
 @ComponentScan(basePackages = { 
+		"com.terrier.finances.gestion.services.communs.api.config",	
+		"com.terrier.finances.gestion.services.communs.api.interceptors",
 		"com.terrier.finances.gestion.services.parametrages.api",
 		"com.terrier.finances.gestion.services.parametrages.business",
 		"com.terrier.finances.gestion.services.parametrages.data",
-		"com.terrier.finances.gestion.services.communs.data.mongodb",
-		"com.terrier.finances.gestion.services.communs.api.config",	
-		"com.terrier.finances.gestion.services.communs.api.interceptors"
+		"com.terrier.finances.gestion.services.communs.data.mongodb"
 		})
 @PropertySource(value={"classpath:config.properties"}, ignoreResourceNotFound = true)
 public class AppConfig {

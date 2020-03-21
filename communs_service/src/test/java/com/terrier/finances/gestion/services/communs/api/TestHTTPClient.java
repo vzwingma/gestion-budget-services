@@ -38,7 +38,7 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 					.setResponseCode(200)
 				);
 		
-		Object resultat = getTestClient().callHTTPGetData("/get", null)
+		getTestClient().callHTTPGetData("/get", null)
 				.doOnError(e -> fail())
 				.block();
 		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
