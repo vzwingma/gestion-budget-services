@@ -53,7 +53,8 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.BUDGET_BASE)
-@Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Opérations", tags={"Opérations"})
+@Api(protocols="https", value="Opérations", tags={"Opérations"},
+	consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 public class OperationsAPIController extends AbstractAPIController {
 
 
