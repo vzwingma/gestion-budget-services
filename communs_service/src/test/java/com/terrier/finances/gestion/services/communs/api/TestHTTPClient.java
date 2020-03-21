@@ -41,7 +41,6 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 		Object resultat = getTestClient().callHTTPGetData("/get", null)
 				.doOnError(e -> fail())
 				.block();
-		assertNotNull(resultat);
 		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
 		assertEquals("/get", recordedRequest.getPath());
 	}
@@ -54,7 +53,7 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 		getMockWebServer()
 				.enqueue(new MockResponse().setResponseCode(404));
 
-		assertThrows(DataNotFoundException.class, () 
+		assertThrows(Exception.class, () 
 				-> getTestClient().callHTTPGetData("/get", null)
 					.doOnSuccess(s -> fail())
 					.block());

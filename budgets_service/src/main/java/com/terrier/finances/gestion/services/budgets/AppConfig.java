@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @ComponentScan(basePackages = { 
 		"com.terrier.finances.gestion.services.budgets.api",
-		"com.terrier.finances.gestion.services.budgets.api.config.security",
 		"com.terrier.finances.gestion.services.budgets.business",
 		"com.terrier.finances.gestion.services.budgets.data",
 		"com.terrier.finances.gestion.services.communs.data.mongodb",
