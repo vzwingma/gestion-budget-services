@@ -46,7 +46,7 @@ public class ComptesDatabaseService extends AbstractDatabaseService<CompteBancai
 			LOGGER.info("{} comptes chargés : {} ", listeComptes.size(), listeComptes);
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement des comptes", idUtilisateur, e);
+			LOGGER.error("[idUser={}] Erreur lors du chargement des comptes", idUtilisateur, e);
 			throw new DataNotFoundException("Erreur lors de la recherche des comptes");
 		}
 		return listeComptes;
@@ -104,7 +104,4 @@ public class ComptesDatabaseService extends AbstractDatabaseService<CompteBancai
 			throw new DataNotFoundException("Erreur lors de la recherche de compte");
 		}
 	}
-
-
-
 }
