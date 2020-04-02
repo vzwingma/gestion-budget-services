@@ -50,14 +50,14 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	/**
 	 * @param <R> classe de la réponse
 	 * @param path chemin
-	 * @param params paramètres
+	 * @param queryParams paramètres
 	 * @param responseClassType classe <R>
 	 * @return données en réponse
 	 * @throws UserNotAuthorizedException  erreur d'authentification
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
-	protected Mono<R> callHTTPGetData(String path, Map<String, String> params) throws UserNotAuthorizedException, DataNotFoundException{
-		return callAPIandReturnMono(HttpMethod.GET, path, params, null, responseClassType);
+	protected Mono<R> callHTTPGetData(String path, Map<String, String> pathParams) throws UserNotAuthorizedException, DataNotFoundException{
+		return callAPIandReturnMono(HttpMethod.GET, path, pathParams, null, null, responseClassType);
 	}
 	/**
 	 * @param <R> classe de la réponse
@@ -68,7 +68,7 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
 	protected Mono<List<R>> callHTTPGetListData(String path) throws UserNotAuthorizedException, DataNotFoundException{
-		return callAPIandReturnFlux(HttpMethod.GET, path, null, null, responseClassType).collectList();
+		return callAPIandReturnFlux(HttpMethod.GET, path, null, null, null, responseClassType).collectList();
 	}
 	/**
 	 * Injecte le token JWT
