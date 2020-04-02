@@ -9,7 +9,6 @@
 	</parent>
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>parametrages</artifactId>
-	<version>11.2.0</version>
 	<name>[Budget] Service Paramétrages</name>
 	<description>Services Paramétrages de l'application</description>
 	<packaging>jar</packaging>

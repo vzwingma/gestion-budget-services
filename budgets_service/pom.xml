@@ -10,7 +10,6 @@
 
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>budgets</artifactId>
-	<version>11.2.0</version>
 	<name>[Budget] Service Budgets</name>
 	<description>Services Budgets de l'application</description>
 	<packaging>jar</packaging>

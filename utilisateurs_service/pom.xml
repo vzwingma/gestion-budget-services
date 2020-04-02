@@ -10,7 +10,6 @@
 
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>utilisateurs</artifactId>
-	<version>11.2.0</version>
 	<name>[Budget] Service Utilisateurs</name>
 	<description>Services Utilisateurs de l'application</description>
 	<packaging>jar</packaging>
