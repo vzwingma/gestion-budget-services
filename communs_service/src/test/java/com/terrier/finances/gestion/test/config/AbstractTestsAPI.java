@@ -86,7 +86,7 @@ public abstract class AbstractTestsAPI {
 				.setId(id)
 				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, id)
 				.setIssuedAt(new Date(now))
-				.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
+				.setExpiration(new Date(now + 10000))  // in milliseconds
 				.signWith(Keys.hmacShaKeyFor(JwtConfigEnum.getJwtSecretKey().getBytes()))
 				.compact();
 		// Add token to header

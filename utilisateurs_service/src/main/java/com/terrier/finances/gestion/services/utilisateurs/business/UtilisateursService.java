@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
@@ -39,8 +40,21 @@ public class UtilisateursService extends AbstractBusinessService {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateursService.class);
 
+	private int sessionValidity = 10; 
+	
+	
+	@Value("${utilisateur.session.validity.period:10}")
+	public void setUiValiditySessionPeriod(String sessionValidity){
+		try{
+			this.sessionValidity = Integer.parseInt(sessionValidity);
+			LOGGER.info("[INIT] Suivi des sessions utilisateurs. Durée de validité d'une session : {} minutes", sessionValidity);
+		}
+		catch(Exception e){
+			LOGGER.warn("[INIT] Suivi des sessions utilisateurs. Durée de validité par défaut d'une session : {} minutes", sessionValidity);
+		}
+	}
 
-
+	
 	/**
 	 * Utilisateurs
 	 */
@@ -119,7 +133,7 @@ public class UtilisateursService extends AbstractBusinessService {
 				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, utilisateur.getId())
 				.setIssuedAt(new Date(now))
 				.setIssuer("Budget-Services")
-				.setExpiration(new Date(now + JwtConfigEnum.JWT_EXPIRATION_S * 1000))  // in milliseconds
+				.setExpiration(new Date(now + sessionValidity * 60 * 1000))  // in milliseconds
 				.signWith(Keys.hmacShaKeyFor(JwtConfigEnum.getJwtSecretKey().getBytes()))
 				.compact();
 		LOGGER.info("[idUser={}] Token JWT [{}]", utilisateur.getId(), token);
@@ -187,6 +201,7 @@ public class UtilisateursService extends AbstractBusinessService {
 		}
 	}
 
+	
 	@Override
 	protected void doHealthCheck(Builder builder) throws Exception {
 		builder.up().withDetail("Service", "Utilisateurs");
