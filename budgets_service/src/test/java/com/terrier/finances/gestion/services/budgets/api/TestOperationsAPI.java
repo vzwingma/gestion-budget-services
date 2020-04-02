@@ -14,7 +14,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Month;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Ignore;
@@ -111,28 +113,31 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 	}
 
-	@Ignore
+	@Test
 	public void testGetBudgetWrongCompte() throws Exception {
 
 		when(mockDataAPIComptes.getCompteById(eq("unknown"), eq("test"))).thenReturn(null);
-
-		String urlWrongCompte =  BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018";
+		
+		String urlWrongCompte =  BudgetApiUrlEnum.BUDGET_QUERY_FULL;
 		LOGGER.info("Wrong Compte : {}", urlWrongCompte);
 		// Wrong compte
 		getMockAPI().perform(
-				get(urlWrongCompte).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("test")).requestAttr(ID_USER, "test"))
+				get(urlWrongCompte, "unkown", "1", "2018")
+				.header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("test")).requestAttr(ID_USER, "test"))
 		.andExpect(status().is4xxClientError());
 	}
 
 
 
-	@Ignore
+	@Test
 	public void testGetBudgetOK() throws Exception {
 
-		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL;
+		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL+"?idCompte=C1&mois=1&annee=2018";
+		
+		
 		LOGGER.info("Good Compte : {}", urlGoodCompte);
 		getMockAPI().perform(
-				get(urlGoodCompte, "C1", "1", "2018")
+				get(urlGoodCompte, "C1", 1, 2018)
 					.header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("userTest")).requestAttr(ID_USER, "userTest"))
 		.andExpect(status().isOk())
 		.andExpect(content().string(containsString("{\"id\":\""+bo.getId()+"\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":true")));
