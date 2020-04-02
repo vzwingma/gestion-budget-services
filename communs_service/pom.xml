@@ -9,7 +9,6 @@
 	</parent>
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>communs</artifactId>
-	<version>11.2.0</version>
 
 	<name>[Budget] Communs Services</name>
 	<description>Communs aux Services de l'application</description>
