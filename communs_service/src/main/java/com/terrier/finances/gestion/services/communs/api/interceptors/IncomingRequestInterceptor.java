@@ -121,10 +121,10 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		super.postHandle(request, response, handler, modelAndView);
 
 		if(HttpStatus.Series.resolve(response.getStatus()) == Series.SUCCESSFUL) {
-			LOGGER.info("[API={}] Statut HTTP : [{}]", corrIdApiHeader, response.getStatus());
+			LOGGER.info("Statut HTTP : [{}]", response.getStatus());
 		}
 		else {
-			LOGGER.warn("[API={}] Statut HTTP : [{}]", corrIdApiHeader, response.getStatus());
+			LOGGER.warn("Statut HTTP : [{}]", response.getStatus());
 		}
 	}
 }
