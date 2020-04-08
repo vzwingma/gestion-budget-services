@@ -61,12 +61,12 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		// Log API CorrId
 		final String corrIdAPIHeader = request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) != null ? request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) : UUID.randomUUID().toString();
 		request.setAttribute(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
-
+		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, new StringBuilder("[").append(ApiHeaderIdEnum.API_CORRELATION_ID).append("=").append(corrIdAPIHeader).append("]").toString());
 		if(UNKNOWN_USER.equals(idUser)) {
-			LOGGER.info("[API={}][{} :: {}] anonyme", corrIdAPIHeader, request.getMethod(), request.getRequestURI());
+			LOGGER.info("[{} :: {}] anonyme", request.getMethod(), request.getRequestURI());
 		}
 		else {
-			LOGGER.info("[API={}][{} :: {}] authentifiée [idUser={}]", corrIdAPIHeader, request.getMethod(), request.getRequestURI(), idUser);
+			LOGGER.info("[{} :: {}] authentifiée [idUser={}]", request.getMethod(), request.getRequestURI(), idUser);
 		}
 
 		// Injection des Token et CorrId dans la chaine
@@ -111,12 +111,15 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		if (corrIdHeader != null && corrIdHeader.matches(GUID_REGEX)) {
 			response.setHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID, corrIdHeader);
 		}
+		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_CORRELATION_ID, new StringBuilder("[").append(ApiHeaderIdEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
 
+		
 		String corrIdApiHeader =  request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID);
 		// Allow only GUID
 		if (corrIdApiHeader != null && corrIdApiHeader.matches(GUID_REGEX)) {
 			response.setHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
 		}
+		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, new StringBuilder("[").append(ApiHeaderIdEnum.API_CORRELATION_ID).append("=").append(corrIdApiHeader).append("]").toString());
 
 		super.postHandle(request, response, handler, modelAndView);
 
