@@ -80,6 +80,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 				c.setCorrelationId(corrIdHeader);
 			});
 		}
+		org.slf4j.MDC.remove(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID);
 	}
 
 
@@ -129,5 +130,6 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		else {
 			LOGGER.warn("Statut HTTP : [{}]", response.getStatus());
 		}
+		org.slf4j.MDC.remove(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID);
 	}
 }

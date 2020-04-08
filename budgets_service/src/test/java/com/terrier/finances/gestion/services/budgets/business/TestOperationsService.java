@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.terrier.finances.gestion.communs.api.filters.LogApiFilter;
+import com.terrier.finances.gestion.communs.api.filters.OutcomingRequestFilter;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
@@ -46,7 +46,7 @@ import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={TestMockBudgetServiceConfig.class,  OperationsService.class, LogApiFilter.class})
+@ContextConfiguration(classes={TestMockBudgetServiceConfig.class,  OperationsService.class, OutcomingRequestFilter.class})
 public class TestOperationsService {
 
 	/**
