@@ -26,12 +26,7 @@ public abstract class AbstractAPIController {
 	public final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public static final String ID_USER = "idProprietaire";
-	/**
-	 * Constructeur des API Controleur
-	 */
-	public AbstractAPIController() {
-		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_CORRELATION_ID, "");
-	}
+
 
 	/**
 	 * @param restObjectModel 
