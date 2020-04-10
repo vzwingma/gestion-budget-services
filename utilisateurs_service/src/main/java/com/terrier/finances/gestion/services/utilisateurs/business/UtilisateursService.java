@@ -136,7 +136,7 @@ public class UtilisateursService extends AbstractBusinessService {
 				.setExpiration(new Date(now + sessionValidity * 60 * 1000))  // in milliseconds
 				.signWith(Keys.hmacShaKeyFor(JwtConfigEnum.getJwtSecretKey().getBytes()))
 				.compact();
-		LOGGER.info("[idUser={}] Token JWT [{}]", utilisateur.getId(), token);
+		LOGGER.debug("[idUser={}] Token JWT [{}]", utilisateur.getId(), token);
 		return token;
 	}
 

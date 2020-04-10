@@ -358,7 +358,7 @@ public class OperationsService extends AbstractBusinessService {
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
 		 */
 		String idBudgetDestination = BudgetDataUtils.getBudgetId(idCompteDestination, BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget));
-		LOGGER.info("[BUDGET] Ajout d'un transfert intercompte de {} vers {} ({}) > {} ", idBudget, idBudgetDestination, idCompteDestination, ligneOperation);
+		LOGGER.info("Ajout d'un transfert intercompte de {} vers {} ({}) > {} ", idBudget, idBudgetDestination, idCompteDestination, ligneOperation);
 		String idCompteSource = BudgetDataUtils.getCompteFromBudgetId(idBudget);
 		// #59 : Cohérence des états
 		EtatOperationEnum etatDepenseCourant = ligneOperation.getEtat();

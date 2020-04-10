@@ -16,6 +16,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.terrier.finances.gestion.communs.api.security.ApiHeaderIdEnum;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
+import com.terrier.finances.gestion.communs.utils.config.CorrelationsIdUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 
@@ -44,8 +45,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		// Logger des CorrId
 		final String corrIdHeader = request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) : UUID.randomUUID().toString();
 		request.setAttribute(ApiHeaderIdEnum.HEADER_CORRELATION_ID, corrIdHeader);
-		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_CORRELATION_ID, new StringBuilder("[").append(ApiHeaderIdEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
-
+		CorrelationsIdUtils.putCorrIdOnMDC(corrIdHeader);
 
 		// Injection de la session User à partir du JWT
 		String idUser = UNKNOWN_USER;
@@ -61,7 +61,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		// Log API CorrId
 		final String corrIdAPIHeader = request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) != null ? request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) : UUID.randomUUID().toString();
 		request.setAttribute(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
-		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, new StringBuilder("[").append(ApiHeaderIdEnum.API_CORRELATION_ID).append("=").append(corrIdAPIHeader).append("]").toString());
+		CorrelationsIdUtils.putApiIdOnMDC(corrIdAPIHeader);
 		if(UNKNOWN_USER.equals(idUser)) {
 			LOGGER.info("[{} :: {}] anonyme", request.getMethod(), request.getRequestURI());
 		}
@@ -80,7 +80,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 				c.setCorrelationId(corrIdHeader);
 			});
 		}
-		org.slf4j.MDC.remove(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID);
+		CorrelationsIdUtils.clearApiIdOnMDC();
 	}
 
 
@@ -107,21 +107,19 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 
-		String corrIdHeader =  request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiHeaderIdEnum.HEADER_CORRELATION_ID);
+		String corrId =  request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) != null ? request.getHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID) :  (String)request.getAttribute(ApiHeaderIdEnum.HEADER_CORRELATION_ID);
 		// Allow only GUID
-		if (corrIdHeader != null && corrIdHeader.matches(GUID_REGEX)) {
-			response.setHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID, corrIdHeader);
+		if (corrId != null && corrId.matches(GUID_REGEX)) {
+			response.setHeader(ApiHeaderIdEnum.HEADER_CORRELATION_ID, corrId);
 		}
-		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_CORRELATION_ID, new StringBuilder("[").append(ApiHeaderIdEnum.LOG_CORRELATION_ID).append("=").append(corrIdHeader).append("]").toString());
-
+		CorrelationsIdUtils.putCorrIdOnMDC(corrId);
 		
-		String corrIdApiHeader =  request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID);
+		String corrIdApi =  request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) != null ?  request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) : (String)request.getAttribute(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID);
 		// Allow only GUID
-		if (corrIdApiHeader != null && corrIdApiHeader.matches(GUID_REGEX)) {
-			response.setHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, corrIdApiHeader);
+		if (corrIdApi != null && corrIdApi.matches(GUID_REGEX)) {
+			response.setHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, corrIdApi);
 		}
-		org.slf4j.MDC.put(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, new StringBuilder("[").append(ApiHeaderIdEnum.API_CORRELATION_ID).append("=").append(corrIdApiHeader).append("]").toString());
-
+		CorrelationsIdUtils.putApiIdOnMDC(corrIdApi);
 		super.postHandle(request, response, handler, modelAndView);
 
 		if(HttpStatus.Series.resolve(response.getStatus()) == Series.SUCCESSFUL) {
@@ -130,6 +128,6 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		else {
 			LOGGER.warn("Statut HTTP : [{}]", response.getStatus());
 		}
-		org.slf4j.MDC.remove(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID);
+		CorrelationsIdUtils.clearApiIdOnMDC();
 	}
 }

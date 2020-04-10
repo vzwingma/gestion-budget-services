@@ -76,7 +76,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 		if(jwTtoken != null) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.add(JwtConfigEnum.JWT_HEADER_AUTH, JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + jwTtoken);
-			logger.debug("Token [{}]", headers.get(JwtConfigEnum.JWT_HEADER_AUTH));
+			logger.trace("Token [{}]", headers.get(JwtConfigEnum.JWT_HEADER_AUTH));
 			return ResponseEntity.ok().headers(headers).build();
 		}
 		else {
