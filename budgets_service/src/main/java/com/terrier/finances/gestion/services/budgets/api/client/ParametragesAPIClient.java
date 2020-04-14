@@ -10,7 +10,6 @@ import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 
 /**
@@ -44,7 +43,7 @@ public class ParametragesAPIClient extends AbstractHTTPClient<CategorieOperation
 					categoriesSsCategories.addAll(c.getListeSSCategories());	
 				});
 
-			} catch (UserNotAuthorizedException | DataNotFoundException e) {
+			} catch (DataNotFoundException e) {
 				LOGGER.warn("Impossible de charger les catégories");
 			}
 		}
