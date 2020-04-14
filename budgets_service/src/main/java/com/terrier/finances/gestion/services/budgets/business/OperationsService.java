@@ -76,7 +76,7 @@ public class OperationsService extends AbstractBusinessService {
 
 		CompteBancaire compteBancaire = compteClientApi.getCompteById(idCompte, idProprietaire);
 		if(compteBancaire != null){
-			if(compteBancaire.isActif()){
+			if(Boolean.TRUE.equals(compteBancaire.isActif())){
 				try {
 					return chargerBudgetMensuelSurCompteActif(idProprietaire, compteBancaire, mois, annee);
 				} catch (CompteClosedException e) {
