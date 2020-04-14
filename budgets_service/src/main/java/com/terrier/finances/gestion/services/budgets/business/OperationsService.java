@@ -296,7 +296,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException  erreur sur les données
 	 * @throws BudgetNotFoundException budget introuvable
 	 */
-	public BudgetMensuel reinitialiserBudgetMensuel(String idBudget, String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException, CompteClosedException, DataNotFoundException{
+	public BudgetMensuel reinitialiserBudgetMensuel(String idBudget, String idProprietaire) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
 		BudgetMensuel budgetMensuel = chargerBudgetMensuel(idBudget, idProprietaire);
 		if(budgetMensuel != null){
@@ -350,9 +350,9 @@ public class OperationsService extends AbstractBusinessService {
 	 * @param auteur auteur de l'action
 	 * @throws BudgetNotFoundException erreur budget introuvable
 	 * @throws DataNotFoundException erreur données
-	 * @throws CompteClosedException 
+	 * @throws CompteClosedException  compte clos
 	 */
-	public BudgetMensuel createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination, String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException, CompteClosedException{
+	public BudgetMensuel createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException, CompteClosedException{
 
 		/**
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
@@ -411,7 +411,7 @@ public class OperationsService extends AbstractBusinessService {
 	public BudgetMensuel deleteOperation(String idBudget, String idOperation, String idProprietaire) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		try {
 			BudgetMensuel budget = chargerBudgetMensuel(idBudget, idProprietaire);
-			if(budget.isActif() && budget.getCompteBancaire().isActif()){
+			if(Boolean.TRUE.equals(budget.isActif()) && Boolean.TRUE.equals(budget.getCompteBancaire().isActif())){
 				// Si suppression d'une opération, on l'enlève
 				boolean maj = budget.getListeOperations().removeIf(op -> op.getId().equals(idOperation));
 				if(maj) {
@@ -526,7 +526,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * Mise à jour de la ligne comme dernière opération
 	 * @param ligneId
 	 */
-	public boolean setLigneAsDerniereOperation(String idBudget, String ligneId, String idProprietaire) throws UserNotAuthorizedException{
+	public boolean setLigneAsDerniereOperation(String idBudget, String ligneId, String idProprietaire) {
 		try {
 			BudgetMensuel budget = chargerBudgetMensuel(idBudget, idProprietaire);
 			if(budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()) {

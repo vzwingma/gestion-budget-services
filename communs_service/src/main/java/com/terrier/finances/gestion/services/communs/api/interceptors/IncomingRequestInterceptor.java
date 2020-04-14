@@ -17,7 +17,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.terrier.finances.gestion.communs.api.security.ApiHeaderIdEnum;
 import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utils.config.CorrelationsIdUtils;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 
 /**
@@ -37,8 +36,8 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 	private static final String GUID_REGEX = "[0-9a-fA-F-]{36}";
 	/**
 	 * Traite les entêtes en entrée
-	 * @param request requete
-	 * @throws UserNotAuthorizedException utilisateur inconnu
+	 * @param request requete 
+	 * @param controller controleur IHM
 	 */
 	public void manageHeaders(HttpServletRequest request, AbstractAPIController controller) {
 

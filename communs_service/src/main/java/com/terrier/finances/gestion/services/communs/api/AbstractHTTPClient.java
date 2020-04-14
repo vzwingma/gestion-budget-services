@@ -14,7 +14,6 @@ import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.api.AbstractHTTPReactiveClient;
 import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 
 import reactor.core.publisher.Mono;
 
@@ -53,10 +52,9 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	 * @param queryParams paramètres
 	 * @param responseClassType classe <R>
 	 * @return données en réponse
-	 * @throws UserNotAuthorizedException  erreur d'authentification
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
-	protected Mono<R> callHTTPGetData(String path, Map<String, String> pathParams) throws UserNotAuthorizedException, DataNotFoundException{
+	protected Mono<R> callHTTPGetData(String path, Map<String, String> pathParams) throws DataNotFoundException{
 		return callAPIandReturnMono(HttpMethod.GET, path, pathParams, null, null, responseClassType);
 	}
 	/**
@@ -64,10 +62,9 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	 * @param path chemin
 	 * @param responseClassType classe <R>
 	 * @return données en réponse
-	 * @throws UserNotAuthorizedException  erreur d'authentification
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
-	protected Mono<List<R>> callHTTPGetListData(String path) throws UserNotAuthorizedException, DataNotFoundException{
+	protected Mono<List<R>> callHTTPGetListData(String path) throws DataNotFoundException{
 		return callAPIandReturnFlux(HttpMethod.GET, path, null, null, null, responseClassType).collectList();
 	}
 	/**

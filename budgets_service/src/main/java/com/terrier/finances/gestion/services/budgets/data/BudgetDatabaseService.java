@@ -240,7 +240,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 			libellesDepenses = findByQuery(queryBudget)
 					.parallelStream()
 					// liste dépenses transformées 
-					.flatMap(budgetDTO -> budgetDTO.getListeDepenses().stream().map(operation -> operation.getLibelle()))
+					.flatMap(budgetDTO -> budgetDTO.getListeDepenses().stream().map(LigneDepenseDTO::getLibelle))
 					.collect(Collectors.toSet());
 		}
 		catch(Exception e){

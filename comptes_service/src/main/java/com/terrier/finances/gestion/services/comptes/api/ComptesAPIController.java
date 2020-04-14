@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.comptes.business.ComptesService;
@@ -51,7 +50,6 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @param idUtilisateur id de l'utilisateur
 	 * @return liste des comptes de l'utilisateur
 	 * @throws DataNotFoundException erreur données non trouvées
-	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Comptes d'un utilisateur")
 	@ApiResponses(value = {
@@ -61,7 +59,7 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST)
-	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException{
 		logger.info("getComptes");
 		return getEntities(comptesService.getComptesUtilisateur(idProprietaire));
 	}
@@ -71,7 +69,6 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @param idCompte id du compte
 	 * @return compte associé
 	 * @throws DataNotFoundException erreur données non trouvées
-	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Compte d'un utilisateur")
 	@ApiResponses(value = {
@@ -84,7 +81,7 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path")
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID)
-	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException{
 		logger.info("[idCompte={}] getCompte", idCompte);
 		return getEntity(comptesService.getCompteById(idCompte, idProprietaire));
 	}
@@ -92,8 +89,9 @@ public class ComptesAPIController extends AbstractAPIController {
 
 
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
-		return new ArrayList<AbstractHTTPClient>();
+		return new ArrayList<>();
 	}
 }

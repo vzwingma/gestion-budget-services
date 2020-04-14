@@ -40,9 +40,7 @@ public class ParametragesAPIClient extends AbstractHTTPClient<CategorieOperation
 				categoriesSsCategories.addAll(categories);
 				categories.stream()
 				.forEach(c -> {
-					c.getListeSSCategories().stream().forEach(ssCats -> {
-						ssCats.setCategorieParente(c);
-					});
+					c.getListeSSCategories().stream().forEach(ssCats -> ssCats.setCategorieParente(c));
 					categoriesSsCategories.addAll(c.getListeSSCategories());	
 				});
 
