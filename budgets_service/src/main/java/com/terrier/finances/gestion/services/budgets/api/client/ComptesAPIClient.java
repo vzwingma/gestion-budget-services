@@ -50,4 +50,11 @@ public class ComptesAPIClient extends AbstractHTTPClient<CompteBancaire> {
 		return ApiUrlConfigEnum.APP_CONFIG_URL_COMPTES;
 	}
 
+
+	@Override
+	public String getCorrId() {
+		// Pas de surcharge du CorrId. Transmis par HTTP Header
+		return null;
+	}
+
 }
