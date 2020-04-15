@@ -207,7 +207,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(get(urlActif).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("userTest")).requestAttr(ID_USER, "userTest"))
-		.andExpect(status().isNoContent());
+		.andExpect(status().is(423));
 
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
@@ -239,16 +239,18 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		ok.setDateMiseAJour(passe);
 		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"))).thenReturn(ok);
 
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
-		LOGGER.info("is Actif : {}", urlActif);
+		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
+		LOGGER.info("is UptoDate : {}", urlActif);
 		getMockAPI().perform(get(urlActif).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("userTest")).requestAttr(ID_USER, "userTest"))
-		.andExpect(status().isNoContent());
+		.andExpect(status().is4xxClientError());
 
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
-		LOGGER.info("is Actif : {}", urlActif);
+		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTOK") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
+		LOGGER.info("is UptoDate : {}", urlActif);
 		getMockAPI().perform(get(urlActif).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("userTest")).requestAttr(ID_USER, "userTest"))
 		.andExpect(status().isOk());
 	}
+
+
 
 
 
