@@ -28,7 +28,8 @@ jobs:
           mvn versions:set -DnewVersion=$VERSION; 
           mvn versions:commit;
           
-      install: 
+      install:
+        - cp .travis/settings.xml $HOME/.m2/settings.xml
         - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
 
       script:
