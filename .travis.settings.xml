@@ -1,11 +1,112 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <profiles>
+    <profile>
+      <id>standard-with-extra-repos</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <repositories>
+        <repository>
+          <id>central</id>
+          <name>Central Repository</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+
+        <repository>
+          <id>github</id>
+          <name>GitHub OWNER Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/vzwingma/gestion-budget-communs</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
 
 
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+        <repository>
+          <id>sonatype</id>
+          <name>OSS Sonatype repo (releases)</name>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>warn</checksumPolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <url>https://oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
 
+        <repository>
+          <id>sonatype-snapshots</id>
+          <name>OSS Sonatype repo (snapshots)</name>
+          <releases>
+            <enabled>false</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>warn</checksumPolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
 
+        <repository>
+          <id>sonatype-apache</id>
+          <name>Apache repo (releases)</name>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>warn</checksumPolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <url>https://repository.apache.org/content/repositories/releases/</url>
+        </repository>
+
+        <repository>
+          <id>apache-snapshots</id>
+          <name>ASF repo (snapshots)</name>
+          <releases>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>warn</checksumPolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <url>https://repository.apache.org/snapshots/</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+	<mirrors>
+      <mirror>
+        <id>google-maven-central</id>
+        <name>GCS Maven Central mirror</name>
+        <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
+        <mirrorOf>central</mirrorOf>
+      </mirror>
+    </mirrors>
+	
   <servers>
 	<server>
       <id>github</id>
@@ -13,26 +114,5 @@
       <password>${env.GITHUB_PKG_TOKEN}</password>
     </server>
   </servers>
-
-
-  <profiles>
-   <profile>
-      <id>github</id>
-      <activation>
-        <jdk>github</jdk>
-      </activation>
-
-      <repositories>
-        <repository>
-          <id>github</id>
-          <name>GitHub OWNER Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/vzwingma/gestion-budget-communs</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-
-  <activeProfiles>
-    <activeProfile>github</activeProfile>
-  </activeProfiles>
+	
 </settings>
