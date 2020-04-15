@@ -17,6 +17,7 @@ jobs:
     - stage: Build and Publish to GitHub
       before_install:
         # Version tagguée > Application de la version sur Maven
+        - cat $HOME/.m2/settings.xml
         - if [[ $TRAVIS_BRANCH == v* ]]; 
           then 
               VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
@@ -24,9 +25,9 @@ jobs:
               VERSION=`mvn --settings .travis.settings.xml -q -N org.codehaus.mojo:exec-maven-plugin:exec -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
               VERSION=$(echo $VERSION | sed -r 's/(-SNAPSHOT)+//gi')-SNAPSHOT; 
           fi; 
-          echo "Application de la version Services $VERSION" à partir de $TRAVIS_BRANCH; 
-          mvn versions:set -DnewVersion=$VERSION; 
-          mvn versions:commit;
+        - echo "Application de la version Services $VERSION" à partir de $TRAVIS_BRANCH; 
+        - mvn versions:set -DnewVersion=$VERSION; 
+        - mvn versions:commit;
           
       install:
         - mvn clean install sonar:sonar -B -P prod --settings .travis.settings.xml -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
