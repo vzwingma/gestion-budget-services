@@ -31,7 +31,17 @@
           </snapshots>
         </repository>
 
-
+        <repository>
+          <id>github-snapshots</id>
+          <name>GitHub Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/vzwingma/gestion-budget-communs</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
         <repository>
           <id>sonatype</id>
           <name>OSS Sonatype repo (releases)</name>
@@ -111,8 +121,12 @@
 	<server>
       <id>github</id>
       <username>vzwingma</username>
-      <password>${GITHUB_PKG_TOKEN}</password>
+      <password>GITHUB_PKG_TOKEN</password>
+    </server>
+	<server>
+      <id>github-snapshots</id>
+      <username>vzwingma</username>
+      <password>GITHUB_PKG_TOKEN</password>
     </server>
   </servers>
-	
 </settings>
