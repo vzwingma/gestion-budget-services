@@ -22,7 +22,7 @@
 	<logger name="reactor.netty" level="INFO" />
 
 	<!-- Budget -->
-	<logger name="com.terrier.finances.gestion.services.parametrages" level="DEBUG" additivity="false">
+	<logger name="com.terrier.finances.gestion.services.budgets" level="DEBUG" additivity="false">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />		
 	</logger>	
