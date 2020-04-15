@@ -111,7 +111,7 @@
 	<server>
       <id>github</id>
       <username>vzwingma</username>
-      <password>${env.GITHUB_PKG_TOKEN}</password>
+      <password>${GITHUB_PKG_TOKEN}</password>
     </server>
   </servers>
 	
