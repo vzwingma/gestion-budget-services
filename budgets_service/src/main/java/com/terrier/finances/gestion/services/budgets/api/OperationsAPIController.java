@@ -3,11 +3,11 @@ package com.terrier.finances.gestion.services.budgets.api;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -193,10 +193,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws BudgetNotFoundException erreur données non trouvées
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Retourne l'un des états d'un budget mensuel : {etat} ou {uptodate}", notes="{etat} : indique si le budget est ouvert ou cloturé. {uptodate} indique si le budget a été mis à jour en BDD par rapport à la date passée en paramètre", tags={"Budget"})
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Retourne l'état d'un budget mensuel : {etat}", notes="{etat} : indique si le budget est ouvert ou cloturé.", tags={"Budget"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Budget actif"),
-			@ApiResponse(code = 204, message = "Budget inactif"),
+			@ApiResponse(code = 423, message = "Budget inactif"),
 			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
 			@ApiResponse(code = 403, message = "Opération non autorisée"),
 			@ApiResponse(code = 404, message = "Données introuvables")
@@ -204,15 +204,14 @@ public class OperationsAPIController extends AbstractAPIController {
 	@ApiImplicitParams(value={
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="actif", required=false, value="Etat actif du compte", paramType="query"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="uptodateto", required=false, value="Activité du budget par rapport à la date en paramètres (en ms)", paramType="query"),
 	})	
 
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<Boolean> isBudgetActif(
 			@PathVariable("idBudget") String idBudget, 
-			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif,  @RequestParam(value="uptodateto", required=false) Long uptodateto) throws BudgetNotFoundException {
+			@RequestParam(value="actif", required=false, defaultValue="false") Boolean isActif) throws BudgetNotFoundException {
 
-		logger.info("[idBudget={}] actif ? : {}, uptodateto ? {}", idBudget, isActif, uptodateto );
+		logger.trace("[idBudget={}] actif ? : {}", idBudget, isActif);
 
 		if(Boolean.TRUE.equals(isActif)){
 			boolean isBudgetActif = operationService.isBudgetMensuelActif(idBudget);
@@ -221,22 +220,52 @@ public class OperationsAPIController extends AbstractAPIController {
 				return ResponseEntity.ok(true);
 			}
 			else{
-				return ResponseEntity.noContent().build();
-			}
-		}
-		else if(uptodateto != null){
-			boolean isUpToDate = operationService.isBudgetUpToDate(idBudget, new Date(uptodateto));
-			logger.info("[idBudget={}] isUpToDateto {} ? : {}",idBudget, uptodateto, isUpToDate );
-			if(isUpToDate){
-				return ResponseEntity.ok(true);
-			}
-			else{
-				return ResponseEntity.noContent().build();
+				return ResponseEntity.status(HttpStatus.LOCKED).build();
 			}
 		}
 		return ResponseEntity.notFound().build();
 	}
 
+	
+	/**
+	 * Retourne le statut du budget
+	 * @param idBudget id du compte
+	 * @return statut du budget 
+	 * @throws BudgetNotFoundException erreur données non trouvées
+	 * @throws DataNotFoundException erreur données non trouvées
+	 */
+	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Retourne l'état de mise à jour d'un budget mensuel : {uptodate}", notes="{uptodate} indique si le budget a été mis à jour en BDD par rapport à la date passée en paramètre", tags={"Budget"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Budget à jour"),
+			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
+			@ApiResponse(code = 403, message = "Opération non autorisée"),
+			@ApiResponse(code = 404, message = "Données introuvables"),
+			@ApiResponse(code = 426, message = "Le Budget a été mis à jour par rapport à la date renvoyée")
+	})
+	@ApiImplicitParams(value={
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
+			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="uptodateto", required=false, value="Activité du budget par rapport à la date en paramètres (en ms)", paramType="query"),
+	})	
+
+	@GetMapping(value=BudgetApiUrlEnum.BUDGET_UP_TO_DATE)
+	public ResponseEntity<Boolean> isBudgetUptoDate(
+			@PathVariable("idBudget") String idBudget, @RequestParam(value="uptodateto", required=false) Long uptodateto) throws BudgetNotFoundException {
+
+		logger.trace("[idBudget={}] uptodateto ? {}", idBudget, uptodateto );
+
+		if(uptodateto != null){
+			boolean isUpToDate = operationService.isBudgetIHMUpToDate(idBudget, uptodateto);
+			logger.info("[idBudget={}] isIHM Up To Date {} ? : {}",idBudget, BudgetDateTimeUtils.getLibelleDateFromMillis(uptodateto), isUpToDate );
+			if(isUpToDate){
+				return ResponseEntity.ok(true);
+			}
+			else{
+				return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).build();
+			}
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
 	/**
 	 * Met à jour le statut du budget
 	 * @param idBudget id du compte

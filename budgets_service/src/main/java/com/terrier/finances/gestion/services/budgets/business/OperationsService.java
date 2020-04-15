@@ -156,17 +156,19 @@ public class OperationsService extends AbstractBusinessService {
 
 
 	/**
-	 * Charge la date de mise à jour du budget
+	 * Indique si l'IHM est out of date
 	 * @param idBudget identifiant du budget
 	 * @param dateSurIHM Date affichée
-	 * @return la date de mise à jour du  budget
+	 * @return si le budget doit être mis à jour
 	 */
-	public boolean isBudgetUpToDate(String idBudget, Date dateSurIHM) {
+	public boolean isBudgetIHMUpToDate(String idBudget, Long dateSurIHM) {
 
 		try {
 			BudgetMensuel budgetMensuel =  this.dataDepenses.chargeBudgetMensuelById(idBudget);
 			if(budgetMensuel != null){
-				return budgetMensuel.getDateMiseAJour() != null ? dateSurIHM.after(budgetMensuel.getDateMiseAJour().getTime()) : null;
+				LOGGER.debug("Budget : Date mise à jour : {} / Date IHM : {}", 
+						budgetMensuel.getDateMiseAJour().getTimeInMillis(), dateSurIHM);
+				return budgetMensuel.getDateMiseAJour() != null ? dateSurIHM >= budgetMensuel.getDateMiseAJour().getTimeInMillis() : false;
 			}
 		} catch (BudgetNotFoundException e) {
 			LOGGER.error("Erreur lors de la recherche du budget [{}]", idBudget);
