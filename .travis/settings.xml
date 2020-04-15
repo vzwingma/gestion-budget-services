@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+
+  <servers>
+	<server>
+      <id>github</id>
+      <username>vzwingma</username>
+      <password>992773c5ddc75ed46ce941e6c9945bd67ec58920</password>
+    </server>
+	
+  </servers>
+
+
+  <profiles>
+   <profile>
+      <id>github</id>
+
+      <activation>
+        <jdk>github</jdk>
+      </activation>
+
+      <repositories>
+        <repository>
+          <id>github</id>
+          <name>GitHub OWNER Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/vzwingma/gestion-budget-communs</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+</settings>
