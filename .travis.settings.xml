@@ -11,25 +11,13 @@
       <id>github</id>
       <username>vzwingma</username>
       <password>${env.GITHUB_PKG_TOKEN}</password>
-      <configuration>
-        <httpHeaders>
-          <property>
-            <name>Authorization</name>
-            <!-- Base64-encoded username:access_token -->
-            <value>Basic dnp3aW5nbWE6NWU4MjM0YzA4MzM3YjUwNDkxNDlkM2IxOGFlNzcyY2UyN2I1YmIyZQ==</value>
-          </property>
-		  <authorization>Basic dnp3aW5nbWE6NWU4MjM0YzA4MzM3YjUwNDkxNDlkM2IxOGFlNzcyY2UyN2I1YmIyZQ==</authorization>
-        </httpHeaders>
-      </configuration>	  
     </server>
-	
   </servers>
 
 
   <profiles>
    <profile>
       <id>github</id>
-
       <activation>
         <jdk>github</jdk>
       </activation>
