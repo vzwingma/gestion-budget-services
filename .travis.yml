@@ -17,7 +17,7 @@ jobs:
     - stage: Build and Publish to GitHub
       before_install:
         # Version tagguée > Application de la version sur Maven
-        - sed -i 's/GITHUB_PKG_TOKEN/`$GITHUB_PKG_TOKEN`/g' .travis.settings.xml
+        - sed -i 's/GITHUB_PKG_TOKEN/'$GITHUB_PKG_TOKEN'/g' .travis.settings.xml
         - cp .travis.settings.xml $HOME/.m2/settings.xml
         - cat $HOME/.m2/settings.xml
 #        - if [[ $TRAVIS_BRANCH == v* ]]; 
