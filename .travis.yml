@@ -22,7 +22,7 @@ jobs:
           then 
               VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
           else 
-              VERSION=`mvn -s .travis.settings.xml -q -N org.codehaus.mojo:exec-maven-plugin:exec -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
+              VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
               VERSION=$(echo $VERSION | sed -r 's/(-SNAPSHOT)+//gi')-SNAPSHOT; 
           fi; 
           echo "Application de la version Services $VERSION" à partir de $TRAVIS_BRANCH; 
@@ -30,7 +30,7 @@ jobs:
           mvn versions:commit;
           
       install:
-        - mvn clean install sonar:sonar -e -X -s .travis.settings.xml -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
+        - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
 
       script:
         # Tag de snapshot. C'est un tag pour permettre le déploiement sur GitHUB de la version en cours
