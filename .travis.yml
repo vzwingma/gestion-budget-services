@@ -16,21 +16,21 @@ jobs:
   include:
     - stage: Build and Publish to GitHub
       before_install:
-        # Version tagguée > Application de la version sur Maven
+        # Update du settings.xml pour télécharger les packages sur github
         - sed -i 's/GITHUB_PKG_TOKEN/'$GITHUB_API_KEY'/g' .travis.settings.xml
         - cp .travis.settings.xml $HOME/.m2/settings.xml
         - cat $HOME/.m2/settings.xml
-        
-#        - if [[ $TRAVIS_BRANCH == v* ]]; 
-#          then 
-#              VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
-#          else 
-#              VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
-#              VERSION=$(echo $VERSION | sed -r 's/(-SNAPSHOT)+//gi')-SNAPSHOT; 
-#          fi; 
-#        - echo "Application de la version Services $VERSION" à partir de $TRAVIS_BRANCH; 
-#        - mvn versions:set -DnewVersion=$VERSION; 
-#        - mvn versions:commit;
+        # Version tagguée > Application de la version sur Maven
+        - if [[ $TRAVIS_BRANCH == v* ]]; 
+          then 
+              VERSION=$(echo $TRAVIS_BRANCH | cut -b 2-); 
+          else 
+              VERSION=`mvn -q -N org.codehaus.mojo:exec-maven-plugin:exec -Dexec.executable='echo' -Dexec.args='${project.version}'` ; 
+              VERSION=$(echo $VERSION | sed -r 's/(-SNAPSHOT)+//gi')-SNAPSHOT; 
+          fi; 
+        - echo "Application de la version Services $VERSION" à partir de $TRAVIS_BRANCH; 
+        - mvn versions:set -DnewVersion=$VERSION; 
+        - mvn versions:commit;
           
       install:
         - mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=gestion-budget-services
