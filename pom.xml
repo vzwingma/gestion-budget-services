@@ -20,7 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>11</maven.compiler.target>
 
-		<communs.version>11.4.1-rc1</communs.version>
+		<communs.version>11.4.1-RC3</communs.version>
 		<spring.security.version>5.3.1.RELEASE</spring.security.version>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
