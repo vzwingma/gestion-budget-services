@@ -5,7 +5,6 @@ import java.time.Month;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -76,7 +75,7 @@ public class OperationsService extends AbstractBusinessService {
 
 		CompteBancaire compteBancaire = compteClientApi.getCompteById(idCompte, idProprietaire);
 		if(compteBancaire != null){
-			if(compteBancaire.isActif()){
+			if(Boolean.TRUE.equals(compteBancaire.isActif())){
 				try {
 					return chargerBudgetMensuelSurCompteActif(idProprietaire, compteBancaire, mois, annee);
 				} catch (CompteClosedException e) {
@@ -156,17 +155,19 @@ public class OperationsService extends AbstractBusinessService {
 
 
 	/**
-	 * Charge la date de mise à jour du budget
+	 * Indique si l'IHM est out of date
 	 * @param idBudget identifiant du budget
 	 * @param dateSurIHM Date affichée
-	 * @return la date de mise à jour du  budget
+	 * @return si le budget doit être mis à jour
 	 */
-	public boolean isBudgetUpToDate(String idBudget, Date dateSurIHM) {
+	public boolean isBudgetIHMUpToDate(String idBudget, Long dateSurIHM) {
 
 		try {
 			BudgetMensuel budgetMensuel =  this.dataDepenses.chargeBudgetMensuelById(idBudget);
 			if(budgetMensuel != null){
-				return budgetMensuel.getDateMiseAJour() != null ? dateSurIHM.after(budgetMensuel.getDateMiseAJour().getTime()) : null;
+				LOGGER.debug("Budget : Date mise à jour : {} / Date IHM : {}", 
+						budgetMensuel.getDateMiseAJour().getTimeInMillis(), dateSurIHM);
+				return budgetMensuel.getDateMiseAJour() != null ? dateSurIHM >= budgetMensuel.getDateMiseAJour().getTimeInMillis() : false;
 			}
 		} catch (BudgetNotFoundException e) {
 			LOGGER.error("Erreur lors de la recherche du budget [{}]", idBudget);
@@ -296,7 +297,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * @throws DataNotFoundException  erreur sur les données
 	 * @throws BudgetNotFoundException budget introuvable
 	 */
-	public BudgetMensuel reinitialiserBudgetMensuel(String idBudget, String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException, CompteClosedException, DataNotFoundException{
+	public BudgetMensuel reinitialiserBudgetMensuel(String idBudget, String idProprietaire) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
 		BudgetMensuel budgetMensuel = chargerBudgetMensuel(idBudget, idProprietaire);
 		if(budgetMensuel != null){
@@ -350,15 +351,15 @@ public class OperationsService extends AbstractBusinessService {
 	 * @param auteur auteur de l'action
 	 * @throws BudgetNotFoundException erreur budget introuvable
 	 * @throws DataNotFoundException erreur données
-	 * @throws CompteClosedException 
+	 * @throws CompteClosedException  compte clos
 	 */
-	public BudgetMensuel createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination, String idProprietaire) throws UserNotAuthorizedException, BudgetNotFoundException, DataNotFoundException, CompteClosedException{
+	public BudgetMensuel createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException, CompteClosedException{
 
 		/**
 		 *  Si transfert intercompte : Création d'une ligne dans le compte distant
 		 */
 		String idBudgetDestination = BudgetDataUtils.getBudgetId(idCompteDestination, BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget));
-		LOGGER.info("[BUDGET] Ajout d'un transfert intercompte de {} vers {} ({}) > {} ", idBudget, idBudgetDestination, idCompteDestination, ligneOperation);
+		LOGGER.info("Ajout d'un transfert intercompte de {} vers {} ({}) > {} ", idBudget, idBudgetDestination, idCompteDestination, ligneOperation);
 		String idCompteSource = BudgetDataUtils.getCompteFromBudgetId(idBudget);
 		// #59 : Cohérence des états
 		EtatOperationEnum etatDepenseCourant = ligneOperation.getEtat();
@@ -411,7 +412,7 @@ public class OperationsService extends AbstractBusinessService {
 	public BudgetMensuel deleteOperation(String idBudget, String idOperation, String idProprietaire) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		try {
 			BudgetMensuel budget = chargerBudgetMensuel(idBudget, idProprietaire);
-			if(budget.isActif() && budget.getCompteBancaire().isActif()){
+			if(Boolean.TRUE.equals(budget.isActif()) && Boolean.TRUE.equals(budget.getCompteBancaire().isActif())){
 				// Si suppression d'une opération, on l'enlève
 				boolean maj = budget.getListeOperations().removeIf(op -> op.getId().equals(idOperation));
 				if(maj) {
@@ -526,7 +527,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * Mise à jour de la ligne comme dernière opération
 	 * @param ligneId
 	 */
-	public boolean setLigneAsDerniereOperation(String idBudget, String ligneId, String idProprietaire) throws UserNotAuthorizedException{
+	public boolean setLigneAsDerniereOperation(String idBudget, String ligneId, String idProprietaire) {
 		try {
 			BudgetMensuel budget = chargerBudgetMensuel(idBudget, idProprietaire);
 			if(budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()) {

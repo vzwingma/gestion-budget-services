@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
@@ -64,12 +63,11 @@ public class AdminAPIController extends AbstractAPIController {
 	})
 	@GetMapping(value=BudgetApiUrlEnum.ADMIN_ACCESS)
 	public String password(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire,
-			@PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword) throws UserNotAuthorizedException{
+			@PathVariable("oldpassword") String oldpassword, @PathVariable("newpassword") String newPassword){
 		logger.info("Changement du mot de passe");
 		if(idProprietaire != null){
 			authService.changePassword(idProprietaire, oldpassword, newPassword);
-			String returnOK = "Le mot de passe de "+idProprietaire+ " a bien été modifié";
-			return returnOK;
+			return "Le mot de passe de "+idProprietaire+ " a bien été modifié";
 		}
 		else{
 			String returnErr = "L'utilisateur est introuvable ou le mot de passe est incorrect";
@@ -78,9 +76,10 @@ public class AdminAPIController extends AbstractAPIController {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
-		return new ArrayList<AbstractHTTPClient>();
+		return new ArrayList<>();
 	}	
 	
 	

@@ -1,5 +1,7 @@
 package com.terrier.finances.gestion.test.config;
 
+import java.util.UUID;
+
 import org.springframework.context.annotation.Configuration;
 
 import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
@@ -16,5 +18,10 @@ public class  MockApiClient extends AbstractHTTPClient<AuthLoginAPIObject>{
 	@Override
 	public ApiUrlConfigEnum getConfigServiceURI() {
 		return ApiUrlConfigEnum.APP_CONFIG_URL_COMPTES;
+	}
+
+	@Override
+	public String getCorrId() {
+		return UUID.randomUUID().toString();
 	}
 }

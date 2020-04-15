@@ -54,7 +54,7 @@ public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
                 @SuppressWarnings("unchecked")
                 List<String> authorities = (List<String>) claims.get("authorities");
                 if(authorities == null) {
-                	authorities = new ArrayList<String>();
+                	authorities = new ArrayList<>();
                 }
                  UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                                  username, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));

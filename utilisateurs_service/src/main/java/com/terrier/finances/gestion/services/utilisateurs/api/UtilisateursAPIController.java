@@ -28,8 +28,6 @@ import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPre
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserAccessForbiddenException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
@@ -71,12 +69,12 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=AuthLoginAPIObject.class, name="auth", required=true, value="Authentification de l'utilisateur", paramType="body")
 	})
 	@PostMapping(value=BudgetApiUrlEnum.USERS_AUTHENTICATE, consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody ResponseEntity<String> authenticate(@RequestBody AuthLoginAPIObject auth) throws UserAccessForbiddenException{
+	public @ResponseBody ResponseEntity<String> authenticate(@RequestBody AuthLoginAPIObject auth) {
 		String jwTtoken = authService.authenticate(auth.getLogin(), auth.getMotDePasse());
 		if(jwTtoken != null) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.add(JwtConfigEnum.JWT_HEADER_AUTH, JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + jwTtoken);
-			logger.debug("Token [{}]", headers.get(JwtConfigEnum.JWT_HEADER_AUTH));
+			logger.trace("Token [{}]", headers.get(JwtConfigEnum.JWT_HEADER_AUTH));
 			return ResponseEntity.ok().headers(headers).build();
 		}
 		else {
@@ -89,7 +87,6 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 * @param login login de l'utilisateur
 	 * @param motPasse motPasse
 	 * @return résultat de l'opération
-	 * @throws UserNotAuthorizedException 
 	 */
 	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Déconnexion d'un utilisateur")
 	@ApiResponses(value = {
@@ -99,7 +96,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@PostMapping(value=BudgetApiUrlEnum.USERS_DISCONNECT)
-	public ResponseEntity<String> disconnect(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public ResponseEntity<String> disconnect(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) {
 		logger.info("Disconnect : true");
 		return ResponseEntity.noContent().build();
 	}
@@ -108,8 +105,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 * Date de dernier accès utilisateur
 	 * @param idUtilisateur id Utilisateur
 	 * @return date de dernier accès
-	 * @throws DataNotFoundException
-	 * @throws UserNotAuthorizedException 
+	 * @throws DataNotFoundException données non trouvées
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Date de dernier accès d'un utilisateur")
 	@ApiResponses(value = {
@@ -119,7 +115,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.USERS_ACCESS_DATE)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public ResponseEntity<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException{
 		if(idProprietaire != null){
 			LocalDateTime lastAccess = authService.getLastAccessDate(idProprietaire);
 			logger.info("LastAccessTime : {}", lastAccess);
@@ -137,8 +133,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 * Préférences d'un utilisateur
 	 * @param idUtilisateur id Utilisateur
 	 * @return préférences
-	 * @throws DataNotFoundException
-	 * @throws UserNotAuthorizedException 
+	 * @throws DataNotFoundException données non trouvées
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Préférences d'un utilisateur")
 	@ApiResponses(value = {
@@ -148,7 +143,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.USERS_PREFS)
-	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException{
 		if(idProprietaire != null){
 			Map<UtilisateurPrefsEnum, String> prefsUtilisateur = authService.getPrefsUtilisateur(idProprietaire);
 			logger.info("Preferences Utilisateur : {}", prefsUtilisateur);
@@ -163,6 +158,6 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public List<AbstractHTTPClient> getHTTPClients() {
-		return new ArrayList<AbstractHTTPClient>();
+		return new ArrayList<>();
 	}
 }

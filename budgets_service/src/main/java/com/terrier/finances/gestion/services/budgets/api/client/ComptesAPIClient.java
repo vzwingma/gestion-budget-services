@@ -11,7 +11,6 @@ import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 
 /**
@@ -38,7 +37,7 @@ public class ComptesAPIClient extends AbstractHTTPClient<CompteBancaire> {
 	public CompteBancaire getCompteById(String idCompte, String idUser) {
 		try {
 			return callHTTPGetData(BudgetApiUrlEnum.COMPTES_ID_FULL, Collections.singletonMap(BudgetApiUrlEnum.PARAM_ID_COMPTE, idCompte)).block();
-		} catch (UserNotAuthorizedException | DataNotFoundException e) {
+		} catch (DataNotFoundException e) {
 			LOGGER.error("Erreur lors de la recherche du compte", e);
 			return null;
 		}
@@ -48,6 +47,13 @@ public class ComptesAPIClient extends AbstractHTTPClient<CompteBancaire> {
 	@Override
 	public ApiUrlConfigEnum getConfigServiceURI() {
 		return ApiUrlConfigEnum.APP_CONFIG_URL_COMPTES;
+	}
+
+
+	@Override
+	public String getCorrId() {
+		// Pas de surcharge du CorrId. Transmis par HTTP Header
+		return null;
 	}
 
 }

@@ -14,12 +14,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * Budget du mois
  * @author vzwingma
  *
  */
 @Document(collection = "budgets")
+@Getter @Setter @NoArgsConstructor
 public class BudgetMensuelDTO implements Serializable {
 
 	@Id
@@ -87,192 +92,6 @@ public class BudgetMensuelDTO implements Serializable {
 	 */
 	public void setId() {
 		this.id = BudgetDataUtils.getBudgetId(this.compteBancaire, Month.of(this.mois+1), this.annee);
-	}
-
-
-	/**
-	 * @return the nowArgentAvance
-	 */
-	public String getNowArgentAvance() {
-		return nowArgentAvance;
-	}
-
-	/**
-	 * @return the finArgentAvance
-	 */
-	public String getFinArgentAvance() {
-		return finArgentAvance;
-	}
-
-
-	/**
-	 * @return the mois
-	 */
-	public int getMois() {
-		return mois;
-	}
-
-
-	/**
-	 * @return the annee
-	 */
-	public int getAnnee() {
-		return annee;
-	}
-
-
-	/**
-	 * @param annee the annee to set
-	 */
-	public void setAnnee(int annee) {
-		this.annee = annee;
-	}
-
-
-	/**
-	 * @param mois the mois to set
-	 */
-	public void setMois(int mois) {
-		this.mois = mois;
-	}
-
-
-
-	/**
-	 * @return the resultatMoisPrecedent
-	 */
-	public String getResultatMoisPrecedent() {
-		return resultatMoisPrecedent;
-	}
-
-	/**
-	 * @param resultatMoisPrecedent the resultatMoisPrecedent to set
-	 */
-	public void setResultatMoisPrecedent(String resultatMoisPrecedent) {
-		this.resultatMoisPrecedent = resultatMoisPrecedent;
-	}
-
-	
-	
-	/**
-	 * @param nowArgentAvance the nowArgentAvance to set
-	 */
-	public void setNowArgentAvance(String nowArgentAvance) {
-		this.nowArgentAvance = nowArgentAvance;
-	}
-
-	/**
-	 * @param finArgentAvance the finArgentAvance to set
-	 */
-	public void setFinArgentAvance(String finArgentAvance) {
-		this.finArgentAvance = finArgentAvance;
-	}
-
-	/**
-	 * @return the listeDepenses
-	 */
-	public List<LigneDepenseDTO> getListeDepenses() {
-		return listeDepenses;
-	}
-
-	/**
-	 * @param listeDepenses the listeDepenses to set
-	 */
-	public void setListeDepenses(List<LigneDepenseDTO> listeDepenses) {
-		this.listeDepenses = listeDepenses;
-	}
-
-
-
-	/**
-	 * @return the dateMiseAJour
-	 */
-	public Date getDateMiseAJour() {
-		return dateMiseAJour;
-	}
-
-
-	/**
-	 * @param dateMiseAJour the dateMiseAJour to set
-	 */
-	public void setDateMiseAJour(Date dateMiseAJour) {
-		this.dateMiseAJour = dateMiseAJour;
-	}
-
-
-
-	/**
-	 * @return the compteBancaire
-	 */
-	public CompteBancaire getCompteBancaire() {
-		return compteBancaire;
-	}
-
-
-
-
-	/**
-	 * @param compteBancaire the compteBancaire to set
-	 */
-	public void setCompteBancaire(CompteBancaire compteBancaire) {
-		this.compteBancaire = compteBancaire;
-	}
-
-
-
-
-	/**
-	 * @return the actif
-	 */
-	public boolean isActif() {
-		return actif;
-	}
-
-
-	/**
-	 * @param actif the actif to set
-	 */
-	public void setActif(boolean actif) {
-		this.actif = actif;
-	}
-
-
-
-	/**
-	 * @return the totalParCategories
-	 */
-	public Map<String, String[]> getTotalParCategories() {
-		return totalParCategories;
-	}
-
-
-
-
-	/**
-	 * @param totalParCategories the totalParCategories to set
-	 */
-	public void setTotalParCategories(Map<String, String[]> totalParCategories) {
-		this.totalParCategories = totalParCategories;
-	}
-
-
-
-
-	/**
-	 * @return the totalParSSCategories
-	 */
-	public Map<String, String[]> getTotalParSSCategories() {
-		return totalParSSCategories;
-	}
-
-
-
-
-	/**
-	 * @param totalParSSCategories the totalParSSCategories to set
-	 */
-	public void setTotalParSSCategories(Map<String, String[]> totalParSSCategories) {
-		this.totalParSSCategories = totalParSSCategories;
 	}
 
 

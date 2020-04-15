@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -128,15 +129,15 @@ public class UtilisateursService extends AbstractBusinessService {
 				// Convert to list of strings. 
 				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_AUTORITIES, 
 						utilisateur.getDroits().entrySet().stream()
-						.filter(e -> e.getValue())
-						.map(e -> e.getKey()).collect(Collectors.toList()))
+						.filter(Entry::getValue)
+						.map(Entry::getKey).collect(Collectors.toList()))
 				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, utilisateur.getId())
 				.setIssuedAt(new Date(now))
 				.setIssuer("Budget-Services")
 				.setExpiration(new Date(now + sessionValidity * 60 * 1000))  // in milliseconds
 				.signWith(Keys.hmacShaKeyFor(JwtConfigEnum.getJwtSecretKey().getBytes()))
 				.compact();
-		LOGGER.info("[idUser={}] Token JWT [{}]", utilisateur.getId(), token);
+		LOGGER.debug("[idUser={}] Token JWT [{}]", utilisateur.getId(), token);
 		return token;
 	}
 
