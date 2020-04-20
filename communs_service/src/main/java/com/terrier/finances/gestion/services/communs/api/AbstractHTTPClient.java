@@ -27,8 +27,6 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger( AbstractHTTPClient.class );
 
-	// Token JWT
-	private String jwtToken;
 
 	/**
 	 * Constructeur
@@ -66,19 +64,5 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	 */
 	protected Mono<List<R>> callHTTPGetListData(String path) throws DataNotFoundException{
 		return callAPIandReturnFlux(HttpMethod.GET, path, null, null, null, responseClassType).collectList();
-	}
-	/**
-	 * Injecte le token JWT
-	 * @param jwtToken
-	 * @return le client avec le jwt token
-	 */
-	public void setJwtToken(String jwtToken) {
-		this.jwtToken = jwtToken;
-	}
-	
-
-	@Override
-	public String getJwtToken() {
-		return jwtToken;
 	}
 }

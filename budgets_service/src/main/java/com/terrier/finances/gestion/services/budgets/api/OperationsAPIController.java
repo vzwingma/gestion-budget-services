@@ -14,15 +14,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.api.IntervallesCompteAPIObject;
 import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
@@ -94,18 +91,13 @@ public class OperationsAPIController extends AbstractAPIController {
 	public  @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
 						@RequestParam("idCompte") String idCompte, 
 						@RequestParam("mois") Integer mois, 
-						@RequestParam("annee") Integer annee,
-			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
-			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) {
+						@RequestParam("annee") Integer annee) {
 		logger.info("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
-
-		// Injection du Token
-		this.operationService.getCompteClientApi().setJwtToken(jwtToken);
 
 		if(mois != null && annee != null){
 			try{
 				Month month = Month.of(mois);
-				return getEntity(operationService.chargerBudgetMensuel(idCompte, month, annee, idProprietaire));
+				return getEntity(operationService.chargerBudgetMensuel(idCompte, month, annee, getIdProprietaire()));
 			}
 			catch(NumberFormatException e){
 				return ResponseEntity.badRequest().build();
@@ -141,13 +133,12 @@ public class OperationsAPIController extends AbstractAPIController {
 
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ID)
 	public @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
-			@PathVariable("idBudget") String idBudget, 
-			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, BudgetNotFoundException{
+			@PathVariable("idBudget") String idBudget) throws DataNotFoundException, BudgetNotFoundException{
 
 		logger.info("[idBudget={}] chargeBudget", idBudget);
 		if(idBudget != null){
 			try {
-				return getEntity(operationService.chargerBudgetMensuel(idBudget, idProprietaire));
+				return getEntity(operationService.chargerBudgetMensuel(idBudget, getIdProprietaire()));
 			}
 			catch (DataNotFoundException | BudgetNotFoundException e) {
 				logger.error("[idBudget={}] Impossible de charger le budget", idBudget);
@@ -178,10 +169,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	})	
 
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
-	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget, @RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		logger.info("[idBudget={}] reinitialisation", idBudget);
-		if(idBudget != null && idProprietaire != null){
-			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, idProprietaire);
+		if(idBudget != null && getIdProprietaire() != null){
+			BudgetMensuel budgetUpdated = operationService.reinitialiserBudgetMensuel(idBudget, getIdProprietaire());
 			return getEntity(budgetUpdated);
 		}
 		throw new DataNotFoundException("Impossible de réinitialiser le budget");
@@ -289,11 +280,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<BudgetMensuel> setBudgetActif(
 			@PathVariable("idBudget") String idBudget,
-			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire,
 			@RequestParam(value="actif") Boolean setActif) throws BudgetNotFoundException {
 
 		logger.info("[idBudget={}] set Actif : {}", idBudget, setActif );
-		BudgetMensuel budgetActif = operationService.setBudgetActif(idBudget, setActif, idProprietaire);
+		BudgetMensuel budgetActif = operationService.setBudgetActif(idBudget, setActif, getIdProprietaire());
 		return getEntity(budgetActif);
 	}
 
@@ -321,11 +311,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_OPERATION_DERNIERE)
 	public ResponseEntity<Boolean> setAsDerniereOperation(
 			@PathVariable("idBudget") String idBudget,
-			@PathVariable("idOperation") String idOperation, 
-			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws BudgetNotFoundException {
+			@PathVariable("idOperation") String idOperation) throws BudgetNotFoundException {
 
 		logger.info("[idBudget={}][idOperation={}] setAsDerniereOperation", idBudget, idOperation);
-		boolean resultat = operationService.setLigneAsDerniereOperation(idBudget, idOperation, idProprietaire);
+		boolean resultat = operationService.setLigneAsDerniereOperation(idBudget, idOperation, getIdProprietaire());
 		if(resultat){
 			return ResponseEntity.ok().build();
 		}
@@ -362,16 +351,14 @@ public class OperationsAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<BudgetMensuel> createOrUpdateOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
-			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire,
-			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
 			@RequestBody LigneOperation operation) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
 		logger.info("[idBudget={}][idOperation={}] createOrUpdateOperation", idBudget, idOperation);
-		if(operation != null && idBudget != null && idProprietaire != null){
+		if(operation != null && idBudget != null && getIdProprietaire() != null){
 			operation.setId(idOperation);
 			operationService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
 			try {
-				return getEntity(operationService.updateOperationInBudget(idBudget, operation, idProprietaire));
+				return getEntity(operationService.updateOperationInBudget(idBudget, operation, getIdProprietaire()));
 			}
 			catch (CompteClosedException e) {
 				return ResponseEntity.unprocessableEntity().build();
@@ -414,8 +401,6 @@ public class OperationsAPIController extends AbstractAPIController {
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
 			@PathVariable("idCompte") String idCompte,
-			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire, 
-			@RequestHeader(JwtConfigEnum.JWT_HEADER_AUTH) String jwtToken,
 			@RequestBody LigneOperation operation) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
 		logger.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
@@ -423,7 +408,7 @@ public class OperationsAPIController extends AbstractAPIController {
 			try {
 				operation.setId(idOperation);
 				operationService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
-				BudgetMensuel budgetUpdated = operationService.createOperationIntercompte(idBudget, operation, idCompte, idProprietaire);
+				BudgetMensuel budgetUpdated = operationService.createOperationIntercompte(idBudget, operation, idCompte, getIdProprietaire());
 				return getEntity(budgetUpdated);
 			}
 			catch (CompteClosedException e) {
@@ -460,13 +445,11 @@ public class OperationsAPIController extends AbstractAPIController {
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_OPERATION)
 	public @ResponseBody ResponseEntity<BudgetMensuel> deleteOperation(
 			@PathVariable("idBudget") String idBudget,
-			@PathVariable("idOperation") String idOperation,
-			@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire
-			) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
-
-		if(idOperation != null && idBudget != null && idProprietaire != null){
+			@PathVariable("idOperation") String idOperation) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+		
+		if(idOperation != null && idBudget != null && getIdProprietaire() != null){
 			logger.info("[idBudget={}][idOperation={}] deleteOperation", idBudget, idOperation);
-			BudgetMensuel budgetUpdated = operationService.deleteOperation(idBudget, idOperation, idProprietaire);
+			BudgetMensuel budgetUpdated = operationService.deleteOperation(idBudget, idOperation, getIdProprietaire());
 			if(budgetUpdated != null) {
 				return getEntity(budgetUpdated);
 			}
@@ -496,9 +479,9 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_COMPTE_INTERVALLES)
-	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte,  @RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException, UserNotAuthorizedException{
+	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte) throws DataNotFoundException, UserNotAuthorizedException{
 		logger.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
-		if(idProprietaire != null) {
+		if(getIdProprietaire() != null) {
 			LocalDate[] intervalles = this.operationService.getIntervallesBudgets(idCompte);
 			if(intervalles != null && intervalles.length >= 2){
 				IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
@@ -533,9 +516,9 @@ public class OperationsAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
 	})		
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES)
-	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire, @PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) {
+	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) {
 		logger.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);
-		if(idProprietaire != null) {
+		if(getIdProprietaire() != null) {
 			Set<String> libelles = this.operationService.getLibellesOperations(idCompte, annee);
 			if(libelles != null && !libelles.isEmpty()){
 				LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();

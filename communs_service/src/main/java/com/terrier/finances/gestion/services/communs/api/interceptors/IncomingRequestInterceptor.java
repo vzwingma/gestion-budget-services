@@ -9,13 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatus.Series;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.terrier.finances.gestion.communs.api.security.ApiHeaderIdEnum;
-import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.utils.config.CorrelationsIdUtils;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 
@@ -46,27 +49,20 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		request.setAttribute(ApiHeaderIdEnum.HEADER_CORRELATION_ID, corrIdHeader);
 		CorrelationsIdUtils.putCorrIdOnMDC(corrIdHeader);
 
-		// Injection de la session User à partir du JWT
+		// Injection de la session User à partir du token OpenIdConnect
 		String idUser = UNKNOWN_USER;
-		final String jwtToken =  request.getHeader(JwtConfigEnum.JWT_HEADER_AUTH);
-		if(jwtToken != null && JwtConfigEnum.getJWTClaims(jwtToken) != null) {
-			idUser = (String)JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID);
-			request.setAttribute(AbstractAPIController.ID_USER, JwtConfigEnum.getJWTClaims(jwtToken).get(JwtConfigEnum.JWT_CLAIM_HEADER_USERID));
-		}
-		else {
-			LOGGER.warn("[idUser={}] JwTToken introuvable ou incorrect. Impossible d'injecter la userSession. Utilisateur non authentifié", idUser);
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication instanceof OAuth2AuthenticationToken) {
+		    OAuth2User principal = ((OAuth2AuthenticationToken)authentication).getPrincipal();
+		    idUser = principal.getAttribute("name");
 		}
 
 		// Log API CorrId
 		final String corrIdAPIHeader = request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) != null ? request.getHeader(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID) : UUID.randomUUID().toString();
 		request.setAttribute(ApiHeaderIdEnum.HEADER_API_CORRELATION_ID, corrIdAPIHeader);
 		CorrelationsIdUtils.putApiIdOnMDC(corrIdAPIHeader);
-		if(UNKNOWN_USER.equals(idUser)) {
-			LOGGER.info("[{} :: {}] anonyme", request.getMethod(), request.getRequestURI());
-		}
-		else {
-			LOGGER.info("[{} :: {}] authentifiée [idUser={}]", request.getMethod(), request.getRequestURI(), idUser);
-		}
+		LOGGER.info("[{} :: {}] [user={}]", request.getMethod(), request.getRequestURI(), idUser);
 
 		// Injection des Token et CorrId dans la chaine
 		if(controller != null 
@@ -74,10 +70,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 				&& !controller.getHTTPClients().isEmpty()) {
 			controller.getHTTPClients()
 			.parallelStream()
-			.forEach(c -> {
-				c.setJwtToken(jwtToken);
-				c.setCorrelationId(corrIdHeader);
-			});
+			.forEach(c -> c.setCorrelationId(corrIdHeader));
 		}
 		CorrelationsIdUtils.clearApiIdOnMDC();
 	}

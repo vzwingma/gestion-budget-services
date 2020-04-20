@@ -3,13 +3,19 @@
  */
 package com.terrier.finances.gestion.test.config;
 
-import java.util.Date;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -22,10 +28,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.api.filters.OutcomingRequestFilter;
-import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 
 /**
  * Classe abstraite des tests d'API
@@ -43,7 +45,6 @@ public abstract class AbstractTestsAPI {
 	 */
 	protected final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
-	public static final String ID_USER = "idProprietaire";
 	/*
 	 * Client API mock
 	 */
@@ -52,11 +53,23 @@ public abstract class AbstractTestsAPI {
 	@Autowired
 	private WebApplicationContext wac;
 
+	private OAuth2User applicationUser;
+	
 	@BeforeEach
 	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+		this.applicationUser = Mockito.mock(OAuth2User.class);
+        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
 	}
 
+	public void authenticateUser(String loginUser) {
+        when(applicationUser.getAttribute(eq("name"))).thenReturn(loginUser);
+	}
+	
 	/**
 	 * @return the mockMvc
 	 */
@@ -77,20 +90,4 @@ public abstract class AbstractTestsAPI {
 			return null;
 		}
 	}
-
-
-	public static String getTestToken(String id){
-		Long now = System.currentTimeMillis();
-		String token = Jwts.builder()
-				.setSubject(id)
-				.setId(id)
-				.claim(JwtConfigEnum.JWT_CLAIM_HEADER_USERID, id)
-				.setIssuedAt(new Date(now))
-				.setExpiration(new Date(now + 10000))  // in milliseconds
-				.signWith(Keys.hmacShaKeyFor(JwtConfigEnum.getJwtSecretKey().getBytes()))
-				.compact();
-		// Add token to header
-		return JwtConfigEnum.JWT_HEADER_AUTH_PREFIX + token;
-	}
-
 }
