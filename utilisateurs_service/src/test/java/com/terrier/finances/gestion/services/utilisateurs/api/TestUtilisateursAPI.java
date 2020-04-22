@@ -85,7 +85,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		/** Authentification **/
 		authenticateUser("345345");
 		assertNotNull(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-		assertEquals("345345", ((OAuth2User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAttribute("name"));
+		assertEquals("345345", ((OAuth2User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAttribute("login"));
 
 
 		Utilisateur userOK = new Utilisateur();

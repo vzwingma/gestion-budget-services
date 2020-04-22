@@ -67,7 +67,7 @@ public abstract class AbstractTestsAPI {
 	}
 
 	public void authenticateUser(String loginUser) {
-        when(applicationUser.getAttribute(eq("name"))).thenReturn(loginUser);
+        when(applicationUser.getAttribute(eq("login"))).thenReturn(loginUser);
 	}
 	
 	/**

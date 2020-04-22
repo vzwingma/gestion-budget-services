@@ -55,7 +55,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication instanceof OAuth2AuthenticationToken) {
 		    OAuth2User principal = ((OAuth2AuthenticationToken)authentication).getPrincipal();
-		    idUser = principal.getAttribute("name");
+		    idUser = principal.getAttribute("login");
 		}
 
 		// Log API CorrId

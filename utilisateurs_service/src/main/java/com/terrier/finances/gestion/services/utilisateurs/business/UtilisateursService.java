@@ -51,7 +51,7 @@ public class UtilisateursService extends AbstractBusinessService {
 	 */
 	public LocalDateTime getLastAccessDate(String idUtilisateur){
 		try {
-			Utilisateur utilisateur = dataDBUsers.chargeUtilisateurById(idUtilisateur);
+			Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(idUtilisateur);
 			return utilisateur.getDernierAcces();
 		} catch (DataNotFoundException e) {
 			return null;
