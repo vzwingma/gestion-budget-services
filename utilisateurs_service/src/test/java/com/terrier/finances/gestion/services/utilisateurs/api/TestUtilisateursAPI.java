@@ -92,7 +92,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 		userOK.setId("345345");
 		userOK.setLogin("Test");
 		userOK.setDernierAcces(LocalDateTime.now());
-		when(mockDataDBUsers.chargeUtilisateurById(eq("345345"))).thenReturn(userOK);
+		when(mockDataDBUsers.chargeUtilisateur(eq("345345"))).thenReturn(userOK);
 		LOGGER.info("LastTime OK {}", BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL);
 		getMockAPI().perform(
 				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL)
