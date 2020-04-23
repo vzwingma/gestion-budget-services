@@ -52,6 +52,9 @@ public class TestComptesAPI extends AbstractTestsAPI {
 
 		when(mockComptesDBService.chargeComptes(eq("345345"))).thenReturn(null);
 
+		/** Authentification **/
+		authenticateUser("345345");
+		
 		List<CompteBancaire> comptes = new ArrayList<CompteBancaire>();
 		CompteBancaire c1 = new CompteBancaire();
 		c1.setActif(true);
