@@ -72,6 +72,7 @@ public class GitHubRemoteServerTokenServices implements ResourceServerTokenServi
     	}
     	if(authentication != null) {
     		LOGGER.debug("[OAuth2={}] Authentification [p={}, auth={}]", accessToken, authentication.getPrincipal(), authentication.isAuthenticated());
+    		authentication.setDetails(accessToken);
     		return authentication;
     	}
     	else {
