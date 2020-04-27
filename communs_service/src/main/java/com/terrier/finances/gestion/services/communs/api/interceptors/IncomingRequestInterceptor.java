@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.services.communs.api.interceptors;
 
+import java.security.Principal;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatus.Series;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -53,9 +53,9 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		String idUser = UNKNOWN_USER;
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication instanceof OAuth2AuthenticationToken) {
-		    OAuth2User principal = ((OAuth2AuthenticationToken)authentication).getPrincipal();
-		    idUser = principal.getAttribute("login");
+		if (authentication instanceof OAuth2Authentication) {
+		    Principal principal = (Principal)((OAuth2Authentication)authentication).getPrincipal();
+		    idUser = principal.getName();
 		}
 
 		// Log API CorrId

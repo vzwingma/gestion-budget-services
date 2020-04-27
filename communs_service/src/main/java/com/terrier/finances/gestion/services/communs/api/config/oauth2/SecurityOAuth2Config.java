@@ -1,29 +1,41 @@
-package com.terrier.finances.gestion.services.communs.api.config;
+package com.terrier.finances.gestion.services.communs.api.config.oauth2;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
 /**
  * Configuration des API. Autorisées par OpenID
  * @author vzwingma
  *
  */
+@Configuration
 @EnableWebSecurity
-public class SecurityOIdCConfig extends WebSecurityConfigurerAdapter {
+@EnableResourceServer
+public class SecurityOAuth2Config extends ResourceServerConfigurerAdapter {
 
 
-	public static final Logger LOGGER = LoggerFactory.getLogger( SecurityOIdCConfig.class );
+
+	public static final Logger LOGGER = LoggerFactory.getLogger( SecurityOAuth2Config.class );
+	
+	
+	@Override
+	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+		super.configure(resources);
+	}
 
 	/**
 	 * configuration Sécurité
 	 */
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		LOGGER.info("[INIT] Security OpenIDConnect");
+	public void configure(HttpSecurity http) throws Exception {
+		LOGGER.info("[INIT] Security OpenIDConnect"); // par la le Github remote Server Token Service
 		http
 		.csrf().disable()
 		// authorization requests config
@@ -40,7 +52,6 @@ public class SecurityOIdCConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()
 			// Any other request must be authenticated
 			.anyRequest().authenticated()
-		.and()
-			.oauth2Client();
+			;
 	}
 }
