@@ -22,7 +22,9 @@ import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 public class ComptesAPIClient extends AbstractHTTPClient<CompteBancaire> {
 
 	
-	
+
+
+
 	public ComptesAPIClient() {
 		super(CompteBancaire.class);
 	}
@@ -48,12 +50,4 @@ public class ComptesAPIClient extends AbstractHTTPClient<CompteBancaire> {
 	public ApiUrlConfigEnum getConfigServiceURI() {
 		return ApiUrlConfigEnum.APP_CONFIG_URL_COMPTES;
 	}
-
-
-	@Override
-	public String getCorrId() {
-		// Pas de surcharge du CorrId. Transmis par HTTP Header
-		return null;
-	}
-
 }

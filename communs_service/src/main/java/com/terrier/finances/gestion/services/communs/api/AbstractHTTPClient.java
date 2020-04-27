@@ -9,6 +9,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.api.AbstractHTTPReactiveClient;
@@ -64,5 +67,25 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	 */
 	protected Mono<List<R>> callHTTPGetListData(String path) throws DataNotFoundException{
 		return callAPIandReturnFlux(HttpMethod.GET, path, null, null, null, responseClassType).collectList();
+	}
+	
+
+	@Override
+	public String getCorrId() {
+		// Pas de surcharge du CorrId. Transmis par HTTP Header
+		return null;
+	}
+	
+	
+	/**
+	 * L'appel initial a été authentifié. Réutilisation du token pour les appels sous jacent
+	 */
+	@Override
+	public String getAccessToken() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication instanceof OAuth2Authentication) {
+		    return (String)((OAuth2Authentication)authentication).getDetails();
+		}
+		return null;
 	}
 }

@@ -1,6 +1,5 @@
 package com.terrier.finances.gestion.services.communs.api.interceptors;
 
-import java.security.Principal;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,8 +53,7 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication instanceof OAuth2Authentication) {
-		    Principal principal = (Principal)((OAuth2Authentication)authentication).getPrincipal();
-		    idUser = principal.getName();
+		    idUser = (String)((OAuth2Authentication)authentication).getPrincipal();
 		}
 
 		// Log API CorrId
