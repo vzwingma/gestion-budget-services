@@ -100,7 +100,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("Mock"));
 	}
 
-	@Ignore
+	@Test
 	public void testGetBudgetQuery() throws Exception {
 		// Fail
 		String urlWrongCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018";
