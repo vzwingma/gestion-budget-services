@@ -561,6 +561,55 @@ public class OperationsService extends AbstractBusinessService {
 		return budget;
 	}
 
+	
+	/**
+	 * Calcul du total de la catégorie du budget via l'opération en cours
+	 * @param budget budget à calculer
+	 * @param operation opération à traiter
+	 */
+	private void calculBudgetTotalCategories(BudgetMensuel budget, LigneOperation operation) {
+		
+		if(operation.getIdCategorie() != null) {
+			Double valeurOperation = operation.getValeur();
+			Double[] valeursCat = {0D,0D};
+			if(budget.getTotalParCategories().get(operation.getIdCategorie()) != null){
+				valeursCat = budget.getTotalParCategories().get(operation.getIdCategorie());
+			}
+			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+				valeursCat[0] = valeursCat[0] + valeurOperation;
+				valeursCat[1] = valeursCat[1] + valeurOperation;
+			}
+			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+				valeursCat[1] = valeursCat[1] + valeurOperation;
+			}
+			budget.getTotalParCategories().put(operation.getIdCategorie(), valeursCat);
+		}
+	}
+	
+	/**
+	 * Calcul du total de la sous catégorie du budget via l'opération en cours
+	 * @param budget budget à calculer
+	 * @param operation opération à traiter
+	 * 
+	 * */
+	private void calculBudgetTotalSsCategories(BudgetMensuel budget, LigneOperation operation) {
+		if(operation.getIdSsCategorie() != null) {
+			Double valeurOperation = operation.getValeur();
+			Double[] valeurSsCat = {0D,0D};
+			if( budget.getTotalParSSCategories().get(operation.getIdSsCategorie()) != null){
+				valeurSsCat = budget.getTotalParSSCategories().get(operation.getIdSsCategorie());
+			}
+			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+				valeurSsCat[0] = valeurSsCat[0] + valeurOperation;
+				valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
+			}
+			if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+				valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
+			}
+			budget.getTotalParSSCategories().put(operation.getIdSsCategorie(), valeurSsCat);
+		}
+	}
+	
 	/**
 	 * Calcul du résumé
 	 * @param budgetMensuelCourant
@@ -577,37 +626,11 @@ public class OperationsService extends AbstractBusinessService {
 				/**
 				 *  Calcul par catégorie
 				 */
-				if(operation.getIdCategorie() != null) {
-					Double[] valeursCat = {0D,0D};
-					if(budget.getTotalParCategories().get(operation.getIdCategorie()) != null){
-						valeursCat = budget.getTotalParCategories().get(operation.getIdCategorie());
-					}
-					if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
-						valeursCat[0] = valeursCat[0] + valeurOperation;
-						valeursCat[1] = valeursCat[1] + valeurOperation;
-					}
-					else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
-						valeursCat[1] = valeursCat[1] + valeurOperation;
-					}
-					budget.getTotalParCategories().put(operation.getIdCategorie(), valeursCat);
-				}
+				calculBudgetTotalCategories(budget, operation);
 				/**
 				 *  Calcul par sous catégorie
 				 */
-				if(operation.getIdSsCategorie() != null) {
-					Double[] valeurSsCat = {0D,0D};
-					if( budget.getTotalParSSCategories().get(operation.getIdSsCategorie()) != null){
-						valeurSsCat = budget.getTotalParSSCategories().get(operation.getIdSsCategorie());
-					}
-					if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
-						valeurSsCat[0] = valeurSsCat[0] + valeurOperation;
-						valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
-					}
-					if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
-						valeurSsCat[1] = valeurSsCat[1] + valeurOperation;
-					}
-					budget.getTotalParSSCategories().put(operation.getIdSsCategorie(), valeurSsCat);
-				}
+				calculBudgetTotalSsCategories(budget, operation);
 				/**
 				 * Calcul des totaux
 				 */

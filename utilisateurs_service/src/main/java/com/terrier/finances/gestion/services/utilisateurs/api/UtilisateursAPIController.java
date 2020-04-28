@@ -99,9 +99,9 @@ public class UtilisateursAPIController extends AbstractAPIController {
 		throw new DataNotFoundException("[token=?] Impossible de trouver l'utilisateur");
 	}
 
-	@SuppressWarnings("rawtypes")
+
 	@Override
-	public List<AbstractHTTPClient> getHTTPClients() {
+	public List<AbstractHTTPClient<?>> getHTTPClients() {
 		return new ArrayList<>();
 	}
 }

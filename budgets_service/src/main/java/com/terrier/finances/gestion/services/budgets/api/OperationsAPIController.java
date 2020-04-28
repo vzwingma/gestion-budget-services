@@ -531,9 +531,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	}
 
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<AbstractHTTPClient> getHTTPClients() {
+	public List<AbstractHTTPClient<?>> getHTTPClients() {
 		return Arrays.asList(this.compteClientApi, this.paramClientApi);
 	}
 }

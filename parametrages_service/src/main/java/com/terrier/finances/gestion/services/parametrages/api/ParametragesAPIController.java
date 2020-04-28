@@ -62,9 +62,8 @@ public class ParametragesAPIController extends AbstractAPIController {
 	/**
 	 * Liste des clients HTTPS nécessaires vers les autres µS
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<AbstractHTTPClient> getHTTPClients() {
+	public List<AbstractHTTPClient<?>> getHTTPClients() {
 		return new ArrayList<>();
 	}
 }
