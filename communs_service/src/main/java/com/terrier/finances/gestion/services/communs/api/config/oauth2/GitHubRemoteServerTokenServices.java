@@ -98,8 +98,8 @@ public class GitHubRemoteServerTokenServices implements ResourceServerTokenServi
 		}
 
 		// gh-838
-		if (map.containsKey("active") && !"true".equals(String.valueOf(map.get("active")))) {
-			LOGGER.debug("check_token returned active attribute: {}", map.get("active"));
+		if (map.containsKey(GitHubAccessTokenConverter.GITHUB_ACTIVE_ATTRIBUTE) && !"true".equals(String.valueOf(map.get(GitHubAccessTokenConverter.GITHUB_ACTIVE_ATTRIBUTE)))) {
+			LOGGER.debug("check_token returned active attribute: {}", map.get(GitHubAccessTokenConverter.GITHUB_ACTIVE_ATTRIBUTE));
 			throw new InvalidTokenException(accessToken);
 		}
 

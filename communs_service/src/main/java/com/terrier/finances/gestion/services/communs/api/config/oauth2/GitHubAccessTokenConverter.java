@@ -22,6 +22,7 @@ public class GitHubAccessTokenConverter implements AccessTokenConverter {
 
 	private static final String GITHUB_USER_ATTRIBUTE = "login";
 	private static final String GITHUB_AUTH_ATTRIBUTE = "type";
+	public static final String GITHUB_ACTIVE_ATTRIBUTE = "active";
 	/**
 	 *
 	 */

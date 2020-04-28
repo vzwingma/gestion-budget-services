@@ -65,6 +65,5 @@ public abstract class AbstractAPIController {
 	/**
 	 * @return Retourne les clients HTTP utilisés pour injection du JWT Token
 	 */
-	@SuppressWarnings("rawtypes")
-	public abstract List<AbstractHTTPClient> getHTTPClients();
+	public abstract List<AbstractHTTPClient<? extends AbstractAPIObjectModel>> getHTTPClients();
 }
