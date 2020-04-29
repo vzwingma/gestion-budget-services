@@ -88,9 +88,8 @@ public class ComptesAPIController extends AbstractAPIController {
 
 
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<AbstractHTTPClient> getHTTPClients() {
+	public List<AbstractHTTPClient<?>> getHTTPClients() {
 		return new ArrayList<>();
 	}
 }

@@ -63,7 +63,7 @@ public abstract class AbstractAPIController {
 
 
 	/**
-	 * @return Retourne les clients HTTP utilisés pour injection du JWT Token
+	 * @return Retourne les clients HTTP utilisés pour injection du correlationId fonctionnel
 	 */
 	public abstract List<AbstractHTTPClient<? extends AbstractAPIObjectModel>> getHTTPClients();
 }

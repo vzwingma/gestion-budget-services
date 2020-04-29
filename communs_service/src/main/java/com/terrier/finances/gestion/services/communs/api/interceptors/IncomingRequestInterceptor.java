@@ -66,9 +66,10 @@ public class IncomingRequestInterceptor extends HandlerInterceptorAdapter {
 		if(controller != null 
 				&& controller.getHTTPClients() != null 
 				&& !controller.getHTTPClients().isEmpty()) {
+			
 			controller.getHTTPClients()
-			.parallelStream()
-			.forEach(c -> c.setCorrelationId(corrIdHeader));
+				.parallelStream()
+				.forEach(c -> c.setCorrelationId(corrIdHeader));
 		}
 		CorrelationsIdUtils.clearApiIdOnMDC();
 	}
