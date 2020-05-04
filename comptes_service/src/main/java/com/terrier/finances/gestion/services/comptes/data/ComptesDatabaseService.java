@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
 
@@ -67,7 +67,7 @@ public class ComptesDatabaseService extends AbstractDatabaseService<CompteBancai
 			queryBudget
 			.addCriteria(Criteria.where("id").is(idCompte));
 			CompteBancaire compte =  findOneByQuery(queryBudget);		
-			if(compte.getListeProprietaires().stream().anyMatch(u -> u.getId().equals(idUtilisateur))){
+			if(compte.getProprietaire().getId().equalsIgnoreCase(idUtilisateur)){
 				return compte;
 			}
 			else{

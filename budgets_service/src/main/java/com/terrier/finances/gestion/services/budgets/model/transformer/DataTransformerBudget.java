@@ -123,7 +123,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 		dto.setActif(bo.isActif());
 		dto.setAnnee(bo.getAnnee());
 		dto.setCompteBancaire(bo.getCompteBancaire());
-		dto.getCompteBancaire().setListeProprietaires(null);
+		dto.getCompteBancaire().setProprietaire(null);
 		dto.setDateMiseAJour(bo.getDateMiseAJour() != null ? bo.getDateMiseAJour().getTime() : null);
 		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeOperations()));
 		

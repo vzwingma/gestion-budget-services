@@ -3,6 +3,7 @@ package com.terrier.finances.gestion.services.parametrages.model.v12;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class CategorieOperationDTO {
 	/**
 	 * Identifiant
 	 */
+	@Id
 	private String id;
 	/**
 	 * Libelle
