@@ -60,7 +60,7 @@ public class OperationsService extends AbstractBusinessService {
 
 	@Autowired
 	private ParametragesAPIClient paramClientApi;
-	
+
 
 	/**
 	 * Chargement du budget du mois courant
@@ -246,8 +246,8 @@ public class OperationsService extends AbstractBusinessService {
 			return null;
 		}
 	}
-	
-	
+
+
 
 	/**
 	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
@@ -451,7 +451,7 @@ public class OperationsService extends AbstractBusinessService {
 			int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
 			budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
 			if(ligneOperation.getEtat() != null) {
-				
+
 				LigneOperation ligneUpdatedOperation = updateOperation(ligneOperation, idProprietaire);
 				if(rangMaj >= 0) {
 					LOGGER.debug("Mise à jour de l'opération {} dans le budget {}", ligneUpdatedOperation, budget);
@@ -460,7 +460,7 @@ public class OperationsService extends AbstractBusinessService {
 				else {
 					LOGGER.debug("Ajout de l'opération {} dans le budget {}", ligneUpdatedOperation, budget);
 					budget.getListeOperations().add(ligneUpdatedOperation);
-					
+
 					// Si frais remboursable : ajout du remboursement en prévision
 					// #62 : et en mode création
 					if(ligneOperation.getSsCategorie() != null
@@ -469,7 +469,7 @@ public class OperationsService extends AbstractBusinessService {
 						budget.getListeOperations().add(addOperationRemboursement(ligneOperation, idProprietaire));
 					}
 				}
-				
+
 			}
 			else {
 				LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
@@ -502,7 +502,7 @@ public class OperationsService extends AbstractBusinessService {
 		}
 		return ligneOperation;
 	}
-	
+
 	/**
 	 * @param ligneOperation
 	 * @param idProprietaire
@@ -521,7 +521,7 @@ public class OperationsService extends AbstractBusinessService {
 		ligneRemboursement.getAutresInfos().setDateMaj(LocalDateTime.now());
 		return ligneRemboursement;
 	}
-	
+
 	/**
 	 * Mise à jour de la ligne comme dernière opération
 	 * @param ligneId
@@ -560,14 +560,14 @@ public class OperationsService extends AbstractBusinessService {
 		return budget;
 	}
 
-	
+
 	/**
 	 * Calcul du total de la catégorie du budget via l'opération en cours
 	 * @param budget budget à calculer
 	 * @param operation opération à traiter
 	 */
 	private void calculBudgetTotalCategories(BudgetMensuel budget, LigneOperation operation) {
-		
+
 		if(operation.getCategorie() != null) {
 			Double valeurOperation = operation.getValeur();
 			Totaux valeursCat = budget.new Totaux(0D, 0D);
@@ -584,7 +584,7 @@ public class OperationsService extends AbstractBusinessService {
 			budget.getTotauxParCategories().put(operation.getCategorie().getId(), valeursCat);
 		}
 	}
-	
+
 	/**
 	 * Calcul du total de la sous catégorie du budget via l'opération en cours
 	 * @param budget budget à calculer
@@ -608,7 +608,7 @@ public class OperationsService extends AbstractBusinessService {
 			budget.getTotauxParSSCategories().put(operation.getSsCategorie().getId(), valeursSsCat);
 		}
 	}
-	
+
 	/**
 	 * Calcul du résumé
 	 * @param budgetMensuelCourant
@@ -622,24 +622,18 @@ public class OperationsService extends AbstractBusinessService {
 			LOGGER.trace("     > {}", operation);
 			Double valeurOperation = operation.getValeur();
 
-				/**
-				 *  Calcul par catégorie
-				 */
-				calculBudgetTotalCategories(budget, operation);
-				/**
-				 *  Calcul par sous catégorie
-				 */
-				calculBudgetTotalSsCategories(budget, operation);
-				/**
-				 * Calcul des totaux
-				 */
-				if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
-					BudgetMensuelUtils.ajouteASoldeNow(budget, valeurOperation);
-					BudgetMensuelUtils.ajouteASoldeFin(budget, valeurOperation);
-				}
-				else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
-					BudgetMensuelUtils.ajouteASoldeFin(budget, valeurOperation);
-				}
+			// Calcul par catégorie
+			calculBudgetTotalCategories(budget, operation);
+			// Calcul par sous catégorie
+			calculBudgetTotalSsCategories(budget, operation);
+			// Calcul des totaux
+			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+				BudgetMensuelUtils.ajouteASoldeNow(budget, valeurOperation);
+				BudgetMensuelUtils.ajouteASoldeFin(budget, valeurOperation);
+			}
+			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+				BudgetMensuelUtils.ajouteASoldeFin(budget, valeurOperation);
+			}
 		}
 		LOGGER.debug("Solde prévu	| {}	| {}", budget.getSoldes().getMaintenant(), budget.getSoldes().getFinMoisCourant());
 	}
@@ -667,7 +661,7 @@ public class OperationsService extends AbstractBusinessService {
 		return null;
 	}
 
-	
+
 	/**
 	 * Réinjection des catégories dans les opérations du budget
 	 * @param budget
@@ -689,7 +683,7 @@ public class OperationsService extends AbstractBusinessService {
 		LOGGER.warn("Impossible de retrouver la sous catégorie : {} parmi la liste ci dessous. Le fonctionnement peut être incorrect. \n {}", operation.getSsCategorie(), categories);
 
 	}
-	
+
 
 	/**
 	 * Charge les libelles des opérations
@@ -700,16 +694,16 @@ public class OperationsService extends AbstractBusinessService {
 	public Set<String> getLibellesOperations(String idCompte, int annee){
 		return this.dataDepenses.chargeLibellesOperations(idCompte, annee);
 	}
-	
+
 	/**
 	 * @param dataDepenses the dataDepenses to set
 	 */
 	protected void setDataDepenses(BudgetDatabaseService dataDepenses) {
 		this.dataDepenses = dataDepenses;
 	}
-	
-	
-	
+
+
+
 	@Override
 	protected void doHealthCheck(Builder builder) throws Exception {
 		builder.up().withDetail("Service", "Opérations");
@@ -722,6 +716,6 @@ public class OperationsService extends AbstractBusinessService {
 	public ComptesAPIClient getCompteClientApi() {
 		return compteClientApi;
 	}
-	
+
 
 }
