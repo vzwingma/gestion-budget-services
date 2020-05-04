@@ -12,3 +12,5 @@ src/main/java/com/terrier/finances/gestion/services/communs/data/mongodb/MongoDB
 *.log
 
 src/main/java/com/terrier/finances/gestion/services/communs/data/mongodb/MongoDBConfigEnum\.java
+
+utilisateurs_service/src/test/java/com/terrier/finances/gestion/test/mongo/TestRealMigrations.java
