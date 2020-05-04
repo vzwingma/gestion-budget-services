@@ -18,7 +18,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
-import com.terrier.finances.gestion.services.parametrages.model.CategorieOperationDTO;
+import com.terrier.finances.gestion.services.parametrages.model.v12.CategorieOperationDTO;
 import com.terrier.finances.gestion.services.parametrages.model.transformer.DataTransformerCategorieOperations;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBParamConfig;

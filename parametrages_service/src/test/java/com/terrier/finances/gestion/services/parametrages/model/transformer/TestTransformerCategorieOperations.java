@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
-import com.terrier.finances.gestion.services.parametrages.model.CategorieOperationDTO;
+import com.terrier.finances.gestion.services.parametrages.model.v12.CategorieOperationDTO;
 
 /**
  * @author vzwingma
@@ -49,13 +49,5 @@ public class TestTransformerCategorieOperations {
 		assertEquals("467496e4-9059-4b9b-8773-21f230c8c5c6", bo.getListeSSCategories().iterator().next().getId());
 		assertEquals("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", bo.getListeSSCategories().iterator().next().getCategorieParente().getId());
 		
-		
-		CategorieOperationDTO dto = transformer.transformBOtoDTO(bo);
-		assertNotNull(dto);
-		assertEquals("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", dto.getId());
-		assertNotNull(dto.getLibelle());
-		assertEquals(1, dto.getListeSSCategories().size());
-		assertEquals("467496e4-9059-4b9b-8773-21f230c8c5c6", dto.getListeSSCategories().iterator().next().getId());
-		assertNull(dto.getListeSSCategories().iterator().next().getListeSSCategories());
 	}
 }

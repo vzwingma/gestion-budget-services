@@ -14,3 +14,5 @@ src/main/java/com/terrier/finances/gestion/services/communs/data/mongodb/MongoDB
 src/main/java/com/terrier/finances/gestion/services/communs/data/mongodb/MongoDBConfigEnum\.java
 
 utilisateurs_service/src/test/java/com/terrier/finances/gestion/test/mongo/TestRealMigrations.java
+
+parametrages_service/src/test/java/com/terrier/finances/gestion/test/mongo/TestRealMigrations.java

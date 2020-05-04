@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
-import com.terrier.finances.gestion.services.parametrages.model.CategorieOperationDTO;
+import com.terrier.finances.gestion.services.parametrages.model.v12.CategorieOperationDTO;
 
 public class TestParametrageDBServices {
 
