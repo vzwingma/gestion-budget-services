@@ -572,7 +572,7 @@ public class OperationsService extends AbstractBusinessService {
 			Double valeurOperation = operation.getValeur();
 			Totaux valeursCat = budget.new Totaux(0D, 0D);
 			if(budget.getTotauxParCategories().get(operation.getCategorie().getId()) != null){
-				valeursCat = budget.getTotauxParCategories().get(operation.getId());
+				valeursCat = budget.getTotauxParCategories().get(operation.getCategorie().getId());
 			}
 			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
 				valeursCat.setMaintenant(valeursCat.getMaintenant() + valeurOperation);
