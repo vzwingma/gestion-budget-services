@@ -6,9 +6,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
+import com.terrier.finances.gestion.services.utilisateurs.model.v12.Utilisateur;
 
 /**
  * Service de données en MongoDB fournissant les infos des utilisateurs et comptes

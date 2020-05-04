@@ -273,8 +273,6 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		getMockAPI().perform(post(urlActif))
 		.andExpect(status().is4xxClientError());
 
-		Utilisateur user = new Utilisateur();
-		user.setId("userTest");
 		/** Authentification **/
 		authenticateUser("userTest");
 
