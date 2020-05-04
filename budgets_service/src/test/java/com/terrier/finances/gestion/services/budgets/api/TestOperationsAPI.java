@@ -40,7 +40,7 @@ import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient
 import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
 import com.terrier.finances.gestion.services.budgets.business.OperationsService;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.budgets.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budgets.model.v12.BudgetMensuelDTO;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
@@ -145,11 +145,11 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	
 		BudgetMensuelDTO debut = new BudgetMensuelDTO();
 		debut.setAnnee(2018);
-		debut.setMois(1);
+		debut.setMois(Month.JANUARY);
 		
 		BudgetMensuelDTO fin = new BudgetMensuelDTO();
 		fin.setAnnee(2018);
-		fin.setMois(2);
+		fin.setMois(Month.FEBRUARY);
 		/** Authentification **/
 		authenticateUser("123123");
 
@@ -166,8 +166,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	public void testReinitbudget() throws Exception {
 
 		BudgetMensuelDTO budget = new BudgetMensuelDTO();
-		budget.setCompteBancaire(c1);
-		budget.setMois(Month.JANUARY.getValue());
+		budget.setIdCompteBancaire(c1.getId());
+		budget.setMois(Month.JANUARY);
 		budget.setAnnee(2018);
 		budget.setActif(false);
 		budget.setId();

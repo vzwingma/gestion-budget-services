@@ -15,7 +15,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
-import com.terrier.finances.gestion.services.budgets.model.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budgets.model.v12.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budgets.model.v12.BudgetMensuelDTO.Totaux;
 
 /**
  * DataTransformer
@@ -49,15 +50,15 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 			BudgetMensuel bo = new BudgetMensuel();
 			bo.setActif(dto.isActif());
 			bo.setAnnee(dto.getAnnee());
-			bo.setCompteBancaire(dto.getCompteBancaire());
+			//bo.setCompteBancaire(dto.get);
 			if(dto.getDateMiseAJour() != null){
 				Calendar c = Calendar.getInstance();
-				c.setTime(dto.getDateMiseAJour());
+				//c.setTime(dto.getDateMiseAJour());
 				bo.setDateMiseAJour(c);
 			}
 			bo.setListeOperations(dataTransformerLigneDepense.transformDTOtoBO(dto.getListeDepenses()));
-			bo.setMois(Month.of(dto.getMois() + 1));
-			bo.setResultatMoisPrecedent(dto.getResultatMoisPrecedent() != null ? Double.valueOf(dto.getResultatMoisPrecedent()) : 0D);
+			bo.setMois(dto.getMois());
+			bo.setResultatMoisPrecedent(dto.getTotaux().getFinMoisPrecedent() != null ? Double.valueOf(dto.getTotaux().getFinMoisPrecedent()) : 0D);
 
 			/*
 			 * Budget clos : utilisation des valeurs calculées
@@ -83,29 +84,30 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	 * @param bo bo à afficher
 	 */
 	private void transformDTOClostoBO(BudgetMensuelDTO dto, BudgetMensuel bo) {
-		bo.setSoldeNow(dto.getNowArgentAvance() != null ? Double.valueOf(dto.getNowArgentAvance()) : 0);
-		bo.setSoldeFin(dto.getFinArgentAvance() != null ? Double.valueOf(dto.getFinArgentAvance()): 0);
+		bo.setSoldeNow(dto.getTotaux().getMaintenant());
+		bo.setSoldeFin(dto.getTotaux().getFinMoisCourant());
 		// Complétion des totaux
-		bo.setTotalParCategories(calculTotalBoParCategories(dto.getTotalParCategories()));
-		// Complétion des totaux ss catégorie
-		bo.setTotalParSSCategories(calculTotalBoParCategories(dto.getTotalParSSCategories()));
+//		bo.setTotalParCategories(dto.getTotaux().getMapParCategories());
+//		// Complétion des totaux ss catégorie
+//		bo.setTotalParSSCategories(dto.getTotaux().getMapParSSCategories());
 	}
 	
 	/**
 	 * @param totalParCategories
 	 * @return les totaux par catégories BO à partir du DTO
 	 */
-	private Map<String, Double[]> calculTotalBoParCategories(Map<String, String[]> totalParCategories) {
-		Map<String, Double[]> totalParCategorieBO = new HashMap<>();
+	public static Map<String, Totaux> calculTotalBoParCategories(BudgetMensuelDTO b, Map<String, String[]> totalParCategories) {
+		Map<String, Totaux> totalParCategorieBO = new HashMap<>();
 		if(totalParCategories != null){
 			totalParCategories.entrySet()
 			.parallelStream()
 			.forEach(entry -> {
 				if(entry.getKey() != null){
-					Double[] totauxBO = new Double[entry.getValue().length];
-					for (int i = 0; i < entry.getValue().length; i++) {
-						totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(entry.getValue()[i]) : 0D;
-					}
+					Totaux totauxBO = b.new Totaux();
+					int i=0;
+					totauxBO.setMaintenant(entry.getValue()[i] != null ? Double.valueOf(entry.getValue()[i]) : 0D);
+					i=1;
+					totauxBO.setFinMoisCourant(entry.getValue()[i] != null ? Double.valueOf(entry.getValue()[i]) : 0D);
 					totalParCategorieBO.put(entry.getKey(), totauxBO);
 				}
 			});
@@ -120,23 +122,23 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 	@Override
 	public BudgetMensuelDTO transformBOtoDTO(BudgetMensuel bo) {
 		BudgetMensuelDTO dto = new BudgetMensuelDTO();
-		dto.setActif(bo.isActif());
-		dto.setAnnee(bo.getAnnee());
-		dto.setCompteBancaire(bo.getCompteBancaire());
-		dto.getCompteBancaire().setProprietaire(null);
-		dto.setDateMiseAJour(bo.getDateMiseAJour() != null ? bo.getDateMiseAJour().getTime() : null);
-		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeOperations()));
-		
-		dto.setMois(bo.getMois().getValue() - 1);
-		dto.setResultatMoisPrecedent(bo.getMoisPrecedentResultat() != null ? bo.getMoisPrecedentResultat().toString() : null);
-		dto.setFinArgentAvance( String.valueOf(bo.getSoldeFin()));
-		dto.setNowArgentAvance( String.valueOf(bo.getSoldeNow()));
-
-		// Complétion des totaux
-		dto.setTotalParCategories(calculTotalDTOParCategories(bo.getTotalParCategories()));
-		// Complétion des totaux ss catégorie
-		
-		dto.setTotalParSSCategories(calculTotalDTOParCategories(bo.getTotalParSSCategories()));
+//		dto.setActif(bo.isActif());
+//		dto.setAnnee(bo.getAnnee());
+//		dto.setCompteBancaire(bo.getCompteBancaire());
+//		dto.getCompteBancaire().setProprietaire(null);
+//	//	dto.setDateMiseAJour(bo.getDateMiseAJour() != null ? bo.getDateMiseAJour().getTime() : null);
+//		dto.setListeDepenses(dataTransformerLigneDepense.transformBOtoDTO(bo.getListeOperations()));
+//		
+//		dto.setMois(bo.getMois());
+//		dto.setResultatMoisPrecedent(bo.getMoisPrecedentResultat() != null ? bo.getMoisPrecedentResultat().toString() : null);
+//	//	dto.setFinArgentAvance( String.valueOf(bo.getSoldeFin()));
+//	//	dto.setNowArgentAvance( String.valueOf(bo.getSoldeNow()));
+//
+//		// Complétion des totaux
+////		dto.setTotalParCategories(calculTotalDTOParCategories(bo.getTotalParCategories()));
+//		// Complétion des totaux ss catégorie
+//		
+	//	dto.setTotalParSSCategories(calculTotalDTOParCategories(bo.getTotalParSSCategories()));
 
 		dto.setId();
 		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);

@@ -35,15 +35,6 @@ public class TestConverters {
 	public void testConverterAPIObject() throws HttpMessageNotWritableException, IOException{
 		APIObjectMessageConverter<AbstractAPIObjectModel> converter = new APIObjectMessageConverter<>();
 		
-		assertFalse(AuthLoginAPIObject.class.isAssignableFrom(AbstractAPIObjectModel.class));
-		assertTrue(AbstractAPIObjectModel.class.isAssignableFrom(AuthLoginAPIObject.class));
-		
-		assertTrue(converter.canRead(AuthLoginAPIObject.class, MediaType.APPLICATION_JSON));
-		assertTrue(converter.canWrite(AuthLoginAPIObject.class, MediaType.APPLICATION_JSON));
-
-		assertFalse(converter.canRead(AuthLoginAPIObject.class, MediaType.APPLICATION_XML));
-		assertFalse(converter.canWrite(AuthLoginAPIObject.class, MediaType.APPLICATION_XML));
-		
 		assertFalse(converter.canRead(List.class, MediaType.APPLICATION_JSON));
 		assertFalse(converter.canWrite(List.class, MediaType.APPLICATION_JSON));
 

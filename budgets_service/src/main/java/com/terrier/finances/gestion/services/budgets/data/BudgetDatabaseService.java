@@ -20,8 +20,8 @@ import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.budgets.model.BudgetMensuelDTO;
-import com.terrier.finances.gestion.services.budgets.model.LigneDepenseDTO;
+import com.terrier.finances.gestion.services.budgets.model.v12.BudgetMensuelDTO;
+import com.terrier.finances.gestion.services.budgets.model.v12.LigneDepenseDTO;
 import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
 

@@ -1,9 +1,9 @@
-package com.terrier.finances.gestion.services.budgets.model;
+package com.terrier.finances.gestion.services.budgets.model.v12;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +11,8 @@ import java.util.Map;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,6 @@ import lombok.Setter;
  */
 @Document(collection = "budgets")
 @Getter @Setter @NoArgsConstructor
-@Deprecated
 public class BudgetMensuelDTO implements Serializable {
 
 	@Id
@@ -38,7 +37,7 @@ public class BudgetMensuelDTO implements Serializable {
 	/**
 	 * Mois du budget (au sens CALENDAR)
 	 */
-	private int mois;
+	private Month mois;
 	/**
 	 * année du budget
 	 */
@@ -50,31 +49,24 @@ public class BudgetMensuelDTO implements Serializable {
 	/**
 	 * Date de mise à jour
 	 */
-	private Date dateMiseAJour;
+	private LocalDateTime dateMiseAJour;
 	/**
 	 * Compte bancaire
 	 */
-	private CompteBancaire compteBancaire;
-	/**
-	 * Résultat du mois précédent
-	 */
-	private String resultatMoisPrecedent;
-
+	private String idCompteBancaire;
 
 	/**
 	 * Liste des dépenses
 	 */
 	private List<LigneDepenseDTO> listeDepenses = new ArrayList<>();
-
 	/**
-	 * Totaux
+	 * Résultats Totaux
 	 */
-	private String nowArgentAvance;
-	private String finArgentAvance;
-
-	private Map<String, String[]> totalParCategories = new HashMap<>();
-	private Map<String, String[]> totalParSSCategories = new HashMap<>();
+	private Totaux totaux;
 	
+	private Map<String, Totaux> totauxParCategories = new HashMap<>();
+	private Map<String, Totaux> totauxParSSCategories = new HashMap<>();
+
 	/**
 	 * @return the id
 	 */
@@ -92,9 +84,18 @@ public class BudgetMensuelDTO implements Serializable {
 	 * @param id the id to set
 	 */
 	public void setId() {
-		this.id = BudgetDataUtils.getBudgetId(this.compteBancaire.getId(), Month.of(this.mois+1), this.annee);
+		this.id = BudgetDataUtils.getBudgetId(this.idCompteBancaire, this.mois, this.annee);
 	}
 
+	@Getter @Setter @NoArgsConstructor
+	public class Totaux {
+		/**
+		 * Totaux
+		 */
+		private Double finMoisPrecedent;
+		private Double maintenant;
+		private Double finMoisCourant;
+	}
 
 
 
@@ -105,6 +106,6 @@ public class BudgetMensuelDTO implements Serializable {
 	public String toString() {
 		return "BudgetMensuelDTO [mois=" + mois + ", annee=" + annee
 				+ ", bugetActif=" + actif + ", dateMiseAJour="
-				+ (dateMiseAJour != null ? dateMiseAJour.getTime() : "null") + ", compte=" + compteBancaire + "]";
+				+ (dateMiseAJour != null ? BudgetDateTimeUtils.getLibelleDate(dateMiseAJour) : "null") + ", compte=" + idCompteBancaire + "]";
 	}
 }

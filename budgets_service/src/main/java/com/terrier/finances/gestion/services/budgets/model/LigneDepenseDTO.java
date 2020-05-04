@@ -14,6 +14,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter @NoArgsConstructor
+@Deprecated
 public class LigneDepenseDTO implements Serializable {
 
 	/**

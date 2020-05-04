@@ -19,7 +19,7 @@ import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperation
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
-import com.terrier.finances.gestion.services.budgets.model.LigneDepenseDTO;
+import com.terrier.finances.gestion.services.budgets.model.v12.LigneDepenseDTO;
 
 /**
  * DataTransformer

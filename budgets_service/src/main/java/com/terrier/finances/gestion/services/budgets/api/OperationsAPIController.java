@@ -485,8 +485,8 @@ public class OperationsAPIController extends AbstractAPIController {
 			LocalDate[] intervalles = this.operationService.getIntervallesBudgets(idCompte);
 			if(intervalles != null && intervalles.length >= 2){
 				IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
-				intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[0]));
-				intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[1]));
+				intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getNbDayFromLocalDate(intervalles[0]));
+				intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getNbDayFromLocalDate(intervalles[1]));
 				return getEntity(intervallesAPI);	
 			}
 			throw new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte);
