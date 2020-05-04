@@ -53,7 +53,6 @@ import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
  */
 @ExtendWith({SpringExtension.class })
 @ContextConfiguration(classes={TestMockBudgetServiceConfig.class, TestMockDBServicesConfig.class, TestOperationsAPI.class, OperationsAPIController.class, OperationsService.class})
-
 public class TestOperationsAPI extends AbstractTestsAPI {
 
 	@Autowired

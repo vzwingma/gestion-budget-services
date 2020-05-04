@@ -22,7 +22,6 @@ import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
-import com.terrier.finances.gestion.communs.utilisateur.model.Utilisateur;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
 
 /**
@@ -95,11 +94,6 @@ public class TestConverters {
 		ssCat.setLibelle("LibelleTest");
 		bo.getTotalParSSCategories().put(ssCat.getId(), new Double[]{ 100D, 200D});
 
-		
-		Utilisateur user = new Utilisateur();
-		user.setId("userTest");
-		user.setLibelle("userTest");
-		user.setLogin("userTest");
 		
 		APIObjectMessageConverter<AbstractAPIObjectModel> converter = new APIObjectMessageConverter<>();
 		assertTrue(converter.canWrite(BudgetMensuel.class, MediaType.APPLICATION_JSON));
