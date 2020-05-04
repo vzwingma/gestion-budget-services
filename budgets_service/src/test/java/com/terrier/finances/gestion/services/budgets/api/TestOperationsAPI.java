@@ -11,7 +11,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -26,11 +28,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
+import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
-import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
+import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
@@ -40,7 +42,6 @@ import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient
 import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
 import com.terrier.finances.gestion.services.budgets.business.OperationsService;
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
-import com.terrier.finances.gestion.services.budgets.model.v12.BudgetMensuelDTO;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
@@ -82,15 +83,15 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		when(mockDataAPIComptes.getCompteById(eq("C1"), anyString())).thenReturn(c1);
 
 		bo = new BudgetMensuel();
-		bo.setCompteBancaire(c1);
+		bo.setIdCompteBancaire(c1.getId());
 		bo.setMois(Month.JANUARY);
 		bo.setAnnee(2018);
 		bo.setActif(true);
 		bo.setId("C1_2018_1");
-		bo.setSoldeFin(0D);
-		bo.setSoldeNow(1000D);
-		bo.setDateMiseAJour(Calendar.getInstance());
-		bo.setResultatMoisPrecedent(0D);
+		bo.getSoldes().setFinMoisCourant(0D);
+		bo.getSoldes().setMaintenant(1000D);
+		bo.setDateMiseAJour(LocalDateTime.now());
+		bo.getSoldes().setFinMoisPrecedent(0D);
 		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo))).thenReturn(bo.getId());
 
 		when(mockDataDBBudget.chargeBudgetMensuel(eq(c1), eq(Month.JANUARY), eq(2018))).thenReturn(bo);
@@ -143,17 +144,17 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	public void testIntervalles() throws Exception {
 		String path = BudgetApiUrlEnum.BUDGET_COMPTE_INTERVALLES_FULL.replace("{idCompte}", "TEST");
 	
-		BudgetMensuelDTO debut = new BudgetMensuelDTO();
+		BudgetMensuel debut = new BudgetMensuel();
 		debut.setAnnee(2018);
 		debut.setMois(Month.JANUARY);
 		
-		BudgetMensuelDTO fin = new BudgetMensuelDTO();
+		BudgetMensuel fin = new BudgetMensuel();
 		fin.setAnnee(2018);
 		fin.setMois(Month.FEBRUARY);
 		/** Authentification **/
 		authenticateUser("123123");
 
-		when(mockDataDBBudget.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuelDTO[]{ debut, fin});
+		when(mockDataDBBudget.getPremierDernierBudgets(anyString())).thenReturn(new BudgetMensuel[]{ debut, fin});
 		getMockAPI().perform(get(path))
 			.andExpect(status().isOk())
 			.andExpect(content().string("{\"datePremierBudget\":17563,\"dateDernierBudget\":17622}"));
@@ -165,13 +166,13 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Test
 	public void testReinitbudget() throws Exception {
 
-		BudgetMensuelDTO budget = new BudgetMensuelDTO();
+		BudgetMensuel budget = new BudgetMensuel();
 		budget.setIdCompteBancaire(c1.getId());
 		budget.setMois(Month.JANUARY);
 		budget.setAnnee(2018);
 		budget.setActif(false);
 		budget.setId();
-		when(mockDataDBBudget.chargeBudgetMensuelDTO(any())).thenReturn(budget);
+		when(mockDataDBBudget.chargeBudgetMensuel(any())).thenReturn(budget);
 		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(bo);
 		when(mockDataDBBudget.sauvegardeBudgetMensuel(any())).thenReturn(bo.getId());
 
@@ -230,18 +231,18 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		getMockAPI().perform(get(urlActif))
 					.andExpect(status().is4xxClientError());
 
-		Calendar futur = Calendar.getInstance();
-		futur.add(Calendar.HOUR_OF_DAY, 1);
+		LocalDateTime futur = LocalDateTime.now();
+		futur.plus(1, ChronoUnit.HOURS);
 
-		Calendar passe = Calendar.getInstance();
-		passe.add(Calendar.HOUR_OF_DAY, -1);
+		LocalDateTime passe = LocalDateTime.now();
+		passe.plus(-1, ChronoUnit.HOURS);
 
 		BudgetMensuel ko = new BudgetMensuel();
 		ko.setDateMiseAJour(futur);
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTKO"))).thenReturn(ko);
+		when(mockDataDBBudget.chargeBudgetMensuel(eq("TESTKO"))).thenReturn(ko);
 		BudgetMensuel ok = new BudgetMensuel();
 		ok.setDateMiseAJour(passe);
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"))).thenReturn(ok);
+		when(mockDataDBBudget.chargeBudgetMensuel(eq("TESTOK"))).thenReturn(ok);
 
 		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		/** Authentification **/
@@ -281,18 +282,18 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		c1.setId("C1");
 		c1.setLibelle("Libelle1");
 		c1.setOrdre(1);		
-		bo.setCompteBancaire(c1);
+		bo.setIdCompteBancaire(c1.getId());
 		bo.setMois(Month.JANUARY);
 		bo.setAnnee(2018);
 		bo.setActif(false);
 		bo.setId("BUDGETTEST");
-		bo.setSoldeFin(0D);
-		bo.setSoldeNow(1000D);
-		bo.setDateMiseAJour(Calendar.getInstance());
-		bo.setResultatMoisPrecedent(0D);
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTKO"))).thenReturn(bo);
+		bo.getSoldes().setFinMoisCourant(0D);
+		bo.getSoldes().setMaintenant(1000D);
+		bo.setDateMiseAJour(LocalDateTime.now());
+		bo.getSoldes().setFinMoisPrecedent(0D);
+		when(mockDataDBBudget.chargeBudgetMensuel(eq("TESTKO"))).thenReturn(bo);
 		bo.setActif(true);
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("TESTOK"))).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuel(eq("TESTOK"))).thenReturn(bo);
 
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
@@ -339,11 +340,11 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		sscat.setCategorieParente(cat);
 
 		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
-		op1.setDerniereOperation(true);
+		op1.setTagDerniereOperation(true);
 		bo.getListeOperations().add(op1);
 		LigneOperation op2 = new LigneOperation(sscat, "OP2", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
 		op2.setId("ID_op");
-		op2.setDerniereOperation(false);
+		op2.setTagDerniereOperation(false);
 		bo.getListeOperations().add(op2);
 
 		/** Authentification **/
@@ -381,7 +382,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
 		op1.setId("OP1");
-		op1.setDerniereOperation(true);
+		op1.setTagDerniereOperation(true);
 		bo.getListeOperations().add(op1);
 
 		/** Authentification **/
@@ -413,7 +414,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		sscat.setCategorieParente(cat);
 
 		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
-		op1.setDerniereOperation(true);
+		op1.setTagDerniereOperation(true);
 		op1.setId("OP1");
 		bo.getListeOperations().add(op1);
 		bo.setActif(true);
@@ -449,18 +450,18 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 		BudgetMensuel bo2 = new BudgetMensuel();
-		bo2.setCompteBancaire(c2);
+		bo2.setIdCompteBancaire(c2.getId());
 		bo2.setMois(Month.JANUARY);
 		bo2.setAnnee(2018);
 		bo2.setActif(true);
 		bo2.setId("C2_2018_1");
-		bo2.setSoldeFin(0D);
-		bo2.setSoldeNow(1000D);
-		bo2.setDateMiseAJour(Calendar.getInstance());
-		bo2.setResultatMoisPrecedent(0D);
+		bo2.getSoldes().setFinMoisCourant(0D);
+		bo2.getSoldes().setMaintenant(1000D);
+		bo2.setDateMiseAJour(LocalDateTime.now());
+		bo2.getSoldes().setFinMoisPrecedent(0D);
 		when(mockDataDBBudget.sauvegardeBudgetMensuel(eq(bo2))).thenReturn(bo2.getId());
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C2_2018_1"))).thenReturn(bo2);
-		when(mockDataDBBudget.chargeBudgetMensuelById(eq("C1_2018_1"))).thenReturn(bo);
+		when(mockDataDBBudget.chargeBudgetMensuel(eq("C2_2018_1"))).thenReturn(bo2);
+		when(mockDataDBBudget.chargeBudgetMensuel(eq("C1_2018_1"))).thenReturn(bo);
 		when(mockDataDBBudget.chargeBudgetMensuel(eq(c2), eq(Month.JANUARY), eq(2018))).thenReturn(bo2);
 		when(mockDataDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("Mock"));
 

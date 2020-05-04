@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Calendar;
+import java.time.temporal.ChronoField;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -19,10 +21,10 @@ import org.springframework.mock.http.MockHttpInputMessage;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
+import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
-import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
+import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPrefsAPIObject;
 
 /**
  * Test de converters
@@ -38,10 +40,13 @@ public class TestConverters {
 		assertFalse(converter.canRead(List.class, MediaType.APPLICATION_JSON));
 		assertFalse(converter.canWrite(List.class, MediaType.APPLICATION_JSON));
 
-		AuthLoginAPIObject auth = new AuthLoginAPIObject("Test", "Test");
+		UtilisateurPrefsAPIObject auth = new UtilisateurPrefsAPIObject();
+		auth.setIdUtilisateur("Test");
+		auth.setLastAccessTime(0L);
+		auth.setPreferences(new HashMap<>());
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(auth, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"login\":\"Test\",\"motDePasse\":\"Test\"}", out.getBody().toString());
+		assertEquals("{\"idUtilisateur\":\"Test\",\"lastAccessTime\":0,\"preferences\":{}}", out.getBody().toString());
 		
 		assertTrue(converter.canRead(CompteBancaire.class, MediaType.APPLICATION_JSON));
 		assertTrue(converter.canWrite(CompteBancaire.class, MediaType.APPLICATION_JSON));
@@ -62,28 +67,27 @@ public class TestConverters {
 		c1.setOrdre(1);
 
 		BudgetMensuel bo = new BudgetMensuel();
-		bo.setCompteBancaire(c1);
+		bo.setIdCompteBancaire(c1.getId());
 		bo.setMois(Month.JANUARY);
 		bo.setAnnee(2018);
 		bo.setActif(false);
 		bo.setId("BUDGETTEST");
-		bo.setSoldeFin(0D);
-		bo.setSoldeNow(1000D);
-		Calendar c = Calendar.getInstance();
-		bo.setDateMiseAJour(c);
-		bo.setResultatMoisPrecedent(0D);
+		bo.getSoldes().setFinMoisCourant(0D);
+		bo.getSoldes().setMaintenant(1000D);
+		bo.setDateMiseAJour(LocalDateTime.now());
+		bo.getSoldes().setFinMoisPrecedent(0D);
 		
 		CategorieOperation cat = new CategorieOperation();
 		cat.setCategorie(true);
 		cat.setId("IdTest");
 		cat.setLibelle("LibelleTest");
-		bo.getTotalParCategories().put(cat.getId(), new Double[]{ 100D, 200D});
+		bo.getTotauxParCategories().put(cat.getId(), bo.new Totaux(100D, 200D));
 		
 		CategorieOperation ssCat = new CategorieOperation();
 		ssCat.setCategorie(false);
 		ssCat.setId("IdTest");
 		ssCat.setLibelle("LibelleTest");
-		bo.getTotalParSSCategories().put(ssCat.getId(), new Double[]{ 100D, 200D});
+		bo.getTotauxParSSCategories().put(ssCat.getId(), bo.new Totaux(100D, 200D));
 
 		
 		APIObjectMessageConverter<AbstractAPIObjectModel> converter = new APIObjectMessageConverter<>();
@@ -92,7 +96,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":"+c.getTimeInMillis()+",\"compteBancaire\":{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},\"moisPrecedentResultat\":0.0,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":0.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":"+bo.getDateMiseAJour().get(ChronoField.MILLI_OF_SECOND)+",\"compteBancaire\":{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},\"moisPrecedentResultat\":0.0,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":0.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);
@@ -100,13 +104,13 @@ public class TestConverters {
 		
 		BudgetMensuel boRead = (BudgetMensuel)modelRead;
 		assertEquals(bo.getId(), boRead.getId());
-		assertEquals(bo.getSoldeFin(), boRead.getSoldeFin(), 1);
-		assertEquals(bo.getSoldeNow(), boRead.getSoldeNow(), 1);
+		assertEquals(bo.getSoldes().getFinMoisCourant(), boRead.getSoldes().getFinMoisCourant(), 1);
+		assertEquals(bo.getSoldes().getMaintenant(), boRead.getSoldes().getMaintenant(), 1);
 		
-		assertEquals(1, boRead.getTotalParCategories().size());
-		assertEquals("IdTest", boRead.getTotalParCategories().keySet().iterator().next());
-		assertEquals(1, boRead.getTotalParSSCategories().size());
-		assertEquals("IdTest", boRead.getTotalParSSCategories().keySet().iterator().next());
+		assertEquals(1, boRead.getTotauxParCategories().size());
+		assertEquals("IdTest", boRead.getTotauxParCategories().keySet().iterator().next());
+		assertEquals(1, boRead.getTotauxParSSCategories().size());
+		assertEquals("IdTest", boRead.getTotauxParSSCategories().keySet().iterator().next());
 	}
 	
 	
@@ -115,20 +119,20 @@ public class TestConverters {
 		// Budget
 		BudgetMensuel bo = new BudgetMensuel();
 		bo.setId("BUDGETTEST");
-		bo.setSoldeFin(0D);
-		bo.setSoldeNow(1000D);
+		bo.getSoldes().setFinMoisCourant(0D);
+		bo.getSoldes().setMaintenant(1000D);
 		
 		CategorieOperation cat = new CategorieOperation();
 		cat.setCategorie(true);
 		cat.setId("IdTest");
 		cat.setLibelle("LibelleTest");
-		bo.getTotalParCategories().put(cat.getId(), new Double[]{ 100D, 200D});
+		bo.getTotauxParCategories().put(cat.getId(), bo.new Totaux(100D, 200D));
 		
 		CategorieOperation ssCat = new CategorieOperation();
 		ssCat.setCategorie(false);
 		ssCat.setId("IdTest");
 		ssCat.setLibelle("LibelleTest");
-		bo.getTotalParSSCategories().put(ssCat.getId(), new Double[]{ 100D, 200D});
+		bo.getTotauxParSSCategories().put(ssCat.getId(), bo.new Totaux( 100D, 200D));
 		
 		APIObjectMessageConverter<AbstractAPIObjectModel> converter = new APIObjectMessageConverter<>();
 		assertTrue(converter.canRead(BudgetMensuel.class, MediaType.APPLICATION_JSON));
@@ -143,10 +147,10 @@ public class TestConverters {
 		assertTrue(modelRead instanceof BudgetMensuel);
 		
 		BudgetMensuel boRead = (BudgetMensuel)modelRead;
-		assertEquals(1, boRead.getTotalParCategories().size());
-		assertEquals("IdTest", boRead.getTotalParCategories().keySet().iterator().next());
-		assertEquals(1, boRead.getTotalParSSCategories().size());
-		assertEquals("IdTest", boRead.getTotalParSSCategories().keySet().iterator().next());
+		assertEquals(1, boRead.getTotauxParCategories().size());
+		assertEquals("IdTest", boRead.getTotauxParCategories().keySet().iterator().next());
+		assertEquals(1, boRead.getTotauxParSSCategories().size());
+		assertEquals("IdTest", boRead.getTotauxParSSCategories().keySet().iterator().next());
 	}
 	
 }
