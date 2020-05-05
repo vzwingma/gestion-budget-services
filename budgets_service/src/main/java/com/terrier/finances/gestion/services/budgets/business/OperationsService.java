@@ -15,15 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.communs.budget.model.BudgetMensuelUtils;
 import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
 import com.terrier.finances.gestion.communs.budget.model.v12.TotauxCategorie;
 import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
-import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
@@ -331,7 +330,7 @@ public class OperationsService extends AbstractBusinessService {
 						budgetPrecedent.getListeOperations()
 						.stream()
 						.filter(op -> op.isPeriodique() || EtatOperationEnum.REPORTEE.equals(op.getEtat()))
-						.map(op -> BudgetMensuelUtils.cloneDepenseToMoisSuivant(op))
+						.map(op -> BudgetDataUtils.cloneDepenseToMoisSuivant(op))
 						.collect(Collectors.toList()));
 			}
 		}
@@ -617,7 +616,7 @@ public class OperationsService extends AbstractBusinessService {
 	protected void calculBudget(BudgetMensuel budget){
 
 		LOGGER.info("(Re)Calcul du budget : {}", budget);
-		BudgetMensuelUtils.razCalculs(budget);
+		BudgetDataUtils.razCalculs(budget);
 
 		for (LigneOperation operation : budget.getListeOperations()) {
 			LOGGER.trace("     > {}", operation);
@@ -629,11 +628,11 @@ public class OperationsService extends AbstractBusinessService {
 			calculBudgetTotalSsCategories(budget, operation);
 			// Calcul des totaux
 			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
-				BudgetMensuelUtils.ajouteASoldeNow(budget, valeurOperation);
-				BudgetMensuelUtils.ajouteASoldeFin(budget, valeurOperation);
+				BudgetDataUtils.ajouteASoldeNow(budget, valeurOperation);
+				BudgetDataUtils.ajouteASoldeFin(budget, valeurOperation);
 			}
 			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
-				BudgetMensuelUtils.ajouteASoldeFin(budget, valeurOperation);
+				BudgetDataUtils.ajouteASoldeFin(budget, valeurOperation);
 			}
 		}
 		LOGGER.debug("Solde prévu	| {}	| {}", budget.getSoldes().getSoldeAtMaintenant(), budget.getSoldes().getSoldeAtFinMoisCourant());
