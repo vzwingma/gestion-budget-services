@@ -230,7 +230,7 @@ public class TestOperationsService {
 		assertEquals(3, budgetDel.getListeOperations().size());
 		
 		
-		assertEquals(213, budgetDel.getSoldes().getSoldeAtFinMoisCourant());
+		assertEquals(549, budgetDel.getSoldes().getSoldeAtFinMoisCourant());
 		assertEquals(0, budgetDel.getSoldes().getSoldeAtMaintenant());
 		
 		LOGGER.info("testCRUDOperation - Update Ope");
@@ -238,7 +238,7 @@ public class TestOperationsService {
 		opUpdate.setId("OP3");
 		BudgetMensuel budgetUpdate = operationsService.updateOperationInBudget(this.budget.getId(), opUpdate, "userTest");
 		assertEquals(3, budgetUpdate.getListeOperations().size());
-		assertEquals(426, budgetUpdate.getSoldes().getSoldeAtFinMoisCourant());
+		assertEquals(549, budgetUpdate.getSoldes().getSoldeAtFinMoisCourant());
 		assertEquals(213, budgetUpdate.getSoldes().getSoldeAtMaintenant());
 		
 		LOGGER.info("/testCRUDOperation");

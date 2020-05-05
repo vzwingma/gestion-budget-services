@@ -165,8 +165,8 @@ public class OperationsService extends AbstractBusinessService {
 			BudgetMensuel budgetMensuel =  this.dataDepenses.chargeBudgetMensuel(idBudget);
 			if(budgetMensuel != null){
 				LOGGER.debug("Budget : Date mise à jour : {} / Date IHM : {}", 
-						budgetMensuel.getDateMiseAJour().getLong(ChronoField.MILLI_OF_SECOND), dateSurIHM);
-				return budgetMensuel.getDateMiseAJour() != null ? dateSurIHM >= budgetMensuel.getDateMiseAJour().getLong(ChronoField.MILLI_OF_SECOND) : false;
+						BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(budgetMensuel.getDateMiseAJour()), dateSurIHM);
+				return budgetMensuel.getDateMiseAJour() != null ? dateSurIHM >= BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(budgetMensuel.getDateMiseAJour()) : false;
 			}
 		} catch (BudgetNotFoundException e) {
 			LOGGER.error("Erreur lors de la recherche du budget [{}]", idBudget);
@@ -259,15 +259,13 @@ public class OperationsService extends AbstractBusinessService {
 
 		BudgetMensuel[] premierDernierBudgets = this.dataDepenses.getPremierDernierBudgets(idCompte);
 		if(premierDernierBudgets != null && premierDernierBudgets.length >= 2){
-
-
 			LocalDate premier = BudgetDateTimeUtils.localDateFirstDayOfMonth();
 			if(premierDernierBudgets[0] != null){
 				premier = premier.withMonth(premierDernierBudgets[0].getMois().getValue()).withYear(premierDernierBudgets[0].getAnnee());
 			}
 			LocalDate dernier = BudgetDateTimeUtils.localDateFirstDayOfMonth();
 			if(premierDernierBudgets[1] != null){
-				dernier = dernier.withMonth(premierDernierBudgets[1].getMois().getValue()).withYear(premierDernierBudgets[1].getAnnee()).plusMonths(1);
+				dernier = dernier.withMonth(premierDernierBudgets[1].getMois().getValue()).withYear(premierDernierBudgets[1].getAnnee());
 			}
 			return new LocalDate[]{premier, dernier};
 		}

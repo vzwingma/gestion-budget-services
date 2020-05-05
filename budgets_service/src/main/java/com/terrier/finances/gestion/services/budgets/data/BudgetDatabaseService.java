@@ -158,15 +158,15 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 	 * @param annee année
 	 * @return résultat de la sauvegarde: id du budget
 	 */
-	public String sauvegardeBudgetMensuel(BudgetMensuel budgetDTO){
-		if(budgetDTO == null){
+	public String sauvegardeBudgetMensuel(BudgetMensuel budget){
+		if(budget == null){
 			return null;
 		}
-		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budgetDTO.getIdCompteBancaire(), budgetDTO.getMois(), budgetDTO.getAnnee());
+		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budget.getIdCompteBancaire(), budget.getMois(), budget.getAnnee());
 		try{
-			save(budgetDTO);
-			LOGGER.info("Budget {} sauvegardé ", budgetDTO.getId());
-			return budgetDTO.getId();
+			save(budget);
+			LOGGER.info("Budget {} sauvegardé ", budget.getId());
+			return budget.getId();
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors de la sauvegarde du compte", e);

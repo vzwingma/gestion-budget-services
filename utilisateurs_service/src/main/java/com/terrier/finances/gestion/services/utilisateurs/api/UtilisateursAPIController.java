@@ -64,7 +64,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			logger.info("LastAccessTime : {}", lastAccess);
 			UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
 			prefs.setIdUtilisateur(idProprietaire);
-			prefs.setLastAccessTime(BudgetDateTimeUtils.getLongFromLocalDateTime(lastAccess));
+			prefs.setLastAccessTime(BudgetDateTimeUtils.getSecondsFromLocalDateTime(lastAccess));
 			return getEntity(prefs);
 		}
 		return new ResponseEntity<>(HttpStatus.FORBIDDEN);

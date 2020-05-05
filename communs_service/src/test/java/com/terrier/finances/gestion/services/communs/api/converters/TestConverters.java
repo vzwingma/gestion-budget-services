@@ -104,7 +104,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":[2020,10,1,12,0],\"idCompteBancaire\":\"C1\",\"listeOperations\":[],\"soldes\":{\"finMoisPrecedent\":0.0,\"maintenant\":1000.0,\"finMoisCourant\":0.0},\"totauxParCategories\":{\"IdTest\":{\"finMoisPrecedent\":0.0,\"maintenant\":100.0,\"finMoisCourant\":200.0}},\"totauxParSSCategories\":{\"IdTest\":{\"finMoisPrecedent\":0.0,\"maintenant\":100.0,\"finMoisCourant\":200.0}}}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"dateMiseAJour\":[2020,10,1,12,0],\"idCompteBancaire\":\"C1\",\"listeOperations\":[],\"soldes\":{\"soldeAtFinMoisPrecedent\":0.0,\"soldeAtMaintenant\":1000.0,\"soldeAtFinMoisCourant\":0.0},\"totauxParCategories\":{\"IdTest\":{\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}},\"totauxParSSCategories\":{\"IdTest\":{\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}}}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);
@@ -153,7 +153,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":null,\"annee\":0,\"actif\":false,\"dateMiseAJour\":null,\"compteBancaire\":null,\"moisPrecedentResultat\":null,\"listeOperations\":[],\"totalParCategories\":{\"IdTest\":[100.0,200.0]},\"totalParSSCategories\":{\"IdTest\":[100.0,200.0]},\"soldeNow\":1000.0,\"soldeFin\":0.0,\"newBudget\":false}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":null,\"annee\":0,\"actif\":false,\"dateMiseAJour\":null,\"idCompteBancaire\":null,\"listeOperations\":[],\"soldes\":{\"soldeAtFinMoisPrecedent\":0.0,\"soldeAtMaintenant\":1000.0,\"soldeAtFinMoisCourant\":0.0},\"totauxParCategories\":{\"IdTest\":{\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}},\"totauxParSSCategories\":{\"IdTest\":{\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}}}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);
@@ -178,7 +178,7 @@ public class TestConverters {
 		LigneOperation operation = new LigneOperation();
 		operation.setId("OP1");
 		operation.setEtat(EtatOperationEnum.REALISEE);
-		operation.setLibelle("Opération 1");
+		operation.setLibelle("Operation 1");
 		operation.setPeriodique(false);
 		operation.setTagDerniereOperation(false);
 		operation.setCategorie(operation.new Categorie());
@@ -202,7 +202,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(operation, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"OP1\",\"libelle\":\"Opération 1\",\"categorie\":{\"id\":\"CAT1\",\"libelle\":\"CAT1\"},\"ssCategorie\":{\"id\":\"SsCAT1\",\"libelle\":\"SsCAT1\"},\"typeOperation\":\"CREDIT\",\"etat\":\"REALISEE\",\"valeur\":123.0,\"periodique\":false,\"tagDerniereOperation\":false,\"autresInfos\":{\"dateOperation\":[2020,10,1,12,0],\"dateMaj\":[2020,10,1,12,0],\"auteur\":\"MOI\",\"notes\":\"notes\"}}", out.getBody().toString());
+		assertEquals("{\"id\":\"OP1\",\"libelle\":\"Operation 1\",\"categorie\":{\"id\":\"CAT1\",\"libelle\":\"CAT1\"},\"ssCategorie\":{\"id\":\"SsCAT1\",\"libelle\":\"SsCAT1\"},\"typeOperation\":\"CREDIT\",\"etat\":\"REALISEE\",\"valeur\":123.0,\"periodique\":false,\"tagDerniereOperation\":false,\"autresInfos\":{\"dateOperation\":[2020,10,1,12,0],\"dateMaj\":[2020,10,1,12,0],\"auteur\":\"MOI\",\"notes\":\"notes\"}}", out.getBody().toString());
 
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(LigneOperation.class, in);
