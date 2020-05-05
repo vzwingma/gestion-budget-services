@@ -86,6 +86,7 @@ public class TestConverters {
 		cat.setId("IdTest");
 		cat.setLibelle("LibelleTest");
 		bo.getTotauxParCategories().put(cat.getId(), new TotauxCategorie());
+		bo.getTotauxParCategories().get(cat.getId()).setLibelleCategorie(cat.getLibelle());
 		bo.getTotauxParCategories().get(cat.getId()).ajouterATotalAtMaintenant(100D);
 		bo.getTotauxParCategories().get(cat.getId()).ajouterATotalAtFinMoisCourant(200D);
 		
@@ -94,6 +95,7 @@ public class TestConverters {
 		ssCat.setId("IdTest");
 		ssCat.setLibelle("LibelleTest");
 		bo.getTotauxParSSCategories().put(ssCat.getId(), new TotauxCategorie());
+		bo.getTotauxParSSCategories().get(ssCat.getId()).setLibelleCategorie(ssCat.getLibelle());
 		bo.getTotauxParSSCategories().get(ssCat.getId()).ajouterATotalAtMaintenant(100D);
 		bo.getTotauxParSSCategories().get(ssCat.getId()).ajouterATotalAtFinMoisCourant(200D);
 
@@ -104,7 +106,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"newBudget\":false,\"dateMiseAJour\":[2020,10,1,12,0],\"idCompteBancaire\":\"C1\",\"listeOperations\":[],\"soldes\":{\"soldeAtFinMoisPrecedent\":0.0,\"soldeAtMaintenant\":1000.0,\"soldeAtFinMoisCourant\":0.0},\"totauxParCategories\":{\"IdTest\":{\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}},\"totauxParSSCategories\":{\"IdTest\":{\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}}}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false,\"newBudget\":false,\"dateMiseAJour\":[2020,10,1,12,0],\"idCompteBancaire\":\"C1\",\"listeOperations\":[],\"soldes\":{\"soldeAtFinMoisPrecedent\":0.0,\"soldeAtMaintenant\":1000.0,\"soldeAtFinMoisCourant\":0.0},\"totauxParCategories\":{\"IdTest\":{\"libelleCategorie\":\"LibelleTest\",\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}},\"totauxParSSCategories\":{\"IdTest\":{\"libelleCategorie\":\"LibelleTest\",\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}}}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);
@@ -135,6 +137,7 @@ public class TestConverters {
 		cat.setId("IdTest");
 		cat.setLibelle("LibelleTest");
 		bo.getTotauxParCategories().put(cat.getId(), new TotauxCategorie());
+		bo.getTotauxParCategories().get(cat.getId()).setLibelleCategorie(cat.getLibelle());
 		bo.getTotauxParCategories().get(cat.getId()).ajouterATotalAtMaintenant(100D);
 		bo.getTotauxParCategories().get(cat.getId()).ajouterATotalAtFinMoisCourant(200D);
 
@@ -144,6 +147,7 @@ public class TestConverters {
 		ssCat.setId("IdTest");
 		ssCat.setLibelle("LibelleTest");
 		bo.getTotauxParSSCategories().put(ssCat.getId(), new TotauxCategorie());
+		bo.getTotauxParSSCategories().get(ssCat.getId()).setLibelleCategorie(ssCat.getLibelle());
 		bo.getTotauxParSSCategories().get(ssCat.getId()).ajouterATotalAtMaintenant(100D);
 		bo.getTotauxParSSCategories().get(ssCat.getId()).ajouterATotalAtFinMoisCourant(200D);
 		
@@ -153,7 +157,7 @@ public class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(bo, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":null,\"annee\":0,\"actif\":false,\"newBudget\":false,\"dateMiseAJour\":null,\"idCompteBancaire\":null,\"listeOperations\":[],\"soldes\":{\"soldeAtFinMoisPrecedent\":0.0,\"soldeAtMaintenant\":1000.0,\"soldeAtFinMoisCourant\":0.0},\"totauxParCategories\":{\"IdTest\":{\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}},\"totauxParSSCategories\":{\"IdTest\":{\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}}}", out.getBody().toString());
+		assertEquals("{\"id\":\"BUDGETTEST\",\"mois\":null,\"annee\":0,\"actif\":false,\"newBudget\":false,\"dateMiseAJour\":null,\"idCompteBancaire\":null,\"listeOperations\":[],\"soldes\":{\"soldeAtFinMoisPrecedent\":0.0,\"soldeAtMaintenant\":1000.0,\"soldeAtFinMoisCourant\":0.0},\"totauxParCategories\":{\"IdTest\":{\"libelleCategorie\":\"LibelleTest\",\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}},\"totauxParSSCategories\":{\"IdTest\":{\"libelleCategorie\":\"LibelleTest\",\"totalAtMaintenant\":100.0,\"totalAtFinMoisCourant\":200.0}}}", out.getBody().toString());
 		
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(BudgetMensuel.class, in);

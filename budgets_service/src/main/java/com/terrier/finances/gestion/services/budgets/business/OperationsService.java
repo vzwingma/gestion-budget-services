@@ -573,6 +573,7 @@ public class OperationsService extends AbstractBusinessService {
 			if(budget.getTotauxParCategories().get(operation.getCategorie().getId()) != null){
 				valeursCat = budget.getTotauxParCategories().get(operation.getCategorie().getId());
 			}
+			valeursCat.setLibelleCategorie(operation.getCategorie().getLibelle());
 			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
 				valeursCat.ajouterATotalAtMaintenant(valeurOperation);
 				valeursCat.ajouterATotalAtFinMoisCourant(valeurOperation);
@@ -597,6 +598,7 @@ public class OperationsService extends AbstractBusinessService {
 			if( budget.getTotauxParSSCategories().get(operation.getSsCategorie().getId()) != null){
 				valeursSsCat = budget.getTotauxParSSCategories().get(operation.getSsCategorie().getId());
 			}
+			valeursSsCat.setLibelleCategorie(operation.getSsCategorie().getLibelle());
 			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
 				valeursSsCat.ajouterATotalAtMaintenant(valeurOperation);
 				valeursSsCat.ajouterATotalAtFinMoisCourant(valeurOperation);
