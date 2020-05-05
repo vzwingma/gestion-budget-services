@@ -9,6 +9,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.api.AbstractHTTPReactiveClient;
@@ -27,8 +30,6 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger( AbstractHTTPClient.class );
 
-	// Token JWT
-	private String jwtToken;
 
 	/**
 	 * Constructeur
@@ -67,18 +68,24 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	protected Mono<List<R>> callHTTPGetListData(String path) throws DataNotFoundException{
 		return callAPIandReturnFlux(HttpMethod.GET, path, null, null, null, responseClassType).collectList();
 	}
-	/**
-	 * Injecte le token JWT
-	 * @param jwtToken
-	 * @return le client avec le jwt token
-	 */
-	public void setJwtToken(String jwtToken) {
-		this.jwtToken = jwtToken;
-	}
 	
 
 	@Override
-	public String getJwtToken() {
-		return jwtToken;
+	public String getCorrId() {
+		// Pas de surcharge du CorrId. Transmis par HTTP Header
+		return null;
+	}
+	
+	
+	/**
+	 * L'appel initial a été authentifié. Réutilisation du token pour les appels sous jacent
+	 */
+	@Override
+	public String getAccessToken() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication instanceof OAuth2Authentication) {
+		    return (String)((OAuth2Authentication)authentication).getDetails();
+		}
+		return null;
 	}
 }

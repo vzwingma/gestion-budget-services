@@ -18,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.terrier.finances.gestion.communs.api.security.JwtConfigEnum;
 import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
@@ -48,9 +47,14 @@ public class TestComptesAPI extends AbstractTestsAPI {
 				post(BudgetApiUrlEnum.COMPTES_LIST_FULL))
 		.andExpect(status().is4xxClientError());
 
-		
-		when(mockComptesDBService.chargeComptes(eq("123123"))).thenReturn(null);
+		/** Authentification **/
+		authenticateUser("123123");
 
+		when(mockComptesDBService.chargeComptes(eq("345345"))).thenReturn(null);
+
+		/** Authentification **/
+		authenticateUser("345345");
+		
 		List<CompteBancaire> comptes = new ArrayList<CompteBancaire>();
 		CompteBancaire c1 = new CompteBancaire();
 		c1.setActif(true);
@@ -68,7 +72,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 
 		// Comptes OK		
 		getMockAPI().perform(
-				get(BudgetApiUrlEnum.COMPTES_LIST_FULL).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345")).requestAttr(ID_USER, "345345")
+				get(BudgetApiUrlEnum.COMPTES_LIST_FULL)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
@@ -82,8 +86,11 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		// Fail*
 		String path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "AAA");
 		getMockAPI().perform(
-				post(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("111")))
+				post(path))
 		.andExpect(status().is4xxClientError());
+
+		/** Authentification **/
+		authenticateUser("345345");
 
 		CompteBancaire c1 = new CompteBancaire();
 		c1.setActif(true);
@@ -99,7 +106,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 		
 		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111");
 		getMockAPI().perform(
-				get(path).header(JwtConfigEnum.JWT_HEADER_AUTH, getTestToken("345345")).requestAttr(ID_USER, "345345")
+				get(path)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

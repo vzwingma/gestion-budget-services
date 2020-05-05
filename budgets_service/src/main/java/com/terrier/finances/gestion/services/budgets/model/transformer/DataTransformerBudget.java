@@ -63,43 +63,7 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 			 * Budget clos : utilisation des valeurs calculées
 			 */
 			if(!bo.isActif()){
-				bo.setSoldeNow(dto.getNowArgentAvance() != null ? Double.valueOf(dto.getNowArgentAvance()) : 0);
-				bo.setSoldeFin(dto.getFinArgentAvance() != null ? Double.valueOf(dto.getFinArgentAvance()): 0);
-				// Complétion des totaux
-				Map<String, Double[]> totalCategorieBO = new HashMap<>();
-
-				if(dto.getTotalParCategories() != null){
-					dto.getTotalParCategories().entrySet()
-					.parallelStream()
-					.forEach(entry -> {
-						if(entry.getKey() != null){
-							Double[] totauxBO = new Double[entry.getValue().length];
-							for (int i = 0; i < entry.getValue().length; i++) {
-								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(entry.getValue()[i]) : 0D;
-							}
-							totalCategorieBO.put(entry.getKey(), totauxBO);
-						}
-					});
-				}
-				bo.setTotalParCategories(totalCategorieBO);
-
-
-				// Complétion des totaux ss catégorie
-				Map<String, Double[]> totalSsCategorieBO = new HashMap<>();
-				if(dto.getTotalParSSCategories() != null){
-					dto.getTotalParSSCategories().entrySet()
-					.parallelStream()
-					.forEach(entry -> {
-						if(entry.getKey() != null){
-							Double[] totauxBO = new Double[entry.getValue().length];
-							for (int i = 0; i < entry.getValue().length; i++) {
-								totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(entry.getValue()[i]) : 0D;
-							}
-							totalSsCategorieBO.put(entry.getKey(), totauxBO);
-						}
-					});
-				}
-				bo.setTotalParSSCategories(totalSsCategorieBO);
+				transformDTOClostoBO(dto, bo);
 			}
 			bo.setId(dto.getId());
 
@@ -112,7 +76,44 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 		}
 	}
 
-
+	
+	/**
+	 * Transforme DTO d'un budget clos
+	 * @param dto dto à transformer
+	 * @param bo bo à afficher
+	 */
+	private void transformDTOClostoBO(BudgetMensuelDTO dto, BudgetMensuel bo) {
+		bo.setSoldeNow(dto.getNowArgentAvance() != null ? Double.valueOf(dto.getNowArgentAvance()) : 0);
+		bo.setSoldeFin(dto.getFinArgentAvance() != null ? Double.valueOf(dto.getFinArgentAvance()): 0);
+		// Complétion des totaux
+		bo.setTotalParCategories(calculTotalBoParCategories(dto.getTotalParCategories()));
+		// Complétion des totaux ss catégorie
+		bo.setTotalParSSCategories(calculTotalBoParCategories(dto.getTotalParSSCategories()));
+	}
+	
+	/**
+	 * @param totalParCategories
+	 * @return les totaux par catégories BO à partir du DTO
+	 */
+	private Map<String, Double[]> calculTotalBoParCategories(Map<String, String[]> totalParCategories) {
+		Map<String, Double[]> totalParCategorieBO = new HashMap<>();
+		if(totalParCategories != null){
+			totalParCategories.entrySet()
+			.parallelStream()
+			.forEach(entry -> {
+				if(entry.getKey() != null){
+					Double[] totauxBO = new Double[entry.getValue().length];
+					for (int i = 0; i < entry.getValue().length; i++) {
+						totauxBO[i] = entry.getValue()[i] != null ? Double.valueOf(entry.getValue()[i]) : 0D;
+					}
+					totalParCategorieBO.put(entry.getKey(), totauxBO);
+				}
+			});
+		}
+		return totalParCategorieBO;
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see com.terrier.finances.gestion.model.AbstractTransformer#transformBOtoDTO(java.lang.Object)
 	 */
@@ -132,24 +133,24 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 		dto.setNowArgentAvance( String.valueOf(bo.getSoldeNow()));
 
 		// Complétion des totaux
-		Map<String, String[]> totalCategorieDTO = new HashMap<>();
-		if(bo.getTotalParCategories() != null){
-			bo.getTotalParCategories().entrySet()
-			.parallelStream()
-			.forEach(entry -> {
-				String[] totauxDTO = new String[entry.getValue().length];
-				for (int i = 0; i < entry.getValue().length; i++) {
-					totauxDTO[i] = entry.getValue()[i] != null ? entry.getValue()[i].toString() : null;
-				}
-				totalCategorieDTO.put(entry.getKey(), totauxDTO);
-			});
-		}
-		dto.setTotalParCategories(totalCategorieDTO);
-
+		dto.setTotalParCategories(calculTotalDTOParCategories(bo.getTotalParCategories()));
 		// Complétion des totaux ss catégorie
+		
+		dto.setTotalParSSCategories(calculTotalDTOParCategories(bo.getTotalParSSCategories()));
+
+		dto.setId();
+		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
+		return dto;
+	}
+	
+	/**
+	 * @param totalParCategories
+	 * @return les totaux par catégories BO à partir du DTO
+	 */
+	private Map<String, String[]> calculTotalDTOParCategories(Map<String, Double[]> totalParCategories) {
 		Map<String, String[]> totalSsCategorieDTO = new HashMap<>();
-		if(bo.getTotalParSSCategories() != null){
-			bo.getTotalParSSCategories().entrySet()
+		if(totalParCategories != null){
+			totalParCategories.entrySet()
 			.parallelStream()
 			.forEach(entry -> {
 				String[] totauxDTO = new String[entry.getValue().length];
@@ -159,13 +160,8 @@ public class DataTransformerBudget implements IDataTransformer<BudgetMensuel, Bu
 				totalSsCategorieDTO.put(entry.getKey(), totauxDTO);
 			});
 		}
-		dto.setTotalParSSCategories(totalSsCategorieDTO);
-
-		dto.setId();
-		LOGGER.trace("	[{}] \n > Transformation en DTO > [{}]", bo, dto);
-		return dto;
+		return totalSsCategorieDTO;
 	}
-
 
 	/**
 	 * @return the dataTransformerLigneDepense

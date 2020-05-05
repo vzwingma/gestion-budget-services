@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,9 +58,9 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiResponse(code = 404, message = "Session introuvable")
 	})
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_LIST)
-	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur(@RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException{
+	public @ResponseBody ResponseEntity<List<CompteBancaire>> getComptesUtilisateur() throws DataNotFoundException{
 		logger.info("getComptes");
-		return getEntities(comptesService.getComptesUtilisateur(idProprietaire));
+		return getEntities(comptesService.getComptesUtilisateur(getIdProprietaire()));
 	}
 
 	/**
@@ -81,17 +80,16 @@ public class ComptesAPIController extends AbstractAPIController {
 			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path")
 	})	
 	@GetMapping(value=BudgetApiUrlEnum.COMPTES_ID)
-	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte, @RequestAttribute(AbstractAPIController.ID_USER) String idProprietaire) throws DataNotFoundException{
+	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte) throws DataNotFoundException{
 		logger.info("[idCompte={}] getCompte", idCompte);
-		return getEntity(comptesService.getCompteById(idCompte, idProprietaire));
+		return getEntity(comptesService.getCompteById(idCompte, getIdProprietaire()));
 	}
 
 
 
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<AbstractHTTPClient> getHTTPClients() {
+	public List<AbstractHTTPClient<?>> getHTTPClients() {
 		return new ArrayList<>();
 	}
 }

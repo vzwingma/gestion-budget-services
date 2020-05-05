@@ -13,11 +13,11 @@ import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIC
 import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
 import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerBudget;
 import com.terrier.finances.gestion.services.budgets.model.transformer.DataTransformerLigneOperation;
-import com.terrier.finances.gestion.services.communs.api.config.SecurityTokenConfig;
+import com.terrier.finances.gestion.services.communs.api.config.oauth2.SecurityOAuth2Config;
 import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 
 @Configuration
-@ContextConfiguration(classes={TestMockBudgetServiceConfig.class, SecurityTokenConfig.class, IncomingRequestInterceptor.class})
+@ContextConfiguration(classes={TestMockBudgetServiceConfig.class, SecurityOAuth2Config.class, IncomingRequestInterceptor.class})
 public class TestMockBudgetServiceConfig {
 
 	private MongoTemplate mockDBTemplate = Mockito.mock(MongoTemplate.class);
