@@ -33,7 +33,7 @@ import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
@@ -333,8 +333,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 	@Test
 	public void testSetAsDerniereOperation() throws Exception {
-		CategorieOperation cat = new CategorieOperation("SCAT_ID");
-		CategorieOperation sscat = new CategorieOperation("CAT_ID");
+		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
+		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
 
 		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
@@ -374,8 +374,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Test
 	public void testDelOperation() throws Exception {
 
-		CategorieOperation cat = new CategorieOperation("SCAT_ID");
-		CategorieOperation sscat = new CategorieOperation("CAT_ID");
+		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
+		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
 
 		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
@@ -407,8 +407,8 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	public void testUpdateOperation() throws Exception {
 
 
-		CategorieOperation cat = new CategorieOperation("SCAT_ID");
-		CategorieOperation sscat = new CategorieOperation("CAT_ID");
+		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
+		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
 
 		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);

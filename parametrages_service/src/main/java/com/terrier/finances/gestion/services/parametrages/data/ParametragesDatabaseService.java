@@ -10,11 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
-import com.terrier.finances.gestion.services.parametrages.model.v12.CategorieOperationDTO;
-import com.terrier.finances.gestion.services.parametrages.model.transformer.DataTransformerCategorieOperations;
 
 /**
  * Service de données en MongoDB fournissant les paramètres
@@ -22,7 +20,7 @@ import com.terrier.finances.gestion.services.parametrages.model.transformer.Data
  *
  */
 @Repository
-public class ParametragesDatabaseService extends AbstractDatabaseService<CategorieOperationDTO> {
+public class ParametragesDatabaseService extends AbstractDatabaseService<CategorieOperation> {
 
 	/**
 	 * Liste des catégories (A usage interne uniquement !!! Pour réponse : Clonage obligatoire)
@@ -43,7 +41,6 @@ public class ParametragesDatabaseService extends AbstractDatabaseService<Categor
 				// Ajout des catégories
 				listeCategories = findAll()
 						.stream()
-						.map(dto -> new DataTransformerCategorieOperations().transformDTOtoBO(dto))
 						.collect(Collectors.toList());
 				
 				LOGGER.info("> Chargement des {} catégories <", listeCategories.size());
@@ -80,7 +77,8 @@ public class ParametragesDatabaseService extends AbstractDatabaseService<Categor
 	 */
 	private CategorieOperation cloneCategorie(CategorieOperation categorie) {
 		if(categorie != null){
-			CategorieOperation clone = new CategorieOperation(categorie.getId());
+			CategorieOperation clone = new CategorieOperation();
+			clone.setId(categorie.getId());
 			clone.setActif(categorie.isActif());
 			clone.setCategorie(categorie.isCategorie());
 			// Pas de clone de la catégorie parente pour éviter les récursions

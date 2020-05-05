@@ -15,11 +15,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.parametrages.data.ParametragesDatabaseService;
-import com.terrier.finances.gestion.services.parametrages.model.v12.CategorieOperationDTO;
-import com.terrier.finances.gestion.services.parametrages.model.transformer.DataTransformerCategorieOperations;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBParamConfig;
 
@@ -53,21 +51,21 @@ public class TestParametragesAPI extends AbstractTestsAPI  {
 
 
 		List<CategorieOperation> categoriesFromDB = new ArrayList<>();
-		CategorieOperationDTO catAlimentation = new CategorieOperationDTO();
+		CategorieOperation catAlimentation = new CategorieOperation();
 		catAlimentation.setId("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a");
 		catAlimentation.setActif(true);
 		catAlimentation.setCategorie(true);
 		catAlimentation.setLibelle("Alimentation");
 
 
-		CategorieOperationDTO ssCatCourse = new CategorieOperationDTO();
+		CategorieOperation ssCatCourse = new CategorieOperation();
 		ssCatCourse.setActif(true);
 		ssCatCourse.setCategorie(false);
 		ssCatCourse.setId("467496e4-9059-4b9b-8773-21f230c8c5c6");
 		ssCatCourse.setLibelle("Courses");
 		ssCatCourse.setListeSSCategories(null);
 		catAlimentation.getListeSSCategories().add(ssCatCourse);
-		categoriesFromDB.add(new DataTransformerCategorieOperations().transformDTOtoBO(catAlimentation));
+		categoriesFromDB.add(catAlimentation);
 
 		when(mockDataDBParams.chargeCategories()).thenReturn(categoriesFromDB);
 		

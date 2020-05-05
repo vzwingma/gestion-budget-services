@@ -16,6 +16,7 @@ import lombok.Setter;
  */
 @Document(collection = "categoriesoperations")
 @Getter @Setter
+@Deprecated
 public class CategorieOperationDTO {
 
 	/**
