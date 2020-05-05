@@ -78,7 +78,7 @@ public class TestOperationsService {
 
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
-		this.budget.getSoldes().setFinMoisPrecedent(0D);
+		this.budget.getSoldes().setSoldeAtFinMoisPrecedent(0D);
 		this.budget.setListeOperations(new ArrayList<>());
 		BudgetMensuelUtils.razCalculs(this.budget);
 		CategorieOperation dep = new CategorieOperation(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
@@ -130,13 +130,13 @@ public class TestOperationsService {
 		assertNotNull(this.operationsService);
 		assertNotNull(this.budget);
 		this.operationsService.calculBudget(this.budget);
-		assertEquals(0, Double.valueOf(this.budget.getSoldes().getMaintenant()).intValue());
-		assertEquals(123, Double.valueOf(this.budget.getSoldes().getFinMoisCourant()).intValue());
+		assertEquals(0, Double.valueOf(this.budget.getSoldes().getSoldeAtMaintenant()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldes().getSoldeAtFinMoisCourant()).intValue());
 
-		this.budget.getSoldes().setFinMoisPrecedent(0D);
+		this.budget.getSoldes().setSoldeAtFinMoisPrecedent(0D);
 		this.operationsService.calculBudget(budget);
-		assertEquals(0, Double.valueOf(this.budget.getSoldes().getMaintenant()).intValue());
-		assertEquals(123, Double.valueOf(this.budget.getSoldes().getFinMoisCourant()).intValue());
+		assertEquals(0, Double.valueOf(this.budget.getSoldes().getSoldeAtMaintenant()).intValue());
+		assertEquals(123, Double.valueOf(this.budget.getSoldes().getSoldeAtFinMoisCourant()).intValue());
 	}
 
 	@Test
@@ -230,16 +230,16 @@ public class TestOperationsService {
 		assertEquals(3, budgetDel.getListeOperations().size());
 		
 		
-		assertEquals(213, budgetDel.getSoldes().getFinMoisCourant());
-		assertEquals(0, budgetDel.getSoldes().getMaintenant());
+		assertEquals(213, budgetDel.getSoldes().getSoldeAtFinMoisCourant());
+		assertEquals(0, budgetDel.getSoldes().getSoldeAtMaintenant());
 		
 		LOGGER.info("testCRUDOperation - Update Ope");
 		LigneOperation opUpdate = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
 		opUpdate.setId("OP3");
 		BudgetMensuel budgetUpdate = operationsService.updateOperationInBudget(this.budget.getId(), opUpdate, "userTest");
 		assertEquals(3, budgetUpdate.getListeOperations().size());
-		assertEquals(426, budgetUpdate.getSoldes().getFinMoisCourant());
-		assertEquals(213, budgetUpdate.getSoldes().getMaintenant());
+		assertEquals(426, budgetUpdate.getSoldes().getSoldeAtFinMoisCourant());
+		assertEquals(213, budgetUpdate.getSoldes().getSoldeAtMaintenant());
 		
 		LOGGER.info("/testCRUDOperation");
 
