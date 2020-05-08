@@ -337,10 +337,10 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
 
-		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		op1.setTagDerniereOperation(true);
 		bo.getListeOperations().add(op1);
-		LigneOperation op2 = new LigneOperation(sscat, "OP2", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		LigneOperation op2 = new LigneOperation(sscat, "OP2", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		op2.setId("ID_op");
 		op2.setTagDerniereOperation(false);
 		bo.getListeOperations().add(op2);
@@ -378,7 +378,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
 
-		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		op1.setId("OP1");
 		op1.setTagDerniereOperation(true);
 		bo.getListeOperations().add(op1);
@@ -411,7 +411,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
 
-		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
+		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.PREVUE, false);
 		op1.setTagDerniereOperation(true);
 		op1.setId("OP1");
 		bo.getListeOperations().add(op1);
@@ -421,7 +421,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		authenticateUser("userTest");
 
 		// OK
-		LigneOperation opupdate = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		LigneOperation opupdate = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		opupdate.setId("OP1");
 		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATION_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", opupdate.getId());
 		String jsonopupdate = json(opupdate);
@@ -470,7 +470,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		when(mockDataAPIParams.getCategories()).thenReturn(Arrays.asList(cat, sscat));
 		when(mockDataAPIParams.getCategorieParId(eq(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.name()))).thenReturn(sscat);
 		
-		LigneOperation opIntercompte = new LigneOperation(sscat, "OPInter", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
+		LigneOperation opIntercompte = new LigneOperation(sscat, "OPInter", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.PREVUE, false);
 		opIntercompte.setId("OPInter");
 		bo.getListeOperations().add(opIntercompte);
 
@@ -494,7 +494,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 **/
 
 		// OK
-		LigneOperation opupdate = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		LigneOperation opupdate = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		opupdate.setId("OP1");
 
 		LOGGER.info("Good Intercompte : {}", urlIntercompte);

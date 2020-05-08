@@ -84,7 +84,7 @@ public class TestOperationsService {
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
 		dep.setCategorieParente(cat);
 		
-		LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, "123", EtatOperationEnum.PREVUE, false);
+		LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
 		test1.setId("TEST1");
 		this.budget.getListeOperations().add(test1);
 
@@ -149,10 +149,10 @@ public class TestOperationsService {
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
 
-		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		op1.setTagDerniereOperation(true);
 		budget.getListeOperations().add(op1);
-		LigneOperation op2 = new LigneOperation(sscat, "OP2", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		LigneOperation op2 = new LigneOperation(sscat, "OP2", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		op2.setId("ID_op");
 		op2.setTagDerniereOperation(false);
 		budget.getListeOperations().add(op2);
@@ -204,25 +204,25 @@ public class TestOperationsService {
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
-		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		LigneOperation op1 = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		op1.setTagDerniereOperation(true);
 		op1.setId("OP1");
 		budget.getListeOperations().add(op1);
-		LigneOperation op2 = new LigneOperation(sscat, "OP2", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
+		LigneOperation op2 = new LigneOperation(sscat, "OP2", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.PREVUE, false);
 		op2.setId("ID_op");
 		op2.setTagDerniereOperation(false);
 		op2.setId("OP2");
 		budget.getListeOperations().add(op2);
 
 		LOGGER.info("testCRUDOperation - Add new Ope");
-		LigneOperation opNew = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.PREVUE, false);
+		LigneOperation opNew = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.PREVUE, false);
 		opNew.setId("OP3");
 
 		BudgetMensuel budgetOP3 = operationsService.updateOperationInBudget(this.budget.getId(), opNew, "userTest");
 		assertEquals(4, budgetOP3.getListeOperations().size());
 
 		LOGGER.info("testCRUDOperation - Delete existing Ope");
-		LigneOperation opDel = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, "213", null, false);
+		LigneOperation opDel = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, 213D, null, false);
 		opDel.setId("OP1");
 
 		BudgetMensuel budgetDel = operationsService.updateOperationInBudget(this.budget.getId(), opDel, "userTest");
@@ -233,7 +233,7 @@ public class TestOperationsService {
 		assertEquals(0, budgetDel.getSoldes().getSoldeAtMaintenant());
 		
 		LOGGER.info("testCRUDOperation - Update Ope");
-		LigneOperation opUpdate = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, "213", EtatOperationEnum.REALISEE, false);
+		LigneOperation opUpdate = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		opUpdate.setId("OP3");
 		BudgetMensuel budgetUpdate = operationsService.updateOperationInBudget(this.budget.getId(), opUpdate, "userTest");
 		assertEquals(3, budgetUpdate.getListeOperations().size());

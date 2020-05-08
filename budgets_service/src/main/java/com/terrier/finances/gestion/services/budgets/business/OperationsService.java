@@ -382,7 +382,7 @@ public class OperationsService extends AbstractBusinessService {
 				ligneOperation.getSsCategorie(), 
 				"[de "+compteSource.getLibelle()+"] " + ligneOperation.getLibelle(), 
 				TypeOperationEnum.CREDIT, 
-				Double.toString(Math.abs(ligneOperation.getValeur())), 
+				Math.abs(ligneOperation.getValeur()), 
 				etatDepenseTransfert, 
 				ligneOperation.isPeriodique());
 
@@ -512,7 +512,7 @@ public class OperationsService extends AbstractBusinessService {
 				paramClientApi.getCategorieParId(IdsCategoriesEnum.REMBOURSEMENT.getId()), 
 				"[Remboursement] " + ligneOperation.getLibelle(), 
 				TypeOperationEnum.CREDIT, 
-				Double.toString(Math.abs(ligneOperation.getValeur())), 
+				Math.abs(ligneOperation.getValeur()), 
 				EtatOperationEnum.REPORTEE, 
 				ligneOperation.isPeriodique());
 		ligneRemboursement.getAutresInfos().setAuteur(idProprietaire);
