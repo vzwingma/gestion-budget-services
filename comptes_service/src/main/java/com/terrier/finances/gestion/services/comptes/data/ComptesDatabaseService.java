@@ -67,7 +67,7 @@ public class ComptesDatabaseService extends AbstractDatabaseService<CompteBancai
 			queryBudget
 			.addCriteria(Criteria.where("id").is(idCompte));
 			CompteBancaire compte =  findOneByQuery(queryBudget);		
-			if(compte.getProprietaire().getId().equalsIgnoreCase(idUtilisateur)){
+			if(compte.getProprietaire().getLogin().equalsIgnoreCase(idUtilisateur)){
 				return compte;
 			}
 			else{
