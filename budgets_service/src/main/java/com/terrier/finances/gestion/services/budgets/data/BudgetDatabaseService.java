@@ -34,7 +34,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(BudgetDatabaseService.class);
 
-	private static final String ATTRIBUT_COMPTE_ID = "compteBancaire.id";
+	private static final String ATTRIBUT_COMPTE_ID = "idCompteBancaire";
 	private static final String ATTRIBUT_ANNEE = "annee";
 	private static final String ATTRIBUT_MOIS = "mois";
 
@@ -47,19 +47,19 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 	public BudgetMensuel chargeBudgetMensuel(CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException{
 		LOGGER.info("Chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee);
 		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and(ATTRIBUT_MOIS).is(mois.getValue() -1).and(ATTRIBUT_ANNEE).is(annee));
-		BudgetMensuel budgetDTO = null;
+		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and(ATTRIBUT_MOIS).is(mois.toString()).and(ATTRIBUT_ANNEE).is(annee));
+		BudgetMensuel budget = null;
 		try{
-			budgetDTO = findOneByQuery(queryBudget);
+			budget = findOneByQuery(queryBudget);
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors du chargement du budget mensuel", e);
 		}
-		if(budgetDTO == null){
+		if(budget == null){
 			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee).toString());
 		}
-		LOGGER.debug("	> Réception du DTO : {}. {} opérations", budgetDTO.getId(), budgetDTO.getListeOperations().size());
-		return budgetDTO;
+		LOGGER.debug("	> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size());
+		return budget;
 	}
 
 

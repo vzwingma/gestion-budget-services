@@ -71,7 +71,7 @@ public class OperationsService extends AbstractBusinessService {
 	public BudgetMensuel chargerBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget {} de {}/{}", idCompte, mois, annee);
 
-		CompteBancaire compteBancaire = compteClientApi.getCompteById(idCompte, idProprietaire);
+		CompteBancaire compteBancaire = compteClientApi.getCompteById(idCompte);
 		if(compteBancaire != null){
 			if(Boolean.TRUE.equals(compteBancaire.isActif())){
 				try {
@@ -297,7 +297,7 @@ public class OperationsService extends AbstractBusinessService {
 
 		BudgetMensuel budgetMensuel = chargerBudgetMensuel(idBudget, idProprietaire);
 		if(budgetMensuel != null){
-			CompteBancaire compteBancaire = compteClientApi.getCompteById(budgetMensuel.getIdCompteBancaire(), idProprietaire);
+			CompteBancaire compteBancaire = compteClientApi.getCompteById(budgetMensuel.getIdCompteBancaire());
 			if(compteBancaire != null){
 				// S'il y a eu cloture, on ne fait rien
 				return initNewBudget(compteBancaire, idProprietaire, budgetMensuel.getMois(), budgetMensuel.getAnnee());
@@ -374,8 +374,8 @@ public class OperationsService extends AbstractBusinessService {
 			break;
 		}
 
-		CompteBancaire compteSource = this.compteClientApi.getCompteById(idCompteSource, idProprietaire);
-		CompteBancaire compteCible = this.compteClientApi.getCompteById(idCompteDestination, idProprietaire);
+		CompteBancaire compteSource = this.compteClientApi.getCompteById(idCompteSource);
+		CompteBancaire compteCible = this.compteClientApi.getCompteById(idCompteDestination);
 
 		LigneOperation ligneTransfert = new LigneOperation(
 				ligneOperation.getCategorie(),

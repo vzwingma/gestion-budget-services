@@ -36,7 +36,7 @@ public class ComptesAPIClient extends AbstractHTTPClient<CompteBancaire> {
 	 * @param idUser id User
 	 * @return compte correspondant
 	 */
-	public CompteBancaire getCompteById(String idCompte, String idUser) {
+	public CompteBancaire getCompteById(String idCompte) {
 		try {
 			return callHTTPGetData(BudgetApiUrlEnum.COMPTES_ID_FULL, Collections.singletonMap(BudgetApiUrlEnum.PARAM_ID_COMPTE, idCompte)).block();
 		} catch (DataNotFoundException e) {

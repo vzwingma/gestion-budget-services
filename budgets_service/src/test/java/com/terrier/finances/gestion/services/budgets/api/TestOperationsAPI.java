@@ -80,7 +80,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		c1.setId("C1");
 		c1.setLibelle("Libelle1");
 		c1.setOrdre(1);
-		when(mockDataAPIComptes.getCompteById(eq("C1"), anyString())).thenReturn(c1);
+		when(mockDataAPIComptes.getCompteById(eq("C1"))).thenReturn(c1);
 
 		bo = new BudgetMensuel();
 		bo.setIdCompteBancaire(c1.getId());
@@ -110,7 +110,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	@Test
 	public void testGetBudgetWrongCompte() throws Exception {
 
-		when(mockDataAPIComptes.getCompteById(eq("unknown"), eq("test"))).thenReturn(null);
+		when(mockDataAPIComptes.getCompteById(eq("unknown"))).thenReturn(null);
 		
 		String urlWrongCompte =  BudgetApiUrlEnum.BUDGET_QUERY_FULL;
 		LOGGER.info("Wrong Compte : {}", urlWrongCompte);
@@ -444,7 +444,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		c2.setId("C2");
 		c2.setLibelle("C2");
 		c2.setOrdre(1);
-		when(mockDataAPIComptes.getCompteById(eq("C2"), anyString())).thenReturn(c2);
+		when(mockDataAPIComptes.getCompteById(eq("C2"))).thenReturn(c2);
 
 
 		BudgetMensuel bo2 = new BudgetMensuel();

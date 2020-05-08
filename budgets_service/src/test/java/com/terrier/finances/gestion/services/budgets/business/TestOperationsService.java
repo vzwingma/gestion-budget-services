@@ -143,7 +143,7 @@ public class TestOperationsService {
 
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
-		when(mockCompteClientApi.getCompteById(anyString(), eq("userTest"))).thenReturn(new CompteBancaire());
+		when(mockCompteClientApi.getCompteById(anyString())).thenReturn(new CompteBancaire());
 		when(mockDBBudget.sauvegardeBudgetMensuel(any())).thenReturn("OK");
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
@@ -177,7 +177,7 @@ public class TestOperationsService {
 		LOGGER.info("testDelOperation");
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
-		when(mockCompteClientApi.getCompteById(anyString(), eq("userTest"))).thenReturn(new CompteBancaire());
+		when(mockCompteClientApi.getCompteById(anyString())).thenReturn(new CompteBancaire());
 		
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);

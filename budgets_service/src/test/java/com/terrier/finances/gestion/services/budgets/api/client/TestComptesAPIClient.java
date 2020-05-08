@@ -44,7 +44,7 @@ public class TestComptesAPIClient extends AbstractTestsClientAPI {
 					.setBody(new ObjectMapper().writerFor(CompteBancaire.class).writeValueAsString(compte))
 				);
 		
-		CompteBancaire compteResult = compteClient.getCompteById("c1", "null");
+		CompteBancaire compteResult = compteClient.getCompteById("c1");
 		assertNotNull(compteResult);
 		assertEquals("c1", compteResult.getId());
 		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
