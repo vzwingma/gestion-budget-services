@@ -92,8 +92,8 @@ public class ParametragesDatabaseService extends AbstractDatabaseService<Categor
 					ssCClone.setCategorieParente(clone);
 					setSSCatsClones.add(ssCClone);
 				});
+				clone.setListeSSCategories(setSSCatsClones);
 			}
-			clone.getListeSSCategories().addAll(setSSCatsClones);
 			return clone;
 		}
 		return null;
