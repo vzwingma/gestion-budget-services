@@ -33,11 +33,11 @@ public class ComptesDatabaseService extends AbstractDatabaseService<CompteBancai
 	 * @return liste des comptes associés
 	 * @throws DataNotFoundException erreur dans la connexion
 	 */
-	public List<CompteBancaire> chargeComptes(String idUtilisateur) throws DataNotFoundException{
+	public List<CompteBancaire> chargeComptes(String loginProprietaire) throws DataNotFoundException{
 		List<CompteBancaire>  listeComptes = new ArrayList<>();
 		try{
-			LOGGER.info("[idUser={}] Chargement des comptes de l'utilisateur", idUtilisateur);
-			Query queryBudget = new Query().addCriteria(Criteria.where("listeProprietaires").elemMatch(Criteria.where("_id").is(idUtilisateur)));
+			LOGGER.info("[idUser={}] Chargement des comptes de l'utilisateur", loginProprietaire);
+			Query queryBudget = new Query().addCriteria(Criteria.where("proprietaire.login").is(loginProprietaire));
 
 			listeComptes = findByQuery(queryBudget)
 					.stream()
@@ -46,7 +46,7 @@ public class ComptesDatabaseService extends AbstractDatabaseService<CompteBancai
 			LOGGER.info("{} comptes chargés : {} ", listeComptes.size(), listeComptes);
 		}
 		catch(Exception e){
-			LOGGER.error("[idUser={}] Erreur lors du chargement des comptes", idUtilisateur, e);
+			LOGGER.error("[idUser={}] Erreur lors du chargement des comptes", loginProprietaire, e);
 			throw new DataNotFoundException("Erreur lors de la recherche des comptes");
 		}
 		return listeComptes;
