@@ -45,7 +45,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 	 * @return budget mensuel
 	 */
 	public BudgetMensuel chargeBudgetMensuel(CompteBancaire compte, Month mois, int annee) throws BudgetNotFoundException{
-		LOGGER.info("Chargement du budget du compte {} du {}/{}", compte.getId(), mois, annee);
+		LOGGER.info("Chargement du budget {}/{} du compte {} ", mois, annee, compte.getId());
 		Query queryBudget = new Query();
 		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte.getId()).and(ATTRIBUT_MOIS).is(mois.toString()).and(ATTRIBUT_ANNEE).is(annee));
 		BudgetMensuel budget = null;

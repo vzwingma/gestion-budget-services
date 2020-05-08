@@ -96,7 +96,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
 	private BudgetMensuel chargerBudgetMensuelSurCompteActif(String idProprietaire, CompteBancaire compteBancaire, Month mois, int annee) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
-		LOGGER.debug("Chargement du budget du compte actif {} de {}/{}", compteBancaire.getId(), mois, annee);
+		LOGGER.debug("Chargement du budget de {}/{} du compte actif {} ", mois, annee, compteBancaire.getId());
 
 		BudgetMensuel budgetMensuel = null;
 		try{
@@ -198,11 +198,14 @@ public class OperationsService extends AbstractBusinessService {
 	private BudgetMensuel initNewBudget(CompteBancaire compteBancaire, String idProprietaire, Month mois, int annee) throws BudgetNotFoundException,CompteClosedException, DataNotFoundException{
 		LOGGER.info("Initialisation du budget {} de {}/{}", compteBancaire.getLibelle(), mois, annee);
 		BudgetMensuel budget = new BudgetMensuel();
-		budget.setNewBudget(true);
 		budget.setActif(true);
 		budget.setAnnee(annee);
 		budget.setMois(mois);
 		budget.setIdCompteBancaire(compteBancaire.getId());
+
+		budget.setNewBudget(true);
+		budget.setId();
+
 		budget.setDateMiseAJour(LocalDateTime.now());
 		// Init si dans le futur par rapport au démarrage
 		LocalDate datePremierBudget;
