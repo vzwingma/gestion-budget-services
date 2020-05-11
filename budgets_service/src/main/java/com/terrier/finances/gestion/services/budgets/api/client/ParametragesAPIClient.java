@@ -39,8 +39,10 @@ public class ParametragesAPIClient extends AbstractHTTPClient<CategorieOperation
 				categoriesSsCategories.addAll(categories);
 				categories.stream()
 				.forEach(c -> {
-					c.getListeSSCategories().stream().forEach(ssCats -> ssCats.setCategorieParente(c));
-					categoriesSsCategories.addAll(c.getListeSSCategories());	
+					if(c.getListeSSCategories() != null) {
+						c.getListeSSCategories().stream().forEach(ssCats -> ssCats.setCategorieParente(c));
+						categoriesSsCategories.addAll(c.getListeSSCategories());
+					}
 				});
 
 			} catch (DataNotFoundException e) {

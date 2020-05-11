@@ -201,6 +201,7 @@ public class TestOperationsService {
 		LOGGER.info("testCRUDOperation");
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
+		this.budget.getListeOperations().clear();
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
@@ -229,15 +230,15 @@ public class TestOperationsService {
 		assertEquals(3, budgetDel.getListeOperations().size());
 		
 		
-		assertEquals(549, budgetDel.getSoldes().getSoldeAtFinMoisCourant());
+		assertEquals(426, budgetDel.getSoldes().getSoldeAtFinMoisCourant());
 		assertEquals(0, budgetDel.getSoldes().getSoldeAtMaintenant());
 		
 		LOGGER.info("testCRUDOperation - Update Ope");
 		LigneOperation opUpdate = new LigneOperation(sscat, "OP3", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
 		opUpdate.setId("OP3");
 		BudgetMensuel budgetUpdate = operationsService.updateOperationInBudget(this.budget.getId(), opUpdate, "userTest");
-		assertEquals(3, budgetUpdate.getListeOperations().size());
-		assertEquals(549, budgetUpdate.getSoldes().getSoldeAtFinMoisCourant());
+		assertEquals(4, budgetUpdate.getListeOperations().size());
+		assertEquals(426, budgetUpdate.getSoldes().getSoldeAtFinMoisCourant());
 		assertEquals(213, budgetUpdate.getSoldes().getSoldeAtMaintenant());
 		
 		LOGGER.info("/testCRUDOperation");
