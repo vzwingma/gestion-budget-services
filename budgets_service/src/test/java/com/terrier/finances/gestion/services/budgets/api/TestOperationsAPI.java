@@ -231,25 +231,24 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		getMockAPI().perform(get(urlActif))
 					.andExpect(status().is4xxClientError());
 
-		LocalDateTime futur = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
-
-		LocalDateTime passe = LocalDateTime.now().plus(-1, ChronoUnit.HOURS);
-
+		LocalDateTime futur = LocalDateTime.now().plus(5, ChronoUnit.HOURS);
 		BudgetMensuel ko = new BudgetMensuel();
 		ko.setDateMiseAJour(futur);
 		when(mockDataDBBudget.chargeBudgetMensuel(eq("TESTKO"))).thenReturn(ko);
+
+		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
+		/** Authentification **/
+		authenticateUser("userTest");
+
+		LocalDateTime passe = LocalDateTime.now().plus(-5, ChronoUnit.HOURS);
 		BudgetMensuel ok = new BudgetMensuel();
 		ok.setDateMiseAJour(passe);
 		when(mockDataDBBudget.chargeBudgetMensuel(eq("TESTOK"))).thenReturn(ok);
-
-		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
-
+		
+		
 		LOGGER.info("is UptoDate : {}", urlActif);
 		getMockAPI().perform(get(urlActif))
 					.andExpect(status().is4xxClientError());
-
-		/** Authentification **/
-		authenticateUser("userTest");
 
 		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTOK") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		LOGGER.info("is UptoDate : {}", urlActif);
