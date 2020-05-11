@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
@@ -39,8 +39,10 @@ public class ParametragesAPIClient extends AbstractHTTPClient<CategorieOperation
 				categoriesSsCategories.addAll(categories);
 				categories.stream()
 				.forEach(c -> {
-					c.getListeSSCategories().stream().forEach(ssCats -> ssCats.setCategorieParente(c));
-					categoriesSsCategories.addAll(c.getListeSSCategories());	
+					if(c.getListeSSCategories() != null) {
+						c.getListeSSCategories().stream().forEach(ssCats -> ssCats.setCategorieParente(c));
+						categoriesSsCategories.addAll(c.getListeSSCategories());
+					}
 				});
 
 			} catch (DataNotFoundException e) {

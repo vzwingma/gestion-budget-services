@@ -16,7 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.terrier.finances.gestion.communs.utilisateur.model.api.AuthLoginAPIObject;
+import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPrefsAPIObject;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 
@@ -69,13 +69,12 @@ public class TestHTTPClient extends AbstractTestsClientAPI {
 				new MockResponse()
 				.setResponseCode(200)
 				.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.setBody("{\"login\":\"Test\",\"motDePasse\":\"Test\"}")
+				.setBody("{\"idUtilisateur\":\"Test\"}")
 				);
 		
-		AuthLoginAPIObject response = getTestClient().callHTTPGetData("/getData", null).block();
+		UtilisateurPrefsAPIObject response = getTestClient().callHTTPGetData("/getData", null).block();
 		assertNotNull(response);
-		assertEquals("Test", response.getLogin());
-		assertEquals("Test", response.getMotDePasse());		
+		assertEquals("Test", response.getIdUtilisateur());
 
 		RecordedRequest recordedRequest = getMockWebServer().takeRequest();
 		assertEquals("/getData", recordedRequest.getPath());

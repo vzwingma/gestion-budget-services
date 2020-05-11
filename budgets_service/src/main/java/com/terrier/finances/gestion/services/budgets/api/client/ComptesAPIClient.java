@@ -8,7 +8,7 @@ import java.util.Collections;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
-import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
@@ -36,7 +36,7 @@ public class ComptesAPIClient extends AbstractHTTPClient<CompteBancaire> {
 	 * @param idUser id User
 	 * @return compte correspondant
 	 */
-	public CompteBancaire getCompteById(String idCompte, String idUser) {
+	public CompteBancaire getCompteById(String idCompte) {
 		try {
 			return callHTTPGetData(BudgetApiUrlEnum.COMPTES_ID_FULL, Collections.singletonMap(BudgetApiUrlEnum.PARAM_ID_COMPTE, idCompte)).block();
 		} catch (DataNotFoundException e) {

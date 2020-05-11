@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  */
 @Document(collection = "categoriesoperations")
+@Deprecated
 public class CategorieOperationDTO {
 
 	/**

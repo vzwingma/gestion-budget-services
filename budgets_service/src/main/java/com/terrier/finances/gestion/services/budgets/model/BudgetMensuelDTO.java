@@ -11,7 +11,7 @@ import java.util.Map;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 
 import lombok.Getter;
@@ -25,6 +25,7 @@ import lombok.Setter;
  */
 @Document(collection = "budgets")
 @Getter @Setter @NoArgsConstructor
+@Deprecated
 public class BudgetMensuelDTO implements Serializable {
 
 	@Id
@@ -91,7 +92,7 @@ public class BudgetMensuelDTO implements Serializable {
 	 * @param id the id to set
 	 */
 	public void setId() {
-		this.id = BudgetDataUtils.getBudgetId(this.compteBancaire, Month.of(this.mois+1), this.annee);
+		this.id = BudgetDataUtils.getBudgetId(this.compteBancaire.getId(), Month.of(this.mois+1), this.annee);
 	}
 
 

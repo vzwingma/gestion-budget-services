@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.communs.api.AbstractTestsClientAPI;

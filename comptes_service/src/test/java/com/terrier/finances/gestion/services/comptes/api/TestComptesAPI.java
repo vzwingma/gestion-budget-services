@@ -18,7 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.comptes.data.ComptesDatabaseService;

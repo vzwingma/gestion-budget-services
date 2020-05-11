@@ -7,13 +7,14 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.MongoOperations;
 
-import com.terrier.finances.gestion.communs.parametrages.model.CategorieOperation;
-import com.terrier.finances.gestion.services.parametrages.model.CategorieOperationDTO;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
+
 
 public class TestParametrageDBServices {
 
@@ -24,26 +25,27 @@ public class TestParametrageDBServices {
 		
 		ParametragesDatabaseService db = spy(new ParametragesDatabaseService());
 		
-		List<CategorieOperationDTO> categoriesFromDB = new ArrayList<>();
-		CategorieOperationDTO catAlimentation = new CategorieOperationDTO();
+		List<CategorieOperation> categoriesFromDB = new ArrayList<>();
+		CategorieOperation catAlimentation = new CategorieOperation();
 		catAlimentation.setId("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a");
 		catAlimentation.setActif(true);
 		catAlimentation.setCategorie(true);
 		catAlimentation.setLibelle("Alimentation");
 
 
-		CategorieOperationDTO ssCatCourse = new CategorieOperationDTO();
+		CategorieOperation ssCatCourse = new CategorieOperation();
 		ssCatCourse.setActif(true);
 		ssCatCourse.setCategorie(false);
 		ssCatCourse.setId("467496e4-9059-4b9b-8773-21f230c8c5c6");
 		ssCatCourse.setLibelle("Courses");
 		ssCatCourse.setListeSSCategories(null);
+		catAlimentation.setListeSSCategories(new HashSet<>());
 		catAlimentation.getListeSSCategories().add(ssCatCourse);
 		categoriesFromDB.add(catAlimentation);
 		
 		
 		MongoOperations mockMongo = mock(MongoOperations.class);
-		when(mockMongo.findAll(CategorieOperationDTO.class)).thenReturn(categoriesFromDB);
+		when(mockMongo.findAll(CategorieOperation.class)).thenReturn(categoriesFromDB);
 		
 		db.setMongoOperations(mockMongo);
 		
@@ -69,26 +71,27 @@ public class TestParametrageDBServices {
 		
 		ParametragesDatabaseService db = spy(new ParametragesDatabaseService());
 		
-		List<CategorieOperationDTO> categoriesFromDB = new ArrayList<>();
-		CategorieOperationDTO catAlimentation = new CategorieOperationDTO();
+		List<CategorieOperation> categoriesFromDB = new ArrayList<>();
+		CategorieOperation catAlimentation = new CategorieOperation();
 		catAlimentation.setId("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a");
 		catAlimentation.setActif(true);
 		catAlimentation.setCategorie(true);
 		catAlimentation.setLibelle("Alimentation");
 
 
-		CategorieOperationDTO ssCatCourse = new CategorieOperationDTO();
+		CategorieOperation ssCatCourse = new CategorieOperation();
 		ssCatCourse.setActif(true);
 		ssCatCourse.setCategorie(false);
 		ssCatCourse.setId("467496e4-9059-4b9b-8773-21f230c8c5c6");
 		ssCatCourse.setLibelle("Courses");
 		ssCatCourse.setListeSSCategories(null);
+		catAlimentation.setListeSSCategories(new HashSet<>());
 		catAlimentation.getListeSSCategories().add(ssCatCourse);
 		categoriesFromDB.add(catAlimentation);
 		
 		
 		MongoOperations mockMongo = mock(MongoOperations.class);
-		when(mockMongo.findAll(CategorieOperationDTO.class)).thenReturn(categoriesFromDB);
+		when(mockMongo.findAll(CategorieOperation.class)).thenReturn(categoriesFromDB);
 		db.setMongoOperations(mockMongo);
 		
 		CategorieOperation cat = db.getCategorieParId("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a");
@@ -117,23 +120,24 @@ public class TestParametrageDBServices {
 		
 		ParametragesDatabaseService db = spy(new ParametragesDatabaseService());
 		
-		List<CategorieOperationDTO> categoriesFromDB = new ArrayList<>();
+		List<CategorieOperation> categoriesFromDB = new ArrayList<>();
 		
 		for (int i = 0; i < 9; i++) {
 			
-			CategorieOperationDTO cat = new CategorieOperationDTO();
+			CategorieOperation cat = new CategorieOperation();
 			cat.setId("ID" + i);
 			cat.setActif(true);
 			cat.setCategorie(true);
 			cat.setLibelle("CAT" + i);
 			
 			for (int j = 0; j < 9; j++) {
-				CategorieOperationDTO ssCat = new CategorieOperationDTO();
+				CategorieOperation ssCat = new CategorieOperation();
 				ssCat.setActif(true);
 				ssCat.setCategorie(false);
 				ssCat.setId("ID" + i + j);
 				ssCat.setLibelle("SSCAT" + j);
 				ssCat.setListeSSCategories(null);
+				cat.setListeSSCategories(new HashSet<>());
 				cat.getListeSSCategories().add(ssCat);
 				
 			}
@@ -142,7 +146,7 @@ public class TestParametrageDBServices {
 
 
 		MongoOperations mockMongo = mock(MongoOperations.class);
-		when(mockMongo.findAll(CategorieOperationDTO.class)).thenReturn(categoriesFromDB);
+		when(mockMongo.findAll(CategorieOperation.class)).thenReturn(categoriesFromDB);
 		db.setMongoOperations(mockMongo);
 		
 		CategorieOperation cat = db.getCategorieParId("ID8");
@@ -156,7 +160,7 @@ public class TestParametrageDBServices {
 		
 		cat.getListeSSCategories().clear();
 		
-		CategorieOperation ssCat2 = db.getCategorieParId("ID73");
+		CategorieOperation ssCat2 = db.getCategorieParId("ID78");
 		assertNotNull(ssCat2);
 		assertNotNull(ssCat2.getCategorieParente());
 		assertEquals("ID7", ssCat2.getCategorieParente().getId());

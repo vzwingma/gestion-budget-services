@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terrier.finances.gestion.communs.comptes.model.CompteBancaire;
+import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.services.communs.api.AbstractTestsClientAPI;
 
 import okhttp3.mockwebserver.MockResponse;
@@ -44,7 +44,7 @@ public class TestComptesAPIClient extends AbstractTestsClientAPI {
 					.setBody(new ObjectMapper().writerFor(CompteBancaire.class).writeValueAsString(compte))
 				);
 		
-		CompteBancaire compteResult = compteClient.getCompteById("c1", "null");
+		CompteBancaire compteResult = compteClient.getCompteById("c1");
 		assertNotNull(compteResult);
 		assertEquals("c1", compteResult.getId());
 		RecordedRequest recordedRequest = getMockWebServer().takeRequest();

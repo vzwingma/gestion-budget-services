@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 
@@ -37,6 +38,9 @@ public abstract class AbstractAPIController {
 		if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
 			OAuth2User principal = (OAuth2User)authentication.getPrincipal();
 			return principal.getAttribute("login");
+		}
+		else if (authentication != null && authentication instanceof OAuth2Authentication) {
+			return (String)((OAuth2Authentication)authentication).getPrincipal();
 		}
 		return null;
 	}

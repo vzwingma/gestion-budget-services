@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.api.AbstractHTTPReactiveClient;
@@ -83,8 +84,8 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	@Override
 	public String getAccessToken() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication instanceof OAuth2Authentication) {
-		    return (String)((OAuth2Authentication)authentication).getDetails();
+		if (authentication instanceof OAuth2Authentication && authentication.getDetails() instanceof OAuth2AuthenticationDetails) {
+		    return ((OAuth2AuthenticationDetails)authentication.getDetails()).getTokenValue();
 		}
 		return null;
 	}

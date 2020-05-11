@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terrier.finances.gestion.communs.budget.model.BudgetMensuel;
+import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.api.IntervallesCompteAPIObject;
-import com.terrier.finances.gestion.communs.operations.model.LigneOperation;
+import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.api.LibellesOperationsAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
@@ -485,8 +485,8 @@ public class OperationsAPIController extends AbstractAPIController {
 			LocalDate[] intervalles = this.operationService.getIntervallesBudgets(idCompte);
 			if(intervalles != null && intervalles.length >= 2){
 				IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
-				intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[0]));
-				intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getLongFromLocalDate(intervalles[1]));
+				intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getNbDayFromLocalDate(intervalles[0]));
+				intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getNbDayFromLocalDate(intervalles[1]));
 				return getEntity(intervallesAPI);	
 			}
 			throw new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte);
