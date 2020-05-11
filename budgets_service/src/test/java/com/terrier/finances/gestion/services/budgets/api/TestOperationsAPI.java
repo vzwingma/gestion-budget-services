@@ -243,12 +243,13 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 		when(mockDataDBBudget.chargeBudgetMensuel(eq("TESTOK"))).thenReturn(ok);
 
 		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
-		/** Authentification **/
-		authenticateUser("userTest");
 
 		LOGGER.info("is UptoDate : {}", urlActif);
 		getMockAPI().perform(get(urlActif))
 					.andExpect(status().is4xxClientError());
+
+		/** Authentification **/
+		authenticateUser("userTest");
 
 		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTOK") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		LOGGER.info("is UptoDate : {}", urlActif);
