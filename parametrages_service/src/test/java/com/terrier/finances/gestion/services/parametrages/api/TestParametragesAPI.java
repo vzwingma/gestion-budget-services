@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,7 @@ public class TestParametragesAPI extends AbstractTestsAPI  {
 		ssCatCourse.setId("467496e4-9059-4b9b-8773-21f230c8c5c6");
 		ssCatCourse.setLibelle("Courses");
 		ssCatCourse.setListeSSCategories(null);
+		catAlimentation.setListeSSCategories(new HashSet<>());
 		catAlimentation.getListeSSCategories().add(ssCatCourse);
 		categoriesFromDB.add(catAlimentation);
 

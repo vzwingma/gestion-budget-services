@@ -7,6 +7,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,7 @@ public class TestParametrageDBServices {
 		ssCatCourse.setId("467496e4-9059-4b9b-8773-21f230c8c5c6");
 		ssCatCourse.setLibelle("Courses");
 		ssCatCourse.setListeSSCategories(null);
+		catAlimentation.setListeSSCategories(new HashSet<>());
 		catAlimentation.getListeSSCategories().add(ssCatCourse);
 		categoriesFromDB.add(catAlimentation);
 		
@@ -83,6 +85,7 @@ public class TestParametrageDBServices {
 		ssCatCourse.setId("467496e4-9059-4b9b-8773-21f230c8c5c6");
 		ssCatCourse.setLibelle("Courses");
 		ssCatCourse.setListeSSCategories(null);
+		catAlimentation.setListeSSCategories(new HashSet<>());
 		catAlimentation.getListeSSCategories().add(ssCatCourse);
 		categoriesFromDB.add(catAlimentation);
 		
@@ -134,6 +137,7 @@ public class TestParametrageDBServices {
 				ssCat.setId("ID" + i + j);
 				ssCat.setLibelle("SSCAT" + j);
 				ssCat.setListeSSCategories(null);
+				cat.setListeSSCategories(new HashSet<>());
 				cat.getListeSSCategories().add(ssCat);
 				
 			}
@@ -156,7 +160,7 @@ public class TestParametrageDBServices {
 		
 		cat.getListeSSCategories().clear();
 		
-		CategorieOperation ssCat2 = db.getCategorieParId("ID73");
+		CategorieOperation ssCat2 = db.getCategorieParId("ID78");
 		assertNotNull(ssCat2);
 		assertNotNull(ssCat2.getCategorieParente());
 		assertEquals("ID7", ssCat2.getCategorieParente().getId());
