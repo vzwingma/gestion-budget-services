@@ -50,10 +50,12 @@
 		<dependency>
 			<groupId>io.github.vzwingma.finances.budget.services</groupId>
 			<artifactId>communs</artifactId>
+			<version>${project.parent.version}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 		<dependency>
 			<groupId>io.github.vzwingma.finances.budget.services</groupId>
 			<artifactId>communs</artifactId>
+			<version>${project.parent.version}</version><!--$NO-MVN-MAN-VER$-->
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>		

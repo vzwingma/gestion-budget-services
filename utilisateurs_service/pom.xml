@@ -11,6 +11,7 @@
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>utilisateurs</artifactId>
 	<name>[Budget] Service Utilisateurs</name>
+	<version>12.0.1</version>
 	<description>Services Utilisateurs de l'application</description>
 	<packaging>jar</packaging>
 
@@ -51,10 +52,12 @@
 		<dependency>
 			<groupId>io.github.vzwingma.finances.budget.services</groupId>
 			<artifactId>communs</artifactId>
+			<version>${project.parent.version}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 		<dependency>
 			<groupId>io.github.vzwingma.finances.budget.services</groupId>
 			<artifactId>communs</artifactId>
+			<version>${project.parent.version}</version><!--$NO-MVN-MAN-VER$-->
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
