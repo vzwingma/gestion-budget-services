@@ -29,12 +29,12 @@ public class UtilisateursService extends AbstractBusinessService {
 	private UtilisateurDatabaseService dataDBUsers;
 
 	/**
-	 * @param idUtilisateur
+	 * @param loginUtilisateur
 	 * @return date de dernier accès
 	 */
-	public Map<UtilisateurPrefsEnum, String> getPrefsUtilisateur(String idUtilisateur){
+	public Map<UtilisateurPrefsEnum, String> getPrefsUtilisateur(String loginUtilisateur){
 		try {
-			Utilisateur utilisateur = dataDBUsers.chargeUtilisateurById(idUtilisateur);
+			Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(loginUtilisateur);
 			// Enregistrement de la date du dernier accès à maintenant
 			LocalDateTime dernierAcces = utilisateur.getDernierAcces();
 			utilisateur.setDernierAcces(LocalDateTime.now());
