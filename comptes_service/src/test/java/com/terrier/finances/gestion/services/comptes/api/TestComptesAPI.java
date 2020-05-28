@@ -33,7 +33,7 @@ import com.terrier.finances.gestion.test.config.TestMockDBComptesConfig;
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={TestMockDBComptesConfig.class})
-public class TestComptesAPI extends AbstractTestsAPI {
+class TestComptesAPI extends AbstractTestsAPI {
 
 
 	@Autowired
@@ -41,7 +41,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 
 
 	@Test
-	public void testGetComptes() throws Exception {
+	void testGetComptes() throws Exception {
 		// Fail
 		getMockAPI().perform(
 				post(BudgetApiUrlEnum.COMPTES_LIST_FULL))
@@ -82,7 +82,7 @@ public class TestComptesAPI extends AbstractTestsAPI {
 	
 
 	@Test
-	public void testCompte() throws Exception {
+	void testCompte() throws Exception {
 		// Fail*
 		String path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "AAA");
 		getMockAPI().perform(

@@ -53,7 +53,7 @@ import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
  */
 @ExtendWith({SpringExtension.class })
 @ContextConfiguration(classes={TestMockBudgetServiceConfig.class, TestMockDBServicesConfig.class, TestOperationsAPI.class, OperationsAPIController.class, OperationsService.class})
-public class TestOperationsAPI extends AbstractTestsAPI {
+class TestOperationsAPI extends AbstractTestsAPI {
 
 	@Autowired
 	private BudgetDatabaseService mockDataDBBudget;
@@ -99,7 +99,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	}
 
 	@Test
-	public void testGetBudgetQuery() throws Exception {
+	void testGetBudgetQuery() throws Exception {
 		// Fail
 		String urlWrongCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018";
 		getMockAPI().perform(get(urlWrongCompte))
@@ -108,7 +108,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	}
 
 	@Test
-	public void testGetBudgetWrongCompte() throws Exception {
+	void testGetBudgetWrongCompte() throws Exception {
 
 		when(mockDataAPIComptes.getCompteById(eq("unknown"))).thenReturn(null);
 		
@@ -124,7 +124,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	@Test
-	public void testGetBudgetOK() throws Exception {
+	void testGetBudgetOK() throws Exception {
 
 		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL+"?idCompte=C1&mois=1&annee=2018";
 		
@@ -141,7 +141,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	@Test
-	public void testIntervalles() throws Exception {
+	void testIntervalles() throws Exception {
 		String path = BudgetApiUrlEnum.BUDGET_COMPTE_INTERVALLES_FULL.replace("{idCompte}", "TEST");
 	
 		BudgetMensuel debut = new BudgetMensuel();
@@ -164,7 +164,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	@Test
-	public void testReinitbudget() throws Exception {
+	void testReinitbudget() throws Exception {
 
 		BudgetMensuel budget = new BudgetMensuel();
 		budget.setIdCompteBancaire(c1.getId());
@@ -195,7 +195,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	 * @throws Exception
 	 */
 	@Test
-	public void testBudgetActif() throws Exception{
+	void testBudgetActif() throws Exception{
 		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST");
 		/** Authentification **/
 		authenticateUser("userTest");
@@ -223,7 +223,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	 * @throws Exception
 	 */
 	@Test
-	public void testIsBudgetUptodate() throws Exception{
+	void testIsBudgetUptodate() throws Exception{
 		/** Authentification **/
 		authenticateUser("userTest");
 		
@@ -265,7 +265,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	 * @throws Exception
 	 */
 	@Test
-	public void testLockBudget() throws Exception{
+	void testLockBudget() throws Exception{
 		String urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TEST");
 		getMockAPI().perform(post(urlActif))
 		.andExpect(status().is4xxClientError());
@@ -309,7 +309,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	@Test
-	public void testGetBudget() throws Exception {
+	void testGetBudget() throws Exception {
 
 		String urlBadBudget = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", "C3_2018_1");
 		LOGGER.info("Bad Budget : {}", urlBadBudget);
@@ -332,7 +332,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	@Test
-	public void testSetAsDerniereOperation() throws Exception {
+	void testSetAsDerniereOperation() throws Exception {
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		sscat.setCategorieParente(cat);
@@ -372,7 +372,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	@Test
-	public void testDelOperation() throws Exception {
+	void testDelOperation() throws Exception {
 
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
@@ -404,7 +404,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	@Test
-	public void testUpdateOperation() throws Exception {
+	void testUpdateOperation() throws Exception {
 
 
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.FRAIS_REMBOURSABLES);
@@ -436,7 +436,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	@Test
-	public void testCreateOperationInterCompte() throws Exception {
+	void testCreateOperationInterCompte() throws Exception {
 
 		// Budget
 		CompteBancaire c2 = new CompteBancaire();
@@ -482,16 +482,6 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 									.replace("{idBudget}", bo.getId())
 									.replace("{idOperation}", opIntercompte.getId())
 									.replace("{idCompte}", c2.getId());
-		
-		/** TODO : 
-		c2.setActif(false);
-		LOGGER.info("Bad Intercompte : {}", urlIntercompte);
-		getMockAPI().perform(
-				post(urlIntercompte)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(json(opIntercompte)))
-			.andExpect(status().is4xxClientError());
-**/
 
 		// OK
 		LigneOperation opupdate = new LigneOperation(sscat, "OP1", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.REALISEE, false);
@@ -512,7 +502,7 @@ public class TestOperationsAPI extends AbstractTestsAPI {
 	 * @throws Exception
 	 */
 	@Test
-	public void testLibelles() throws Exception {
+	void testLibelles() throws Exception {
 		
 		/** Authentification **/
 		authenticateUser("123123");
