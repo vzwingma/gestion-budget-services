@@ -24,7 +24,7 @@ import okhttp3.mockwebserver.RecordedRequest;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes={ ComptesAPIClient.class})
-public class TestComptesAPIClient extends AbstractTestsClientAPI {
+class TestComptesAPIClient extends AbstractTestsClientAPI {
 
 	
 	@Autowired
@@ -32,7 +32,7 @@ public class TestComptesAPIClient extends AbstractTestsClientAPI {
 	
 	
 	@Test
-	public void testGetCompte() throws JsonProcessingException, InterruptedException {
+	void testGetCompte() throws JsonProcessingException, InterruptedException {
 		
 		CompteBancaire compte = new CompteBancaire();
 		compte.setId("c1");
