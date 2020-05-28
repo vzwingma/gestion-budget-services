@@ -34,10 +34,10 @@ import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPre
  * @author vzwingma
  *
  */
-public class TestConverters {
+class TestConverters {
 
 	@Test
-	public void testConverterAPIObject() throws HttpMessageNotWritableException, IOException{
+	void testConverterAPIObject() throws HttpMessageNotWritableException, IOException{
 		APIObjectMessageConverter<AbstractAPIObjectModel> converter = new APIObjectMessageConverter<>();
 		
 		assertFalse(converter.canRead(List.class, MediaType.APPLICATION_JSON));
@@ -60,7 +60,7 @@ public class TestConverters {
 	
 	
 	@Test
-	public void testConvertBudget() throws Exception {
+	void testConvertBudget() throws Exception {
 
 		// Budget
 		CompteBancaire c1 = new CompteBancaire();
@@ -125,7 +125,7 @@ public class TestConverters {
 	
 	
 	@Test
-	public void testConvertMap() throws IOException{
+	void testConvertMap() throws IOException{
 		// Budget
 		BudgetMensuel bo = new BudgetMensuel();
 		bo.setId("BUDGETTEST");
@@ -177,7 +177,7 @@ public class TestConverters {
 	 * @throws IOException
 	 */
 	@Test
-	public void testConvertLigneOperation() throws IOException {
+	void testConvertLigneOperation() throws IOException {
 
 		LigneOperation operation = new LigneOperation();
 		operation.setId("OP1");

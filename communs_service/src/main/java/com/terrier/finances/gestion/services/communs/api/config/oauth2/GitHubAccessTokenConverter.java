@@ -27,7 +27,7 @@ public class GitHubAccessTokenConverter implements AccessTokenConverter {
 	 *
 	 */
 	public OAuth2Authentication extractAuthentication(Map<String, ?> map) {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		
 		Authentication user = null;
 		if (map.containsKey(GITHUB_USER_ATTRIBUTE)) {

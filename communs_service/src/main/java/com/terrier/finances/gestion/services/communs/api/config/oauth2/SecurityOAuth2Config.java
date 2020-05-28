@@ -23,12 +23,6 @@ public class SecurityOAuth2Config extends ResourceServerConfigurerAdapter {
 
 
 	public static final Logger LOGGER = LoggerFactory.getLogger( SecurityOAuth2Config.class );
-	
-	
-	@Override
-	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-		super.configure(resources);
-	}
 
 	/**
 	 * configuration Sécurité

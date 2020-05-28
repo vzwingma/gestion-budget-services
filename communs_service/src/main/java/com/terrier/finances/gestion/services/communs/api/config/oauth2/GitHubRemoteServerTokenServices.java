@@ -63,7 +63,7 @@ public class GitHubRemoteServerTokenServices implements ResourceServerTokenServi
      * Charge l'authentification à partir de l'access token
      */
     @Override
-	public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
+	public OAuth2Authentication loadAuthentication(String accessToken) {
     	LOGGER.debug("[OAuth2={}] Load", accessToken);
     	OAuth2Authentication authentication = cacheAuthentication.get(accessToken);
     	if(authentication == null) {
@@ -86,7 +86,7 @@ public class GitHubRemoteServerTokenServices implements ResourceServerTokenServi
     /**
      * Charge l'authentification à partir de l'access token sur Github
      */
-	public OAuth2Authentication loadAuthenticationFromRemote(String accessToken) throws AuthenticationException, InvalidTokenException {
+	public OAuth2Authentication loadAuthenticationFromRemote(String accessToken) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
