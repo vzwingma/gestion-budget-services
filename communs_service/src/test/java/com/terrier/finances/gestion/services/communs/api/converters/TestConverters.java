@@ -195,7 +195,6 @@ class TestConverters {
 		operation.setTypeOperation(TypeOperationEnum.CREDIT);
 		operation.setAutresInfos(operation.new AddInfos());
 		operation.getAutresInfos().setAuteur("MOI");
-		operation.getAutresInfos().setNotes("notes");
 		LocalDateTime t = LocalDateTime.of(2020, 10, 1, 12, 0, 0);
 		operation.getAutresInfos().setDateOperation(t);
 		operation.getAutresInfos().setDateMaj(t);
@@ -206,7 +205,7 @@ class TestConverters {
 		
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(operation, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"id\":\"OP1\",\"libelle\":\"Operation 1\",\"categorie\":{\"id\":\"CAT1\",\"libelle\":\"CAT1\"},\"ssCategorie\":{\"id\":\"SsCAT1\",\"libelle\":\"SsCAT1\"},\"typeOperation\":\"CREDIT\",\"etat\":\"REALISEE\",\"valeur\":123.0,\"periodique\":false,\"tagDerniereOperation\":false,\"autresInfos\":{\"dateOperation\":[2020,10,1,12,0],\"dateMaj\":[2020,10,1,12,0],\"auteur\":\"MOI\",\"notes\":\"notes\"}}", out.getBody().toString());
+		assertEquals("{\"id\":\"OP1\",\"libelle\":\"Operation 1\",\"categorie\":{\"id\":\"CAT1\",\"libelle\":\"CAT1\"},\"ssCategorie\":{\"id\":\"SsCAT1\",\"libelle\":\"SsCAT1\"},\"typeOperation\":\"CREDIT\",\"etat\":\"REALISEE\",\"valeur\":123.0,\"periodique\":false,\"tagDerniereOperation\":false,\"autresInfos\":{\"dateCreate\":null,\"dateOperation\":[2020,10,1,12,0],\"dateMaj\":[2020,10,1,12,0],\"auteur\":\"MOI\"}}", out.getBody().toString());
 
 		HttpInputMessage in = new MockHttpInputMessage(out.getBody().toString().getBytes());
 		AbstractAPIObjectModel modelRead = converter.read(LigneOperation.class, in);
