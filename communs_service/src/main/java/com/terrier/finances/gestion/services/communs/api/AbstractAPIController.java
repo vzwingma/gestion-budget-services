@@ -39,7 +39,7 @@ public abstract class AbstractAPIController {
 			OAuth2User principal = (OAuth2User)authentication.getPrincipal();
 			return principal.getAttribute("login");
 		}
-		else if (authentication != null && authentication instanceof OAuth2Authentication) {
+		else if (authentication instanceof OAuth2Authentication) {
 			return (String)((OAuth2Authentication)authentication).getPrincipal();
 		}
 		return null;

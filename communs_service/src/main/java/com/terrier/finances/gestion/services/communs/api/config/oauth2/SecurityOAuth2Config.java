@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
 /**
  * Configuration des API. Autorisées par OpenID
@@ -23,12 +22,6 @@ public class SecurityOAuth2Config extends ResourceServerConfigurerAdapter {
 
 
 	public static final Logger LOGGER = LoggerFactory.getLogger( SecurityOAuth2Config.class );
-	
-	
-	@Override
-	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-		super.configure(resources);
-	}
 
 	/**
 	 * configuration Sécurité

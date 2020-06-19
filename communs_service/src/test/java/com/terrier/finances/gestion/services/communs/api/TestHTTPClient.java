@@ -28,7 +28,7 @@ import okhttp3.mockwebserver.RecordedRequest;
  *
  */
 @ExtendWith(SpringExtension.class)
-public class TestHTTPClient extends AbstractTestsClientAPI {
+class TestHTTPClient extends AbstractTestsClientAPI {
 
 	@Test
 	void testCallGet() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {

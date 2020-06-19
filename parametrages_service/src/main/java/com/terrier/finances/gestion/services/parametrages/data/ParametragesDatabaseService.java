@@ -46,7 +46,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService<Categor
 				LOGGER.info("> Chargement des {} catégories <", listeCategories.size());
 				listeCategories.stream().forEachOrdered(c -> {
 					LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
-					c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}][{}]		{}", s.isActif() ? "v" : "X", s.getId(), s));
+					c.getListeSSCategories().stream().forEachOrdered(s -> LOGGER.debug("[{}][{}]\t\t{}", s.isActif() ? "v" : "X", s.getId(), s));
 				});
 			}
 			catch(Exception e){

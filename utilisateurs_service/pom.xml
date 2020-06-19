@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>io.github.vzwingma.finances.budget</groupId>
 		<artifactId>services</artifactId>
-		<version>12.0.0</version>
+		<version>12.2.0</version>
 	</parent>
 
 	<groupId>io.github.vzwingma.finances.budget.services</groupId>
 	<artifactId>utilisateurs</artifactId>
 	<name>[Budget] Service Utilisateurs</name>
-	<version>12.0.1</version>
+
 	<description>Services Utilisateurs de l'application</description>
 	<packaging>jar</packaging>
 

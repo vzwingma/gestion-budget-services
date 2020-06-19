@@ -11,7 +11,7 @@
 
 	<groupId>io.github.vzwingma.finances.budget</groupId>
 	<artifactId>services</artifactId>
-	<version>12.0.0</version>
+	<version>12.2.0</version>
 	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
 	<packaging>pom</packaging>
@@ -20,7 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>11</maven.compiler.target>
 
-		<communs.version>12.0.0-RC4</communs.version>
+		<communs.version>12.1.0</communs.version>
 
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
@@ -276,7 +276,7 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>swagger-ui</artifactId>
-			<version>3.25.2</version>
+			<version>3.26.1</version>
 		</dependency>
 		<!-- LOG -->
 		<!-- slf4j dependency -->

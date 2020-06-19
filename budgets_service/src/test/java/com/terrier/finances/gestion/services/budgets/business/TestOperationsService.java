@@ -47,7 +47,7 @@ import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes={TestMockBudgetServiceConfig.class,  OperationsService.class, OutcomingRequestFilter.class})
-public class TestOperationsService {
+class TestOperationsService {
 
 	/**
 	 * Logger
@@ -108,7 +108,7 @@ public class TestOperationsService {
 	 * Test #119
 	 */
 	@Test
-	public void testSetBudgetInactif() throws UserNotAuthorizedException, BudgetNotFoundException{
+	void testSetBudgetInactif() throws UserNotAuthorizedException, BudgetNotFoundException{
 		when(mockDBBudget.chargeBudgetMensuel(anyString())).thenReturn(this.budget);
 		try {
 			BudgetMensuel m = operationsService.setBudgetActif(this.budget.getId(), false, "test");
@@ -125,7 +125,7 @@ public class TestOperationsService {
 	 * Test #121
 	 */
 	@Test
-	public void testCalculBudget(){
+	void testCalculBudget(){
 		assertNotNull(this.operationsService);
 		assertNotNull(this.budget);
 		this.operationsService.calculBudget(this.budget);
@@ -139,7 +139,7 @@ public class TestOperationsService {
 	}
 
 	@Test
-	public void testSetLastOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException {
+	void testSetLastOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException {
 
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
@@ -173,7 +173,7 @@ public class TestOperationsService {
 	 * @throws CompteClosedException
 	 */
 	@Test
-	public void testDelOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException {
+	void testDelOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException {
 		LOGGER.info("testDelOperation");
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	
@@ -197,7 +197,7 @@ public class TestOperationsService {
 	 * @throws CompteClosedException
 	 */
 	@Test
-	public void testCRUDOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException {
+	void testCRUDOperation() throws UserNotAuthorizedException, DataNotFoundException, BudgetNotFoundException, CompteClosedException {
 		LOGGER.info("testCRUDOperation");
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.JANUARY), eq(2018))).thenReturn(this.budget);
 		when(mockDBBudget.chargeBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017))).thenThrow(new BudgetNotFoundException("MOCK"));	

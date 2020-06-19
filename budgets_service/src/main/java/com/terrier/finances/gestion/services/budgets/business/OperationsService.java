@@ -165,7 +165,7 @@ public class OperationsService extends AbstractBusinessService {
 			if(budgetMensuel != null){
 				LOGGER.debug("Budget : Date mise à jour : {} / Date IHM : {}", 
 						BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(budgetMensuel.getDateMiseAJour()), dateSurIHM);
-				return budgetMensuel.getDateMiseAJour() != null ? dateSurIHM >= BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(budgetMensuel.getDateMiseAJour()) : false;
+				return dateSurIHM >= BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(budgetMensuel.getDateMiseAJour());
 			}
 		} catch (BudgetNotFoundException e) {
 			LOGGER.error("Erreur lors de la recherche du budget [{}]", idBudget);
@@ -236,7 +236,7 @@ public class OperationsService extends AbstractBusinessService {
 			budget.getSoldes().setSoldeAtFinMoisCourant(0D);
 			budget.getSoldes().setSoldeAtMaintenant(0D);
 			budget.getSoldes().setSoldeAtFinMoisPrecedent(0D);
-			budget.setListeOperations(new ArrayList<LigneOperation>());
+			budget.setListeOperations(new ArrayList<>());
 		}
 
 		LOGGER.info("Sauvegarde du nouveau budget {}", budget);
@@ -333,7 +333,7 @@ public class OperationsService extends AbstractBusinessService {
 						budgetPrecedent.getListeOperations()
 						.stream()
 						.filter(op -> op.isPeriodique() || EtatOperationEnum.REPORTEE.equals(op.getEtat()))
-						.map(op -> BudgetDataUtils.cloneDepenseToMoisSuivant(op))
+						.map(BudgetDataUtils::cloneDepenseToMoisSuivant)
 						.collect(Collectors.toList()));
 			}
 		}
@@ -638,7 +638,7 @@ public class OperationsService extends AbstractBusinessService {
 				BudgetDataUtils.ajouteASoldeFin(budget, valeurOperation);
 			}
 		}
-		LOGGER.debug("Solde prévu	| {}	| {}", budget.getSoldes().getSoldeAtMaintenant(), budget.getSoldes().getSoldeAtFinMoisCourant());
+		LOGGER.debug("Solde prévu\t| {}\t| {}", budget.getSoldes().getSoldeAtMaintenant(), budget.getSoldes().getSoldeAtFinMoisCourant());
 	}
 
 	/**

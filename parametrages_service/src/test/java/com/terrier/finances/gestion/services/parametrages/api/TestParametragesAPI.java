@@ -31,7 +31,7 @@ import com.terrier.finances.gestion.test.config.TestMockDBParamConfig;
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={TestMockDBParamConfig.class})
-public class TestParametragesAPI extends AbstractTestsAPI  {
+class TestParametragesAPI extends AbstractTestsAPI  {
 
 
 	@Autowired
@@ -39,7 +39,7 @@ public class TestParametragesAPI extends AbstractTestsAPI  {
 
 
 	@Test
-	public void testGetCategories() throws Exception {
+	void testGetCategories() throws Exception {
 		
 		/** Authentification **/
 		authenticateUser("userTest");

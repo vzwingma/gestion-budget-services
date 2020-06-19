@@ -44,7 +44,7 @@ import com.terrier.finances.gestion.test.config.TestMockDBUtilisateursConfig;
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={TestMockDBUtilisateursConfig.class})
-public class TestUtilisateursAPI extends AbstractTestsAPI  {
+class TestUtilisateursAPI extends AbstractTestsAPI  {
 
 	/**
 	 * Logger
@@ -60,7 +60,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	}
 
 	@Test
-	public void mockApplicationUser() {
+	void mockApplicationUser() {
 		OAuth2User applicationUser = Mockito.mock(OAuth2User.class);
 		Authentication authentication = Mockito.mock(Authentication.class);
 		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -74,7 +74,7 @@ public class TestUtilisateursAPI extends AbstractTestsAPI  {
 	}
 
 	@Test
-	public void testLastTime() throws Exception {
+	void testLastTime() throws Exception {
 
 		// Fail
 		LOGGER.info("LastTime KO");

@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author vzwingma
  *
  */
-public class TestPasswordEncoder {
+class TestPasswordEncoder {
 
 
 	/**
@@ -30,7 +30,7 @@ public class TestPasswordEncoder {
 	}
 	
 	@Test
-	public void testPassWordEncoder() throws Exception{
+	void testPassWordEncoder() throws Exception{
 		String originalPassword = "Secrete@343";
 
 		String generatedSecuredPasswordHash = passwordEncoder().encode(originalPassword);
@@ -44,7 +44,7 @@ public class TestPasswordEncoder {
 	
 
 	@Test
-	public void generate() throws Exception{
+	void generate() throws Exception{
 		String originalPassword = "test";
 
 		String generatedSecuredPasswordHash = passwordEncoder().encode(originalPassword);

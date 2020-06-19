@@ -16,11 +16,11 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 
 
-public class TestParametrageDBServices {
+class TestParametrageDBServices {
 
 	
 	@Test
-	public void testCategories(){
+	void testCategories(){
 		
 		
 		ParametragesDatabaseService db = spy(new ParametragesDatabaseService());
@@ -66,7 +66,7 @@ public class TestParametrageDBServices {
 	
 
 	@Test
-	public void testGetCategorie(){
+	void testGetCategorie(){
 		
 		
 		ParametragesDatabaseService db = spy(new ParametragesDatabaseService());
@@ -115,7 +115,7 @@ public class TestParametrageDBServices {
 	
 
 	@Test
-	public void testGetCategorieById(){
+	void testGetCategorieById(){
 		
 		
 		ParametragesDatabaseService db = spy(new ParametragesDatabaseService());
