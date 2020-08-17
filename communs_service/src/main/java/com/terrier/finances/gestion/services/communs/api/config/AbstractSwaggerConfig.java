@@ -13,6 +13,7 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.SecurityConfiguration;
+import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
 
 /**
  * Config Swagger
@@ -54,7 +55,10 @@ public abstract class AbstractSwaggerConfig {
      */
     @Bean 
     SecurityConfiguration security() { 
-    	return new SecurityConfiguration(null, null, "Bearer", "Budget Services", "Bearer jwt_access_token", null, Boolean.TRUE); 
+    	return SecurityConfigurationBuilder.builder()
+    			.realm("Bearer")
+    			.enableCsrfSupport(Boolean.TRUE)
+    			.appName("Budget Services").build();
     }
 
 }
