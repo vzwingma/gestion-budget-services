@@ -37,7 +37,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 	private static final String ATTRIBUT_COMPTE_ID = "idCompteBancaire";
 	private static final String ATTRIBUT_ANNEE = "annee";
 	private static final String ATTRIBUT_MOIS = "mois";
-
+	private static final String ATTRIBUT_ID = "_id";
 	/**
 	 * Chargement du budget mensuel
 	 * @param mois mois du budget
@@ -185,7 +185,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 		try{
 			Query query1erBudget = new Query();
 			query1erBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-			query1erBudget.with(Sort.by(Sort.Direction.ASC, ATTRIBUT_ANNEE, ATTRIBUT_MOIS));
+			query1erBudget.with(Sort.by(Sort.Direction.ASC, ATTRIBUT_ANNEE, ATTRIBUT_ID));
 			query1erBudget.limit(1);
 			
 			BudgetMensuel premierbudget = findOneByQuery(query1erBudget);
@@ -193,7 +193,7 @@ public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel
 			
 			Query querydernierBudget = new Query();
 			querydernierBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(compte));
-			querydernierBudget.with(Sort.by(Sort.Direction.DESC, ATTRIBUT_ANNEE, ATTRIBUT_MOIS));
+			querydernierBudget.with(Sort.by(Sort.Direction.DESC, ATTRIBUT_ANNEE, ATTRIBUT_ID));
 			querydernierBudget.limit(1);
 			
 			BudgetMensuel dernierbudget = findOneByQuery(querydernierBudget);
