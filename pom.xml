@@ -276,7 +276,7 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>swagger-ui</artifactId>
-			<version>3.27.0</version>
+			<version>3.30.0</version>
 		</dependency>
 		<!-- LOG -->
 		<!-- slf4j dependency -->
