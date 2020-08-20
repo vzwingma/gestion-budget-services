@@ -569,7 +569,7 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	private void calculBudgetTotalCategories(BudgetMensuel budget, LigneOperation operation) {
 
-		if(operation.getCategorie() != null) {
+		if(operation.getCategorie() != null && operation.getCategorie().getId() != null) {
 			Double valeurOperation = operation.getValeur();
 			TotauxCategorie valeursCat = new TotauxCategorie();
 			if(budget.getTotauxParCategories().get(operation.getCategorie().getId()) != null){
@@ -583,7 +583,11 @@ public class OperationsService extends AbstractBusinessService {
 			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 				valeursCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
+			LOGGER.debug("Total par catégorie [idCat={} : {}]", operation.getCategorie().getId(), valeursCat);
 			budget.getTotauxParCategories().put(operation.getCategorie().getId(), valeursCat);
+		}
+		else {
+			LOGGER.warn("L'opération [{}] n'a pas de catégorie [{}]", operation, operation.getCategorie() );
 		}
 	}
 
@@ -594,7 +598,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * 
 	 * */
 	private void calculBudgetTotalSsCategories(BudgetMensuel budget, LigneOperation operation) {
-		if(operation.getSsCategorie() != null) {
+		if(operation.getSsCategorie() != null && operation.getSsCategorie().getId() != null) {
 			Double valeurOperation = operation.getValeur();
 			TotauxCategorie valeursSsCat = new TotauxCategorie();
 			if( budget.getTotauxParSSCategories().get(operation.getSsCategorie().getId()) != null){
@@ -608,7 +612,11 @@ public class OperationsService extends AbstractBusinessService {
 			if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 				valeursSsCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
+			LOGGER.debug("Total par ss catégorie [idCat={} : {}]", operation.getSsCategorie().getId(), valeursSsCat);
 			budget.getTotauxParSSCategories().put(operation.getSsCategorie().getId(), valeursSsCat);
+		}
+		else {
+			LOGGER.warn("L'opération [{}]  n'a pas de sous-catégorie [{}]", operation, operation.getSsCategorie() );
 		}
 	}
 
