@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurDroitsEnum;
 import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurPrefsEnum;
 import com.terrier.finances.gestion.communs.utilisateur.model.api.UtilisateurPrefsAPIObject;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
@@ -24,6 +25,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
+import com.terrier.finances.gestion.services.utilisateurs.model.v12.Utilisateur;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -89,11 +91,14 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	public ResponseEntity<UtilisateurPrefsAPIObject> getPreferencesUtilisateur() throws DataNotFoundException{
 		String idProprietaire = getIdProprietaire();
 		if(idProprietaire != null){
-			Map<UtilisateurPrefsEnum, String> prefsUtilisateur = utilisateursService.getPrefsUtilisateur(idProprietaire);
-			logger.info("Preferences Utilisateur : {}", prefsUtilisateur);
+			Utilisateur utilisateur = utilisateursService.getUtilisateur(idProprietaire);
+			Map<UtilisateurPrefsEnum, String> prefsUtilisateur = utilisateur.getPrefsUtilisateur();
+			Map<UtilisateurDroitsEnum, Boolean> droitsUtilisateur = utilisateur.getDroits();
+			logger.info("Preferences Utilisateur : {} | {}", prefsUtilisateur, droitsUtilisateur);
 			UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
 			prefs.setIdUtilisateur(idProprietaire);
 			prefs.setPreferences(prefsUtilisateur);
+			prefs.setDroits(droitsUtilisateur);
 			return getEntity(prefs);
 		}
 		throw new DataNotFoundException("[token=?] Impossible de trouver l'utilisateur");
