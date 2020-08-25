@@ -49,7 +49,8 @@ class TestConverters {
 		auth.setPreferences(new HashMap<>());
 		HttpOutputMessage out = new MockHttpOutputMessage();
 		converter.write(auth, MediaType.APPLICATION_JSON, out);
-		assertEquals("{\"idUtilisateur\":\"Test\",\"lastAccessTime\":0,\"preferences\":{}}", out.getBody().toString());
+		
+		assertEquals("{\"idUtilisateur\":\"Test\",\"lastAccessTime\":0,\"droits\":null,\"preferences\":{}}", out.getBody().toString());
 		
 		assertTrue(converter.canRead(CompteBancaire.class, MediaType.APPLICATION_JSON));
 		assertTrue(converter.canWrite(CompteBancaire.class, MediaType.APPLICATION_JSON));

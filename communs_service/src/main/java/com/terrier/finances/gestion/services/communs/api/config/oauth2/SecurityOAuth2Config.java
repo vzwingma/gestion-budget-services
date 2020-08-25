@@ -30,13 +30,12 @@ public class SecurityOAuth2Config extends ResourceServerConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		LOGGER.info("[INIT] Security OpenIDConnect"); // par la le Github remote Server Token Service
 		http
-		.csrf().disable()
 		// authorization requests config
 		.authorizeRequests()
 			.antMatchers("/error").permitAll()
 			.antMatchers("/favicon.ico").permitAll()
 			// Authorize Swagger
-			.antMatchers(HttpMethod.GET, "/swagger-ui*").anonymous()
+			.antMatchers(HttpMethod.GET, "/swagger-ui/**").anonymous()
 			.antMatchers(HttpMethod.GET, "/swagger-resources/**").anonymous()
 			.antMatchers(HttpMethod.GET, "/webjars/**").anonymous()
 			.antMatchers(HttpMethod.GET, "/v2/api-docs/**").anonymous()

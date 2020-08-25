@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -54,7 +54,7 @@ class TestUtilisateursAPI extends AbstractTestsAPI  {
 	@Autowired
 	private UtilisateurDatabaseService mockDataDBUsers;
 
-	@Before
+	@BeforeEach
 	public void setupMock() {
 		MockitoAnnotations.initMocks(this);
 	}
