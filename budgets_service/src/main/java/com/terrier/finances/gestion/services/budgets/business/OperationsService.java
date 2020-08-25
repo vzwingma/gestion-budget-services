@@ -320,7 +320,10 @@ public class OperationsService extends AbstractBusinessService {
 	 */
 	private void initBudgetFromBudgetPrecedent(BudgetMensuel budget, BudgetMensuel budgetPrecedent) throws CompteClosedException{
 		// Calcul
-		if(true) { // TODO : budget.getCompteBancaire().isActif() && budgetPrecedent.getCompteBancaire().isActif()){
+		CompteBancaire compteBancaire = compteClientApi.getCompteById(budget.getIdCompteBancaire());
+		CompteBancaire compteBancairePrecedent = compteClientApi.getCompteById(budgetPrecedent.getIdCompteBancaire());
+		
+		if(compteBancaire.isActif() && compteBancairePrecedent.isActif()){
 			calculBudget(budgetPrecedent);
 			budget.setIdCompteBancaire(budgetPrecedent.getIdCompteBancaire());
 			// #116 : Le résultat du moins précédent est le compte réel, pas le compte avancé
@@ -412,7 +415,8 @@ public class OperationsService extends AbstractBusinessService {
 	public BudgetMensuel deleteOperation(String idBudget, String idOperation, String idProprietaire) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		try {
 			BudgetMensuel budget = chargerBudgetMensuel(idBudget, idProprietaire);
-			if(Boolean.TRUE.equals(budget.isActif())) { // TODO : && Boolean.TRUE.equals(budget.getCompteBancaire().isActif())){
+			CompteBancaire compteBancaire = compteClientApi.getCompteById(budget.getIdCompteBancaire());
+			if(Boolean.TRUE.equals(budget.isActif()) && Boolean.TRUE.equals(compteBancaire.isActif())){
 				// Si suppression d'une opération, on l'enlève
 				boolean maj = budget.getListeOperations().removeIf(op -> op.getId().equals(idOperation));
 				if(maj) {
@@ -447,7 +451,8 @@ public class OperationsService extends AbstractBusinessService {
 	public BudgetMensuel updateOperationInBudget(String idBudget, final LigneOperation ligneOperation, String idProprietaire) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
 		BudgetMensuel budget = chargerBudgetMensuel(idBudget, idProprietaire);
-		if(budget != null ){  // TODO : && budget.getCompteBancaire().isActif()
+		CompteBancaire compteBancaire = compteClientApi.getCompteById(budget.getIdCompteBancaire());
+		if(budget != null && compteBancaire.isActif()) {
 			// Si mise à jour d'une opération, on l'enlève
 			int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
 			budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
