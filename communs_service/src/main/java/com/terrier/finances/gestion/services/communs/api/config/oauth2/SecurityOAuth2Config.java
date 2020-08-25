@@ -30,7 +30,6 @@ public class SecurityOAuth2Config extends ResourceServerConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		LOGGER.info("[INIT] Security OpenIDConnect"); // par la le Github remote Server Token Service
 		http
-		.csrf().disable()
 		// authorization requests config
 		.authorizeRequests()
 			.antMatchers("/error").permitAll()
