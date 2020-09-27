@@ -8,3 +8,5 @@
 *.prefs
 *.class
 *.log
+/.idea/
+*.iml
