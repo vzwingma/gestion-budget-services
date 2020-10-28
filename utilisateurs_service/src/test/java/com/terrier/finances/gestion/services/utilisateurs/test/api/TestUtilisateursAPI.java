@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.utilisateurs.api;
+package com.terrier.finances.gestion.services.utilisateurs.test.api;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
@@ -14,6 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 
+import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRequest;
+import com.terrier.finances.gestion.services.utilisateurs.test.data.TestDataUtilisateur;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +37,6 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.utilisateurs.spi.UtilisateurDatabaseAdaptor;
 import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
-import com.terrier.finances.gestion.test.config.TestMockDBUtilisateursConfig;
 
 /**
  * @author vzwingma
@@ -43,7 +44,7 @@ import com.terrier.finances.gestion.test.config.TestMockDBUtilisateursConfig;
  */
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes={TestMockDBUtilisateursConfig.class})
+@ContextConfiguration(classes={MockServiceUtilisateurs.class})
 class TestUtilisateursAPI extends AbstractTestsAPI  {
 
 	/**
@@ -52,26 +53,8 @@ class TestUtilisateursAPI extends AbstractTestsAPI  {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestUtilisateursAPI.class);
 
 	@Autowired
-	private UtilisateurDatabaseAdaptor mockDataDBUsers;
+	private IUtilisateursRequest mockServiceUtilisateurs;
 
-	@BeforeEach
-	public void setupMock() {
-		MockitoAnnotations.initMocks(this);
-	}
-
-	@Test
-	void mockApplicationUser() {
-		OAuth2User applicationUser = Mockito.mock(OAuth2User.class);
-		Authentication authentication = Mockito.mock(Authentication.class);
-		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-		when(securityContext.getAuthentication()).thenReturn(authentication);
-		SecurityContextHolder.setContext(securityContext);
-		when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
-		when(applicationUser.getAttribute(eq("name"))).thenReturn("User");
-
-		assertNotNull(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-		assertEquals("User", ((OAuth2User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAttribute("name"));
-	}
 
 	@Test
 	void testLastTime() throws Exception {
@@ -87,12 +70,7 @@ class TestUtilisateursAPI extends AbstractTestsAPI  {
 		assertNotNull(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 		assertEquals("345345", ((OAuth2User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAttribute("login"));
 
-
-		Utilisateur userOK = new Utilisateur();
-		userOK.setId("345345");
-		userOK.setLogin("Test");
-		userOK.setDernierAcces(LocalDateTime.now());
-		when(mockDataDBUsers.chargeUtilisateur(eq("345345"))).thenReturn(userOK);
+		when(mockServiceUtilisateurs.getUtilisateur(eq("345345"))).thenReturn(TestDataUtilisateur.getTestUtilisateur());
 		LOGGER.info("LastTime OK {}", BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL);
 		getMockAPI().perform(
 				get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL)
@@ -101,5 +79,26 @@ class TestUtilisateursAPI extends AbstractTestsAPI  {
 		.andExpect(status().isOk())
 		.andExpect(content().string(containsString("\"lastAccessTime\"")));
 
-	}	
+	}
+
+
+
+
+	@Test
+	void testPreferencesUtilisateur() throws Exception {
+
+		/** Authentification **/
+		authenticateUser("345345");
+		assertNotNull(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+		assertEquals("345345", ((OAuth2User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAttribute("login"));
+
+		when(mockServiceUtilisateurs.getUtilisateur(eq("345345"))).thenReturn(TestDataUtilisateur.getTestUtilisateur());
+		getMockAPI().perform(
+				get(BudgetApiUrlEnum.USERS_PREFS_FULL)
+						.accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("\"PREFS_STATUT_NLLE_DEPENSE\"")));
+
+	}
 }

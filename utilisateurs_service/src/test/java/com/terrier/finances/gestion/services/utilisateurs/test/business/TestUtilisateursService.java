@@ -29,7 +29,7 @@ public class TestUtilisateursService {
     }
 
     @Test
-    public void testChargeUtilisateur() throws DataNotFoundException {
+    public void testGetUtilisateur() throws DataNotFoundException {
         // Préparation
         when(spi.chargeUtilisateur(eq("Test"))).thenReturn(TestDataUtilisateur.getTestUtilisateur());
 
@@ -41,10 +41,11 @@ public class TestUtilisateursService {
         Assert.assertEquals("345345", userTest.getId());
 
         verify(spi, times(1)).chargeUtilisateur(anyString());
+        verify(spi, times(1)).majUtilisateur(any(Utilisateur.class));
     }
 
     @Test
-    public void testChargeUtilisateurKO() throws DataNotFoundException {
+    public void testGetUtilisateurKO() throws DataNotFoundException {
         // Préparation
         when(spi.chargeUtilisateur(anyString())).thenThrow(DataNotFoundException.class);
 

@@ -78,7 +78,6 @@ public class UtilisateursAPIController extends AbstractAPIController {
 
 	/**
 	 * Préférences d'un utilisateur
-	 * @param idUtilisateur id Utilisateur
 	 * @return préférences
 	 * @throws DataNotFoundException données non trouvées
 	 */

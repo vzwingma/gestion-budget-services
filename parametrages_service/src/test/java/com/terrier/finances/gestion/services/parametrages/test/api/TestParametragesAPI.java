@@ -1,15 +1,9 @@
 package com.terrier.finances.gestion.services.parametrages.test.api;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-
+import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRequest;
 import com.terrier.finances.gestion.services.parametrages.test.data.TestDataCategorieOperation;
+import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +11,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
+import java.util.ArrayList;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 /**
@@ -38,7 +36,7 @@ class TestParametragesAPI extends AbstractTestsAPI  {
 	@Test
 	void testGetCategories() throws Exception {
 
-		/** Authentification **/
+		// Authentification
 		authenticateUser("userTest");
 		
 		when(mockServiceParametrage.getCategories()).thenReturn(new ArrayList<>());

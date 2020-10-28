@@ -42,6 +42,7 @@ public class TestUtilisateursDBAdaptor {
         assertNotNull(user);
         assertEquals("345345", user.getId());
         assertEquals("Test", user.getLogin());
+        verify(mockMongo, times(1)).findOne(any(Query.class), eq(Utilisateur.class));
     }
 
 
