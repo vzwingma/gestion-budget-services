@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.parametrages;
+package com.terrier.finances.gestion.services.parametrages.config;
 
 import javax.annotation.PostConstruct;
 

@@ -6,6 +6,7 @@ package com.terrier.finances.gestion.services.parametrages.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
-import com.terrier.finances.gestion.services.parametrages.business.ParametragesService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +27,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
+ * Controleur REST -
+ * Adapteur du port {@link IParametrageRequest}
  * @author vzwingma
  *
  */
@@ -36,10 +38,8 @@ import io.swagger.annotations.ApiResponses;
 		consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 public class ParametragesAPIController extends AbstractAPIController {
 
-
-
 	@Autowired
-	private ParametragesService paramsServices;
+	private IParametrageRequest paramsServices;
 	
 	/**
 	 * @return la liste des catégories d'opérations

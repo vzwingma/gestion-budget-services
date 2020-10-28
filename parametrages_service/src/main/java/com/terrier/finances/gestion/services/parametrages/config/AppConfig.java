@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.parametrages;
+package com.terrier.finances.gestion.services.parametrages.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
