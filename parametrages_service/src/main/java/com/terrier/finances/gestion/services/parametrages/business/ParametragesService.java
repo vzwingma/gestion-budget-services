@@ -35,9 +35,10 @@ public class ParametragesService extends AbstractBusinessService implements IPar
 	/**
 	 * Service Provider Interface des données
 	 */
+	@Autowired
 	private IParametrageRepository dataParams;
 
-	public ParametragesService(@Autowired IParametrageRepository parametrageRepository){
+	public ParametragesService(IParametrageRepository parametrageRepository){
 		this.dataParams = parametrageRepository;
 	}
 
