@@ -18,7 +18,6 @@ import com.terrier.finances.gestion.services.budgets.business.ports.IComptesServ
 import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRepository;
 import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRequest;
 import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
-import com.terrier.finances.gestion.services.budgets.spi.OperationsDatabaseAdaptator;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -76,7 +75,7 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	public BudgetMensuel chargerBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException{
+	public BudgetMensuel getBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException{
 		LOGGER.debug("Chargement du budget {} de {}/{}", idCompte, mois, annee);
 
 		CompteBancaire compteBancaire = compteClientApi.getCompteById(idCompte);
@@ -235,7 +234,7 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? annee -1 : annee;
 			// Recherche du budget précédent 
 			// Si impossible : BudgetNotFoundException
-			BudgetMensuel budgetPrecedent = chargerBudgetMensuel(compteBancaire.getId(), moisPrecedent, anneePrecedente, idProprietaire);
+			BudgetMensuel budgetPrecedent = getBudgetMensuel(compteBancaire.getId(), moisPrecedent, anneePrecedente, idProprietaire);
 			// #115 : Cloture automatique du mois précédent
 			budgetPrecedent = setBudgetActif(budgetPrecedent.getId(), false, idProprietaire);
 
@@ -295,8 +294,8 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 	 * @throws BudgetNotFoundException budget introuvable
 	 * @throws DataNotFoundException données introuvables
 	 */
-	public BudgetMensuel chargerBudgetMensuel(String idBudget, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException{
-		return chargerBudgetMensuel(BudgetDataUtils.getCompteFromBudgetId(idBudget), BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget), idProprietaire);
+	public BudgetMensuel getBudgetMensuel(String idBudget, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException{
+		return getBudgetMensuel(BudgetDataUtils.getCompteFromBudgetId(idBudget), BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget), idProprietaire);
 	}
 
 	/**
@@ -308,7 +307,7 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 	 */
 	public BudgetMensuel reinitialiserBudgetMensuel(String idBudget, String idProprietaire) throws BudgetNotFoundException, CompteClosedException, DataNotFoundException{
 
-		BudgetMensuel budgetMensuel = chargerBudgetMensuel(idBudget, idProprietaire);
+		BudgetMensuel budgetMensuel = getBudgetMensuel(idBudget, idProprietaire);
 		if(budgetMensuel != null){
 			CompteBancaire compteBancaire = compteClientApi.getCompteById(budgetMensuel.getIdCompteBancaire());
 			if(compteBancaire != null){
@@ -424,7 +423,7 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 	 */
 	public BudgetMensuel deleteOperation(String idBudget, String idOperation, String idProprietaire) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		try {
-			BudgetMensuel budget = chargerBudgetMensuel(idBudget, idProprietaire);
+			BudgetMensuel budget = getBudgetMensuel(idBudget, idProprietaire);
 			CompteBancaire compteBancaire = compteClientApi.getCompteById(budget.getIdCompteBancaire());
 			if(Boolean.TRUE.equals(budget.isActif()) && Boolean.TRUE.equals(compteBancaire.isActif())){
 				// Si suppression d'une opération, on l'enlève
@@ -460,7 +459,7 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 	 */
 	public BudgetMensuel updateOperationInBudget(String idBudget, final LigneOperation ligneOperation, String idProprietaire) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
-		BudgetMensuel budget = chargerBudgetMensuel(idBudget, idProprietaire);
+		BudgetMensuel budget = getBudgetMensuel(idBudget, idProprietaire);
 		CompteBancaire compteBancaire = compteClientApi.getCompteById(budget.getIdCompteBancaire());
 		if(budget != null && compteBancaire.isActif()) {
 			// Si mise à jour d'une opération, on l'enlève
@@ -543,7 +542,7 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 	 */
 	public boolean setLigneAsDerniereOperation(String idBudget, String ligneId, String idProprietaire) {
 		try {
-			BudgetMensuel budget = chargerBudgetMensuel(idBudget, idProprietaire);
+			BudgetMensuel budget = getBudgetMensuel(idBudget, idProprietaire);
 			if(budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()) {
 				LOGGER.info("[idBudget={}][idOperation={}] Tag de la ligne comme dernière opération", idBudget, ligneId);
 				budget.getListeOperations()

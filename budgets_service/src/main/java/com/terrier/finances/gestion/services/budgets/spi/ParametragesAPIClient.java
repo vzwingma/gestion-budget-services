@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budgets.api.client;
+package com.terrier.finances.gestion.services.budgets.spi;
 
 import java.util.ArrayList;
 import java.util.List;

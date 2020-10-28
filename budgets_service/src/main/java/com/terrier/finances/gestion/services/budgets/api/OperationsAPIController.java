@@ -81,7 +81,7 @@ public class OperationsAPIController extends AbstractAPIController {
 		if(mois != null && annee != null){
 			try{
 				Month month = Month.of(mois);
-				return getEntity(operationService.chargerBudgetMensuel(idCompte, month, annee, getIdProprietaire()));
+				return getEntity(operationService.getBudgetMensuel(idCompte, month, annee, getIdProprietaire()));
 			}
 			catch(NumberFormatException e){
 				return ResponseEntity.badRequest().build();
@@ -120,7 +120,7 @@ public class OperationsAPIController extends AbstractAPIController {
 		logger.info("[idBudget={}] chargeBudget", idBudget);
 		if(idBudget != null){
 			try {
-				return getEntity(operationService.chargerBudgetMensuel(idBudget, getIdProprietaire()));
+				return getEntity(operationService.getBudgetMensuel(idBudget, getIdProprietaire()));
 			}
 			catch (DataNotFoundException | BudgetNotFoundException e) {
 				logger.error("[idBudget={}] Impossible de charger le budget", idBudget);

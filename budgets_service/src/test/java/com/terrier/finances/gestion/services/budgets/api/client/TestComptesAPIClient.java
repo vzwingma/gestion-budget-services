@@ -3,6 +3,7 @@ package com.terrier.finances.gestion.services.budgets.api.client;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.terrier.finances.gestion.services.budgets.spi.ComptesAPIClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

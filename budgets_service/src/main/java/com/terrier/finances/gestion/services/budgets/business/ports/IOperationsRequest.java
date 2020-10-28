@@ -26,7 +26,7 @@ public interface IOperationsRequest {
      * @param annee année
      * @return budget mensuel chargé et initialisé à partir des données précédentes
      */
-    public BudgetMensuel chargerBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException;
+    public BudgetMensuel getBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException;
     /**
      * Charger budget
      * @param idProprietaire
@@ -36,7 +36,7 @@ public interface IOperationsRequest {
      * @throws BudgetNotFoundException budget introuvable
      * @throws DataNotFoundException données introuvables
      */
-    public BudgetMensuel chargerBudgetMensuel(String idBudget, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException;
+    public BudgetMensuel getBudgetMensuel(String idBudget, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException;
     /**
      * Réinitialiser un budget mensuel
      * @param idBudget budget mensuel
