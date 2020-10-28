@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
+import com.terrier.finances.gestion.services.utilisateurs.spi.UtilisateurDatabaseService;
 
 @Configuration
 @ComponentScan(basePackages = {	

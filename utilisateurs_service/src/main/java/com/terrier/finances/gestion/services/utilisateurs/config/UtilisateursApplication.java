@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.utilisateurs;
+package com.terrier.finances.gestion.services.utilisateurs.config;
 
 import javax.annotation.PostConstruct;
 

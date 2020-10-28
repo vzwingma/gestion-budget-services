@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.utilisateurs;
+package com.terrier.finances.gestion.services.utilisateurs.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @ComponentScan(basePackages = { 
 		"com.terrier.finances.gestion.services.utilisateurs.api",
 		"com.terrier.finances.gestion.services.utilisateurs.business",
-		"com.terrier.finances.gestion.services.utilisateurs.data",
+		"com.terrier.finances.gestion.services.utilisateurs.spi",
 		"com.terrier.finances.gestion.services.communs.data.mongodb",
 		"com.terrier.finances.gestion.services.communs.api.config",	
 		"com.terrier.finances.gestion.services.communs.api.interceptors"

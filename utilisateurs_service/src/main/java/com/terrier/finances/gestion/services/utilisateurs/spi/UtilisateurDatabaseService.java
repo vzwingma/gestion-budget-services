@@ -1,5 +1,6 @@
-package com.terrier.finances.gestion.services.utilisateurs.data;
+package com.terrier.finances.gestion.services.utilisateurs.spi;
 
+import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
-import com.terrier.finances.gestion.services.utilisateurs.model.v12.Utilisateur;
+import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 
 /**
  * Service de données en MongoDB fournissant les infos des utilisateurs et comptes
@@ -16,7 +17,7 @@ import com.terrier.finances.gestion.services.utilisateurs.model.v12.Utilisateur;
  *
  */
 @Repository
-public class UtilisateurDatabaseService extends AbstractDatabaseService<Utilisateur> {
+public class UtilisateurDatabaseService extends AbstractDatabaseService<Utilisateur> implements IUtilisateursRepository {
 
 	/**
 	 * Logger
@@ -30,8 +31,7 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService<Utilisat
 	public Utilisateur chargeUtilisateur(String login) throws DataNotFoundException{
 		try{
 			LOGGER.info("[idUser=?] Recherche de l'utilisateur [{}]", login);
-			Query queryUser = new Query();
-			queryUser.addCriteria(Criteria.where("login").is(login));
+			Query queryUser = new Query().addCriteria(Criteria.where("login").is(login));
 			return findOneByQuery(queryUser);
 		}
 		catch(Exception e){

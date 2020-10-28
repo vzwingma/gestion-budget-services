@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.utilisateurs.model.v12;
+package com.terrier.finances.gestion.services.utilisateurs.business.model.v12;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

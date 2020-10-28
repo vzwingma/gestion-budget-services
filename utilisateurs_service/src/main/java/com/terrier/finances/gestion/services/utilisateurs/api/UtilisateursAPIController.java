@@ -25,7 +25,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
-import com.terrier.finances.gestion.services.utilisateurs.model.v12.Utilisateur;
+import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
