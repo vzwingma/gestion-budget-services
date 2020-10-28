@@ -12,17 +12,17 @@ import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDataba
 import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 
 /**
- * Service de données en MongoDB fournissant les infos des utilisateurs et comptes
+ * Service Provider  données en MongoDB fournissant les infos des utilisateurs et comptes
  * @author vzwingma
  *
  */
 @Repository
-public class UtilisateurDatabaseService extends AbstractDatabaseService<Utilisateur> implements IUtilisateursRepository {
+public class UtilisateurDatabaseAdaptor extends AbstractDatabaseService<Utilisateur> implements IUtilisateursRepository {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateurDatabaseService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateurDatabaseAdaptor.class);
 
 	/**
 	 * @param login : login utilisateur
@@ -41,19 +41,6 @@ public class UtilisateurDatabaseService extends AbstractDatabaseService<Utilisat
 	}
 
 
-	/**
-	 * @return la liste des catégories
-	 */
-	public Utilisateur chargeUtilisateurById(String id) throws DataNotFoundException{
-		try{
-			LOGGER.info("[idUser={}] Recherche de l'utilisateur", id);
-			return findById(id);
-		}
-		catch(Exception e){
-			LOGGER.error("[idUser={}] Erreur lors de la recherche de l'utilisateur", id, e);
-			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + id);
-		}
-	}
 	/**
 	 * Met à jour l'utilisateur en BDD
 	 */

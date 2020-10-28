@@ -15,12 +15,6 @@ public interface IUtilisateursRepository {
      */
     public Utilisateur chargeUtilisateur(String login) throws DataNotFoundException;
 
-
-    /**
-     * @return la liste des catégories
-     */
-    public Utilisateur chargeUtilisateurById(String id) throws DataNotFoundException;
-
     /**
      * Met à jour l'utilisateur en BDD
      */

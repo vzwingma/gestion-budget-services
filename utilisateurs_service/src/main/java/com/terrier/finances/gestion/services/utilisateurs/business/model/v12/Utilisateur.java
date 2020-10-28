@@ -73,7 +73,7 @@ public class Utilisateur implements Serializable {
 	
 	public String toFullString(){
 		StringBuilder builder = new StringBuilder();
-		builder.append("Utilisateur [login=").append(login)
+		builder.append("Utilisateur [id=").append(login)
 				.append(", dateDernierAcces=")
 				.append(dernierAcces != null ? BudgetDateTimeUtils.getLibelleDate(dernierAcces) : "nulle").append(", libelle=").append(libelle)
 				.append("]");

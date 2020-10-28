@@ -6,6 +6,7 @@ package com.terrier.finances.gestion.services.communs.data.mongodb;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -41,9 +42,15 @@ public abstract class AbstractDatabaseService<D> {
 		entityClass = getGenericTypeClass();
 	}
 
-	
-	public void save(D objectToSave) {
-		this.mongoOperations.save(objectToSave);
+	/**
+	 * Sauvegarde d'un objet en BDD
+	 * @param objectToSave
+	 */
+	public void save(D objectToSave) throws  DataNotFoundException{
+		D savedObject = this.mongoOperations.save(objectToSave);
+		if(savedObject == null){
+			throw new DataNotFoundException("Erreur lors de la sauvegarde de " + objectToSave);
+		}
 	}
 
 	public D findById(String id) {

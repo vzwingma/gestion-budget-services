@@ -6,7 +6,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import java.util.List;
 
 /**
- * Interface API
+ *  Application Provider Interface
  */
 public interface IParametrageRequest {
 

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.terrier.finances.gestion.services.utilisateurs.spi.UtilisateurDatabaseService;
+import com.terrier.finances.gestion.services.utilisateurs.spi.UtilisateurDatabaseAdaptor;
 
 @Configuration
 @ComponentScan(basePackages = {	
@@ -17,7 +17,7 @@ public class TestMockDBUtilisateursConfig {
 
 	private MongoTemplate mockDBTemplate = Mockito.mock(MongoTemplate.class);
 	
-	private UtilisateurDatabaseService mockDataDBUsers = Mockito.mock(UtilisateurDatabaseService.class);
+	private UtilisateurDatabaseAdaptor mockDataDBUsers = Mockito.mock(UtilisateurDatabaseAdaptor.class);
 	
 	@Bean
 	public MongoTemplate mockMongoTemplate(){
@@ -25,7 +25,7 @@ public class TestMockDBUtilisateursConfig {
 	}
 	
 	@Bean
-	public UtilisateurDatabaseService mockDataDBUsers() {
+	public UtilisateurDatabaseAdaptor mockDataDBUsers() {
 		return this.mockDataDBUsers;
 	}
 }

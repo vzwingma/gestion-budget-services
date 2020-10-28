@@ -32,7 +32,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.services.utilisateurs.spi.UtilisateurDatabaseService;
+import com.terrier.finances.gestion.services.utilisateurs.spi.UtilisateurDatabaseAdaptor;
 import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockDBUtilisateursConfig;
@@ -52,7 +52,7 @@ class TestUtilisateursAPI extends AbstractTestsAPI  {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestUtilisateursAPI.class);
 
 	@Autowired
-	private UtilisateurDatabaseService mockDataDBUsers;
+	private UtilisateurDatabaseAdaptor mockDataDBUsers;
 
 	@BeforeEach
 	public void setupMock() {

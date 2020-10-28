@@ -9,21 +9,21 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service de données en MongoDB fournissant les paramètres
+ * Adapteur du port {@link IParametrageRepository}
  * @author vzwingma
  *
  */
 @Repository
-public class ParametragesDatabaseService extends AbstractDatabaseService<CategorieOperation> implements IParametrageRepository {
+public class ParametragesDatabaseAdaptor extends AbstractDatabaseService<CategorieOperation> implements IParametrageRepository {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ParametragesDatabaseService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ParametragesDatabaseAdaptor.class);
 
 	/**
 	 * @return la liste des catégories

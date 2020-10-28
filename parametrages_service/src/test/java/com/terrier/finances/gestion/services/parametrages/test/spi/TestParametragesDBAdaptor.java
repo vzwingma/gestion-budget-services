@@ -8,8 +8,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import com.terrier.finances.gestion.services.parametrages.spi.ParametragesDatabaseService;
+import com.terrier.finances.gestion.services.parametrages.spi.ParametragesDatabaseAdaptor;
 import com.terrier.finances.gestion.services.parametrages.test.data.TestDataCategorieOperation;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.MongoOperations;
 
@@ -18,18 +19,24 @@ import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOper
 /**
  * Classe du Service Provider DB des paramétrages
  */
-class TestParametragesDBRepository {
+class TestParametragesDBAdaptor {
 
-	
+	private ParametragesDatabaseAdaptor db;
+	private MongoOperations mockMongo;
+
+	@BeforeEach
+	public void initMocks(){
+		// Préparation
+		db = spy(new ParametragesDatabaseAdaptor());
+		mockMongo = mock(MongoOperations.class);
+		db.setMongoOperations(mockMongo);
+	}
+
 	@Test
 	void testChargeCategoriesInDB(){
 
 		// Préparation
-		ParametragesDatabaseService db = spy(new ParametragesDatabaseService());
-
-		MongoOperations mockMongo = mock(MongoOperations.class);
 		when(mockMongo.findAll(CategorieOperation.class)).thenReturn(TestDataCategorieOperation.getListeTestCategories());
-		db.setMongoOperations(mockMongo);
 
 		// Lancement
 		List<CategorieOperation> cats = db.chargeCategories();
