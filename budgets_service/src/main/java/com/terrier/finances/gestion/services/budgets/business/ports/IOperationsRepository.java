@@ -45,13 +45,6 @@ public interface IOperationsRepository {
      */
     public BudgetMensuel chargeBudgetMensuel(String idBudget) throws BudgetNotFoundException;
 
-    /**
-     * @param idCompte compte
-     * @return liste des budgets associés
-     * @throws DataNotFoundException erreur
-     */
-    public List<BudgetMensuel> chargeBudgetsMensuelsDTO(String idCompte) throws DataNotFoundException;
-
 
     /**
      *

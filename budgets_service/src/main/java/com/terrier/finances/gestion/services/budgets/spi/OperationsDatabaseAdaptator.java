@@ -103,33 +103,6 @@ public class OperationsDatabaseAdaptator extends AbstractDatabaseServiceProvider
 	}
 
 	/**
-	 * @param idCompte compte
-	 * @return liste des budgets associés
-	 * @throws DataNotFoundException erreur
-	 */
-	public List<BudgetMensuel> chargeBudgetsMensuelsDTO(String idCompte) throws DataNotFoundException{
-		Query queryBudget = new Query();
-		queryBudget.addCriteria(Criteria.where(ATTRIBUT_COMPTE_ID).is(idCompte));
-
-		List<BudgetMensuel> budgets = new ArrayList<>();
-		try{
-			budgets.addAll(findByQuery(queryBudget));
-		}
-		catch(Exception e){
-			LOGGER.error("Erreur lors du chargement des budgets du compte {}", idCompte, e);
-		}
-		if(budgets.isEmpty()){
-			LOGGER.error("Erreur lors du chargement des budgets du compte {} : la liste est vide", idCompte);
-			throw new DataNotFoundException("Erreur lors du chargement des budgets");
-		}
-		else{
-			return budgets;
-		}
-
-	}
-
-
-	/**
 	 * 
 	 * @param idBudget
 	 * @return liste des dépenses du budget
