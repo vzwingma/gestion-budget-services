@@ -37,7 +37,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
-import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.budgets.spi.OperationsDatabaseAdaptator;
 import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 
 /**
@@ -55,7 +55,7 @@ class TestOperationsService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestOperationsService.class);
 
 	@Autowired
-	private BudgetDatabaseService mockDBBudget;
+	private OperationsDatabaseAdaptator mockDBBudget;
 
 	@Autowired
 	private ComptesAPIClient mockCompteClientApi;

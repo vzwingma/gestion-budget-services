@@ -31,7 +31,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
 import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
-import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.budgets.spi.OperationsDatabaseAdaptator;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 
 /**
@@ -52,7 +52,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * Lien vers les données
 	 */
 	@Autowired
-	private BudgetDatabaseService dataDepenses;
+	private OperationsDatabaseAdaptator dataDepenses;
 
 	@Autowired
 	private ComptesAPIClient compteClientApi;
@@ -90,7 +90,8 @@ public class OperationsService extends AbstractBusinessService {
 
 	/**
 	 * Chargement du budget du mois courant pour le compte actif
-	 * @param compte compte 
+	 * @param idProprietaire id du propriétaire
+	 * @param compteBancaire compte
 	 * @param mois mois 
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
@@ -127,7 +128,8 @@ public class OperationsService extends AbstractBusinessService {
 
 	/**
 	 * Chargement du budget du mois courant pour le compte inactif
-	 * @param compte compte 
+	 * @param compteBancaire compte bancaire
+	 * @param idProprietaire id du propriétaire
 	 * @param mois mois 
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
@@ -254,7 +256,6 @@ public class OperationsService extends AbstractBusinessService {
 
 	/**
 	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
-	 * @param utilisateur utilisateur
 	 * @param idCompte id du compte
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */
@@ -278,6 +279,7 @@ public class OperationsService extends AbstractBusinessService {
 	}
 
 	/**
+	 * Charger budget
 	 * @param idProprietaire
 	 * @param idBudget
 	 * @return budget correspondant aux paramètres
@@ -714,7 +716,7 @@ public class OperationsService extends AbstractBusinessService {
 	/**
 	 * @param dataDepenses the dataDepenses to set
 	 */
-	protected void setDataDepenses(BudgetDatabaseService dataDepenses) {
+	protected void setDataDepenses(OperationsDatabaseAdaptator dataDepenses) {
 		this.dataDepenses = dataDepenses;
 	}
 

@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
 import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
-import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.budgets.spi.OperationsDatabaseAdaptator;
 import com.terrier.finances.gestion.services.communs.api.config.oauth2.SecurityOAuth2Config;
 import com.terrier.finances.gestion.services.communs.api.interceptors.IncomingRequestInterceptor;
 
@@ -27,8 +27,8 @@ public class TestMockBudgetServiceConfig {
 	
 
 	@Bean
-	public BudgetDatabaseService budgetDatabaseService() {
-		return Mockito.mock(BudgetDatabaseService.class);
+	public OperationsDatabaseAdaptator budgetDatabaseService() {
+		return Mockito.mock(OperationsDatabaseAdaptator.class);
 	}
 	
 

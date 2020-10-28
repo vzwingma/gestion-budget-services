@@ -41,7 +41,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
 import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
 import com.terrier.finances.gestion.services.budgets.business.OperationsService;
-import com.terrier.finances.gestion.services.budgets.data.BudgetDatabaseService;
+import com.terrier.finances.gestion.services.budgets.spi.OperationsDatabaseAdaptator;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
 import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
@@ -56,7 +56,7 @@ import com.terrier.finances.gestion.test.config.TestMockDBServicesConfig;
 class TestOperationsAPI extends AbstractTestsAPI {
 
 	@Autowired
-	private BudgetDatabaseService mockDataDBBudget;
+	private OperationsDatabaseAdaptator mockDataDBBudget;
 	
 	@Autowired
 	private ParametragesAPIClient mockDataAPIParams;

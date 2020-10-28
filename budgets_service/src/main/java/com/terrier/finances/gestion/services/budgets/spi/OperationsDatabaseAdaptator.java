@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budgets.data;
+package com.terrier.finances.gestion.services.budgets.spi;
 
 import java.time.Month;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -22,17 +23,18 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.services.communs.spi.mongodb.AbstractDatabaseServiceProvider;
 
 /**
- * DAO Dépenses vers MongoDB
+ * Service de données en MongoDB fournissant les infos des opérations
+ * Adapteur du SPI {@link com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRepository}
  * @author vzwingma
  *
  */
 @Repository
-public class BudgetDatabaseService extends AbstractDatabaseServiceProvider<BudgetMensuel> {
+public class OperationsDatabaseAdaptator extends AbstractDatabaseServiceProvider<BudgetMensuel> implements IOperationsRepository {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BudgetDatabaseService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OperationsDatabaseAdaptator.class);
 
 	private static final String ATTRIBUT_COMPTE_ID = "idCompteBancaire";
 	private static final String ATTRIBUT_ANNEE = "annee";
@@ -56,7 +58,7 @@ public class BudgetDatabaseService extends AbstractDatabaseServiceProvider<Budge
 			LOGGER.error("Erreur lors du chargement du budget mensuel", e);
 		}
 		if(budget == null){
-			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee).toString());
+			throw new BudgetNotFoundException(new StringBuilder("Erreur lors du chargement du compte ").append(compte.getId()).append(" du ").append(mois).append("/").append(annee).toString());
 		}
 		LOGGER.debug("\t> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size());
 		return budget;
@@ -94,7 +96,7 @@ public class BudgetDatabaseService extends AbstractDatabaseServiceProvider<Budge
 			LOGGER.error("Erreur lors du chargement du budget du compte {}", idBudget, e);
 		}
 		if(budgetDTO == null){
-			throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du budget ").append(idBudget).toString());
+			throw new BudgetNotFoundException(new StringBuilder("Erreur lors du chargement du budget ").append(idBudget).toString());
 		}
 		LOGGER.debug("\t> Réception du Budget : {}", budgetDTO.getId());
 		return budgetDTO;
@@ -153,9 +155,7 @@ public class BudgetDatabaseService extends AbstractDatabaseServiceProvider<Budge
 
 	/**
 	 * Sauvegarde du budget mensuel
-	 * @param budgetMensuelCourant budget à sauvegarder
-	 * @param mois mois
-	 * @param annee année
+	 * @param budget budget à sauvegarder
 	 * @return résultat de la sauvegarde: id du budget
 	 */
 	public String sauvegardeBudgetMensuel(BudgetMensuel budget){
@@ -177,7 +177,6 @@ public class BudgetDatabaseService extends AbstractDatabaseServiceProvider<Budge
 
 	/**
 	 * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur
-	 * @param utilisateur utilisateur
 	 * @param compte id du compte
 	 * @return la date du premier budget décrit pour cet utilisateur
 	 */

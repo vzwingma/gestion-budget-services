@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budgets.api.config;
+package com.terrier.finances.gestion.services.budgets.config;
 
 import org.springframework.context.annotation.Configuration;
 
