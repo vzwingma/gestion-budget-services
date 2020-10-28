@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,7 @@ public class ParametragesDatabaseService extends AbstractDatabaseService<Categor
 			}
 			catch(Exception e){
 				LOGGER.error("Erreur lors du chargement des catégories");
-				return null;
+				return new ArrayList<>();
 			}
 		}
 	}

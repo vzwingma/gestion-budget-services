@@ -1,7 +1,6 @@
 package com.terrier.finances.gestion.services.parametrages.business;
 
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
 import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRepository;
 import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRequest;
@@ -54,6 +53,7 @@ public class ParametragesService extends AbstractBusinessService implements IPar
 	public List<CategorieOperation> getCategories(){
 		if(listeCategories.isEmpty()){
 			this.listeCategories = dataParams.chargeCategories();
+			LOGGER.info("Chargement des {} catégories depuis la base de données", this.listeCategories.size());
 		}
 		return listeCategories.stream().map(this::cloneCategorie).collect(Collectors.toList());
 	}
