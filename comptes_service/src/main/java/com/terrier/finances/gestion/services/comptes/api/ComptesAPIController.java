@@ -6,6 +6,7 @@ package com.terrier.finances.gestion.services.comptes.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.terrier.finances.gestion.services.communs.business.ports.IServiceProvider;
 import com.terrier.finances.gestion.services.comptes.business.ports.IComptesRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -83,13 +84,5 @@ public class ComptesAPIController extends AbstractAPIController {
 	public @ResponseBody ResponseEntity<CompteBancaire> getCompteUtilisateur(@PathVariable("idCompte") String idCompte) throws DataNotFoundException{
 		logger.info("[idCompte={}] getCompte", idCompte);
 		return getEntity(comptesService.getCompteById(idCompte, getIdProprietaire()));
-	}
-
-
-
-
-	@Override
-	public List<AbstractHTTPClient<?>> getHTTPClients() {
-		return new ArrayList<>();
 	}
 }

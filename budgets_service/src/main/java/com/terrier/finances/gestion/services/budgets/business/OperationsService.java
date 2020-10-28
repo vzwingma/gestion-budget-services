@@ -721,14 +721,6 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 		return this.dataDepenses.chargeLibellesOperations(idCompte, annee);
 	}
 
-	/**
-	 * @param dataDepenses the dataDepenses to set
-	 */
-	protected void setDataDepenses(OperationsDatabaseAdaptator dataDepenses) {
-		this.dataDepenses = dataDepenses;
-	}
-
-
 
 	@Override
 	protected void doHealthCheck(Builder builder) throws Exception {

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.terrier.finances.gestion.services.communs.business.ports.IServiceProvider;
 import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -103,11 +104,5 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			return getEntity(prefs);
 		}
 		throw new DataNotFoundException("[token=?] Impossible de trouver l'utilisateur");
-	}
-
-
-	@Override
-	public List<AbstractHTTPClient<?>> getHTTPClients() {
-		return new ArrayList<>();
 	}
 }

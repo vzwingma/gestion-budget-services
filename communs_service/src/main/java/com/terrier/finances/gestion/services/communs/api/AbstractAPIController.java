@@ -1,7 +1,9 @@
 package com.terrier.finances.gestion.services.communs.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.terrier.finances.gestion.services.communs.business.ports.IServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -69,5 +71,7 @@ public abstract class AbstractAPIController {
 	/**
 	 * @return Retourne les clients HTTP utilisés pour injection du correlationId fonctionnel
 	 */
-	public abstract List<AbstractHTTPClient<? extends AbstractAPIObjectModel>> getHTTPClients();
+	public List<IServiceProvider> getHTTPClients(){
+		return new ArrayList<>();
+	}
 }

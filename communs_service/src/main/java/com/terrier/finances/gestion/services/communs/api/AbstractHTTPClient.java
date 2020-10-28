@@ -1,6 +1,3 @@
-/**
- * Client HTTP
- */
 package com.terrier.finances.gestion.services.communs.api;
 
 import java.util.List;
@@ -49,10 +46,8 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	
 	
 	/**
-	 * @param <R> classe de la réponse
 	 * @param path chemin
-	 * @param queryParams paramètres
-	 * @param responseClassType classe <R>
+	 * @param pathParams paramètres
 	 * @return données en réponse
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
@@ -60,9 +55,7 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 		return callAPIandReturnMono(HttpMethod.GET, path, pathParams, null, null, responseClassType);
 	}
 	/**
-	 * @param <R> classe de la réponse
 	 * @param path chemin
-	 * @param responseClassType classe <R>
 	 * @return données en réponse
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */

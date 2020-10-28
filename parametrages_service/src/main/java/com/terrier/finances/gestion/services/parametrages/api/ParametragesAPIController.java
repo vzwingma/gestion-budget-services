@@ -6,6 +6,7 @@ package com.terrier.finances.gestion.services.parametrages.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.terrier.finances.gestion.services.communs.business.ports.IServiceProvider;
 import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -57,13 +58,5 @@ public class ParametragesAPIController extends AbstractAPIController {
 		List<CategorieOperation> listeCategories = paramsServices.getCategories();
 		logger.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1");
 		return getEntities(listeCategories);
-	}
-
-	/**
-	 * Liste des clients HTTPS nécessaires vers les autres µS
-	 */
-	@Override
-	public List<AbstractHTTPClient<?>> getHTTPClients() {
-		return new ArrayList<>();
 	}
 }

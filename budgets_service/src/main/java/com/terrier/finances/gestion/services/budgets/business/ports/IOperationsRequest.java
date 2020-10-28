@@ -7,10 +7,12 @@ import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOper
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Set;
 
 /**
  *  Application Provider Interface de Comptes
@@ -25,7 +27,16 @@ public interface IOperationsRequest {
      * @return budget mensuel chargé et initialisé à partir des données précédentes
      */
     public BudgetMensuel chargerBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException;
-
+    /**
+     * Charger budget
+     * @param idProprietaire
+     * @param idBudget
+     * @return budget correspondant aux paramètres
+     * @throws UserNotAuthorizedException utilisateur non autorisé
+     * @throws BudgetNotFoundException budget introuvable
+     * @throws DataNotFoundException données introuvables
+     */
+    public BudgetMensuel chargerBudgetMensuel(String idBudget, String idProprietaire) throws BudgetNotFoundException, DataNotFoundException;
     /**
      * Réinitialiser un budget mensuel
      * @param idBudget budget mensuel
@@ -64,7 +75,13 @@ public interface IOperationsRequest {
      * @param categories liste des catégories
      */
     public void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperation> categories);
-
+    /**
+     * Charge les libelles des opérations
+     * @param idCompte
+     * @param annee
+     * @return liste des libelles opérations
+     */
+    public Set<String> getLibellesOperations(String idCompte, int annee);
     /**
      * Ajout d'une ligne transfert intercompte
      * @param ligneOperation ligne de dépense de transfert
