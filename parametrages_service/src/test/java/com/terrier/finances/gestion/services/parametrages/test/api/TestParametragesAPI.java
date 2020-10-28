@@ -1,5 +1,6 @@
 package com.terrier.finances.gestion.services.parametrages.test.api;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -8,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 
 import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRequest;
-import com.terrier.finances.gestion.test.data.TestDataCategorieOperation;
+import com.terrier.finances.gestion.services.parametrages.test.data.TestDataCategorieOperation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
-import com.terrier.finances.gestion.test.config.TestMockDBParamConfig;
 
 
 /**
@@ -28,13 +28,12 @@ import com.terrier.finances.gestion.test.config.TestMockDBParamConfig;
  */
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes={TestMockDBParamConfig.class})
+@ContextConfiguration(classes={MockServiceParametrage.class})
 class TestParametragesAPI extends AbstractTestsAPI  {
 
 
 	@Autowired
 	private IParametrageRequest mockServiceParametrage;
-
 
 	@Test
 	void testGetCategories() throws Exception {

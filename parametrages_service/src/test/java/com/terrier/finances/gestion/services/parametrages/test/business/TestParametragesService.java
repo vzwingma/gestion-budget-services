@@ -4,12 +4,9 @@ import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOper
 import com.terrier.finances.gestion.services.parametrages.business.ParametragesService;
 import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRepository;
 import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRequest;
-import com.terrier.finances.gestion.test.data.TestDataCategorieOperation;
+import com.terrier.finances.gestion.services.parametrages.test.data.TestDataCategorieOperation;
 import org.junit.jupiter.api.Test;
-import org.mockito.verification.VerificationMode;
-import org.springframework.test.web.client.ExpectedCount;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

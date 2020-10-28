@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.test.data;
+package com.terrier.finances.gestion.services.parametrages.test.data;
 
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 

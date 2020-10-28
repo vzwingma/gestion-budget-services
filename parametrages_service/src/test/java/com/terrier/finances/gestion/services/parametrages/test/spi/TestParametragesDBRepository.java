@@ -6,11 +6,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.terrier.finances.gestion.services.parametrages.spi.ParametragesDatabaseService;
-import com.terrier.finances.gestion.test.data.TestDataCategorieOperation;
+import com.terrier.finances.gestion.services.parametrages.test.data.TestDataCategorieOperation;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.MongoOperations;
 
