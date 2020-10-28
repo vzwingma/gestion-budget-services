@@ -46,11 +46,8 @@ public abstract class AbstractDatabaseServiceProvider<D> {
 	 * Sauvegarde d'un objet en BDD
 	 * @param objectToSave
 	 */
-	public void save(D objectToSave) throws  DataNotFoundException{
-		D savedObject = this.mongoOperations.save(objectToSave);
-		if(savedObject == null){
-			throw new DataNotFoundException("Erreur lors de la sauvegarde de " + objectToSave);
-		}
+	public void save(D objectToSave) {
+		this.mongoOperations.save(objectToSave);
 	}
 
 	public D findById(String id) {

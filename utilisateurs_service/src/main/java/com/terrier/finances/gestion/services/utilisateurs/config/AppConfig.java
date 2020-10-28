@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 		"com.terrier.finances.gestion.services.utilisateurs.api",
 		"com.terrier.finances.gestion.services.utilisateurs.business",
 		"com.terrier.finances.gestion.services.utilisateurs.spi",
-		"com.terrier.finances.gestion.services.communs.data.mongodb",
+		"com.terrier.finances.gestion.services.communs.spi.mongodb",
 		"com.terrier.finances.gestion.services.communs.api.config",	
 		"com.terrier.finances.gestion.services.communs.api.interceptors"
 		})
