@@ -1,20 +1,5 @@
 package com.terrier.finances.gestion.services.budgets.business;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.health.Health.Builder;
-import org.springframework.stereotype.Service;
-
 import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
 import com.terrier.finances.gestion.communs.budget.model.v12.TotauxCategorie;
 import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
@@ -29,10 +14,27 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
-import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
+import com.terrier.finances.gestion.services.budgets.business.ports.IComptesServiceProvider;
+import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRepository;
+import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRequest;
+import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
 import com.terrier.finances.gestion.services.budgets.spi.OperationsDatabaseAdaptator;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
+import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.Health.Builder;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.ChronoField;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service Métier : Operations
@@ -40,7 +42,8 @@ import com.terrier.finances.gestion.services.communs.business.AbstractBusinessSe
  *
  */
 @Service
-public class OperationsService extends AbstractBusinessService {
+@NoArgsConstructor
+public class OperationsService extends AbstractBusinessService implements IOperationsRequest {
 
 
 	/**
@@ -52,18 +55,23 @@ public class OperationsService extends AbstractBusinessService {
 	 * Lien vers les données
 	 */
 	@Autowired
-	private OperationsDatabaseAdaptator dataDepenses;
+	private IOperationsRepository dataDepenses;
 
 	@Autowired
-	private ComptesAPIClient compteClientApi;
+	private IComptesServiceProvider compteClientApi;
 
 	@Autowired
-	private ParametragesAPIClient paramClientApi;
+	private IParametragesServiceProvider paramClientApi;
 
+	public OperationsService(IOperationsRepository dataDepenses, IComptesServiceProvider compteClientApi, IParametragesServiceProvider paramClientApi){
+		this.dataDepenses = dataDepenses;
+		this.compteClientApi = compteClientApi;
+		this.paramClientApi = paramClientApi;
+	}
 
 	/**
 	 * Chargement du budget du mois courant
-	 * @param compte compte 
+	 * @param idCompte compte
 	 * @param mois mois 
 	 * @param annee année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
@@ -84,7 +92,7 @@ public class OperationsService extends AbstractBusinessService {
 				return chargerBudgetMensuelSurCompteInactif(idProprietaire, compteBancaire, mois, annee);
 			}
 		}
-		throw new BudgetNotFoundException(new StringBuilder().append("Erreur lors du chargement du compte ").append(idCompte).append(" de ").append(idProprietaire).toString());
+		throw new BudgetNotFoundException(new StringBuilder("Erreur lors du chargement du compte ").append(idCompte).append(" de ").append(idProprietaire).toString());
 	}
 
 
@@ -190,7 +198,7 @@ public class OperationsService extends AbstractBusinessService {
 
 	/**
 	 * Init new budget
-	 * @param compte compte
+	 * @param compteBancaire compte
 	 * @param mois mois
 	 * @param annee année
 	 * @return budget nouvellement créé
@@ -351,8 +359,8 @@ public class OperationsService extends AbstractBusinessService {
 	/**
 	 * Ajout d'une ligne transfert intercompte
 	 * @param ligneOperation ligne de dépense de transfert
-	 * @param compteCrediteur compte créditeur
-	 * @param auteur auteur de l'action
+	 * @param idCompteDestination compte créditeur
+	 * @param idProprietaire auteur de l'action
 	 * @throws BudgetNotFoundException erreur budget introuvable
 	 * @throws DataNotFoundException erreur données
 	 * @throws CompteClosedException  compte clos
@@ -408,8 +416,8 @@ public class OperationsService extends AbstractBusinessService {
 	/**
 	 * Suppression d'une opération
 	 * @param idBudget identifiant de budget
-	 * @param ligneOperation ligne opération
-	 * @param UserBusinessSession userSession
+	 * @param idOperation ligne opération
+	 * @param idProprietaire userSession
 	 * @throws DataNotFoundException
 	 * @throws BudgetNotFoundException
 	 * @throws CompteClosedException compte clos
@@ -445,7 +453,7 @@ public class OperationsService extends AbstractBusinessService {
 	 * Mise à jour d'une ligne de dépense 
 	 * @param idBudget identifiant de budget
 	 * @param ligneOperation ligne de dépense
-	 * @param UserBusinessSession userSession
+	 * @param idProprietaire idProprietaire
 	 * @throws DataNotFoundException
 	 * @throws BudgetNotFoundException
 	 * @throws CompteClosedException compte clos
@@ -495,8 +503,7 @@ public class OperationsService extends AbstractBusinessService {
 
 	/**
 	 * @param ligneOperation opération
-	 * @param idProprietaire idPropriétaire
-	 * @param rangMaj rang de mise à jour
+	 * @param nomProprietaire idPropriétaire
 	 * @return ligneOperation màj
 	 */
 	private LigneOperation updateOperation(LigneOperation ligneOperation, String nomProprietaire) {
@@ -629,9 +636,9 @@ public class OperationsService extends AbstractBusinessService {
 
 	/**
 	 * Calcul du résumé
-	 * @param budgetMensuelCourant
+	 * @param budget budget à calculer
 	 */
-	protected void calculBudget(BudgetMensuel budget){
+	public void calculBudget(BudgetMensuel budget){
 
 		LOGGER.info("(Re)Calcul du budget : {}", budget);
 		BudgetDataUtils.razCalculs(budget);
@@ -682,7 +689,8 @@ public class OperationsService extends AbstractBusinessService {
 
 	/**
 	 * Réinjection des catégories dans les opérations du budget
-	 * @param budget
+	 * @param operation opération
+	 * @param categories liste des catégories
 	 */
 	public void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperation> categories){
 		try {
@@ -726,14 +734,4 @@ public class OperationsService extends AbstractBusinessService {
 	protected void doHealthCheck(Builder builder) throws Exception {
 		builder.up().withDetail("Service", "Opérations");
 	}
-
-
-	/**
-	 * @return the compteClientApi
-	 */
-	public ComptesAPIClient getCompteClientApi() {
-		return compteClientApi;
-	}
-
-
 }

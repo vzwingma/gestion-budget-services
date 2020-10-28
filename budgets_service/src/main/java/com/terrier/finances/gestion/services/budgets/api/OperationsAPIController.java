@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import com.terrier.finances.gestion.services.budgets.business.ports.IComptesServiceProvider;
+import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRequest;
+import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,17 +59,16 @@ public class OperationsAPIController extends AbstractAPIController {
 
 
 	@Autowired
-	private OperationsService operationService;
+	private IOperationsRequest operationService;
 
 	@Autowired 
-	private ParametragesAPIClient paramClientApi;
+	private IParametragesServiceProvider paramClientApi;
 
 	@Autowired
-	private ComptesAPIClient compteClientApi;
+	private IComptesServiceProvider compteClientApi;
 
 	/**
 	 * Retour le budget d'un utilisateur
-	 * @param idProprietaire id de l'utilisateur
 	 * @param idCompte id du compte
 	 * @param mois mois du budget
 	 * @param annee du budget
@@ -114,8 +116,6 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour du budget
 	 * @param idBudget id du budget
-	 * @param idProprietaire idProprietaire
-	 * @param budget budget
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
 	 * @throws BudgetNotFoundException 
@@ -151,8 +151,6 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour du budget
 	 * @param idBudget id du budget
-	 * @param idProprietaire idProprietaire
-	 * @param budget budget
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
 	 */
@@ -374,8 +372,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour d'une opération
 	 * @param idBudget id du budget
-	 * @param idProprietaire idProprietaire
-	 * @param operation opération à mettre à jour
+	 * @param idOperation opération à mettre à jour
+	 * @param idCompte id du compte à mettre à jour
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException données non trouvées
 	 * @throws BudgetNotFoundException  budget non trouvé
@@ -421,8 +419,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour d'une opération
 	 * @param idBudget id du budget
-	 * @param idProprietaire idProprietaire
-	 * @param operation opération à mettre à jour
+	 * @param idOperation opération à mettre à jour
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
 	 * @throws BudgetNotFoundException 
@@ -498,7 +495,6 @@ public class OperationsAPIController extends AbstractAPIController {
 
 	/**
 	 * Liste des libellés des opérations d'un compte (tout mois confondu)
-	 * @param idUtilisateur id Utilisateur
 	 * @param idCompte idCompte
 	 * @param annee année
 	 * @throws UserNotAuthorizedException 

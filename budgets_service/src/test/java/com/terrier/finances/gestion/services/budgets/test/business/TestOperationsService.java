@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.budgets.business;
+package com.terrier.finances.gestion.services.budgets.test.business;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -7,13 +7,17 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 import java.time.Month;
 import java.util.ArrayList;
 
+import com.terrier.finances.gestion.services.budgets.business.OperationsService;
+import com.terrier.finances.gestion.services.budgets.business.ports.IComptesServiceProvider;
+import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRepository;
+import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRequest;
+import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,35 +49,29 @@ import com.terrier.finances.gestion.test.config.TestMockBudgetServiceConfig;
  * @author vzwingma
  *
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={TestMockBudgetServiceConfig.class,  OperationsService.class, OutcomingRequestFilter.class})
 class TestOperationsService {
 
 	/**
 	 * Logger
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestOperationsService.class);
+	// Préparation
+	private IOperationsRepository mockDBBudget;
+	private IComptesServiceProvider mockCompteClientApi;
+	private IParametragesServiceProvider paramsServiceProvider;
 
-	@Autowired
-	private OperationsDatabaseAdaptator mockDBBudget;
-
-	@Autowired
-	private ComptesAPIClient mockCompteClientApi;
-	
-	@Autowired
-	private OperationsService operationsService;
+	private IOperationsRequest operationsService;
 
 	private BudgetMensuel budget;
-
 	private CompteBancaire compte = new CompteBancaire();
-	
-	/**
-	 * Surcharge de l'authservice
-	 * @throws DataNotFoundException 
-	 */
-	@BeforeEach
-	public void initBusinessSession() throws DataNotFoundException{
 
+	@BeforeEach
+	public void initMocks(){
+		// Préparation
+		mockDBBudget = mock(IOperationsRepository.class);
+		mockCompteClientApi = mock(IComptesServiceProvider.class);
+		paramsServiceProvider = mock(IParametragesServiceProvider.class);
+		operationsService = spy(new OperationsService(mockDBBudget, mockCompteClientApi, paramsServiceProvider));
 
 		this.budget = new BudgetMensuel();
 		this.budget.setActif(true);
@@ -97,7 +95,6 @@ class TestOperationsService {
 		compte.setOrdre(0);
 	
 		this.budget.setIdCompteBancaire(compte.getId());
-
 		this.budget.setId(BudgetDataUtils.getBudgetId(compte.getId(), Month.JANUARY, 2018));
 		
 	
