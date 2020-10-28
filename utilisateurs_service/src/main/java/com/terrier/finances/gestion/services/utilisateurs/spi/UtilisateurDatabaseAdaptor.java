@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
+import com.terrier.finances.gestion.services.communs.spi.mongodb.AbstractDatabaseServiceProvider;
 import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 
 /**
@@ -17,7 +17,7 @@ import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Uti
  *
  */
 @Repository
-public class UtilisateurDatabaseAdaptor extends AbstractDatabaseService<Utilisateur> implements IUtilisateursRepository {
+public class UtilisateurDatabaseAdaptor extends AbstractDatabaseServiceProvider<Utilisateur> implements IUtilisateursRepository {
 
 	/**
 	 * Logger

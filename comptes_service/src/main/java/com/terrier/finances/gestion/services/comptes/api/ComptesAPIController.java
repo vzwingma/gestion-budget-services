@@ -6,6 +6,7 @@ package com.terrier.finances.gestion.services.comptes.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.terrier.finances.gestion.services.comptes.business.ports.IComptesRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,12 +42,11 @@ public class ComptesAPIController extends AbstractAPIController {
 
 
 	@Autowired
-	private ComptesService comptesService;
+	private IComptesRequest comptesService;
 
 
 	/**
 	 * Retour la liste des comptes
-	 * @param idUtilisateur id de l'utilisateur
 	 * @return liste des comptes de l'utilisateur
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */

@@ -19,7 +19,7 @@ import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
+import com.terrier.finances.gestion.services.communs.spi.mongodb.AbstractDatabaseServiceProvider;
 
 /**
  * DAO Dépenses vers MongoDB
@@ -27,7 +27,7 @@ import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDataba
  *
  */
 @Repository
-public class BudgetDatabaseService extends AbstractDatabaseService<BudgetMensuel> {
+public class BudgetDatabaseService extends AbstractDatabaseServiceProvider<BudgetMensuel> {
 
 	/**
 	 * Logger

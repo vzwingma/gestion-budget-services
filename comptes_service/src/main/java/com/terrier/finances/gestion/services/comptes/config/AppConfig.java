@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.comptes;
+package com.terrier.finances.gestion.services.comptes.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 		"com.terrier.finances.gestion.services.comptes.api",
 		"com.terrier.finances.gestion.services.comptes.api.config.security",
 		"com.terrier.finances.gestion.services.comptes.business",
-		"com.terrier.finances.gestion.services.comptes.data",
-		"com.terrier.finances.gestion.services.communs.data.mongodb",
+		"com.terrier.finances.gestion.services.comptes.spi",
+		"com.terrier.finances.gestion.services.communs.spi.mongodb",
 		"com.terrier.finances.gestion.services.communs.api.config",	
 		"com.terrier.finances.gestion.services.communs.api.interceptors"
 		})

@@ -60,15 +60,13 @@ public class TestUtilisateursDBAdaptor {
     }
 
     @Test
-    public void testMajUtilisateurKO() throws DataNotFoundException {
+    public void testMajUtilisateurKO() {
 
         // Préparation
         when(mockMongo.save(any(Utilisateur.class))).thenReturn(null);
 
         // Lancement
-        assertThrows(DataNotFoundException.class, () -> {
-                    db.save(TestDataUtilisateur.getTestUtilisateur());
-                });
+        assertThrows(DataNotFoundException.class, () -> db.save(TestDataUtilisateur.getTestUtilisateur()));
         // Vérification
         verify(mockMongo, times(1)).save(any(Utilisateur.class));
 

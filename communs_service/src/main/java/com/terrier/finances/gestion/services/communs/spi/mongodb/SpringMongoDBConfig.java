@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.communs.data.mongodb;
+package com.terrier.finances.gestion.services.communs.spi.mongodb;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;

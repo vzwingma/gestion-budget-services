@@ -1,7 +1,7 @@
 package com.terrier.finances.gestion.services.parametrages.spi;
 
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
-import com.terrier.finances.gestion.services.communs.data.mongodb.AbstractDatabaseService;
+import com.terrier.finances.gestion.services.communs.spi.mongodb.AbstractDatabaseServiceProvider;
 import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import java.util.List;
  *
  */
 @Repository
-public class ParametragesDatabaseAdaptor extends AbstractDatabaseService<CategorieOperation> implements IParametrageRepository {
+public class ParametragesDatabaseAdaptor extends AbstractDatabaseServiceProvider<CategorieOperation> implements IParametrageRepository {
 
 
 	/**

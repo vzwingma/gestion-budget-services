@@ -14,9 +14,6 @@ import static org.mockito.Mockito.mock;
 		"com.terrier.finances.gestion.services.communs.api.interceptors"})
 public class MockServiceParametrage {
 
-	@Autowired
-	private IParametrageRequest mockServiceParametrage;
-
 	@Bean
 	public IParametrageRequest createMockServiceParametrage(){
 		return mock(IParametrageRequest.class);

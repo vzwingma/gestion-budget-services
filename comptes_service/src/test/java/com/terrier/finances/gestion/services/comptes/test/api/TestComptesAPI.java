@@ -1,4 +1,4 @@
-package com.terrier.finances.gestion.services.comptes.api;
+package com.terrier.finances.gestion.services.comptes.test.api;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -7,9 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.terrier.finances.gestion.services.comptes.business.ports.IComptesRequest;
+import com.terrier.finances.gestion.services.comptes.test.data.TestDataComptes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.comptes.data.ComptesDatabaseService;
+import com.terrier.finances.gestion.services.comptes.spi.ComptesDatabaseAdaptor;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
-import com.terrier.finances.gestion.test.config.TestMockDBComptesConfig;
 
 /**
  * Test de l'API compte
@@ -32,12 +30,12 @@ import com.terrier.finances.gestion.test.config.TestMockDBComptesConfig;
  */
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes={TestMockDBComptesConfig.class})
+@ContextConfiguration(classes={MockServiceComptes.class})
 class TestComptesAPI extends AbstractTestsAPI {
 
 
 	@Autowired
-	private ComptesDatabaseService mockComptesDBService;
+	private IComptesRequest mockComptesService;
 
 
 	@Test
@@ -50,25 +48,12 @@ class TestComptesAPI extends AbstractTestsAPI {
 		/** Authentification **/
 		authenticateUser("123123");
 
-		when(mockComptesDBService.chargeComptes(eq("345345"))).thenReturn(null);
+		when(mockComptesService.getComptesUtilisateur(eq("345345"))).thenReturn(null);
 
 		/** Authentification **/
 		authenticateUser("345345");
-		
-		List<CompteBancaire> comptes = new ArrayList<CompteBancaire>();
-		CompteBancaire c1 = new CompteBancaire();
-		c1.setActif(true);
-		c1.setId("C1");
-		c1.setLibelle("Libelle1");
-		c1.setOrdre(1);
-		comptes.add(c1);
-		CompteBancaire c2 = new CompteBancaire();
-		c2.setActif(true);
-		c2.setId("C2");
-		c2.setLibelle("Libelle2");
-		c2.setOrdre(2);		
-		comptes.add(c2);
-		when(mockComptesDBService.chargeComptes(eq("345345"))).thenReturn(comptes);
+
+		when(mockComptesService.getComptesUtilisateur(eq("345345"))).thenReturn(TestDataComptes.getListeComptes());
 
 		// Comptes OK		
 		getMockAPI().perform(
@@ -76,7 +61,7 @@ class TestComptesAPI extends AbstractTestsAPI {
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().string("[{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},{\"id\":\"C2\",\"libelle\":\"Libelle2\",\"itemIcon\":null,\"ordre\":2,\"actif\":true}]"));
+		.andExpect(content().string("[{\"id\":\"C1\",\"libelle\":\"Libelle1\",\"itemIcon\":null,\"ordre\":1,\"actif\":true},{\"id\":\"C2\",\"libelle\":\"Libelle2\",\"itemIcon\":null,\"ordre\":2,\"actif\":true},{\"id\":\"A3\",\"libelle\":\"ALibelle3\",\"itemIcon\":null,\"ordre\":0,\"actif\":true}]"));
 		
 	}	
 	
@@ -97,8 +82,8 @@ class TestComptesAPI extends AbstractTestsAPI {
 		c1.setId("C1");
 		c1.setLibelle("Libelle1");
 		c1.setOrdre(1);
-		when(mockComptesDBService.chargeCompteParId(eq("111"), eq("345345"))).thenReturn(c1);
-		when(mockComptesDBService.chargeCompteParId(eq("111"), eq("123123"))).thenThrow(new DataNotFoundException("Mock : Compte 111 introuvable pour 123123"));
+		when(mockComptesService.getCompteById(eq("111"), eq("345345"))).thenReturn(c1);
+		when(mockComptesService.getCompteById(eq("111"), eq("123123"))).thenThrow(new DataNotFoundException("Mock : Compte 111 introuvable pour 123123"));
 		path = BudgetApiUrlEnum.COMPTES_ID_FULL.replace("{idCompte}", "111");
 		
 		// Compte OK

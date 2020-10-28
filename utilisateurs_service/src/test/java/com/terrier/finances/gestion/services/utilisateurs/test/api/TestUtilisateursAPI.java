@@ -16,17 +16,12 @@ import java.time.LocalDateTime;
 
 import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRequest;
 import com.terrier.finances.gestion.services.utilisateurs.test.data.TestDataUtilisateur;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.test.context.ContextConfiguration;
@@ -34,8 +29,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
-import com.terrier.finances.gestion.services.utilisateurs.spi.UtilisateurDatabaseAdaptor;
-import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 import com.terrier.finances.gestion.test.config.AbstractTestsAPI;
 
 /**

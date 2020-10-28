@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.finances.gestion.services.communs.data.mongodb;
+package com.terrier.finances.gestion.services.communs.spi.mongodb;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -15,17 +15,17 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 
 /**
- * DataServices
+ * Service Provider Database
  * @author vzwingma
  *
  */
-public abstract class AbstractDatabaseService<D> {
+public abstract class AbstractDatabaseServiceProvider<D> {
 
 
 	/**
 	 * Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDatabaseService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDatabaseServiceProvider.class);
 
 
 	private final Class<D> entityClass;
@@ -36,7 +36,7 @@ public abstract class AbstractDatabaseService<D> {
 	/**
 	 * Constructeur permettant de définir les composants utilisés en DATA
 	 */
-	public AbstractDatabaseService(){
+	public AbstractDatabaseServiceProvider(){
 		MDC.put("key", "[DB]");
 		LOGGER.info("[INIT] Service {}", this.getClass().getSimpleName());
 		entityClass = getGenericTypeClass();
@@ -71,7 +71,7 @@ public abstract class AbstractDatabaseService<D> {
 	}
 
 	/**
-	 * @param set les mongo Operations (pour les mocks)
+	 * @param mongoOperations sette les mongo Operations (pour les mocks)
 	 */
 	public void setMongoOperations(MongoOperations mongoOperations){
 		this.mongoOperations = mongoOperations;
