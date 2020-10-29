@@ -91,13 +91,13 @@ public class GitHubRemoteServerTokenServices implements ResourceServerTokenServi
 		headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 		Map<String, Object> map = getForUserInfo("https://api.github.com/user", headers);
 
-		if (map.containsKey("error")) {
+		if (map != null && map.containsKey("error")) {
 			LOGGER.error("check_token returned error: {}", map.get("error"));
 			throw new InvalidTokenException(accessToken);
 		}
 
 		// gh-838
-		if (map.containsKey(GitHubAccessTokenConverter.GITHUB_ACTIVE_ATTRIBUTE) && !"true".equals(String.valueOf(map.get(GitHubAccessTokenConverter.GITHUB_ACTIVE_ATTRIBUTE)))) {
+		if (map != null && map.containsKey(GitHubAccessTokenConverter.GITHUB_ACTIVE_ATTRIBUTE) && !"true".equals(String.valueOf(map.get(GitHubAccessTokenConverter.GITHUB_ACTIVE_ATTRIBUTE)))) {
 			LOGGER.debug("check_token returned active attribute: {}", map.get(GitHubAccessTokenConverter.GITHUB_ACTIVE_ATTRIBUTE));
 			throw new InvalidTokenException(accessToken);
 		}

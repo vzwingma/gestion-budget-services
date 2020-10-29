@@ -1,47 +1,32 @@
 package com.terrier.finances.gestion.services.budgets.api;
 
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.api.IntervallesCompteAPIObject;
-import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
 import com.terrier.finances.gestion.communs.operations.model.api.LibellesOperationsAPIObject;
+import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.budgets.api.client.ComptesAPIClient;
-import com.terrier.finances.gestion.services.budgets.api.client.ParametragesAPIClient;
-import com.terrier.finances.gestion.services.budgets.business.OperationsService;
+import com.terrier.finances.gestion.services.budgets.business.ports.IComptesServiceProvider;
+import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRequest;
+import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
-import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
+import com.terrier.finances.gestion.services.communs.business.ports.IServiceProvider;
+import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * API Budget/Operations
@@ -56,17 +41,16 @@ public class OperationsAPIController extends AbstractAPIController {
 
 
 	@Autowired
-	private OperationsService operationService;
+	private IOperationsRequest operationService;
 
 	@Autowired 
-	private ParametragesAPIClient paramClientApi;
+	private IParametragesServiceProvider paramClientApi;
 
 	@Autowired
-	private ComptesAPIClient compteClientApi;
+	private IComptesServiceProvider compteClientApi;
 
 	/**
 	 * Retour le budget d'un utilisateur
-	 * @param idProprietaire id de l'utilisateur
 	 * @param idCompte id du compte
 	 * @param mois mois du budget
 	 * @param annee du budget
@@ -97,12 +81,13 @@ public class OperationsAPIController extends AbstractAPIController {
 		if(mois != null && annee != null){
 			try{
 				Month month = Month.of(mois);
-				return getEntity(operationService.chargerBudgetMensuel(idCompte, month, annee, getIdProprietaire()));
+				return getEntity(operationService.getBudgetMensuel(idCompte, month, annee, getIdProprietaire()));
 			}
 			catch(NumberFormatException e){
 				return ResponseEntity.badRequest().build();
 			}
 			catch (BudgetNotFoundException | DataNotFoundException e) {
+				logger.error("Impossible de trouver le budget demandé");
 				return ResponseEntity.notFound().build();
 			}
 		}
@@ -114,11 +99,9 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour du budget
 	 * @param idBudget id du budget
-	 * @param idProprietaire idProprietaire
-	 * @param budget budget
 	 * @return budget mis à jour
-	 * @throws DataNotFoundException
-	 * @throws BudgetNotFoundException 
+	 * @throws DataNotFoundException données introuvables
+	 * @throws BudgetNotFoundException  budget introuvable
 	 */
 	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Chargement d'un budget", tags={"Budget"})
 	@ApiResponses(value = {
@@ -138,7 +121,7 @@ public class OperationsAPIController extends AbstractAPIController {
 		logger.info("[idBudget={}] chargeBudget", idBudget);
 		if(idBudget != null){
 			try {
-				return getEntity(operationService.chargerBudgetMensuel(idBudget, getIdProprietaire()));
+				return getEntity(operationService.getBudgetMensuel(idBudget, getIdProprietaire()));
 			}
 			catch (DataNotFoundException | BudgetNotFoundException e) {
 				logger.error("[idBudget={}] Impossible de charger le budget", idBudget);
@@ -151,8 +134,6 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour du budget
 	 * @param idBudget id du budget
-	 * @param idProprietaire idProprietaire
-	 * @param budget budget
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
 	 */
@@ -327,7 +308,6 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour d'une opération
 	 * @param idBudget id du budget
-	 * @param idProprietaire idProprietaire
 	 * @param operation opération à mettre à jour
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
@@ -374,8 +354,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour d'une opération
 	 * @param idBudget id du budget
-	 * @param idProprietaire idProprietaire
-	 * @param operation opération à mettre à jour
+	 * @param idOperation opération à mettre à jour
+	 * @param idCompte id du compte à mettre à jour
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException données non trouvées
 	 * @throws BudgetNotFoundException  budget non trouvé
@@ -421,8 +401,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Mise à jour d'une opération
 	 * @param idBudget id du budget
-	 * @param idProprietaire idProprietaire
-	 * @param operation opération à mettre à jour
+	 * @param idOperation opération à mettre à jour
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException
 	 * @throws BudgetNotFoundException 
@@ -498,7 +477,6 @@ public class OperationsAPIController extends AbstractAPIController {
 
 	/**
 	 * Liste des libellés des opérations d'un compte (tout mois confondu)
-	 * @param idUtilisateur id Utilisateur
 	 * @param idCompte idCompte
 	 * @param annee année
 	 * @throws UserNotAuthorizedException 
@@ -532,7 +510,7 @@ public class OperationsAPIController extends AbstractAPIController {
 
 
 	@Override
-	public List<AbstractHTTPClient<?>> getHTTPClients() {
+	public List<IServiceProvider> getHTTPClients() {
 		return Arrays.asList(this.compteClientApi, this.paramClientApi);
 	}
 }

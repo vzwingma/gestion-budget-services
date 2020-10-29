@@ -2,6 +2,9 @@ package com.terrier.finances.gestion.services.comptes.business;
 
 import java.util.List;
 
+import com.terrier.finances.gestion.services.comptes.business.ports.IComptesRepository;
+import com.terrier.finances.gestion.services.comptes.business.ports.IComptesRequest;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
-import com.terrier.finances.gestion.services.comptes.data.ComptesDatabaseService;
 
 
 /**
@@ -20,7 +22,8 @@ import com.terrier.finances.gestion.services.comptes.data.ComptesDatabaseService
  *
  */
 @Service
-public class ComptesService extends AbstractBusinessService {
+@NoArgsConstructor
+public class ComptesService extends AbstractBusinessService implements IComptesRequest {
 	/**
 	 * Logger
 	 */
@@ -29,16 +32,18 @@ public class ComptesService extends AbstractBusinessService {
 	 * Utilisateurs
 	 */
 	@Autowired
-	private ComptesDatabaseService dataDBComptes;
+	private IComptesRepository iComptesRepository;
 
-
+	public ComptesService(IComptesRepository comptesRepository){
+		this.iComptesRepository = comptesRepository;
+	}
 	/**
 	 * @param idCompte id du compte
 	 * @return etat du compte
 	 */
 	public boolean isCompteActif(String idCompte){
 		try {
-			return dataDBComptes.isCompteActif(idCompte);
+			return iComptesRepository.isCompteActif(idCompte);
 		} catch (DataNotFoundException e) {
 			return false;
 		}
@@ -47,12 +52,12 @@ public class ComptesService extends AbstractBusinessService {
 	/**
 	 * Recherche du compte par id
 	 * @param idCompte id du compte
-	 * @param utilisateur utilisateur
+	 * @param idUtilisateur utilisateur
 	 * @return compteBancaire
 	 * @throws DataNotFoundException
 	 */
 	public CompteBancaire getCompteById(String idCompte, String idUtilisateur) throws DataNotFoundException{
-		CompteBancaire compte = dataDBComptes.chargeCompteParId(idCompte, idUtilisateur);
+		CompteBancaire compte = iComptesRepository.chargeCompteParId(idCompte, idUtilisateur);
 		if(compte != null){
 			LOGGER.debug("[idUser={}][idCompte={}] Compte chargé (actif ? {})", idUtilisateur, idCompte, compte.isActif());
 			return compte;
@@ -64,12 +69,12 @@ public class ComptesService extends AbstractBusinessService {
 
 	/**
 	 * Recherche des comptes d'un utilisateur
-	 * @param utilisateur utilisateur
+	 * @param idUtilisateur utilisateur
 	 * @return liste des comptes bancaires
 	 * @throws DataNotFoundException
 	 */
 	public List<CompteBancaire> getComptesUtilisateur(String idUtilisateur) throws DataNotFoundException{
-		List<CompteBancaire> comptes = dataDBComptes.chargeComptes(idUtilisateur);
+		List<CompteBancaire> comptes = iComptesRepository.chargeComptes(idUtilisateur);
 		if(comptes != null){
 			return comptes;
 		}

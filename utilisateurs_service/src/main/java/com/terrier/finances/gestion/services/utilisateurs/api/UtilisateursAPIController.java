@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.terrier.finances.gestion.services.communs.business.ports.IServiceProvider;
+import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +27,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import com.terrier.finances.gestion.services.utilisateurs.business.UtilisateursService;
-import com.terrier.finances.gestion.services.utilisateurs.model.v12.Utilisateur;
+import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +35,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * Controleur REST pour récupérer les budgets
+ * Controleur REST pour récupérer les utilisateurs
+ * Adapteur du Port {@link com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRequest}
  * @author vzwingma
  *
  */
@@ -44,7 +47,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 
 
 	@Autowired
-	private UtilisateursService utilisateursService;
+	private IUtilisateursRequest utilisateursService;
 
 	/**
 	 * Date de dernier accès utilisateur
@@ -76,7 +79,6 @@ public class UtilisateursAPIController extends AbstractAPIController {
 
 	/**
 	 * Préférences d'un utilisateur
-	 * @param idUtilisateur id Utilisateur
 	 * @return préférences
 	 * @throws DataNotFoundException données non trouvées
 	 */
@@ -102,11 +104,5 @@ public class UtilisateursAPIController extends AbstractAPIController {
 			return getEntity(prefs);
 		}
 		throw new DataNotFoundException("[token=?] Impossible de trouver l'utilisateur");
-	}
-
-
-	@Override
-	public List<AbstractHTTPClient<?>> getHTTPClients() {
-		return new ArrayList<>();
 	}
 }

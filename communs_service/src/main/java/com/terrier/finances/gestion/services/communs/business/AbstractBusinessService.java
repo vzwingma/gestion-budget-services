@@ -20,7 +20,7 @@ public abstract class AbstractBusinessService extends AbstractHealthIndicator {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBusinessService.class);
 	
-	public AbstractBusinessService(){
+	protected AbstractBusinessService(){
 		MDC.put("key", "");
 		LOGGER.info("[INIT] Service {}", this.getClass().getSimpleName());
 	}

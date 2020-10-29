@@ -2,14 +2,16 @@ package com.terrier.finances.gestion.services.utilisateurs.business;
 
 import java.time.LocalDateTime;
 
+import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRepository;
+import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRequest;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
-import com.terrier.finances.gestion.services.utilisateurs.data.UtilisateurDatabaseService;
-import com.terrier.finances.gestion.services.utilisateurs.model.v12.Utilisateur;
+import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 
 /**
  * Service Utilisateurs
@@ -17,14 +19,23 @@ import com.terrier.finances.gestion.services.utilisateurs.model.v12.Utilisateur;
  *
  */
 @Service
-public class UtilisateursService extends AbstractBusinessService {
+@NoArgsConstructor
+public class UtilisateursService extends AbstractBusinessService implements IUtilisateursRequest {
 
 
 	/**
 	 * Utilisateurs
 	 */
 	@Autowired
-	private UtilisateurDatabaseService dataDBUsers;
+	private IUtilisateursRepository dataDBUsers;
+
+	/**
+	 * Constructeur (pour les tests)
+	 * @param spiUtilisateurs
+	 */
+	public UtilisateursService(IUtilisateursRepository spiUtilisateurs){
+		this.dataDBUsers = spiUtilisateurs;
+	}
 
 	/**
 	 * @param loginUtilisateur
@@ -44,7 +55,8 @@ public class UtilisateursService extends AbstractBusinessService {
 		}
 	}
 	/**
-	 * @param idUtilisateur
+	 * Date de dernier accès
+	 * @param idUtilisateur login de l'utilisateur
 	 * @return date de dernier accès
 	 */
 	public LocalDateTime getLastAccessDate(String idUtilisateur){
