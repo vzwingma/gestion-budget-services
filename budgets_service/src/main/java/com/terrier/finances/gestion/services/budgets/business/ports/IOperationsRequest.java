@@ -1,7 +1,6 @@
 package com.terrier.finances.gestion.services.budgets.business.ports;
 
 import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
-import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
