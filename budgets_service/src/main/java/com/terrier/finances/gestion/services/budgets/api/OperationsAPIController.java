@@ -87,6 +87,7 @@ public class OperationsAPIController extends AbstractAPIController {
 				return ResponseEntity.badRequest().build();
 			}
 			catch (BudgetNotFoundException | DataNotFoundException e) {
+				logger.error("Impossible de trouver le budget demandé");
 				return ResponseEntity.notFound().build();
 			}
 		}

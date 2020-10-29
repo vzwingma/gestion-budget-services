@@ -33,7 +33,7 @@ public class TestDataOperations {
         bo.setIdCompteBancaire(getCompte().getId());
         bo.setMois(Month.JANUARY);
         bo.setAnnee(2018);
-        bo.setActif(true);
+        bo.setActif(false);
         bo.setId(getCompte().getId()+"_2018_1");
         bo.getSoldes().setSoldeAtFinMoisCourant(0D);
         bo.getSoldes().setSoldeAtMaintenant(1000D);

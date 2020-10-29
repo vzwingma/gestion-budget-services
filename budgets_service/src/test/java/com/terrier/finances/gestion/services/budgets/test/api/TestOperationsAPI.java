@@ -1,9 +1,7 @@
 package com.terrier.finances.gestion.services.budgets.test.api;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -11,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
@@ -23,6 +22,7 @@ import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedExcepti
 import com.terrier.finances.gestion.services.budgets.business.ports.IComptesServiceProvider;
 import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRequest;
 import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
+import com.terrier.finances.gestion.services.budgets.data.TestDataOperations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,13 +56,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 class TestOperationsAPI extends AbstractTestsAPI {
 
 	@Autowired
-	private IOperationsRequest mockDataDBBudget;
+	private IOperationsRequest mockOperationService;
 	
 	@Autowired
-	private IParametragesServiceProvider mockDataAPIParams;
+	private IParametragesServiceProvider mockAPIParams;
 
 	@Autowired
-	private IComptesServiceProvider mockDataAPIComptes;
+	private IComptesServiceProvider mockAPIComptes;
 
 	
 	
@@ -80,37 +80,30 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		c1.setId("C1");
 		c1.setLibelle("Libelle1");
 		c1.setOrdre(1);
-		when(mockDataAPIComptes.getCompteById(eq("C1"))).thenReturn(c1);
+		this.bo = TestDataOperations.getBudgetCompteC1();
+		when(mockAPIComptes.getCompteById(eq("C1"))).thenReturn(c1);
 
-		bo = new BudgetMensuel();
-		bo.setIdCompteBancaire(c1.getId());
-		bo.setMois(Month.JANUARY);
-		bo.setAnnee(2018);
-		bo.setActif(true);
-		bo.setId("C1_2018_1");
-		bo.getSoldes().setSoldeAtFinMoisCourant(0D);
-		bo.getSoldes().setSoldeAtMaintenant(1000D);
-		bo.setDateMiseAJour(LocalDateTime.now());
-		bo.getSoldes().setSoldeAtFinMoisPrecedent(0D);
-		when(mockDataDBBudget.updateOperationInBudget(anyString(), any(), anyString())).thenReturn(bo);
+		when(mockOperationService.updateOperationInBudget(anyString(), any(), anyString())).thenReturn(bo);
 
-		when(mockDataDBBudget.getBudgetMensuel(eq(c1.getId()), eq(Month.JANUARY), eq(2018), anyString())).thenReturn(bo);
-		when(mockDataDBBudget.getBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), anyString())).thenThrow(new BudgetNotFoundException("Mock"));
+		when(mockOperationService.getBudgetMensuel(eq(c1.getId()), eq(Month.JANUARY), eq(2018), anyString())).thenReturn(bo);
+		when(mockOperationService.getBudgetMensuel(any(), eq(Month.DECEMBER), eq(2017), anyString())).thenThrow(new BudgetNotFoundException("Mock"));
 	}
 
 	@Test
-	void testGetBudgetQuery() throws Exception {
+	void testGetBudgetBadQuery() throws Exception {
 		// Fail
-		String urlWrongCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=unknown&mois=1&annee=2018";
-		getMockAPI().perform(get(urlWrongCompte))
-		.andExpect(status().is4xxClientError());
+		String urlWrongCompte = BudgetApiUrlEnum.BUDGET_QUERY_FULL + "?idCompte=Unknown&mois=AAA&annee=2018";
+		when(mockOperationService.getBudgetMensuel(eq("Unknown"), any(Month.class), anyInt(), anyString()))
+				.thenThrow(new BudgetNotFoundException("Erreur Budget Inconnu"));
+		// Vérification
+		getMockAPI().perform(get(urlWrongCompte)).andExpect(status().is4xxClientError());
 
 	}
 
 	@Test
 	void testGetBudgetWrongCompte() throws Exception {
 
-		when(mockDataAPIComptes.getCompteById(eq("unknown"))).thenReturn(null);
+		when(mockAPIComptes.getCompteById(eq("unknown"))).thenReturn(null);
 		
 		String urlWrongCompte =  BudgetApiUrlEnum.BUDGET_QUERY_FULL;
 		LOGGER.info("Wrong Compte : {}", urlWrongCompte);
@@ -135,7 +128,7 @@ class TestOperationsAPI extends AbstractTestsAPI {
 
 		getMockAPI().perform(get(urlGoodCompte, "C1", 1, 2018))
 		.andExpect(status().isOk())
-		.andExpect(content().string(containsString("{\"id\":\""+bo.getId()+"\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":true")));
+		.andExpect(content().string(containsString("{\"id\":\""+bo.getId()+"\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false")));
 	}
 
 
@@ -154,10 +147,12 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		/** Authentification **/
 		authenticateUser("123123");
 
-	//	when(mockDataDBBudget.getIntervallesBudgets(anyString())).thenReturn(new BudgetMensuel[]{ debut, fin});
+		when(mockOperationService.getIntervallesBudgets(anyString())).thenReturn(new LocalDate[]{
+				LocalDate.of(debut.getAnnee(), debut.getMois().getValue(), 1),
+				LocalDate.of(fin.getAnnee(), fin.getMois().getValue(), 20)});
 		getMockAPI().perform(get(path))
 			.andExpect(status().isOk())
-			.andExpect(content().string("{\"datePremierBudget\":17532,\"dateDernierBudget\":17563}"));
+			.andExpect(content().string("{\"datePremierBudget\":17532,\"dateDernierBudget\":17582}"));
 	}
 	
 	
@@ -170,9 +165,10 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		budget.setIdCompteBancaire(c1.getId());
 		budget.setMois(Month.JANUARY);
 		budget.setAnnee(2018);
-		budget.setActif(false);
+		budget.setActif(true);
+		budget.setNewBudget(true);
 		budget.setId();
-		when(mockDataDBBudget.reinitialiserBudgetMensuel(anyString(),anyString())).thenReturn(budget);
+		when(mockOperationService.reinitialiserBudgetMensuel(anyString(),anyString())).thenReturn(budget);
 
 		// OK
 
@@ -189,8 +185,8 @@ class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	/**
-	 * Test buget
-	 * @throws Exception
+	 * Test budget actif
+	 * @throws Exception erreur
 	 */
 	@Test
 	void testBudgetActif() throws Exception{
@@ -201,8 +197,8 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		getMockAPI().perform(get(urlActif))
 					.andExpect(status().is4xxClientError());
 
-		when(mockDataDBBudget.isBudgetMensuelActif(eq("TESTKO"))).thenReturn(Boolean.FALSE);
-		when(mockDataDBBudget.isBudgetMensuelActif(eq("TESTOK"))).thenReturn(Boolean.TRUE);
+		when(mockOperationService.isBudgetMensuelActif(eq("TESTKO"))).thenReturn(Boolean.FALSE);
+		when(mockOperationService.isBudgetMensuelActif(eq("TESTOK"))).thenReturn(Boolean.TRUE);
 
 		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
 		LOGGER.info("is Actif : {}", urlActif);
@@ -232,7 +228,7 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		LocalDateTime futur = LocalDateTime.now().plus(5, ChronoUnit.HOURS);
 		BudgetMensuel ko = new BudgetMensuel();
 		ko.setDateMiseAJour(futur);
-		when(mockDataDBBudget.getBudgetMensuel(eq("TESTKO"), anyString())).thenReturn(ko);
+		when(mockOperationService.getBudgetMensuel(eq("TESTKO"), anyString())).thenReturn(ko);
 
 		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTKO") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
 		/** Authentification **/
@@ -241,7 +237,7 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		LocalDateTime passe = LocalDateTime.now().plus(-5, ChronoUnit.HOURS);
 		BudgetMensuel ok = new BudgetMensuel();
 		ok.setDateMiseAJour(passe);
-		when(mockDataDBBudget.getBudgetMensuel(eq("TESTOK"), anyString())).thenReturn(ok);
+		when(mockOperationService.getBudgetMensuel(eq("TESTOK"), anyString())).thenReturn(ok);
 		
 		
 		LOGGER.info("is UptoDate : {}", urlActif);
@@ -249,7 +245,7 @@ class TestOperationsAPI extends AbstractTestsAPI {
 					.andExpect(status().is4xxClientError());
 
 		urlActif = BudgetApiUrlEnum.BUDGET_UP_TO_DATE_FULL.replace("{idBudget}", "TESTOK") + "?uptodateto=" + Calendar.getInstance().getTimeInMillis();
-		LOGGER.info("is UptoDate : {}", urlActif);
+		when(mockOperationService.isBudgetIHMUpToDate(anyString(), anyLong())).thenReturn(Boolean.TRUE);
 		getMockAPI().perform(get(urlActif))
 					.andExpect(status().isOk());
 	}
@@ -271,33 +267,22 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		/** Authentification **/
 		authenticateUser("userTest");
 
+		when(mockOperationService.getBudgetMensuel(eq("TESTKO"), anyString())).thenReturn(TestDataOperations.getBudgetCompteC1());
 
-		BudgetMensuel bo = new BudgetMensuel();
-		CompteBancaire c1 = new CompteBancaire();
-		c1.setActif(true);
-		c1.setId("C1");
-		c1.setLibelle("Libelle1");
-		c1.setOrdre(1);		
-		bo.setIdCompteBancaire(c1.getId());
-		bo.setMois(Month.JANUARY);
-		bo.setAnnee(2018);
-		bo.setActif(false);
-		bo.setId("BUDGETTEST");
-		bo.getSoldes().setSoldeAtFinMoisCourant(0D);
-		bo.getSoldes().setSoldeAtMaintenant(1000D);
-		bo.setDateMiseAJour(LocalDateTime.now());
-		bo.getSoldes().setSoldeAtFinMoisPrecedent(0D);
-		when(mockDataDBBudget.getBudgetMensuel(eq("TESTKO"), anyString())).thenReturn(bo);
-		bo.setActif(true);
-		when(mockDataDBBudget.getBudgetMensuel(eq("TESTOK"), anyString())).thenReturn(bo);
+		when(mockOperationService.getBudgetMensuel(eq("TESTOK"), anyString())).thenReturn(TestDataOperations.getBudgetCompteC2());
 
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=true";
+
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?actif=true";
+		when(mockOperationService.setBudgetActif(eq("TESTOK"), eq(true), anyString())).thenReturn(TestDataOperations.getBudgetCompteC2());
+		when(mockOperationService.setBudgetActif(eq("TESTKO"), eq(false), anyString())).thenReturn(TestDataOperations.getBudgetCompteC1());
+
+
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(post(urlActif))
 					.andExpect(status().isOk())
 					.andExpect(content().string(containsString("\"actif\":true")));
 
-		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTOK") + "?actif=false";
+		urlActif = BudgetApiUrlEnum.BUDGET_ETAT_FULL.replace("{idBudget}", "TESTKO") + "?actif=false";
 		LOGGER.info("is Actif : {}", urlActif);
 		getMockAPI().perform(post(urlActif))
 					.andExpect(status().isOk())
@@ -307,23 +292,25 @@ class TestOperationsAPI extends AbstractTestsAPI {
 
 
 	@Test
-	void testGetBudget() throws Exception {
+	void testGetBudgetById() throws Exception {
 
 		String urlBadBudget = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", "C3_2018_1");
 		LOGGER.info("Bad Budget : {}", urlBadBudget);
+		when(mockOperationService.getBudgetMensuel(eq("C3_2018_1"), anyString())).thenThrow(new BudgetNotFoundException("Erreur"));
+
 		/** Authentification **/
 		authenticateUser("userTest");
 
 		getMockAPI().perform(get(urlBadBudget).contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().is4xxClientError());
 		// OK
-
 		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_ID_FULL.replace("{idBudget}", bo.getId());
 		LOGGER.info("Good Budget : {}", urlGoodCompte);
+		when(mockOperationService.getBudgetMensuel(eq(bo.getId()), anyString())).thenReturn(bo);
 
 		getMockAPI().perform(get(urlGoodCompte).contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isOk())
-					.andExpect(content().string(containsString("{\"id\":\""+bo.getId()+"\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":true")));
+					.andExpect(content().string(containsString("{\"id\":\""+bo.getId()+"\",\"mois\":\"JANUARY\",\"annee\":2018,\"actif\":false")));
 	}
 
 
@@ -357,8 +344,7 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		// OK
 
 		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATION_DERNIERE_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "ID_op");
-		LOGGER.info("Good SetOperation : {}", urlGoodCompte);
-
+		when(mockOperationService.setLigneAsDerniereOperation(anyString(), anyString(), anyString())).thenReturn(Boolean.TRUE);
 		getMockAPI().perform(
 				post(urlGoodCompte)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -391,7 +377,7 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		getMockAPI().perform(delete(urlBadBudget).contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isNotFound());
 		// OK
-
+		when(mockOperationService.deleteOperation(anyString(), anyString(), anyString())).thenReturn(bo);
 		String urlGoodCompte = BudgetApiUrlEnum.BUDGET_OPERATION_FULL.replace("{idBudget}", bo.getId()).replace("{idOperation}", "OP1");
 		LOGGER.info("Good Del : {}", urlGoodCompte);
 
@@ -442,7 +428,7 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		c2.setId("C2");
 		c2.setLibelle("C2");
 		c2.setOrdre(1);
-		when(mockDataAPIComptes.getCompteById(eq("C2"))).thenReturn(c2);
+		when(mockAPIComptes.getCompteById(eq("C2"))).thenReturn(c2);
 
 
 		BudgetMensuel bo2 = new BudgetMensuel();
@@ -455,14 +441,14 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		bo2.getSoldes().setSoldeAtMaintenant(1000D);
 		bo2.setDateMiseAJour(LocalDateTime.now());
 		bo2.getSoldes().setSoldeAtFinMoisPrecedent(0D);
-		when(mockDataDBBudget.createOperationIntercompte(anyString(), any(), anyString(), anyString())).thenReturn(bo2);
+		when(mockOperationService.createOperationIntercompte(anyString(), any(), anyString(), anyString())).thenReturn(bo2);
 
 		CategorieOperation cat = new CategorieOperation(IdsCategoriesEnum.REMBOURSEMENT);
 		CategorieOperation sscat = new CategorieOperation(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE);
 		sscat.setCategorieParente(cat);
 
-		when(mockDataAPIParams.getCategories()).thenReturn(Arrays.asList(cat, sscat));
-		when(mockDataAPIParams.getCategorieParId(eq(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.name()))).thenReturn(sscat);
+		when(mockAPIParams.getCategories()).thenReturn(Arrays.asList(cat, sscat));
+		when(mockAPIParams.getCategorieParId(eq(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.name()))).thenReturn(sscat);
 		
 		LigneOperation opIntercompte = new LigneOperation(sscat, "OPInter", TypeOperationEnum.CREDIT, 213D, EtatOperationEnum.PREVUE, false);
 		opIntercompte.setId("OPInter");
@@ -508,7 +494,7 @@ class TestOperationsAPI extends AbstractTestsAPI {
 		Set<String> libelles = new HashSet<>();
 		libelles.add("OPE1");
 		libelles.add("OPE2");
-		when(mockDataDBBudget.getLibellesOperations(eq("TEST"), eq(2019))).thenReturn(libelles);
+		when(mockOperationService.getLibellesOperations(eq("TEST"), eq(2019))).thenReturn(libelles);
 		
 		getMockAPI().perform(get(path))
 		.andExpect(status().isOk())

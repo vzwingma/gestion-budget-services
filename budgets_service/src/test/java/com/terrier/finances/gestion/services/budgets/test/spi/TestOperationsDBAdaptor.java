@@ -78,7 +78,7 @@ class TestOperationsDBAdaptor {
         boolean actif = db.isBudgetActif("C1_2018_1");
 
         // Vérification
-        assertTrue(actif);
+        assertFalse(actif);
     }
 
 
