@@ -462,7 +462,7 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 		BudgetMensuel budget = getBudgetMensuel(idBudget, idProprietaire);
 		if(budget != null) {
 			CompteBancaire compteBancaire = compteClientApi.getCompteById(budget.getIdCompteBancaire());
-			if (compteBancaire.isActif()) {
+			if (Boolean.TRUE.equals(compteBancaire.isActif())) {
 				// Si mise à jour d'une opération, on l'enlève
 				int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
 				budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
