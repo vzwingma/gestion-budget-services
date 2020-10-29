@@ -3,7 +3,7 @@ package com.terrier.finances.gestion.services.budgets.test.spi;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
-import com.terrier.finances.gestion.services.budgets.spi.ComptesAPIClient;
+import com.terrier.finances.gestion.services.budgets.business.ports.IComptesServiceProvider;
 import com.terrier.finances.gestion.services.budgets.spi.ComptesServiceHTTPAdaptator;
 import com.terrier.finances.gestion.services.communs.api.AbstractTestsClientAPI;
 import okhttp3.mockwebserver.MockResponse;
@@ -28,7 +28,7 @@ class TestComptesHTTPAdaptator extends AbstractTestsClientAPI {
 
 	
 	@Autowired
-	private ComptesServiceHTTPAdaptator compteClient;
+	private IComptesServiceProvider compteClient;
 	
 	
 	@Test

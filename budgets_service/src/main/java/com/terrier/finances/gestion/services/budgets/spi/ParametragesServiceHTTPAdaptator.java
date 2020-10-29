@@ -4,6 +4,7 @@ import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.Optional;
  *
  */
 @Service
-public class ParametragesServiceHTTPAdaptator extends AbstractHTTPClient<CategorieOperation> {
+public class ParametragesServiceHTTPAdaptator extends AbstractHTTPClient<CategorieOperation> implements IParametragesServiceProvider {
 
 
 	private List<CategorieOperation> categoriesSsCategories;

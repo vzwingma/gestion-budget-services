@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
 import com.terrier.finances.gestion.services.budgets.spi.ParametragesServiceHTTPAdaptator;
 import com.terrier.finances.gestion.services.communs.api.AbstractTestsClientAPI;
 import okhttp3.mockwebserver.MockResponse;
@@ -30,8 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ContextConfiguration(classes={ParametragesServiceHTTPAdaptator.class})
 class TestParametragesHTTPAdaptator extends AbstractTestsClientAPI {
 
+
 	@Autowired
-	private ParametragesServiceHTTPAdaptator client;
+	private IParametragesServiceProvider client;
+
 	
 	@Test
 	void testCallGetCategories() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {
