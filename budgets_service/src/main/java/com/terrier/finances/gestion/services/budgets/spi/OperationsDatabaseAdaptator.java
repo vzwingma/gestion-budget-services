@@ -1,13 +1,12 @@
 package com.terrier.finances.gestion.services.budgets.spi;
 
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
+import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
+import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
+import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRepository;
+import com.terrier.finances.gestion.services.communs.spi.mongodb.AbstractDatabaseServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -15,12 +14,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
-import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
-import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
-import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.communs.spi.mongodb.AbstractDatabaseServiceProvider;
+import java.time.Month;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service de données en MongoDB fournissant les infos des opérations

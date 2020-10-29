@@ -3,16 +3,15 @@
  */
 package com.terrier.finances.gestion.services.communs.spi.mongodb;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
-
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
+
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 /**
  * Service Provider Database
