@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
-import com.terrier.finances.gestion.services.utilisateurs.spi.UtilisateurDatabaseAdaptor;
 import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 
 /**

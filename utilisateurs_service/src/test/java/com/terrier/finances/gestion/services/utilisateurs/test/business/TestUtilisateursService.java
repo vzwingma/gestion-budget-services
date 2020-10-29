@@ -22,14 +22,14 @@ public class TestUtilisateursService {
     private IUtilisateursRequest utilisateurService;
 
     @BeforeEach
-    public void initMocks(){
+    void initMocks(){
         // Préparation
         spi = mock(IUtilisateursRepository.class);
         utilisateurService = spy(new UtilisateursService(spi));
     }
 
     @Test
-    public void testGetUtilisateur() throws DataNotFoundException {
+    void testGetUtilisateur() throws DataNotFoundException {
         // Préparation
         when(spi.chargeUtilisateur(eq("Test"))).thenReturn(TestDataUtilisateur.getTestUtilisateur());
 
@@ -45,7 +45,7 @@ public class TestUtilisateursService {
     }
 
     @Test
-    public void testGetUtilisateurKO() throws DataNotFoundException {
+    void testGetUtilisateurKO() throws DataNotFoundException {
         // Préparation
         when(spi.chargeUtilisateur(anyString())).thenThrow(DataNotFoundException.class);
 

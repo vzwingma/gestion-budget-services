@@ -1,7 +1,6 @@
 package com.terrier.finances.gestion.services.parametrages.business.port;
 
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 
 import java.util.List;
 

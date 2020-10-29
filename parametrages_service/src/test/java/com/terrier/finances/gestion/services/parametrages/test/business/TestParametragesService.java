@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class TestParametragesService {
 
     @Test
-    public void testGetListeCategories(){
+    void testGetListeCategories(){
 
         // Préparation
         IParametrageRepository spi = mock(IParametrageRepository.class);

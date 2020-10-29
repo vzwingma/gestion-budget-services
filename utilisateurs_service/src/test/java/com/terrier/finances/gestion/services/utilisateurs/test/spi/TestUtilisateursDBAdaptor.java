@@ -22,7 +22,7 @@ public class TestUtilisateursDBAdaptor {
 
 
     @BeforeEach
-    public void initMocks(){
+    void initMocks(){
         // Préparation
         db = spy(new UtilisateurDatabaseAdaptor());
         mockMongo = mock(MongoOperations.class);
@@ -47,7 +47,7 @@ public class TestUtilisateursDBAdaptor {
 
 
     @Test
-    public void testMajUtilisateur() throws DataNotFoundException {
+    void testMajUtilisateur() throws DataNotFoundException {
 
         // Préparation
         when(mockMongo.save(any(Utilisateur.class))).thenReturn(TestDataUtilisateur.getTestUtilisateur());
@@ -60,7 +60,7 @@ public class TestUtilisateursDBAdaptor {
     }
 
     @Test
-    public void testMajUtilisateurKO() {
+    void testMajUtilisateurKO() {
 
         // Préparation
         when(mockMongo.save(any(Utilisateur.class))).thenReturn(null);

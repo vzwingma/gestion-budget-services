@@ -31,7 +31,7 @@ public class TestComptesService {
     }
 
     @Test
-    public void testGetListeComptes() throws DataNotFoundException {
+    void testGetListeComptes() throws DataNotFoundException {
 
         // Préparation
         when(spi.chargeComptes(anyString())).thenReturn(TestDataComptes.getListeComptes());
@@ -48,7 +48,7 @@ public class TestComptesService {
 
 
     @Test
-    public void testCompteParId() throws DataNotFoundException {
+    void testCompteParId() throws DataNotFoundException {
 
         // Préparation
         when(spi.chargeCompteParId(anyString(), any())).thenReturn(TestDataComptes.getCompte1());
@@ -66,7 +66,7 @@ public class TestComptesService {
 
 
     @Test
-    public void testCompteActif() throws DataNotFoundException {
+    void testCompteActif() throws DataNotFoundException {
 
         // Préparation
         when(spi.isCompteActif(anyString())).thenReturn(true);
