@@ -24,7 +24,7 @@ public class TestComptesService {
     IComptesRequest comptesRequest;
 
     @BeforeEach
-    public void initMocks(){
+    void initMocks(){
         // Préparation
         spi = mock(IComptesRepository.class);
         comptesRequest = spy(new ComptesService(spi));
