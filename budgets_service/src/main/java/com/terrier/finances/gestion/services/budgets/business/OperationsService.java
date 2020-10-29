@@ -460,42 +460,45 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 	public BudgetMensuel updateOperationInBudget(String idBudget, final LigneOperation ligneOperation, String idProprietaire) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 
 		BudgetMensuel budget = getBudgetMensuel(idBudget, idProprietaire);
-		CompteBancaire compteBancaire = compteClientApi.getCompteById(budget.getIdCompteBancaire());
-		if(budget != null && compteBancaire.isActif()) {
-			// Si mise à jour d'une opération, on l'enlève
-			int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
-			budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
-			if(ligneOperation.getEtat() != null) {
+		if(budget != null) {
+			CompteBancaire compteBancaire = compteClientApi.getCompteById(budget.getIdCompteBancaire());
+			if (compteBancaire.isActif()) {
+				// Si mise à jour d'une opération, on l'enlève
+				int rangMaj = budget.getListeOperations().indexOf(ligneOperation);
+				budget.getListeOperations().removeIf(op -> op.getId().equals(ligneOperation.getId()));
+				if (ligneOperation.getEtat() != null) {
 
-				LigneOperation ligneUpdatedOperation = updateOperation(ligneOperation, idProprietaire);
-				if(rangMaj >= 0) {
-					LOGGER.debug("Mise à jour de l'opération {} dans le budget {}", ligneUpdatedOperation, budget);
-					budget.getListeOperations().add(rangMaj, ligneUpdatedOperation);
-				}
-				else {
-					LOGGER.debug("Ajout de l'opération {} dans le budget {}", ligneUpdatedOperation, budget);
-					budget.getListeOperations().add(ligneUpdatedOperation);
+					LigneOperation ligneUpdatedOperation = updateOperation(ligneOperation, idProprietaire);
+					if (rangMaj >= 0) {
+						LOGGER.debug("Mise à jour de l'opération {} dans le budget {}", ligneUpdatedOperation, budget);
+						budget.getListeOperations().add(rangMaj, ligneUpdatedOperation);
+					} else {
+						LOGGER.debug("Ajout de l'opération {} dans le budget {}", ligneUpdatedOperation, budget);
+						budget.getListeOperations().add(ligneUpdatedOperation);
 
-					// Si frais remboursable : ajout du remboursement en prévision
-					// #62 : et en mode création
-					if(ligneOperation.getSsCategorie() != null
-							&& ligneOperation.getCategorie() != null 
-							&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())){
-						budget.getListeOperations().add(addOperationRemboursement(ligneOperation, idProprietaire));
+						// Si frais remboursable : ajout du remboursement en prévision
+						// #62 : et en mode création
+						if (ligneOperation.getSsCategorie() != null
+								&& ligneOperation.getCategorie() != null
+								&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())) {
+							budget.getListeOperations().add(addOperationRemboursement(ligneOperation, idProprietaire));
+						}
 					}
-				}
 
+				} else {
+					LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
+				}
+				// Mise à jour du budget
+				calculEtSauvegardeBudget(budget);
+			} else {
+				String idCompte = BudgetDataUtils.getCompteFromBudgetId(idBudget);
+				LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", idCompte);
+				throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte " + idCompte + " est cloturé");
 			}
-			else {
-				LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
-			}
-			// Mise à jour du budget
-			calculEtSauvegardeBudget(budget);
 		}
-		else{
-			String idCompte = BudgetDataUtils.getCompteFromBudgetId(idBudget);
-			LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", idCompte);
-			throw new CompteClosedException("Impossible de modifier ou créer une opération. Le compte "+idCompte+ " est cloturé");
+		else {
+			LOGGER.warn("Impossible de trouver le budget {}", idBudget);
+			throw new BudgetNotFoundException("Impossible de charger le budget " + idBudget	);
 		}
 		return budget;
 	}

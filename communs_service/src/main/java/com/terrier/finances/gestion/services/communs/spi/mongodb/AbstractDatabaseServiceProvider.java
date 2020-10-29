@@ -36,7 +36,7 @@ public abstract class AbstractDatabaseServiceProvider<D> {
 	/**
 	 * Constructeur permettant de définir les composants utilisés en DATA
 	 */
-	public AbstractDatabaseServiceProvider(){
+	protected AbstractDatabaseServiceProvider(){
 		MDC.put("key", "[DB]");
 		LOGGER.info("[INIT] Service {}", this.getClass().getSimpleName());
 		entityClass = getGenericTypeClass();

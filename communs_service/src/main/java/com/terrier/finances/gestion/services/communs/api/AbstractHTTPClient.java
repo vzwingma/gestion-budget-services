@@ -33,7 +33,7 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	 * Constructeur
 	 * @param responseClassType
 	 */
-	public AbstractHTTPClient(Class<R> responseClassType) {
+	protected AbstractHTTPClient(Class<R> responseClassType) {
 		this.responseClassType = responseClassType;
 	}
 	
