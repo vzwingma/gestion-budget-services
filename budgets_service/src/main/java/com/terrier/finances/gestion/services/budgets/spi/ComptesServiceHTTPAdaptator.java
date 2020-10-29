@@ -20,9 +20,9 @@ import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
  *
  */
 @Service
-public class ComptesAPIClient extends AbstractHTTPClient<CompteBancaire> implements IComptesServiceProvider {
+public class ComptesServiceHTTPAdaptator extends AbstractHTTPClient<CompteBancaire> implements IComptesServiceProvider {
 
-	public ComptesAPIClient() {
+	public ComptesServiceHTTPAdaptator() {
 		super(CompteBancaire.class);
 	}
 

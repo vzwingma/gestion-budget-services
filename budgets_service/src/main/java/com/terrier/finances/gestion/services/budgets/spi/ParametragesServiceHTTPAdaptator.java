@@ -1,16 +1,15 @@
 package com.terrier.finances.gestion.services.budgets.spi;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Client vers l'API Parametrages
@@ -18,12 +17,12 @@ import com.terrier.finances.gestion.services.communs.api.AbstractHTTPClient;
  *
  */
 @Service
-public class ParametragesAPIClient extends AbstractHTTPClient<CategorieOperation> {
+public class ParametragesServiceHTTPAdaptator extends AbstractHTTPClient<CategorieOperation> {
 
 
 	private List<CategorieOperation> categoriesSsCategories;
 
-	public ParametragesAPIClient() {
+	public ParametragesServiceHTTPAdaptator() {
 		super(CategorieOperation.class);
 	}
 	/**

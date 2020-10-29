@@ -58,17 +58,4 @@ public class TestUtilisateursDBAdaptor {
         // Vérification
         verify(mockMongo, times(1)).save(any(Utilisateur.class));
     }
-
-    @Test
-    void testMajUtilisateurKO() {
-
-        // Préparation
-        when(mockMongo.save(any(Utilisateur.class))).thenReturn(null);
-
-        // Lancement
-        assertThrows(DataNotFoundException.class, () -> db.save(TestDataUtilisateur.getTestUtilisateur()));
-        // Vérification
-        verify(mockMongo, times(1)).save(any(Utilisateur.class));
-
-    }
 }

@@ -1,12 +1,13 @@
-package com.terrier.finances.gestion.services.budgets.api.client;
+package com.terrier.finances.gestion.services.budgets.test.spi;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.IOException;
-import java.util.List;
-
-import com.terrier.finances.gestion.services.budgets.spi.ParametragesAPIClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.budgets.spi.ParametragesServiceHTTPAdaptator;
+import com.terrier.finances.gestion.services.communs.api.AbstractTestsClientAPI;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
-import com.terrier.finances.gestion.services.communs.api.AbstractTestsClientAPI;
+import java.io.IOException;
+import java.util.List;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.RecordedRequest;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
@@ -29,11 +27,11 @@ import okhttp3.mockwebserver.RecordedRequest;
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes={ParametragesAPIClient.class})
-class TestParametragesAPIClient extends AbstractTestsClientAPI {
+@ContextConfiguration(classes={ParametragesServiceHTTPAdaptator.class})
+class TestParametragesHTTPAdaptator extends AbstractTestsClientAPI {
 
 	@Autowired
-	private ParametragesAPIClient client;
+	private ParametragesServiceHTTPAdaptator client;
 	
 	@Test
 	void testCallGetCategories() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {
