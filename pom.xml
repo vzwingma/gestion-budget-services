@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.6.RELEASE</version>
+		<version>2.4.0</version>
 	</parent>
 
 	<groupId>io.github.vzwingma.finances.budget</groupId>
 	<artifactId>services</artifactId>
-	<version>12.2.4</version>
+	<version>12.2.5</version>
 	<name>[Budget] Services</name>
 	<description>Services de l'application</description>
 	<packaging>pom</packaging>
