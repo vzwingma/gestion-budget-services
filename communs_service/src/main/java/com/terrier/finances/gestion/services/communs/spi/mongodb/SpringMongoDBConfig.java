@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoClientDbFactory;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
 /**
  * Configuration de connexion à la BDD via des variables d'environnement
@@ -29,16 +29,11 @@ public class SpringMongoDBConfig {
 
 
 	/**
-	 * 
-	 * @param host de la BDD
-	 * @param port de la BDD
-	 * @param username login
-	 * @param password mot de passe
-	 * @param db nom de la BDD
+	 *
 	 * @return Factory de connexion BDD
 	 */
 	@Bean
-	public MongoDbFactory mongoDbFactory() {
+	public MongoDatabaseFactory mongoDbFactory() {
 
 		String db = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_DB);
 		String host = getStringEnvVar(MongoDBConfigEnum.MONGODB_CONFIG_HOST);
@@ -56,7 +51,8 @@ public class SpringMongoDBConfig {
 			String mongoURItoLog = mongoURI.replaceAll(":(.)*@", "*");
 			LOGGER.info("[INIT] Configuration de la connexion vers MongoDB Atlas : [{}]", mongoURItoLog);
 		}
-		return new SimpleMongoClientDbFactory(mongoURI);
+
+		return new SimpleMongoClientDatabaseFactory(mongoURI);
 	}
 
 	/**
