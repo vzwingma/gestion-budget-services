@@ -91,7 +91,7 @@ jobs:
           fi;
         - docker tag vzwingmann/gestion_budget_services:parametrages-travis vzwingmann/gestion_budget_services:parametrages-$VERSION_RELEASE; 
         - docker push vzwingmann/gestion_budget_services:parametrages-$VERSION_RELEASE;
-      name: "Publish Paramétrages"
+      name: "Publish Parametrages"
     
     ### Service Utilisateurs
     - if: (branch = snapshot OR (tag =~ ^v))
