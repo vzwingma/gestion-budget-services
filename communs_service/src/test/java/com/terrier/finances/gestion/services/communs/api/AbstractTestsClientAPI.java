@@ -3,8 +3,9 @@
  */
 package com.terrier.finances.gestion.services.communs.api;
 
-import java.io.IOException;
-
+import com.terrier.finances.gestion.communs.api.filters.OutcomingRequestFilter;
+import com.terrier.finances.gestion.test.config.MockApiClient;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.terrier.finances.gestion.communs.api.filters.OutcomingRequestFilter;
-import com.terrier.finances.gestion.test.config.MockApiClient;
-
-import okhttp3.mockwebserver.MockWebServer;
+import java.io.IOException;
 
 /**
  * Classe abstraite des tests de client d'API
@@ -70,7 +68,7 @@ public abstract class AbstractTestsClientAPI {
 	}
 
 	/**
-	 * @return the mockServer
+	 * @return the testClient
 	 */
 	public MockApiClient getTestClient() {
 		return testClient;

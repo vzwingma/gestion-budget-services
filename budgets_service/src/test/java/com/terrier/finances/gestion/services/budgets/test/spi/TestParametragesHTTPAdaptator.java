@@ -2,8 +2,6 @@ package com.terrier.finances.gestion.services.budgets.test.spi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
 import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
 import com.terrier.finances.gestion.services.budgets.spi.ParametragesServiceHTTPAdaptator;
 import com.terrier.finances.gestion.services.communs.api.AbstractTestsClientAPI;
@@ -37,7 +35,7 @@ class TestParametragesHTTPAdaptator extends AbstractTestsClientAPI {
 
 	
 	@Test
-	void testCallGetCategories() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {
+	void testCallGetCategories() throws InterruptedException, IOException {
 		CategorieOperation c = new CategorieOperation();
 		c.setId("1");
 		c.setActif(true);
@@ -60,7 +58,7 @@ class TestParametragesHTTPAdaptator extends AbstractTestsClientAPI {
 	
 	
 	@Test
-	void testCallGetCategorie() throws InterruptedException, UserNotAuthorizedException, DataNotFoundException, IOException {
+	void testCallGetCategorie() throws IOException {
 		CategorieOperation c = new CategorieOperation();
 		c.setId("1");
 		c.setActif(true);
