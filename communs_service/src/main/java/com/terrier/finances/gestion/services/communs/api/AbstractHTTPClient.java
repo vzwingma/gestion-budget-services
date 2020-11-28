@@ -1,8 +1,9 @@
 package com.terrier.finances.gestion.services.communs.api;
 
-import java.util.List;
-import java.util.Map;
-
+import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
+import com.terrier.finances.gestion.communs.api.AbstractHTTPReactiveClient;
+import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
@@ -10,13 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
-
-import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-import com.terrier.finances.gestion.communs.api.AbstractHTTPReactiveClient;
-import com.terrier.finances.gestion.communs.api.config.ApiUrlConfigEnum;
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Classe d'un client HTTP
@@ -52,7 +50,7 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
 	protected Mono<R> callHTTPGetData(String path, Map<String, String> pathParams) throws DataNotFoundException{
-		return callAPIandReturnMono(HttpMethod.GET, path, pathParams, null, null, responseClassType);
+		return callAPIandReturnResponse(HttpMethod.GET, path, pathParams, null, null, responseClassType);
 	}
 	/**
 	 * @param path chemin
@@ -60,7 +58,7 @@ public abstract class AbstractHTTPClient<R extends AbstractAPIObjectModel> exten
 	 * @throws DataNotFoundException  erreur lors de l'appel
 	 */
 	protected Mono<List<R>> callHTTPGetListData(String path) throws DataNotFoundException{
-		return callAPIandReturnFlux(HttpMethod.GET, path, null, null, null, responseClassType).collectList();
+		return callAPIandReturnResponses(HttpMethod.GET, path, responseClassType).collectList();
 	}
 	
 
