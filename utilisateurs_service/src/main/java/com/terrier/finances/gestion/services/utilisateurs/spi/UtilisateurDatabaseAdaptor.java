@@ -32,7 +32,13 @@ public class UtilisateurDatabaseAdaptor extends AbstractDatabaseServiceProvider<
 		try{
 			LOGGER.info("[idUser=?] Recherche de l'utilisateur [{}]", login);
 			Query queryUser = new Query().addCriteria(Criteria.where("login").is(login));
-			return findOneByQuery(queryUser);
+			Utilisateur user = findOneByQuery(queryUser);
+			if(user == null){
+				throw new DataNotFoundException(("Impossoble de trouver l'utilisateur " + login);
+			}
+			else {
+				return user;
+			}
 		}
 		catch(Exception e){
 			LOGGER.error("[idUser=?] Erreur lors de la recherche de l'utilisateur [{}]", login, e);
