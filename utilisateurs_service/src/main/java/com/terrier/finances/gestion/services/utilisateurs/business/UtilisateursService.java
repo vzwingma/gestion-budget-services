@@ -1,7 +1,8 @@
 package com.terrier.finances.gestion.services.utilisateurs.business;
 
-import java.time.LocalDateTime;
-
+import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
+import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
+import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRepository;
 import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRequest;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.stereotype.Service;
 
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.communs.business.AbstractBusinessService;
-import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
+import java.time.LocalDateTime;
 
 /**
  * Service Utilisateurs
@@ -56,12 +55,12 @@ public class UtilisateursService extends AbstractBusinessService implements IUti
 	}
 	/**
 	 * Date de dernier accès
-	 * @param idUtilisateur login de l'utilisateur
+	 * @param login login de l'utilisateur
 	 * @return date de dernier accès
 	 */
-	public LocalDateTime getLastAccessDate(String idUtilisateur){
+	public LocalDateTime getLastAccessDate(String login){
 		try {
-			Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(idUtilisateur);
+			Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(login);
 			return utilisateur.getDernierAcces();
 		} catch (DataNotFoundException e) {
 			return null;
