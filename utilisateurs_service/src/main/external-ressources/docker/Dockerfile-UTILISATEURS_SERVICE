@@ -1,9 +1,9 @@
 # Issu de la dernière image OpenJDK 11
-FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.6_10-slim
+FROM adoptopenjdk/openjdk15:x86_64-alpine-jdk-15.0.1_9-slim
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
 COPY service-utilisateurs.jar /opt/service-utilisateurs.jar
 
 # Lancement de l'appli
-CMD java -jar /opt/service-utilisateurs.jar
+CMD java -jar /opt/service-utilisateurs.jar -Djdk.tls.client.protocols=TLSv1.2
