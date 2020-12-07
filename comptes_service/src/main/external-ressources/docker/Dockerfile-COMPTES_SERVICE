@@ -1,9 +1,9 @@
 # Issu de la dernière image OpenJDK 11
-FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.6_10-slim
+FROM adoptopenjdk/openjdk11:alpine-slim
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
 COPY service-comptes.jar /opt/service-comptes.jar
 
 # Lancement de l'appli
-CMD java -jar /opt/service-comptes.jar
+CMD java -jar /opt/service-comptes.jar -Djdk.tls.client.protocols=TLSv1.2

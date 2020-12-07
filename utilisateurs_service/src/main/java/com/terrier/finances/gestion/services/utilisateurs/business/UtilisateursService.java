@@ -40,31 +40,24 @@ public class UtilisateursService extends AbstractBusinessService implements IUti
 	 * @param loginUtilisateur
 	 * @return date de dernier accès
 	 */
-	public Utilisateur getUtilisateur(String loginUtilisateur){
-		try {
-			Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(loginUtilisateur);
-			// Enregistrement de la date du dernier accès à maintenant
-			LocalDateTime dernierAcces = utilisateur.getDernierAcces();
-			utilisateur.setDernierAcces(LocalDateTime.now());
-			dataDBUsers.majUtilisateur(utilisateur);
-			utilisateur.setDernierAcces(dernierAcces);
-			return utilisateur;
-		} catch (DataNotFoundException e) {
-			return null;
-		}
+	public Utilisateur getUtilisateur(String loginUtilisateur) throws DataNotFoundException{
+		Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(loginUtilisateur);
+		// Enregistrement de la date du dernier accès à maintenant
+		LocalDateTime dernierAcces = utilisateur.getDernierAcces();
+		utilisateur.setDernierAcces(LocalDateTime.now());
+		dataDBUsers.majUtilisateur(utilisateur);
+		utilisateur.setDernierAcces(dernierAcces);
+		return utilisateur;
 	}
 	/**
 	 * Date de dernier accès
 	 * @param login login de l'utilisateur
 	 * @return date de dernier accès
+	 * @throws DataNotFoundException données non trouvées
 	 */
-	public LocalDateTime getLastAccessDate(String login){
-		try {
-			Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(login);
-			return utilisateur.getDernierAcces();
-		} catch (DataNotFoundException e) {
-			return null;
-		}
+	public LocalDateTime getLastAccessDate(String login) throws DataNotFoundException{
+		Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(login);
+		return utilisateur.getDernierAcces();
 	}
 
 	
