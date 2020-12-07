@@ -7,6 +7,7 @@ import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisa
 import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRequest;
 import com.terrier.finances.gestion.services.utilisateurs.test.data.TestDataUtilisateur;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,10 +51,10 @@ public class TestUtilisateursService {
         when(spi.chargeUtilisateur(anyString())).thenThrow(DataNotFoundException.class);
 
         // Lancement
-        Utilisateur userTest = utilisateurService.getUtilisateur("Test2");
-
+        Assertions.assertThrows(DataNotFoundException.class, () -> {
+                    Utilisateur userTest = utilisateurService.getUtilisateur("Test2");
+                });
         //Vérification
-        Assert.assertNull(userTest);
         verify(spi, times(1)).chargeUtilisateur(anyString());
     }
 }
