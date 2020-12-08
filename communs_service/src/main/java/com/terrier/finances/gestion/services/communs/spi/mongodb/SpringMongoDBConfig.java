@@ -44,7 +44,7 @@ public class SpringMongoDBConfig {
 		String mongoURI = new StringBuilder("mongodb+srv://")
 				.append(username).append(":").append(password)
 				.append("@").append(host).append("/").append(db)
-				.append("?retryWrites=true&w=majority")
+				.append("?retryWrites=true&w=majority&tls=true")
 				.toString();
 
 		if(LOGGER.isInfoEnabled()) {
