@@ -56,7 +56,7 @@ public class SecurityOAuth2Config extends ResourceServerConfigurerAdapter {
 	@Bean
 	CorsConfigurationSource corsConfigurationSource()
 	{
-		LOGGER.info("Paramétrage CORS allow by default");
+		LOGGER.warn("Paramétrage CORS allow by default");
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
 		return source;
