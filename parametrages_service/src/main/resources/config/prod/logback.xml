@@ -13,6 +13,9 @@
 	<logger name="reactor.netty" level="INFO" />
 		
 	<!-- interrogation -->
+	<logger name="com.terrier.finances.gestion.services.communs" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE" />
+	</logger>
 	<logger name="com.terrier.finances.gestion.services.parametrages" level="INFO" additivity="false">
 		<appender-ref ref="CONSOLE" />
 	</logger>
