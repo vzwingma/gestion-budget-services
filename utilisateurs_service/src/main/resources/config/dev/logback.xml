@@ -21,7 +21,11 @@
 	<logger name="org.quartz" level="INFO" />
 
 
-	<!-- Budget -->
+	<!-- Utilisateurs -->
+	<logger name="com.terrier.finances.gestion.services.communs" level="DEBUG" additivity="false">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
 	<logger name="com.terrier.finances.gestion.services.utilisateurs" level="DEBUG" additivity="false">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />		
