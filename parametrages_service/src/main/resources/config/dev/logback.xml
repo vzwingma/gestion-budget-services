@@ -21,7 +21,11 @@
 	<logger name="org.quartz" level="INFO" />
 	<logger name="reactor.netty" level="INFO" />
 
-	<!-- Budget -->
+	<!-- Paramétrages -->
+	<logger name="com.terrier.finances.gestion.services.communs" level="DEBUG" additivity="false">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
 	<logger name="com.terrier.finances.gestion.services.parametrages" level="DEBUG" additivity="false">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />		
