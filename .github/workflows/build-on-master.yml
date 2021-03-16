@@ -1,4 +1,4 @@
-name: CI on Master
+name: CI on Snapshot
 
 # Controls when the action will run. 
 on:

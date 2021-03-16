@@ -8,7 +8,8 @@
 
 ### Statut
 
-[![Build Status](https://img.shields.io/travis/com/vzwingma/gestion-budget-services.svg)](https://travis-ci.com/vzwingma/gestion-budget-services/branches)
+[![Build Status](https://github.com/vzwingma/gestion-budget-services/actions/workflows/build-on-master.yml/badge.svg)](https://github.com/vzwingma/gestion-budget-services/actions/workflows/build-on-master.yml)
+[![Build Status](https://github.com/vzwingma/gestion-budget-services/actions/workflows/build-on-tag.yml/badge.svg)](https://github.com/vzwingma/gestion-budget-services/actions/workflows/build-on-tag.yml)
 [![GitHub issues](https://img.shields.io/github/issues-raw/vzwingma/gestion-budget-services.svg?style=flat-square)](https://github.com/vzwingma/gestion-budget-services/issues)
 
 [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/gestion-budget-services/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/vzwingma/gestion-budget-services)
