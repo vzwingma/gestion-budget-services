@@ -33,41 +33,22 @@ jobs:
       - name: Build with Maven
         run: mvn clean install -B -P prod --file pom.xml
       # Upload Releases Snapshot
-      - uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v2
         with:
-          upload_url: https://uploads.github.com/repos/vzwingma/gestion-budget-services/releases/29780720/assets{?name,label}
-          asset_path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages_service/target/service-parametrages.jar
-          asset_name: service-parametrages.jar
-          asset_content_type: application/zip
-
-      - uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: service-parametrages.jar
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages_service/target/service-parametrages.jar
+      - uses: actions/upload-artifact@v2
         with:
-          upload_url: https://uploads.github.com/repos/vzwingma/gestion-budget-services/releases/29780720/assets{?name,label}
-          asset_path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar
-          asset_name: service-utilisateurs.jar
-          asset_content_type: application/zip
-
-      - uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar
+          name: service-utilisateurs.jar
+      - uses: actions/upload-artifact@v2
         with:
-          upload_url: https://uploads.github.com/repos/vzwingma/gestion-budget-services/releases/29780720/assets{?name,label}
-          asset_path: /home/runner/work/gestion-budget-services/gestion-budget-services/budgets_service/target/service-budgets.jar
-          asset_name: service-budgets.jar
-          asset_content_type: application/zip
-
-      - uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/budgets_service/target/service-budgets.jar
+          name: service-budgets.jar
+      - uses: actions/upload-artifact@v2
         with:
-          upload_url: https://uploads.github.com/repos/vzwingma/gestion-budget-services/releases/29780720/assets{?name,label}
-          asset_path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/target/service-comptes.jar
-          asset_name: service-comptes.jar
-          asset_content_type: application/zip
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/target/service-comptes.jar
+          name: service-comptes.jar
   # PUBLISH DOCKER IMAGES
   docker-parametrages:
     runs-on: ubuntu-latest
@@ -85,10 +66,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: curl
-        uses: wei/curl@master
+      - uses: actions/download-artifact@v2
         with:
-          args: https://github.com/vzwingma/gestion-budget-services/releases/download/snapshot/service-parametrages.jar;
+          name: service-parametrages.jar
       -
         name: Build and push
         id: docker_build
@@ -115,10 +95,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: curl
-        uses: wei/curl@master
+      - uses: actions/download-artifact@v2
         with:
-          args: https://github.com/vzwingma/gestion-budget-services/releases/download/snapshot/service-comptes.jar;
+          name: service-comptes.jar
       -
         name: Build and push
         id: docker_build
@@ -145,10 +124,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: curl
-        uses: wei/curl@master
+      - uses: actions/download-artifact@v2
         with:
-          args: https://github.com/vzwingma/gestion-budget-services/releases/download/snapshot/service-utilisateurs.jar;
+          name: service-utilisateurs.jar
       -
         name: Build and push
         id: docker_build
@@ -175,10 +153,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: curl
-        uses: wei/curl@master
+      - uses: actions/download-artifact@v2
         with:
-          args: https://github.com/vzwingma/gestion-budget-services/releases/download/snapshot/service-budgets.jar;
+          name: service-budgets.jar
       -
         name: Build and push
         id: docker_build
