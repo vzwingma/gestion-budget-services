@@ -49,6 +49,23 @@ jobs:
         with:
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/target/service-comptes.jar
           name: service-comptes.jar
+      # Upload Docker
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Dockerfile-PARAMS_SERVICE
+          path: gestion-budget-services/parametrages_service/src/main/external-ressources/docker/Dockerfile-PARAMS_SERVICE
+      - uses: actions/upload-artifact@v2
+        with:
+          path: gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker/Dockerfile-UTILISATEURS_SERVICE
+          name: Dockerfile-UTILISATEURS_SERVICE
+      - uses: actions/upload-artifact@v2
+        with:
+          path: gestion-budget-services/budgets_service/src/main/external-ressources/docker/Dockerfile-BUDGETS_SERVICE
+          name: Dockerfile-BUDGETS_SERVICE
+      - uses: actions/upload-artifact@v2
+        with:
+          path: gestion-budget-services/comptes_service/src/main/external-ressources/docker/Dockerfile-COMPTES_SERVICE
+          name: Dockerfile-COMPTES_SERVICE
   # PUBLISH DOCKER IMAGES
   docker-parametrages:
     runs-on: ubuntu-latest
@@ -71,12 +88,15 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: service-parametrages.jar
+      - uses: actions/download-artifact@v2
+        with:
+          name: Dockerfile-PARAMS_SERVICE
       -
         name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          file: ../../../home/runner/work/gestion-budget-services/gestion-budget-services/parametrages_service/src/main/external-ressources/docker/Dockerfile-PARAMS_SERVICE
+          file: Dockerfile-PARAMS_SERVICE
           push: true
           tags: vzwingmann/gestion_budget_services:parametrages-snapshot
       -
@@ -103,12 +123,15 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: service-comptes.jar
+      - uses: actions/download-artifact@v2
+        with:
+          name: Dockerfile-COMPTES_SERVICE
       -
         name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          file: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/src/main/external-ressources/docker/Dockerfile-COMPTES_SERVICE
+          file: Dockerfile-COMPTES_SERVICE
           push: true
           tags: vzwingmann/gestion_budget_services:comptes-snapshot
       -
@@ -135,12 +158,18 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: service-utilisateurs.jar
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          name: Dockerfile-UTILISATEURS_SERVICE
+      - name: 'Echo download path'
+        run: echo ${{steps.download.outputs.download-path}}
       -
         name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          file: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker/Dockerfile-UTILISATEURS_SERVICE
+          file: Dockerfile-UTILISATEURS_SERVICE
           push: true
           tags: vzwingmann/gestion_budget_services:utilisateurs-snapshot
       -
@@ -167,12 +196,15 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: service-budgets.jar
+      - uses: actions/download-artifact@v2
+        with:
+          name: Dockerfile-BUDGETS_SERVICE
       -
         name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          file: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages_service/src/main/external-ressources/docker/Dockerfile-PARAMS_SERVICE
+          file: Dockerfile-BUDGETS_SERVICE
           push: true
           tags: vzwingmann/gestion_budget_services:budgets-snapshot
       -
