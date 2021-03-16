@@ -49,7 +49,7 @@ public abstract class AbstractHTTPReactiveClient{
 	 */
 	private String correlationId;
 
-	public AbstractHTTPReactiveClient() {
+	protected AbstractHTTPReactiveClient() {
 		serviceURI = EnvVarConfigUtils.getStringEnvVar(getConfigServiceURI());
 	}
 
@@ -108,7 +108,13 @@ public abstract class AbstractHTTPReactiveClient{
 			Map<String, String> queryParams){
 
 		// Correlation ID
-		String corrID = getCorrId() != null ? getCorrId() : this.correlationId != null ? this.correlationId : UUID.randomUUID().toString();
+		String corrID;
+		if(getCorrId() != null){
+			corrID = getCorrId();
+		}
+		else{
+			corrID = this.correlationId != null ? this.correlationId : UUID.randomUUID().toString();
+		}
 
 		final Map<String, String> paramsPath = pathParams != null ? pathParams : new HashMap<>();
 
@@ -193,7 +199,7 @@ public abstract class AbstractHTTPReactiveClient{
 	 * @param path chemin
 	 * @return données en réponse
 	 */
-	protected <Q extends AbstractAPIObjectModel, R extends AbstractAPIObjectModel>
+	protected <R extends AbstractAPIObjectModel>
 	Flux<R> callAPIandReturnResponses(HttpMethod method, String path, Class<R> apiBodyResponse) {
 		Flux<R> bodyResponse = Flux.empty();
 		if(path == null) {

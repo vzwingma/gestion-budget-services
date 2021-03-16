@@ -3,7 +3,7 @@ FROM adoptopenjdk/openjdk11:alpine-slim
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
-COPY service-parametrages.jar /opt/service-parametrages.jar
+COPY /home/runner/work/gestion-budget-services/gestion-budget-services/service-parametrages.jar /opt/service-parametrages.jar
 
 # Lancement de l'appli
 CMD java -jar /opt/service-parametrages.jar -Djdk.tls.client.protocols=TLSv1.2
