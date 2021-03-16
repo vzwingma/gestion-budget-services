@@ -47,7 +47,6 @@
 	</developers>
 
 	<modules>
-		<module>communs</module>
 		<module>communs_service</module>
 		<module>parametrages_service</module>
 		<module>budgets_service</module>
