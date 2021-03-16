@@ -76,6 +76,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          file: ../../../home/runner/work/gestion-budget-services/gestion-budget-services/parametrages_service/src/main/external-ressources/docker/Dockerfile-PARAMS_SERVICE
           push: true
           tags: vzwingmann/gestion_budget_services:parametrages-snapshot
       -
@@ -107,6 +108,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          file: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/src/main/external-ressources/docker/Dockerfile-COMPTES_SERVICE
           push: true
           tags: vzwingmann/gestion_budget_services:comptes-snapshot
       -
@@ -138,6 +140,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          file: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker/Dockerfile-UTILISATEURS_SERVICE
           push: true
           tags: vzwingmann/gestion_budget_services:utilisateurs-snapshot
       -
