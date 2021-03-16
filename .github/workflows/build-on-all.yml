@@ -37,7 +37,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: https://api.github.com/repos/vzwingma/gestion-budget-services/releases/snapshot
+          upload_url: https://uploads.github.com/repos/vzwingma/gestion-budget-services/releases/29780720/assets{?name,label}
           asset_path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages_service/target/service-parametrages.jar
           asset_name: service-parametrages.jar
           asset_content_type: application/zip
@@ -46,7 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: https://api.github.com/repos/vzwingma/gestion-budget-services/releases/snapshot
+          upload_url: https://uploads.github.com/repos/vzwingma/gestion-budget-services/releases/29780720/assets{?name,label}
           asset_path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar
           asset_name: service-utilisateurs.jar
           asset_content_type: application/zip
@@ -55,7 +55,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: https://api.github.com/repos/vzwingma/gestion-budget-services/releases/snapshot
+          upload_url: https://uploads.github.com/repos/vzwingma/gestion-budget-services/releases/29780720/assets{?name,label}
           asset_path: /home/runner/work/gestion-budget-services/gestion-budget-services/budgets_service/target/service-budgets.jar
           asset_name: service-budgets.jar
           asset_content_type: application/zip
@@ -64,7 +64,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: https://api.github.com/repos/vzwingma/gestion-budget-services/releases/snapshot
+          upload_url: https://uploads.github.com/repos/vzwingma/gestion-budget-services/releases/29780720/assets{?name,label}
           asset_path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/target/service-comptes.jar
           asset_name: service-comptes.jar
           asset_content_type: application/zip
