@@ -245,11 +245,16 @@ public abstract class AbstractHTTPReactiveClient{
 						.doOnError(e -> catchWebApplicationException(method, e ))
 						.block();
 			}
-			if(statutResponse.is2xxSuccessful()){
-				LOGGER.info("Statut HTTP : [{}]", statutResponse.value());
+			if(statutResponse != null){
+				if(statutResponse.is2xxSuccessful()){
+					LOGGER.info("Statut HTTP : [{}]", statutResponse.value());
+				}
+				else{
+					LOGGER.error("Statut HTTP : [{}]", statutResponse.value());
+				}
 			}
 			else{
-				LOGGER.error("Statut HTTP : [{}]", statutResponse.value());
+				LOGGER.error("Statut HTTP : [{}]", statutResponse);
 			}
 		}
 		catch (Exception e) {
