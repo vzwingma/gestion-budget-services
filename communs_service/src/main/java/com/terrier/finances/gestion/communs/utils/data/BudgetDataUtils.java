@@ -1,5 +1,14 @@
 package com.terrier.finances.gestion.communs.utils.data;
 
+import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
+import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
+import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
+import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation.Categorie;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
+import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -7,16 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
-import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
-import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
-import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation.Categorie;
-import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
-import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
 
 /**
  * Utilitaire de data
@@ -252,8 +251,7 @@ public class BudgetDataUtils {
 			}
 		}
 		if(categorie == null) {
-			assert listeCategories != null;
-			LOGGER.warn("Impossible de trouver une catégorie correspondant à l'id [{}] parmi les {} catégories", id, listeCategories.size());
+			LOGGER.warn("Impossible de trouver une catégorie correspondant à l'id [{}] parmi les catégories", id);
 		}
 		return categorie;
 	}

@@ -36,15 +36,16 @@ public class ParametragesServiceHTTPAdaptator extends AbstractHTTPClient<Categor
 				categoriesSsCategories = new ArrayList<>();
 				List<CategorieOperation> categories = callHTTPGetListData(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL)
 						.block();
-				categoriesSsCategories.addAll(categories);
-				categories.stream()
-				.forEach(c -> {
-					if(c.getListeSSCategories() != null) {
-						c.getListeSSCategories().stream().forEach(ssCats -> ssCats.setCategorieParente(c));
-						categoriesSsCategories.addAll(c.getListeSSCategories());
-					}
-				});
-
+				if(categories != null){
+					categoriesSsCategories.addAll(categories);
+					categories.stream()
+							.forEach(c -> {
+								if(c.getListeSSCategories() != null) {
+									c.getListeSSCategories().stream().forEach(ssCats -> ssCats.setCategorieParente(c));
+									categoriesSsCategories.addAll(c.getListeSSCategories());
+								}
+							});
+				}
 			} catch (DataNotFoundException e) {
 				LOGGER.warn("Impossible de charger les catégories");
 			}
