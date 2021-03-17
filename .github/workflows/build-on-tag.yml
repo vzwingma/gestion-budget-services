@@ -24,3 +24,253 @@ jobs:
       -
         name: Version tag
         run: echo "Prépation de la version :" ${{ steps.get_version.outputs.VERSION }}
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      # Step that does that actual cache save and restore
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      # Runs a single command using the runners shell
+      - name: Build with Maven
+        run: mvn clean install -B -P prod --file pom.xml
+      # Upload Releases on Tag
+      - uses: actions/upload-artifact@v2
+        name: Upload Service Paramétrages
+        with:
+          name: service-parametrages.jar
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages_service/target/service-parametrages.jar
+      - uses: actions/upload-artifact@v2
+        name: Upload Service Utilisateurs
+        with:
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar
+          name: service-utilisateurs.jar
+      - uses: actions/upload-artifact@v2
+        name: Upload Service Budgets
+        with:
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/budgets_service/target/service-budgets.jar
+          name: service-budgets.jar
+      - uses: actions/upload-artifact@v2
+        name: Upload Service Comptes
+        with:
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/target/service-comptes.jar
+          name: service-comptes.jar
+      # Upload Docker
+      - uses: actions/upload-artifact@v2
+        name: Upload DockerFile Params
+        with:
+          name: Dockerfile-PARAMS_SERVICE
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages_service/src/main/external-ressources/docker/Dockerfile-PARAMS_SERVICE
+      - uses: actions/upload-artifact@v2
+        name: Upload DockerFile Utilisateurs
+        with:
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker/Dockerfile-UTILISATEURS_SERVICE
+          name: Dockerfile-UTILISATEURS_SERVICE
+      - uses: actions/upload-artifact@v2
+        name: Upload DockerFile Budgets
+        with:
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/budgets_service/src/main/external-ressources/docker/Dockerfile-BUDGETS_SERVICE
+          name: Dockerfile-BUDGETS_SERVICE
+      - uses: actions/upload-artifact@v2
+        name: Upload DockerFile Comptes
+        with:
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/src/main/external-ressources/docker/Dockerfile-COMPTES_SERVICE
+          name: Dockerfile-COMPTES_SERVICE
+  # PUBLISH DOCKER IMAGES
+  # Image PARAMETRAGES
+  docker-parametrages:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/download-artifact@v2
+        name: Download Service Paramétrages
+        with:
+          name: service-parametrages.jar
+      - uses: actions/download-artifact@v2
+        name: Download DockerFile Paramétrages
+        with:
+          name: Dockerfile-PARAMS_SERVICE
+      -
+        name: Build and push Service Paramétrages
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: /home/runner/work/gestion-budget-services/gestion-budget-services
+          file: Dockerfile-PARAMS_SERVICE
+          push: true
+          tags: vzwingmann/gestion_budget_services:parametrages-latest, vzwingmann/gestion_budget_services:parametrages-${{ steps.get_version.outputs.VERSION }}
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+# Image COMPTES
+  docker-comptes:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/download-artifact@v2
+        name: Download Service Comptes
+        with:
+          name: service-comptes.jar
+      - uses: actions/download-artifact@v2
+        name: Download DockerFile Comptes
+        with:
+          name: Dockerfile-COMPTES_SERVICE
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: /home/runner/work/gestion-budget-services/gestion-budget-services
+          file: Dockerfile-COMPTES_SERVICE
+          push: true
+          tags: vzwingmann/gestion_budget_services:comptes-latest, vzwingmann/gestion_budget_services:comptes-${{ steps.get_version.outputs.VERSION }}
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+# Images UTILISATEURS
+  docker-utilisateurs:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/download-artifact@v2
+        name: Download Service Utilisateurs
+        with:
+          name: service-utilisateurs.jar
+      - uses: actions/download-artifact@v2
+        name: Download DockerFile Utilisateurs
+        id: download
+        with:
+          name: Dockerfile-UTILISATEURS_SERVICE
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: /home/runner/work/gestion-budget-services/gestion-budget-services
+          file: Dockerfile-UTILISATEURS_SERVICE
+          push: true
+          tags: vzwingmann/gestion_budget_services:utilisateurs-latest, vzwingmann/gestion_budget_services:utilisateurs-${{ steps.get_version.outputs.VERSION }}
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+# Image BUDGETS
+  docker-budgets:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/download-artifact@v2
+        name: Download Service Budgets
+        with:
+          name: service-budgets.jar
+      - uses: actions/download-artifact@v2
+        name: Download DockerFile Budgets
+        with:
+          name: Dockerfile-BUDGETS_SERVICE
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: /home/runner/work/gestion-budget-services/gestion-budget-services/
+          file: Dockerfile-BUDGETS_SERVICE
+          push: true
+          tags: vzwingmann/gestion_budget_services:budgets-latest, vzwingmann/gestion_budget_services:budgets-${{ steps.get_version.outputs.VERSION }}
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
