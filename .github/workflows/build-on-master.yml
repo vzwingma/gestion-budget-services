@@ -28,7 +28,7 @@ jobs:
           java-version: 11
       # Runs a single command using the runners shell
       - name: Build with Maven
-        run: mvn clean install sonar:sonar -B -P prod -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.projectKey=gestion-budget-services --file pom.xml
+        run: mvn clean install -B -P prod --file pom.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -74,6 +74,24 @@ jobs:
         with:
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/src/main/external-ressources/docker/Dockerfile-COMPTES_SERVICE
           name: Dockerfile-COMPTES_SERVICE
+  sonar:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      # Runs a single command using the runners shell
+      - name: Build with Maven
+        run: mvn clean sonar:sonar -B -P prod -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.projectKey=gestion-budget-services --file pom.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   # PUBLISH DOCKER IMAGES
   docker-parametrages:
     runs-on: ubuntu-latest
