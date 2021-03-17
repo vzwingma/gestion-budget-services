@@ -1,4 +1,4 @@
-name: CI on Snapshot
+name: CI on Tag
 
 # Controls when the action will run. 
 on:  
@@ -20,7 +20,7 @@ jobs:
       -
         name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -b 2-)
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2-)
       -
         name: Version tag
         run: echo "Prépation de la version :" ${{ steps.get_version.outputs.VERSION }}
