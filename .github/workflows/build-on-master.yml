@@ -4,7 +4,7 @@ name: CI on Snapshot
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ feat/actions ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -13,7 +13,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  # BUILD
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -26,12 +26,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      # Step that does that actual cache save and restore
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build with Maven
         run: mvn clean install -B -P prod --file pom.xml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Paramétrages
@@ -74,6 +78,7 @@ jobs:
         with:
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/src/main/external-ressources/docker/Dockerfile-COMPTES_SERVICE
           name: Dockerfile-COMPTES_SERVICE
+ # SONAR
   sonar:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -86,6 +91,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      # Step that does that actual cache save and restore
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build with Maven
         run: mvn clean sonar:sonar -B -P prod -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.projectKey=gestion-budget-services --file pom.xml

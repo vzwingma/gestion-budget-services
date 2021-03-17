@@ -1,0 +1,26 @@
+name: CI on Snapshot
+
+# Controls when the action will run. 
+on:  
+  # Triggers the workflow on push events but only for tag
+  push:
+    tags:
+      - '*'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # BUILD
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      -
+        name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -b 2-)
+      -
+        name: Version tag
+        run: echo "Prépation de la version :" ${{ steps.get_version.outputs.VERSION }}
