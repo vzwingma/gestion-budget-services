@@ -55,7 +55,10 @@ public class ParametragesService extends AbstractBusinessService implements IPar
 			this.listeCategories = dataParams.chargeCategories();
 			LOGGER.info("Chargement des {} catégories depuis la base de données", this.listeCategories.size());
 		}
-		return listeCategories.stream().map(this::cloneCategorie).collect(Collectors.toList());
+		return listeCategories
+				.stream()
+				.map(this::cloneCategorie)
+				.collect(Collectors.toList());
 	}
 
 
@@ -64,7 +67,7 @@ public class ParametragesService extends AbstractBusinessService implements IPar
 	 * @see java.lang.Object#clone()
 	 */
 	private CategorieOperation cloneCategorie(CategorieOperation categorie) {
-		if(categorie != null){
+		if(categorie != null && categorie.isActif()){
 			CategorieOperation clone = new CategorieOperation();
 			clone.setId(categorie.getId());
 			clone.setActif(categorie.isActif());
@@ -74,12 +77,16 @@ public class ParametragesService extends AbstractBusinessService implements IPar
 			Set<CategorieOperation> setSSCatsClones = new HashSet<>();
 			if(categorie.getListeSSCategories() != null && !categorie.getListeSSCategories().isEmpty()){
 
-				categorie.getListeSSCategories().stream().forEach(ssC -> {
-					CategorieOperation ssCClone = cloneCategorie(ssC);
-					// Réinjection de la catégorie parente
-					ssCClone.setCategorieParente(clone);
-					setSSCatsClones.add(ssCClone);
-				});
+				categorie.getListeSSCategories()
+						.stream()
+						// #125
+						.filter(CategorieOperation::isActif)
+						.forEach(ssC -> {
+							CategorieOperation ssCClone = cloneCategorie(ssC);
+							// Réinjection de la catégorie parente
+							ssCClone.setCategorieParente(clone);
+							setSSCatsClones.add(ssCClone);
+						});
 				clone.setListeSSCategories(setSSCatsClones);
 			}
 			return clone;

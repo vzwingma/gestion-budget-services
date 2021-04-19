@@ -27,6 +27,16 @@ public class TestDataCategorieOperation {
         ssCatCourse.setListeSSCategories(null);
         catAlimentation.setListeSSCategories(new HashSet<>());
         catAlimentation.getListeSSCategories().add(ssCatCourse);
+
+
+        CategorieOperation ssCatCourseOld = new CategorieOperation();
+        ssCatCourseOld.setActif(false);
+        ssCatCourseOld.setCategorie(false);
+        ssCatCourseOld.setId("5ad7745f-84f1-4a37-ba24-7fd58ebc07db");
+        ssCatCourseOld.setLibelle("Courses [Inactif]");
+        ssCatCourseOld.setListeSSCategories(null);
+        catAlimentation.getListeSSCategories().add(ssCatCourseOld);
+
         categoriesFromSPI.add(catAlimentation);
         return categoriesFromSPI;
     }
