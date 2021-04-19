@@ -60,18 +60,15 @@ public class BudgetApiUrlEnum {
 	public static final String BUDGET_ID_FULL = BUDGET_BASE + BUDGET_ID;
 
 	// Avec en paramètre
-	// - idCompte={idCompte}
-	// - mois={mois}
-	// - annee={annee}
+	// - idCompte & mois & annee
 	public static final String BUDGET_QUERY = "/query"; 
 	public static final String BUDGET_QUERY_FULL = BUDGET_BASE + BUDGET_QUERY;
 	// Avec en paramètres : 
-	// - actif=true
-
+	// - actif
 	public static final String BUDGET_ETAT = "/{"+PARAM_ID_BUDGET+"}/etat"; 
 	public static final String BUDGET_ETAT_FULL = BUDGET_BASE + BUDGET_ETAT;
 	/// ou
-	// - uptodateto=long
+	// - uptodateto (long timestamp)
 	public static final String BUDGET_UP_TO_DATE = "/{"+PARAM_ID_BUDGET+"}/upToDate"; 
 	public static final String BUDGET_UP_TO_DATE_FULL = BUDGET_BASE + BUDGET_UP_TO_DATE;
 
