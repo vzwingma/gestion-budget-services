@@ -47,7 +47,7 @@ class TestParametragesAPI extends AbstractTestsAPI  {
 
 		when(mockServiceParametrage.getCategories()).thenReturn(TestDataCategorieOperation.getListeTestCategories());
 		
-		String expectedResult = "[{\"id\":\"8f1614c9-503c-4e7d-8cb5-0c9a9218b84a\",\"libelle\":\"Alimentation\",\"actif\":true,\"listeSSCategories\":[{\"id\":\"467496e4-9059-4b9b-8773-21f230c8c5c6\",\"libelle\":\"Courses\",\"actif\":true,\"listeSSCategories\":null,\"categorie\":false}],\"categorie\":true}]";
+		String expectedResult = "[{\"id\":\"8f1614c9-503c-4e7d-8cb5-0c9a9218b84a\",\"libelle\":\"Alimentation\",\"actif\":true,\"listeSSCategories\":[{\"id\":\"467496e4-9059-4b9b-8773-21f230c8c5c6\",\"libelle\":\"Courses\",\"actif\":true,\"listeSSCategories\":null,\"categorie\":false},{\"id\":\"5ad7745f-84f1-4a37-ba24-7fd58ebc07db\",\"libelle\":\"Courses [Inactif]\",\"actif\":false,\"listeSSCategories\":null,\"categorie\":false}],\"categorie\":true}]";
 		getMockAPI().perform( get(BudgetApiUrlEnum.PARAMS_CATEGORIES_FULL))
 					.andExpect(status().isOk())
 					.andExpect(content().string(expectedResult));
