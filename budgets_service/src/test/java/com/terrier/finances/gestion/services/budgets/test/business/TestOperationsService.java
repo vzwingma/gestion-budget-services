@@ -190,6 +190,7 @@ class TestOperationsService {
 		// Vérification
 		assertNotNull(autocompleteLibelles);
 		assertEquals(3, autocompleteLibelles.size());
+		autocompleteLibelles.stream().forEach(l -> assertTrue(!l.contains("[")));
 	}
 
 	/**
