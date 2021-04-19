@@ -7,11 +7,6 @@ import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 
 /**
  * Jeu de données Opérations
@@ -45,11 +40,19 @@ public class TestDataOperations {
         lo.setEtat(EtatOperationEnum.REALISEE);
         lo.setLibelle("Opération 1");
         bo.getListeOperations().add(lo);
+
         LigneOperation lo2 = new LigneOperation();
         lo2.setId(getCompte().getId()+"B1_L2");
         lo2.setEtat(EtatOperationEnum.REALISEE);
         lo2.setLibelle("Opération 2");
-        bo.getListeOperations().add(lo);
+        bo.getListeOperations().add(lo2);
+
+        LigneOperation lo3 = new LigneOperation();
+        lo3.setId(getCompte().getId()+"B1_L3");
+        lo3.setEtat(EtatOperationEnum.REALISEE);
+        lo3.setLibelle("[Virement depuis Autre Compte] Opération 3");
+        bo.getListeOperations().add(lo3);
+
         return bo;
 
     }

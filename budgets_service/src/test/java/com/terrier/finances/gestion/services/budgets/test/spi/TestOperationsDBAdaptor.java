@@ -92,7 +92,7 @@ class TestOperationsDBAdaptor {
 
         // Vérification
         assertNotNull(operations);
-        assertEquals(2, operations.size());
+        assertEquals(3, operations.size());
     }
 
     @Test
@@ -110,7 +110,7 @@ class TestOperationsDBAdaptor {
 
         // Vérification
         assertNotNull(libelles);
-        assertEquals(1, libelles.size());
+        assertEquals(3, libelles.size());
     }
 
     @Test

@@ -1,28 +1,5 @@
 package com.terrier.finances.gestion.services.budgets.test.business;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.spy;
-
-import java.time.Month;
-import java.util.ArrayList;
-
-import com.terrier.finances.gestion.services.budgets.business.OperationsService;
-import com.terrier.finances.gestion.services.budgets.business.ports.IComptesServiceProvider;
-import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRepository;
-import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRequest;
-import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.terrier.finances.gestion.communs.budget.model.v12.BudgetMensuel;
 import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
@@ -35,6 +12,25 @@ import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundExcep
 import com.terrier.finances.gestion.communs.utils.exceptions.CompteClosedException;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.communs.utils.exceptions.UserNotAuthorizedException;
+import com.terrier.finances.gestion.services.budgets.business.OperationsService;
+import com.terrier.finances.gestion.services.budgets.business.ports.IComptesServiceProvider;
+import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRepository;
+import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsRequest;
+import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
+import com.terrier.finances.gestion.services.budgets.data.TestDataOperations;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Test opération Service
@@ -176,6 +172,24 @@ class TestOperationsService {
 		
 		LOGGER.info("/testDelOperation");
 
+	}
+
+
+	@Test
+	public void testChargerLignesOperationsForAutocomplete() throws DataNotFoundException{
+		// Préparation
+		Set<String> resultatmock = TestDataOperations.getBudgetCompteC1().getListeOperations()
+										.stream()
+										.map(o -> o.getLibelle())
+										.collect(Collectors.toSet());
+		when(mockDBBudget.chargeLibellesOperations(eq("C1_2018_1"), anyInt())).thenReturn(resultatmock);
+
+		// Lancement
+		Set<String> autocompleteLibelles = operationsService.getLibellesOperations("C1_2018_1", 2018);
+
+		// Vérification
+		assertNotNull(autocompleteLibelles);
+		assertEquals(3, autocompleteLibelles.size());
 	}
 
 	/**
