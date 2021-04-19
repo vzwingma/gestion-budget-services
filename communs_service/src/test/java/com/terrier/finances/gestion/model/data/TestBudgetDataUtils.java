@@ -1,8 +1,11 @@
 package com.terrier.finances.gestion.model.data;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
+import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
+import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
+import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
+import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,13 +16,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire;
-import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
-import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
-import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
-import com.terrier.finances.gestion.communs.utils.exceptions.BudgetNotFoundException;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TestBudgetDataUtils {
 
@@ -119,7 +116,15 @@ class TestBudgetDataUtils {
 	}
 	
 	
-	
+	@Test
+	void testDeleteTagFromString(){
+		assertNull(BudgetDataUtils.deleteTagFromString(null));
+
+		assertEquals("Libellé Opération", BudgetDataUtils.deleteTagFromString("Libellé Opération"));
+
+
+		assertEquals("Libellé Opération", BudgetDataUtils.deleteTagFromString("[Virement depuis @utre Compte] Libellé Opération"));
+	}
 
 	@Test
 	void testGetCategorieById(){

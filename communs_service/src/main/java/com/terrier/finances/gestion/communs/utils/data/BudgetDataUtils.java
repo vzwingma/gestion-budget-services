@@ -224,6 +224,20 @@ public class BudgetDataUtils {
 	}
 
 
+
+	/**
+	 * @param valeurS valeur en String
+	 * @return la valeur du String sans le tag [xxx]
+	 */
+	public static String deleteTagFromString(String valeurS){
+
+		if(valeurS != null){
+			return valeurS.replaceAll("\\[.*\\]", "").trim();
+		}
+		return null;
+	}
+
+
 	/**
 	 * @param id id de la catégorie
 	 * @param listeCategories liste des catégories
