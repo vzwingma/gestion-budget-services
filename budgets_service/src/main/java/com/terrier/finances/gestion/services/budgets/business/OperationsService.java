@@ -714,7 +714,7 @@ public class OperationsService extends AbstractBusinessService implements IOpera
 		return this.dataDepenses.chargeLibellesOperations(idCompte, annee)
 				.stream()
 				// #124 : suppression des tags [] dans les libellés
-				.map(libelle -> BudgetDataUtils.deleteTagFromString(libelle))
+				.map(BudgetDataUtils::deleteTagFromString)
 				.collect(Collectors.toSet());
 	}
 

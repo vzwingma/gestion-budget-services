@@ -176,7 +176,7 @@ class TestOperationsService {
 
 
 	@Test
-	public void testChargerLignesOperationsForAutocomplete() throws DataNotFoundException{
+	void testChargerLignesOperationsForAutocomplete() throws DataNotFoundException{
 		// Préparation
 		Set<String> resultatmock = TestDataOperations.getBudgetCompteC1().getListeOperations()
 										.stream()
