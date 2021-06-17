@@ -148,7 +148,7 @@ jobs:
           context: /home/runner/work/gestion-budget-services/gestion-budget-services
           file: Dockerfile-PARAMS_SERVICE
           push: true
-          tags: vzwingmann/gestion_budget_services:parametrages-snapshot
+          tags: vzwingmabudget/gestion_budget_services:parametrages-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -196,7 +196,7 @@ jobs:
           context: /home/runner/work/gestion-budget-services/gestion-budget-services
           file: Dockerfile-COMPTES_SERVICE
           push: true
-          tags: vzwingmann/gestion_budget_services:comptes-snapshot
+          tags: vzwingmabudget/gestion_budget_services:comptes-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -245,7 +245,7 @@ jobs:
           context: /home/runner/work/gestion-budget-services/gestion-budget-services
           file: Dockerfile-UTILISATEURS_SERVICE
           push: true
-          tags: vzwingmann/gestion_budget_services:utilisateurs-snapshot
+          tags: vzwingmabudget/gestion_budget_services:utilisateurs-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -293,7 +293,7 @@ jobs:
           context: /home/runner/work/gestion-budget-services/gestion-budget-services/
           file: Dockerfile-BUDGETS_SERVICE
           push: true
-          tags: vzwingmann/gestion_budget_services:budgets-snapshot
+          tags: vzwingmabudget/gestion_budget_services:budgets-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

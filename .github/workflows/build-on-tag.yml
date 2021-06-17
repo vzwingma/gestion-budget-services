@@ -122,7 +122,7 @@ jobs:
           context: /home/runner/work/gestion-budget-services/gestion-budget-services
           file: Dockerfile-PARAMS_SERVICE
           push: true
-          tags: vzwingmann/gestion_budget_services:parametrages-latest, vzwingmann/gestion_budget_services:parametrages-${{ steps.get_version.outputs.VERSION }}
+          tags: vzwingmabudget/gestion_budget_services:parametrages-latest, vzwingmabudget/gestion_budget_services:parametrages-${{ steps.get_version.outputs.VERSION }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -174,7 +174,7 @@ jobs:
           context: /home/runner/work/gestion-budget-services/gestion-budget-services
           file: Dockerfile-COMPTES_SERVICE
           push: true
-          tags: vzwingmann/gestion_budget_services:comptes-latest, vzwingmann/gestion_budget_services:comptes-${{ steps.get_version.outputs.VERSION }}
+          tags: vzwingmabudget/gestion_budget_services:comptes-latest, vzwingmabudget/gestion_budget_services:comptes-${{ steps.get_version.outputs.VERSION }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -228,7 +228,7 @@ jobs:
           context: /home/runner/work/gestion-budget-services/gestion-budget-services
           file: Dockerfile-UTILISATEURS_SERVICE
           push: true
-          tags: vzwingmann/gestion_budget_services:utilisateurs-latest, vzwingmann/gestion_budget_services:utilisateurs-${{ steps.get_version.outputs.VERSION }}
+          tags: vzwingmabudget/gestion_budget_services:utilisateurs-latest, vzwingmabudget/gestion_budget_services:utilisateurs-${{ steps.get_version.outputs.VERSION }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -281,7 +281,7 @@ jobs:
           context: /home/runner/work/gestion-budget-services/gestion-budget-services/
           file: Dockerfile-BUDGETS_SERVICE
           push: true
-          tags: vzwingmann/gestion_budget_services:budgets-latest, vzwingmann/gestion_budget_services:budgets-${{ steps.get_version.outputs.VERSION }}
+          tags: vzwingmabudget/gestion_budget_services:budgets-latest, vzwingmabudget/gestion_budget_services:budgets-${{ steps.get_version.outputs.VERSION }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
