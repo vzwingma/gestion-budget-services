@@ -20,7 +20,7 @@ public abstract class AbstractSwaggerConfig {
     public OpenAPI initOpenAPI() {
         return new OpenAPI()
                 .info(apiInfo())
-                .openapi("com.terrier.finances.gestion.services");
+                .openapi("3.0");
     }
 /**
     @Bean
