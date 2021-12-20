@@ -20,7 +20,7 @@ public abstract class AbstractSwaggerConfig {
     public OpenAPI initOpenAPI() {
         return new OpenAPI()
                 .info(apiInfo())
-                .openapi("3.0");
+                .openapi("3.0.3");
     }
 /**
     @Bean
