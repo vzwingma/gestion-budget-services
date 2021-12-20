@@ -15,10 +15,11 @@ import com.terrier.finances.gestion.services.budgets.business.ports.IOperationsR
 import com.terrier.finances.gestion.services.budgets.business.ports.IParametragesServiceProvider;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.communs.business.ports.IServiceProvider;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,8 +36,7 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.BUDGET_BASE)
-@Api(protocols="https", value="Opérations", tags={"Opérations"},
-	consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+//Api(description="Opérations", tags={"Opérations"}, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 public class OperationsAPIController extends AbstractAPIController {
 
 
@@ -53,24 +53,16 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * Retour le budget d'un utilisateur
 	 * @param idCompte id du compte
 	 * @param mois mois du budget
-	 * @param annee du budget
-	 * @return budget 
-	 * @throws BudgetNotFoundException erreur données non trouvées
-	 * @throws DataNotFoundException erreur données non trouvées
+	 * @param annee année du budget
+	 * @return budget
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Recherche d'un budget mensuel pour un compte d'un utilisateur", tags={"Budget"})
+	@Operation(method = "GET", description = "Recherche d'un budget mensuel pour un compte d'un utilisateur", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Opération réussie"),
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables")
+			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
+			@ApiResponse(responseCode = "404", description = "Données introuvables")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="query"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="mois", required=true, value="No de mois", paramType="query"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="No de l'année", paramType="query")
-	})	
-
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_QUERY)
 	public  @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
 						@RequestParam("idCompte") String idCompte, 
@@ -100,23 +92,17 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * Mise à jour du budget
 	 * @param idBudget id du budget
 	 * @return budget mis à jour
-	 * @throws DataNotFoundException données introuvables
-	 * @throws BudgetNotFoundException  budget introuvable
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Chargement d'un budget", tags={"Budget"})
+	@Operation(method="GET",description="Chargement d'un budget", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Budget chargé"),
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables")
+			@ApiResponse(responseCode = "200", description = "Budget chargé"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
+			@ApiResponse(responseCode = "404", description = "Données introuvables")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-	})	
-
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ID)
 	public @ResponseBody ResponseEntity<BudgetMensuel> getBudget(
-			@PathVariable("idBudget") String idBudget) throws DataNotFoundException, BudgetNotFoundException{
+			@PathVariable("idBudget") String idBudget) {
 
 		logger.info("[idBudget={}] chargeBudget", idBudget);
 		if(idBudget != null){
@@ -135,20 +121,16 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * Mise à jour du budget
 	 * @param idBudget id du budget
 	 * @return budget mis à jour
-	 * @throws DataNotFoundException
+	 * @throws DataNotFoundException budget non trouvé
 	 */
-	@ApiOperation(httpMethod="DELETE",protocols="HTTPS", value="Réinitialisation d'un budget", tags={"Budget"})
+	@Operation(method="DELETE",description="Réinitialisation d'un budget", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Budget réinitialisé"),
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables"),
-			@ApiResponse(code = 405, message = "Compte clos. Impossible de réinitialiser le budget")
+			@ApiResponse(responseCode = "200", description = "Budget réinitialisé"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
+			@ApiResponse(responseCode = "404", description = "Données introuvables"),
+			@ApiResponse(responseCode = "405", description = "Compte clos. Impossible de réinitialiser le budget")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-	})	
-
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_ID)
 	public @ResponseBody ResponseEntity<BudgetMensuel> reinitializeBudget(@PathVariable("idBudget") String idBudget) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
 		logger.info("[idBudget={}] reinitialisation", idBudget);
@@ -163,21 +145,15 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @param idBudget id du compte
 	 * @return statut du budget 
 	 * @throws BudgetNotFoundException erreur données non trouvées
-	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Retourne l'état d'un budget mensuel : {etat}", notes="{etat} : indique si le budget est ouvert ou cloturé.", tags={"Budget"})
+	@Operation(method="GET",description="Retourne l'état d'un budget mensuel : {etat}; {etat} : indique si le budget est ouvert ou cloturé.", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Budget actif"),
-			@ApiResponse(code = 423, message = "Budget inactif"),
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables")
+			@ApiResponse(responseCode = "200", description = "Budget actif"),
+			@ApiResponse(responseCode = "423", description = "Budget inactif"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
+			@ApiResponse(responseCode = "404", description = "Données introuvables")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="actif", required=false, value="Etat actif du compte", paramType="query"),
-	})	
-
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<Boolean> isBudgetActif(
 			@PathVariable("idBudget") String idBudget, 
@@ -202,26 +178,19 @@ public class OperationsAPIController extends AbstractAPIController {
 	/**
 	 * Retourne le statut du budget
 	 * @param idBudget id du compte
-	 * @return statut du budget 
-	 * @throws BudgetNotFoundException erreur données non trouvées
-	 * @throws DataNotFoundException erreur données non trouvées
+	 * @return statut du budget
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Retourne l'état de mise à jour d'un budget mensuel : {uptodate}", notes="{uptodate} indique si le budget a été mis à jour en BDD par rapport à la date passée en paramètre", tags={"Budget"})
+	@Operation(method="GET",description="Retourne l'état de mise à jour d'un budget mensuel : {uptodate} : {uptodate} indique si le budget a été mis à jour en BDD par rapport à la date passée en paramètre", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Budget à jour"),
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables"),
-			@ApiResponse(code = 426, message = "Le Budget a été mis à jour par rapport à la date renvoyée")
+			@ApiResponse(responseCode = "200", description = "Budget à jour"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
+			@ApiResponse(responseCode = "404", description = "Données introuvables"),
+			@ApiResponse(responseCode = "426", description = "Le Budget a été mis à jour par rapport à la date renvoyée")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="uptodateto", required=false, value="Activité du budget par rapport à la date en paramètres (en ms)", paramType="query"),
-	})	
-
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_UP_TO_DATE)
 	public ResponseEntity<Boolean> isBudgetUptoDate(
-			@PathVariable("idBudget") String idBudget, @RequestParam(value="uptodateto", required=false) Long uptodateto) throws BudgetNotFoundException {
+			@PathVariable("idBudget") String idBudget, @RequestParam(value="uptodateto", required=false) Long uptodateto) {
 
 		logger.trace("[idBudget={}] uptodateto ? {}", idBudget, uptodateto );
 
@@ -243,21 +212,15 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @param idBudget id du compte
 	 * @return statut du budget 
 	 * @throws BudgetNotFoundException erreur données non trouvées
-	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Mise à jour de l'{état} d'un budget mensuel (ouvert/cloturé)", notes="{etat} : indique si le budget est ouvert ou cloturé.", tags={"Budget"})
+	@Operation(method="POST",description="Mise à jour de l'{état} d'un budget mensuel (ouvert/cloturé) ; {etat} : indique si le budget est ouvert ou cloturé.", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Opération réussie"),
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables"),
-			@ApiResponse(code = 500, message = "Opération en échec")
+			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
+			@ApiResponse(responseCode = "404", description = "Données introuvables"),
+			@ApiResponse(responseCode = "500", description = "Opération en échec")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="actif", required=false, value="Etat actif du compte", paramType="query"),
-	})	
-
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_ETAT)
 	public ResponseEntity<BudgetMensuel> setBudgetActif(
 			@PathVariable("idBudget") String idBudget,
@@ -274,25 +237,18 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * Met à jour le flag de l'opération comme dernière opération réalisée
 	 * @param idBudget id du compte
 	 * @return résultat de l'action
-	 * @throws BudgetNotFoundException erreur données non trouvées
-	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Met à jour le flag de l'opération comme dernière opération réalisée", tags={"Opérations"})
+	@Operation(method="POST",description="Met à jour le flag de l'opération comme dernière opération réalisée", tags={"Opérations"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Budget mis à jour"),
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables")
+			@ApiResponse(responseCode = "200", description = "Budget mis à jour"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
+			@ApiResponse(responseCode = "404", description = "Données introuvables")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Boolean.class, name="idOperation", required=true, value="Id de l'opération", paramType="path"),
-	})	
-
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_OPERATION_DERNIERE)
 	public ResponseEntity<Boolean> setAsDerniereOperation(
 			@PathVariable("idBudget") String idBudget,
-			@PathVariable("idOperation") String idOperation) throws BudgetNotFoundException {
+			@PathVariable("idOperation") String idOperation)  {
 
 		logger.info("[idBudget={}][idOperation={}] setAsDerniereOperation", idBudget, idOperation);
 		boolean resultat = operationService.setLigneAsDerniereOperation(idBudget, idOperation, getIdProprietaire());
@@ -310,28 +266,22 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @param idBudget id du budget
 	 * @param operation opération à mettre à jour
 	 * @return budget mis à jour
-	 * @throws DataNotFoundException
-	 * @throws BudgetNotFoundException 
-	 * @throws CompteClosedException 
+	 * @throws DataNotFoundException données non trouvées
+	 * @throws BudgetNotFoundException  budget non trouvé
 	 */
-	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Mise à jour d'une opération", tags={"Opérations"})
+	@Operation(method="POST",description="Mise à jour d'une opération", tags={"Opérations"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Opération mise à jour"),
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),	
-			@ApiResponse(code = 404, message = "Données introuvables"),
-			@ApiResponse(code = 423, message = "Compte clos")
+			@ApiResponse(responseCode = "200", description = "Opération mise à jour"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),	
+			@ApiResponse(responseCode = "404", description = "Données introuvables"),
+			@ApiResponse(responseCode = "423", description = "Compte clos")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idOperation", required=true, value="Id de l'opération", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=LigneOperation.class, name="operation", required=true, value="Operation", paramType="body"),
-	})	
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_OPERATION)
 	public @ResponseBody ResponseEntity<BudgetMensuel> createOrUpdateOperation(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
-			@RequestBody LigneOperation operation) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+			@RequestBody LigneOperation operation) throws DataNotFoundException, BudgetNotFoundException{
 
 		logger.info("[idBudget={}][idOperation={}] createOrUpdateOperation", idBudget, idOperation);
 		if(operation != null && idBudget != null && getIdProprietaire() != null){
@@ -359,29 +309,21 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @return budget mis à jour
 	 * @throws DataNotFoundException données non trouvées
 	 * @throws BudgetNotFoundException  budget non trouvé
-	 * @throws CompteClosedException  compte clos
 	 */
-	@ApiOperation(httpMethod="POST",protocols="HTTPS", value="Mise à jour d'une opération Intercomptes", tags={"Opérations"})
+	@Operation(method="POST",description="Mise à jour d'une opération Intercomptes", tags={"Opérations"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Opération mise à jour"),
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),	
-			@ApiResponse(code = 404, message = "Données introuvables"),
-			@ApiResponse(code = 423, message = "Compte clos")
+			@ApiResponse(responseCode = "200", description = "Opération mise à jour"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),	
+			@ApiResponse(responseCode = "404", description = "Données introuvables"),
+			@ApiResponse(responseCode = "423", description = "Compte clos")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idOperation", required=true, value="Id de l'opération", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte destination", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=LigneOperation.class, name="operation", required=true, value="Operation", paramType="body"),
-	})	
-
 	@PostMapping(value=BudgetApiUrlEnum.BUDGET_OPERATION_INTERCOMPTE)
 	public @ResponseBody ResponseEntity<BudgetMensuel> createOperationIntercomptes(
 			@PathVariable("idBudget") String idBudget,
 			@PathVariable("idOperation") String idOperation,
 			@PathVariable("idCompte") String idCompte,
-			@RequestBody LigneOperation operation) throws DataNotFoundException, BudgetNotFoundException, CompteClosedException{
+			@RequestBody LigneOperation operation) throws DataNotFoundException, BudgetNotFoundException{
 
 		logger.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
 		if(operation != null && idBudget != null){
@@ -403,24 +345,19 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @param idBudget id du budget
 	 * @param idOperation opération à mettre à jour
 	 * @return budget mis à jour
-	 * @throws DataNotFoundException
-	 * @throws BudgetNotFoundException 
-	 * @throws CompteClosedException 
+	 * @throws DataNotFoundException données non trouvées
+	 * @throws BudgetNotFoundException  budget non trouvé
+	 * @throws CompteClosedException  compte clos
 	 */
-	@ApiOperation(httpMethod="DELETE",protocols="HTTPS", value="Suppression d'une opération", tags={"Opérations"})
+	@Operation(method="DELETE",description="Suppression d'une opération", tags={"Opérations"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Opération supprimée"),
-			@ApiResponse(code = 204, message = "Opération supprimée"),			
-			@ApiResponse(code = 401, message = "Utilisateur non authentifié"),
-			@ApiResponse(code = 403, message = "Opération non autorisée"),	
-			@ApiResponse(code = 404, message = "Données introuvables"),
-			@ApiResponse(code = 405, message = "Compte clos")
+			@ApiResponse(responseCode = "200", description = "Opération supprimée"),
+			@ApiResponse(responseCode = "204", description = "Opération supprimée"),
+			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),	
+			@ApiResponse(responseCode = "404", description = "Données introuvables"),
+			@ApiResponse(responseCode = "405", description = "Compte clos")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idBudget", required=true, value="Id du budget", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idOperation", required=true, value="Id Opération", paramType="path"),
-	})	
-
 	@DeleteMapping(value=BudgetApiUrlEnum.BUDGET_OPERATION)
 	public @ResponseBody ResponseEntity<BudgetMensuel> deleteOperation(
 			@PathVariable("idBudget") String idBudget,
@@ -447,16 +384,13 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws DataNotFoundException erreur données non trouvées
 	 * @throws UserNotAuthorizedException utilisateur non trouvé
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Intervalles des budgets pour un compte")
+	@Operation(method="GET",description="Intervalles des budgets pour un compte")
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Opération réussie"),
-			@ApiResponse(code = 401, message = "L'utilisateur doit être authentifié"),
-			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables")
+			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être authentifié"),
+			@ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
+			@ApiResponse(responseCode = "404", description = "Données introuvables")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
-	})	
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_COMPTE_INTERVALLES)
 	public @ResponseBody ResponseEntity<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@PathVariable("idCompte") String idCompte) throws DataNotFoundException, UserNotAuthorizedException{
 		logger.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
@@ -479,20 +413,15 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * Liste des libellés des opérations d'un compte (tout mois confondu)
 	 * @param idCompte idCompte
 	 * @param annee année
-	 * @throws UserNotAuthorizedException 
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Libelles des opérations des budgets de l'année pour un compte")
+	@Operation(method="GET",description="Libelles des opérations des budgets de l'année pour un compte")
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Opération réussie"),
-			@ApiResponse(code = 204, message = "Aucune donnée"),
-			@ApiResponse(code = 401, message = "L'utilisateur doit être authentifié"),
-			@ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
-			@ApiResponse(code = 404, message = "Données introuvables")
+			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "204", description = "Aucune donnée"),
+			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être authentifié"),
+			@ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
+			@ApiResponse(responseCode = "404", description = "Données introuvables")
 	})
-	@ApiImplicitParams(value={
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=String.class, name="idCompte", required=true, value="Id du compte", paramType="path"),
-			@ApiImplicitParam(allowEmptyValue=false, allowMultiple=false, dataTypeClass=Integer.class, name="annee", required=true, value="Année", paramType="query"),
-	})		
 	@GetMapping(value=BudgetApiUrlEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES)
 	public  @ResponseBody ResponseEntity<LibellesOperationsAPIObject> getLibellesOperations(@PathVariable("idCompte") String idCompte, @RequestParam("annee") Integer annee) {
 		logger.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);

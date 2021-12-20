@@ -25,6 +25,7 @@
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 
 		<sonar.projectKey>gestion-budget-services</sonar.projectKey>
+		<open-api.version>1.6.1</open-api.version>
 	</properties>
 
 	<issueManagement>
@@ -253,7 +254,27 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.1</version>
+			<version>${open-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webmvc-core</artifactId>
+			<version>${open-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webflux-ui</artifactId>
+			<version>${open-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-security</artifactId>
+			<version>${open-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-data-rest</artifactId>
+			<version>${open-api.version}</version>
 		</dependency>
 		<!-- LOG -->
 		<!-- slf4j dependency -->

@@ -1,15 +1,14 @@
 package com.terrier.finances.gestion.communs.utilisateur.model.api;
 
-import java.util.Map;
-
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurDroitsEnum;
 import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurPrefsEnum;
-
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.NonNull;
+
+import java.util.Map;
 
 /**
  * Objet API des préférences utilisateur
@@ -23,17 +22,26 @@ public class UtilisateurPrefsAPIObject extends AbstractAPIObjectModel {
 	 * 
 	 */
 	private static final long serialVersionUID = -7746155427438885252L;
-	
-	@ApiModelProperty(notes = "Id de l'utilisateur associé", required=true)
+
+	/**
+	 * @param idUtilisateur :Id de l'utilisateur associé
+	 */
+	@NonNull
 	private String idUtilisateur;
-	
-	@ApiModelProperty(notes = "Date de dernier accès", required=false)
+
+	/**
+	 * @param lastAccessTime : Date de dernier accès
+	 */
 	private Long lastAccessTime;
 
-	@ApiModelProperty(notes = "Liste des droits utilisateur", required = false)
+	/**
+	 * @param droits : Liste des droits utilisateur
+	 */
 	private Map<UtilisateurDroitsEnum, Boolean> droits;
-	
-	@ApiModelProperty(notes = "Liste des préférences utilisateurs", required=false)
+
+	/**
+	 * @param preferences : Liste des préférences utilisateurs
+	 */
 	private Map<UtilisateurPrefsEnum, String> preferences;
 
 
