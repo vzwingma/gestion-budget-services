@@ -22,17 +22,8 @@ public abstract class AbstractSwaggerConfig {
                 .info(apiInfo())
                 .openapi("3.0.3");
     }
-/**
-    @Bean
-    public Docket api() { 
-        return new Docket(DocumentationType.SWAGGER_2)
-        	//	.apiInfo(apiInfo())
-        		.select()
-        		.apis(RequestHandlerSelectors.basePackage("com.terrier.finances.gestion.services"))
-        		.paths(PathSelectors.any())
-        		.build();                                           
-    }
-    **/
+
+ 
     /**
      * @return API Info pour Swagger
      */
@@ -49,16 +40,5 @@ public abstract class AbstractSwaggerConfig {
      * @return nom du service
      */
     public abstract String getNomService();
-    
-    /**
-     * @return Config de Sécurité
 
-    @Bean 
-    SecurityConfiguration security() { 
-    	return SecurityConfigurationBuilder.builder()
-    			.realm("Bearer")
-    			.enableCsrfSupport(Boolean.TRUE)
-    			.appName("Budget Services").build();
-    }
-     */
 }
