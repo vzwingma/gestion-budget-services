@@ -46,6 +46,7 @@ public class SecurityOAuth2Config extends ResourceServerConfigurerAdapter {
 					.antMatchers(HttpMethod.GET, "/swagger-resources/**").anonymous()
 					.antMatchers(HttpMethod.GET, "/webjars/**").anonymous()
 					.antMatchers(HttpMethod.GET, "/v3/api-docs/**").anonymous()
+					.antMatchers(HttpMethod.GET, "/api-docs/**").anonymous()
 					// Actuators
 					.antMatchers(HttpMethod.GET, "/actuator/**").anonymous()
 					.antMatchers(HttpMethod.GET, "/csrf/**").anonymous()
