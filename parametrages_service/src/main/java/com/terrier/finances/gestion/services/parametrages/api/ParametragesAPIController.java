@@ -8,12 +8,12 @@ import com.terrier.finances.gestion.communs.utils.data.BudgetApiUrlEnum;
 import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.parametrages.business.port.IParametrageRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +30,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.PARAMS_BASE)
-@Api(protocols="https", value="Parametrages", tags={"Parametrages"},
-		consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 public class ParametragesAPIController extends AbstractAPIController {
 
 	@Autowired
@@ -41,11 +39,13 @@ public class ParametragesAPIController extends AbstractAPIController {
 	 * @return la liste des catégories d'opérations
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@ApiOperation(httpMethod="GET",protocols="HTTPS", value="Liste des catégories d'opérations")
+	@Operation(method = "GET", summary = "Liste des catégories d'opérations")
 	@ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Opération réussie"),
-            @ApiResponse(code = 403, message = "L'opération n'est pas autorisée"),
-            @ApiResponse(code = 404, message = "Session introuvable")
+            @ApiResponse(responseCode = "200", description = "Opération réussie",
+					content = { @Content(mediaType = "application/json",
+					schema = @Schema(implementation = CategorieOperation.class)) }),
+            @ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
+            @ApiResponse(responseCode = "404", description = "Session introuvable")
     })
 	@GetMapping(value=BudgetApiUrlEnum.PARAMS_CATEGORIES)
 	public @ResponseBody ResponseEntity<List<CategorieOperation>> getCategories() throws DataNotFoundException{
