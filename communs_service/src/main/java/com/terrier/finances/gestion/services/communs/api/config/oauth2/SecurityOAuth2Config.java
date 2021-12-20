@@ -41,6 +41,7 @@ public class SecurityOAuth2Config extends ResourceServerConfigurerAdapter {
 					.antMatchers("/error").permitAll()
 					.antMatchers("/favicon.ico").permitAll()
 					// Authorize Swagger
+					.antMatchers(HttpMethod.GET, "/swagger-ui.html").anonymous()
 					.antMatchers(HttpMethod.GET, "/swagger-ui/**").anonymous()
 					.antMatchers(HttpMethod.GET, "/swagger-resources/**").anonymous()
 					.antMatchers(HttpMethod.GET, "/webjars/**").anonymous()
