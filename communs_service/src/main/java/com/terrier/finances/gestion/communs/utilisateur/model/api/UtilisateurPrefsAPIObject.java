@@ -36,11 +36,14 @@ public class UtilisateurPrefsAPIObject extends AbstractAPIObjectModel {
 
 	/**
 	 * @param droits : Liste des droits utilisateur
+	 *        	DROIT_CLOTURE_BUDGET,
+	 * 			DROIT_RAZ_BUDGET
 	 */
 	private Map<UtilisateurDroitsEnum, Boolean> droits;
 
 	/**
 	 * @param preferences : Liste des préférences utilisateurs
+	 *        PREFS_STATUT_NLLE_DEPENSE
 	 */
 	private Map<UtilisateurPrefsEnum, String> preferences;
 

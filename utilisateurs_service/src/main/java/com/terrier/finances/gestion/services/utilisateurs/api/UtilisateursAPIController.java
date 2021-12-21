@@ -78,7 +78,8 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 */
 	@Operation(method="GET", description = "Préférences d'un utilisateur", tags={"Utilisateurs"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "200", description = "Opération réussie",
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = UtilisateurPrefsAPIObject.class))),
 			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être identifié"),
 			@ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
 			@ApiResponse(responseCode = "404", description = "Session introuvable")
