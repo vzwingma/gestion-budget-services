@@ -8,6 +8,7 @@ import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.operations.model.v12.LigneOperation;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDataUtils;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,7 @@ import java.util.Map;
 public class BudgetMensuel extends AbstractAPIObjectModel implements Serializable {
 
 	@Id
+	@Schema(description = "Identifiant")
 	public String id;
 	/**
 	 * 
@@ -42,14 +44,17 @@ public class BudgetMensuel extends AbstractAPIObjectModel implements Serializabl
 	/**
 	 * Mois du budget (au sens CALENDAR)
 	 */
+	@Schema(description = "Mois du budget")
 	private Month mois;
 	/**
 	 * année du budget
 	 */
+	@Schema(description = "Année du budget")
 	private int annee;
 	/**
 	 * Budget actif
 	 */
+	@Schema(description = "Etat d'activité")
 	private boolean actif = false;
 	
 	@Transient
@@ -57,24 +62,29 @@ public class BudgetMensuel extends AbstractAPIObjectModel implements Serializabl
 	/**
 	 * Date de mise à jour
 	 */
+	@Schema(description = "Date de mise à jour")
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	private LocalDateTime dateMiseAJour;
 	/**
 	 * Compte bancaire
 	 */
+	@Schema(description = "Id du compte bancaire")
 	private String idCompteBancaire;
 
 	/**
-	 * Liste des dépenses
+	 * Liste des opérations
 	 */
+	@Schema(description = "Liste des opérations")
 	private List<LigneOperation> listeOperations = new ArrayList<>();
 	/**
 	 * Résultats Totaux
 	 */
+	@Schema(description = "Soldes")
 	private Soldes soldes = new Soldes();
-	
+	@Schema(description = "Totaux par catégorie")
 	private Map<String, TotauxCategorie> totauxParCategories = new HashMap<>();
+	@Schema(description = "Totaux par sous catégories")
 	private Map<String, TotauxCategorie> totauxParSSCategories = new HashMap<>();
 
 	

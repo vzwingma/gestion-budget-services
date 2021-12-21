@@ -1,16 +1,15 @@
 package com.terrier.finances.gestion.communs.comptes.model.v12;
 
-import java.io.Serializable;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
 
 /**
  * Compte bancaire
@@ -25,18 +24,23 @@ public class CompteBancaire  extends AbstractAPIObjectModel {
 	private static final long serialVersionUID = -846392155444814540L;
 
 	@Id
+	@Schema(description = "Identifiant")
 	private String id;
 		
 	// Libellé du compte
+	@Schema(description = "Libellé du compte")
 	private String libelle;
 	// Propriétaire du compte
 	@JsonIgnore
 	private Proprietaire proprietaire;
 	// Icone
+	@Schema(description = "Icone")
 	private String itemIcon;
 	// N° d'ordre
+	@Schema(description = "n° d'ordre")
 	private int ordre;
 	// closed
+	@Schema(description = "Etat d'activité")
 	private Boolean actif;
 	
 	/**
