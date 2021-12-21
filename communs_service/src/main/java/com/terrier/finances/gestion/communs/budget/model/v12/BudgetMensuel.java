@@ -109,10 +109,14 @@ public class BudgetMensuel extends AbstractAPIObjectModel implements Serializabl
 	 * Totaux
 	 */
 	@Getter @Setter @NoArgsConstructor
+	@Schema(description = "Soldes")
 	public class Soldes implements Serializable {
 		private static final long serialVersionUID = 649769139203031253L;
+		@Schema(description = "Solde à la fin du mois précédent")
 		private Double soldeAtFinMoisPrecedent = 0D;
+		@Schema(description = "Solde à date")
 		private Double soldeAtMaintenant = 0D;
+		@Schema(description = "Solde à la fin du mois courant")
 		private Double soldeAtFinMoisCourant = 0D;
 		@Override
 		public String toString() {

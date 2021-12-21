@@ -1,11 +1,5 @@
 package com.terrier.finances.gestion.communs.operations.model.v12;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import org.springframework.data.annotation.Id;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -15,11 +9,16 @@ import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.operations.model.enums.EtatOperationEnum;
 import com.terrier.finances.gestion.communs.operations.model.enums.TypeOperationEnum;
 import com.terrier.finances.gestion.communs.parametrages.model.v12.CategorieOperation;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * 
@@ -35,36 +34,49 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 */
 	private static final long serialVersionUID = -2932267709864103657L;
 	// Id
+	@Schema(description = "Identifiant de l'opération")
 	private String id;
 
 	// Libellé
+	@Schema(description = "Libellé")
 	private String libelle;
 
 	// Catégorie
+	@Schema(description = "Catégorie")
 	private Categorie categorie;
+	@Schema(description = "Sous catégorie")
 	private Categorie ssCategorie;
 	
 	// Type de dépense
+	@Schema(description = "Type de dépense")
 	private TypeOperationEnum typeOperation;
 	// Etat de la ligne
+	@Schema(description = "Etat de l'opération")
 	private EtatOperationEnum etat;
 	// Valeur
+	@Schema(description = "Valeur")
 	private Double valeur;
 
 	// Périodique
+	@Schema(description = "Opération périodique ?")
 	private boolean periodique; 
 	// tag comme dernière opération
+	@Schema(description = "Dernier opération ?")
 	private boolean tagDerniereOperation;
 
+	@Schema(description = "Autres infos")
 	private LigneOperation.AddInfos autresInfos;
 
     @Getter @Setter @NoArgsConstructor
+	@Schema(description = "Catégorie")
 	public class Categorie implements Serializable{
 
 		private static final long serialVersionUID = -3703948740885489277L;
 		@Id
+		@Schema(description = "Id de la catégorie")
 		private String id;
 		// Libelle
+		@Schema(description = "Libellé")
 		private String libelle;
 		@Override
 		public String toString() {
@@ -74,21 +86,26 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	
 	
 	@Getter @Setter @NoArgsConstructor
+	@Schema(description = "Données additionnelles")
 	public class AddInfos implements Serializable{
 		private static final long serialVersionUID = -3109473021774203805L;
 		// Date Creation
 		@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 		@JsonSerialize(using = LocalDateTimeSerializer.class)
+		@Schema(description = "Date de création")
 		private LocalDateTime dateCreate;		
 		// Date validation de l'operation
 		@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 		@JsonSerialize(using = LocalDateTimeSerializer.class)
+		@Schema(description = "Date de validation")
 		private LocalDateTime dateOperation;
 		// Date mise à jour
 		@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 		@JsonSerialize(using = LocalDateTimeSerializer.class)
+		@Schema(description = "Date de mise à jour")
 		private LocalDateTime dateMaj;
 		// Auteur MAJ
+		@Schema(description = "Auteur")
 		private String auteur;
 	}
 

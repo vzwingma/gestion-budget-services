@@ -3,6 +3,7 @@ package com.terrier.finances.gestion.communs.comptes.model.api;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
@@ -22,12 +23,14 @@ public class IntervallesCompteAPIObject extends AbstractAPIObjectModel {
 	 * @param datePremierBudget : Date du premier budget du compte
 	 */
 	@NonNull
+	@Schema(description = "Date du premier budget pour le compte")
 	private Long datePremierBudget;
 
 	/**
 	 * @param dateDernierBudget : Date du dernier budget du compte
 	 */
 	@NonNull
+	@Schema(description = "Date du dernier budget pour le compte")
 	private Long dateDernierBudget;
 
 	/**
