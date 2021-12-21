@@ -39,11 +39,12 @@ public class ParametragesAPIController extends AbstractAPIController {
 	 * @return la liste des catégories d'opérations
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@Operation(method = "GET", summary = "Liste des catégories d'opérations")
+	@Operation(method = "GET", summary = "Liste des catégories d'opérations", tags={"Paramétrages"})
 	@ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Opération réussie",
 					content = { @Content(mediaType = "application/json",
 					schema = @Schema(implementation = CategorieOperation.class)) }),
+			@ApiResponse(responseCode = "401", description = "L'action n'est pas authentifiée"),
             @ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
             @ApiResponse(responseCode = "404", description = "Session introuvable")
     })

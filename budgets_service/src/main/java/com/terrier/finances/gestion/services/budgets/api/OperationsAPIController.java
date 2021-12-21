@@ -36,7 +36,6 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.BUDGET_BASE)
-//Api(description="Opérations", tags={"Opérations"}, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 public class OperationsAPIController extends AbstractAPIController {
 
 
@@ -384,7 +383,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws DataNotFoundException erreur données non trouvées
 	 * @throws UserNotAuthorizedException utilisateur non trouvé
 	 */
-	@Operation(method="GET",description="Intervalles des budgets pour un compte")
+	@Operation(method="GET",description="Intervalles des budgets pour un compte", tags={"Budget"})
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Opération réussie"),
 			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être authentifié"),
@@ -414,7 +413,7 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @param idCompte idCompte
 	 * @param annee année
 	 */
-	@Operation(method="GET",description="Libelles des opérations des budgets de l'année pour un compte")
+	@Operation(method="GET",description="Libelles des opérations des budgets de l'année pour un compte", tags={"Opérations"})
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Opération réussie"),
 			@ApiResponse(responseCode = "204", description = "Aucune donnée"),

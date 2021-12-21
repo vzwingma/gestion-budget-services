@@ -24,7 +24,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.COMPTES_BASE)
-// Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Comptes", tags={"Comptes"})
 public class ComptesAPIController extends AbstractAPIController {
 
 
@@ -37,7 +36,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @return liste des comptes de l'utilisateur
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@Operation(method="GET", description="Comptes d'un utilisateur")
+	@Operation(method="GET", description="Comptes d'un utilisateur", tags={"Comptes"})
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Opération réussie"),
 			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être authentifié"),
@@ -56,7 +55,7 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @return compte associé
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@Operation(method="GET",description="Compte d'un utilisateur")
+	@Operation(method="GET",description="Compte d'un utilisateur", tags={"Comptes"})
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Opération réussie"),
 			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être authentifié"),
