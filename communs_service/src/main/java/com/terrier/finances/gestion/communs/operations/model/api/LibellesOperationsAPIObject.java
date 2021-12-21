@@ -1,8 +1,9 @@
 package com.terrier.finances.gestion.communs.operations.model.api;
 
-import java.util.Set;
-
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.Set;
 
 /**
  * Object représentant les libellés des opérations pour l'ensemble des budgets de l'année pour un compte
@@ -15,9 +16,9 @@ public class LibellesOperationsAPIObject extends AbstractAPIObjectModel {
 	 * 
 	 */
 	private static final long serialVersionUID = -1515823001772650589L;
-
+	@Schema(description = "Id du compte")
 	private String idCompte;
-	
+	@Schema(description = "Libelles des opérations courantes")
 	private Set<String> libellesOperations;
 
 	/**

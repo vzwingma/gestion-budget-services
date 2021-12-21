@@ -35,7 +35,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.USERS_BASE)
-//Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Utilisateurs", tags={"Utilisateurs"})
 public class UtilisateursAPIController extends AbstractAPIController {
 
 
@@ -47,7 +46,7 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 * @return date de dernier accès
 	 * @throws DataNotFoundException données non trouvées
 	 */
-	@Operation(method = "GET", description = "Fournit la date de dernier accès d'un utilisateur")
+	@Operation(method = "GET", description = "Fournit la date de dernier accès d'un utilisateur", tags={"Utilisateurs"})
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Opération réussie",
 					content = { @Content(mediaType = "application/json",
@@ -77,9 +76,10 @@ public class UtilisateursAPIController extends AbstractAPIController {
 	 * @return préférences
 	 * @throws DataNotFoundException données non trouvées
 	 */
-	@Operation(method="GET", description = "Préférences d'un utilisateur")
+	@Operation(method="GET", description = "Préférences d'un utilisateur", tags={"Utilisateurs"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "200", description = "Opération réussie",
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = UtilisateurPrefsAPIObject.class))),
 			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être identifié"),
 			@ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
 			@ApiResponse(responseCode = "404", description = "Session introuvable")

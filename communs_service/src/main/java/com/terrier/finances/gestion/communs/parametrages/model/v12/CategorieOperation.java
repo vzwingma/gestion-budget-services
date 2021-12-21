@@ -1,18 +1,17 @@
 package com.terrier.finances.gestion.communs.parametrages.model.v12;
 
-import java.util.Set;
-import java.util.UUID;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.terrier.finances.gestion.communs.abstrait.AbstractAPIObjectModel;
 import com.terrier.finances.gestion.communs.parametrages.model.enums.IdsCategoriesEnum;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Catégorie d'opérations
@@ -31,19 +30,23 @@ public class CategorieOperation extends AbstractAPIObjectModel implements Compar
 	 * Identifiant
 	 */
 	@Id
+	@Schema(description = "Identifiant")
 	private String id;
 	/**
 	 * Libelle
 	 */
 	@EqualsAndHashCode.Include
+	@Schema(description = "Libellé")
 	private String libelle;
 	/**
 	 * Actif
-	 */	
+	 */
+	@Schema(description = "Etat d'activité")
 	private boolean actif;
 	/**
 	 * Liste des sous catégories
-	 */	
+	 */
+	@Schema(description = "Liste des sous catégories")
 	private Set<CategorieOperation> listeSSCategories;
 
 	/**
@@ -55,6 +58,7 @@ public class CategorieOperation extends AbstractAPIObjectModel implements Compar
 	/**
 	 * Est ce une catégorie ?
 	 */
+	@Schema(description = "Est ce une catégorie")
 	private boolean categorie = true;
 
 

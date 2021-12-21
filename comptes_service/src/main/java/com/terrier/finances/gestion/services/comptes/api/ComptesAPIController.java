@@ -9,6 +9,8 @@ import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundExcepti
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.comptes.business.ports.IComptesRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.COMPTES_BASE)
-// Api(consumes=MediaType.APPLICATION_JSON_VALUE, protocols="https", value="Comptes", tags={"Comptes"})
 public class ComptesAPIController extends AbstractAPIController {
 
 
@@ -37,9 +38,10 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @return liste des comptes de l'utilisateur
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@Operation(method="GET", description="Comptes d'un utilisateur")
+	@Operation(method="GET", description="Comptes d'un utilisateur", tags={"Comptes"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "200", description = "Opération réussie",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = CompteBancaire.class))}),
 			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être authentifié"),
 			@ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
 			@ApiResponse(responseCode = "404", description = "Session introuvable")
@@ -56,9 +58,10 @@ public class ComptesAPIController extends AbstractAPIController {
 	 * @return compte associé
 	 * @throws DataNotFoundException erreur données non trouvées
 	 */
-	@Operation(method="GET",description="Compte d'un utilisateur")
+	@Operation(method="GET",description="Compte d'un utilisateur", tags={"Comptes"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "200", description = "Opération réussie",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = CompteBancaire.class)) }),
 			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être authentifié"),
 			@ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
 			@ApiResponse(responseCode = "404", description = "Données introuvables")

@@ -1,10 +1,11 @@
 package com.terrier.finances.gestion.communs.budget.model.v12;
 
-import java.io.Serializable;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 /**
  * Totaux par catégories
@@ -12,12 +13,16 @@ import lombok.Setter;
  *
  */
 @Getter @NoArgsConstructor
+@Schema(description = "Totaux par catégorie")
 public class TotauxCategorie implements Serializable {
 
 	private static final long serialVersionUID = 1726925483789601358L;
 	@Setter
+	@Schema(description = "Libellé de la catégorie")
 	private String libelleCategorie;
+	@Schema(description = "Total à date")
 	private Double totalAtMaintenant = 0D;
+	@Schema(description = "Total à la fin du mois")
 	private Double totalAtFinMoisCourant = 0D;
 	
 	

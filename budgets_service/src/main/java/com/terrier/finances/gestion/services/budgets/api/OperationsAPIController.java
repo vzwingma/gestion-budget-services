@@ -16,6 +16,8 @@ import com.terrier.finances.gestion.services.budgets.business.ports.IParametrage
 import com.terrier.finances.gestion.services.communs.api.AbstractAPIController;
 import com.terrier.finances.gestion.services.communs.business.ports.IServiceProvider;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,6 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping(value=BudgetApiUrlEnum.BUDGET_BASE)
-//Api(description="Opérations", tags={"Opérations"}, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 public class OperationsAPIController extends AbstractAPIController {
 
 
@@ -58,7 +59,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	 */
 	@Operation(method = "GET", description = "Recherche d'un budget mensuel pour un compte d'un utilisateur", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "200", description = "Opération réussie",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BudgetMensuel.class))}),
 			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
 			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
 			@ApiResponse(responseCode = "404", description = "Données introuvables")
@@ -95,7 +97,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	 */
 	@Operation(method="GET",description="Chargement d'un budget", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Budget chargé"),
+			@ApiResponse(responseCode = "200", description = "Budget chargé",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BudgetMensuel.class))}),
 			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
 			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
 			@ApiResponse(responseCode = "404", description = "Données introuvables")
@@ -125,7 +128,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	 */
 	@Operation(method="DELETE",description="Réinitialisation d'un budget", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Budget réinitialisé"),
+			@ApiResponse(responseCode = "200", description = "Budget réinitialisé",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BudgetMensuel.class))}),
 			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
 			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
 			@ApiResponse(responseCode = "404", description = "Données introuvables"),
@@ -215,7 +219,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	 */
 	@Operation(method="POST",description="Mise à jour de l'{état} d'un budget mensuel (ouvert/cloturé) ; {etat} : indique si le budget est ouvert ou cloturé.", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "200", description = "Opération réussie",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BudgetMensuel.class))}),
 			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
 			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),
 			@ApiResponse(responseCode = "404", description = "Données introuvables"),
@@ -271,7 +276,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	 */
 	@Operation(method="POST",description="Mise à jour d'une opération", tags={"Opérations"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération mise à jour"),
+			@ApiResponse(responseCode = "200", description = "Opération mise à jour",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BudgetMensuel.class))}),
 			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
 			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),	
 			@ApiResponse(responseCode = "404", description = "Données introuvables"),
@@ -312,7 +318,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	 */
 	@Operation(method="POST",description="Mise à jour d'une opération Intercomptes", tags={"Opérations"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération mise à jour"),
+			@ApiResponse(responseCode = "200", description = "Opération mise à jour",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BudgetMensuel.class))}),
 			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
 			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),	
 			@ApiResponse(responseCode = "404", description = "Données introuvables"),
@@ -351,7 +358,8 @@ public class OperationsAPIController extends AbstractAPIController {
 	 */
 	@Operation(method="DELETE",description="Suppression d'une opération", tags={"Opérations"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération supprimée"),
+			@ApiResponse(responseCode = "200", description = "Opération supprimée",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BudgetMensuel.class))}),
 			@ApiResponse(responseCode = "204", description = "Opération supprimée"),
 			@ApiResponse(responseCode = "401", description = "Utilisateur non authentifié"),
 			@ApiResponse(responseCode = "403", description = "Opération non autorisée"),	
@@ -384,9 +392,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @throws DataNotFoundException erreur données non trouvées
 	 * @throws UserNotAuthorizedException utilisateur non trouvé
 	 */
-	@Operation(method="GET",description="Intervalles des budgets pour un compte")
+	@Operation(method="GET",description="Intervalles des budgets pour un compte", tags={"Budget"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "200", description = "Opération réussie",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = IntervallesCompteAPIObject.class))}),
 			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être authentifié"),
 			@ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
 			@ApiResponse(responseCode = "404", description = "Données introuvables")
@@ -414,9 +423,10 @@ public class OperationsAPIController extends AbstractAPIController {
 	 * @param idCompte idCompte
 	 * @param annee année
 	 */
-	@Operation(method="GET",description="Libelles des opérations des budgets de l'année pour un compte")
+	@Operation(method="GET",description="Libelles des opérations des budgets de l'année pour un compte", tags={"Opérations"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Opération réussie"),
+			@ApiResponse(responseCode = "200", description = "Opération réussie",
+					content = { @Content(mediaType = "application/json", schema = @Schema(implementation = LibellesOperationsAPIObject.class))}),
 			@ApiResponse(responseCode = "204", description = "Aucune donnée"),
 			@ApiResponse(responseCode = "401", description = "L'utilisateur doit être authentifié"),
 			@ApiResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
