@@ -25,7 +25,7 @@
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 
 		<sonar.projectKey>gestion-budget-services</sonar.projectKey>
-		<open-api.version>1.6.1</open-api.version>
+		<open-api.version>1.6.3</open-api.version>
 	</properties>
 
 	<issueManagement>
@@ -220,7 +220,7 @@
 		<dependency>
 			<groupId>org.springframework.security.oauth.boot</groupId>
 			<artifactId>spring-security-oauth2-autoconfigure</artifactId>
-			<version>2.6.1</version>
+			<version>2.6.2</version>
 		</dependency>
 		<!-- Actuator -->
 		<dependency>
