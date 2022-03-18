@@ -1,5 +1,5 @@
 # Issu de la dernière image OpenJDK 11
-FROM openjdk:11.0.14.1-jre-slim-buster
+FROM adoptopenjdk/openjdk11:jre
 MAINTAINER vincent.zwingmann@gmail.com
 
 # Copy de l'archive
