@@ -1,14 +1,23 @@
-/.settings/
-.classpath
-.project
-.metadata/
-/bin/
-/target/
-/log/
-*.prefs
-*.class
-*.log
-/.idea/
-*.iml
+_legacy/
+#Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
 
-parametrages_quarkus_service/target/
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
+
+
+# Local environment
+.env
