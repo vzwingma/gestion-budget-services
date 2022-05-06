@@ -22,14 +22,14 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Set up JDK 15
+      - name: Set up JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          java-version: 17
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
-          java-version: '15'
+          java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}          
       # Step that does that actual cache save and restore
