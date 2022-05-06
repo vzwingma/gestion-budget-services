@@ -41,7 +41,7 @@ jobs:
         name: Upload Service Paramétrages
         with:
           name: parametrages-runner
-          path: /project/parametrages-runner
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/project/parametrages-runner
 #      - uses: actions/upload-artifact@v2
 #        name: Upload Service Utilisateurs
 #        with:
