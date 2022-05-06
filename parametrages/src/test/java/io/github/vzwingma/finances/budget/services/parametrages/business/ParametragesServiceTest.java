@@ -27,7 +27,7 @@ public class ParametragesServiceTest {
         spi = Mockito.mock(IParametrageRepository.class);
         parametrageRequest = Mockito.spy(new ParametragesService(spi));
 
-        Mockito.when(spi.chargeCategories()).thenReturn(Uni.createFrom().multi(Multi.createFrom().items(TestDataCategoriesOperations.getListeTestCategories())));
+        Mockito.when(spi.chargeCategories()).thenReturn(Multi.createFrom().items(TestDataCategoriesOperations.getListeTestCategories().stream()));
     }
 
     @Test
