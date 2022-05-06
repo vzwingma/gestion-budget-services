@@ -5,6 +5,9 @@ import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enu
 import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.model.UtilisateurPrefsAPIObject;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRequest;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -13,6 +16,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -31,6 +35,10 @@ public class UtilisateursResource {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(UtilisateursResource.class);
+
+    @Inject
+    private IUtilisateursRequest utilisateursService;
+
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -55,7 +63,7 @@ public class UtilisateursResource {
     @GET
     @Path(BudgetApiUrlEnum.USERS_ACCESS_DATE)
     @Produces(MediaType.APPLICATION_JSON)
-    public UtilisateurPrefsAPIObject getLastAccessDateUtilisateur(){
+    public UtilisateurPrefsAPIObject getLastAccessDateUtilisateur() throws DataNotFoundException {
         String idProprietaire = "vzwingma"; //getIdProprietaire();
         if(idProprietaire != null){
             LocalDateTime lastAccess = utilisateursService.getLastAccessDate(idProprietaire);
@@ -84,7 +92,7 @@ public class UtilisateursResource {
     })
     @GET
     @Path(BudgetApiUrlEnum.USERS_PREFS)
-    public UtilisateurPrefsAPIObject getPreferencesUtilisateur() throws DataNotFoundException{
+    public UtilisateurPrefsAPIObject getPreferencesUtilisateur() throws DataNotFoundException {
         String idProprietaire ="vzwingma"; // getIdProprietaire();
         if(idProprietaire != null){
             Utilisateur utilisateur = utilisateursService.getUtilisateur(idProprietaire);
