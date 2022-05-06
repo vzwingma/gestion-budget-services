@@ -36,7 +36,7 @@ public class ParametragesResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String info() {
-        return "Hello Parametrages";
+        return "API Parametrages";
     }
 
 
