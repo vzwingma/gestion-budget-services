@@ -31,8 +31,4 @@ jobs:
             ${{ runner.os }}-maven-
       # Runs the Build with Maven
       - name: Build with Maven
-        run: mvn clean install -B -P prod --file pom.xml -DskipTests=true
-      # Runs the Build with Maven
-      - name: Build Native package with MavenW
-        run: cd parametrages |
-             ../mvnw package -Dnative
+        run: mvn clean install -B -P native --file pom.xml -DskipTests=true
