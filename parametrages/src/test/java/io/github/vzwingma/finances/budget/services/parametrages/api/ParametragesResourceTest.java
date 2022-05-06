@@ -15,7 +15,7 @@ public class ParametragesResourceTest {
           .when().get("/parametres/v2")
           .then()
              .statusCode(200)
-             .body(is("Hello Parametrages"));
+             .body(is("API Parametrages"));
     }
 
 }
