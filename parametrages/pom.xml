@@ -51,7 +51,6 @@
                         <excludes>
                             <exclude>*.*</exclude>
                         </excludes>
-
                     </resource>
                     <resource>
                         <directory>src/main/resources/prod</directory>
