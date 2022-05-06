@@ -68,7 +68,7 @@ jobs:
         name: Upload DockerFile Params
         with:
           name: Dockerfile-PARAMS_SERVICE
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/src/main/ressources/docker/Dockerfile.native-micro
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/src/main/docker/Dockerfile.native-micro
 #      - uses: actions/upload-artifact@v2
 #        name: Upload DockerFile Utilisateurs
 #        with:

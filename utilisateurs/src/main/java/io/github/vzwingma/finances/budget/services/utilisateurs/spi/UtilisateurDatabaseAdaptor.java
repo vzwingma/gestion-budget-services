@@ -1,18 +1,11 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.spi;
 
-import com.terrier.finances.gestion.services.utilisateurs.business.port.IUtilisateursRepository;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRepository;
+import io.smallrye.mutiny.Uni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Repository;
-
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
-import com.terrier.finances.gestion.services.communs.spi.mongodb.AbstractDatabaseServiceProvider;
-import com.terrier.finances.gestion.services.utilisateurs.business.model.v12.Utilisateur;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -33,21 +26,14 @@ public class UtilisateurDatabaseAdaptor implements IUtilisateursRepository {
 	 * @param login : login utilisateur
 	 * @return Utilisateur
 	 */
-	public Utilisateur chargeUtilisateur(String login) throws DataNotFoundException {
+	public Uni<Utilisateur> chargeUtilisateur(String login) {
 		try{
 			LOGGER.info("[idUser=?] Recherche de l'utilisateur [{}]", login);
-			Query queryUser = new Query().addCriteria(Criteria.where("login").is(login));
-			Utilisateur user = findOneByQuery(queryUser);
-			if(user == null){
-				throw new DataNotFoundException("Impossible de trouver l'utilisateur " + login);
-			}
-			else {
-				return user;
-			}
+			return find("login", login).singleResult();
 		}
 		catch(Exception e){
-			LOGGER.error("[idUser=?] Erreur lors de la recherche de l'utilisateur [{}]", login, e);
-			throw new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + login);
+			LOGGER.error("[idUser=?] Erreur lors de la connexion à la BDD", login, e);
+			return Uni.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + login);
 		}
 	}
 

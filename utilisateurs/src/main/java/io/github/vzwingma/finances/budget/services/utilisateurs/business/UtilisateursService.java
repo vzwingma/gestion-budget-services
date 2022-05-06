@@ -4,6 +4,7 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.Data
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRepository;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRequest;
+import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -38,14 +39,22 @@ public class UtilisateursService implements IUtilisateursRequest {
 	 * @param loginUtilisateur
 	 * @return date de dernier accès
 	 */
-	public Utilisateur getUtilisateur(String loginUtilisateur) throws DataNotFoundException {
-		Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(loginUtilisateur);
+	public Uni<Utilisateur> getUtilisateur(String loginUtilisateur) throws DataNotFoundException {
+		Uni<Utilisateur> utilisateur = dataDBUsers.chargeUtilisateur(loginUtilisateur);
 		// Enregistrement de la date du dernier accès à maintenant
-		LocalDateTime dernierAcces = utilisateur.getDernierAcces();
-		utilisateur.setDernierAcces(LocalDateTime.now());
-		dataDBUsers.majUtilisateur(utilisateur);
-		utilisateur.setDernierAcces(dernierAcces);
-		return utilisateur;
+		final LocalDateTime[] dernierAcces = new LocalDateTime[1];
+
+		Uni<Utilisateur> user = utilisateur
+				.map(u -> {
+					dernierAcces[0] = u.getDernierAcces();
+					u.setDernierAcces(LocalDateTime.now());
+					dataDBUsers.majUtilisateur(u);
+					u.setDernierAcces(dernierAcces[0]);
+
+				});
+;
+
+		return user;
 	}
 	/**
 	 * Date de dernier accès
@@ -54,7 +63,7 @@ public class UtilisateursService implements IUtilisateursRequest {
 	 * @throws DataNotFoundException données non trouvées
 	 */
 	public LocalDateTime getLastAccessDate(String login) throws DataNotFoundException{
-		Utilisateur utilisateur = dataDBUsers.chargeUtilisateur(login);
-		return utilisateur.getDernierAcces();
+		Uni<Utilisateur> utilisateur = dataDBUsers.chargeUtilisateur(login);
+		return utilisateur.onItem().tragetDernierAcces();
 	}
 }

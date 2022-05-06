@@ -2,6 +2,7 @@ package io.github.vzwingma.finances.budget.services.utilisateurs.business.ports;
 
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
+import io.smallrye.mutiny.Uni;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,7 @@ public interface IUtilisateursRequest {
      * @return Utilisateur correspondant au login
      * @throws io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException erreur d'accès
      */
-    public Utilisateur getUtilisateur(String idUtilisateur) throws DataNotFoundException;
+    Uni<Utilisateur> getUtilisateur(String idUtilisateur) throws DataNotFoundException;
 
 
     /**
@@ -25,5 +26,5 @@ public interface IUtilisateursRequest {
      * @return date de dernier accès
      * @throws DataNotFoundException erreur d'accès
      */
-    public LocalDateTime getLastAccessDate(String idUtilisateur) throws DataNotFoundException;
+    LocalDateTime getLastAccessDate(String idUtilisateur) throws DataNotFoundException;
 }
