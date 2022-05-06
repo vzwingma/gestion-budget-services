@@ -34,5 +34,5 @@ jobs:
         run: mvn clean install -B -P prod --file pom.xml
       # Runs the Build with Maven
       - name: Build Native package with MavenW
-        path: parametrages
-        run: mvnw package -Dnative -Dquarkus.native.container-build=true
+        run: cd ~/parametrages |
+             mvnw package -Dnative -Dquarkus.native.container-build=true
