@@ -4,7 +4,6 @@ package io.github.vzwingma.finances.budget.services.parametrages.business;
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRequest;
-import io.smallrye.mutiny.Multi;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

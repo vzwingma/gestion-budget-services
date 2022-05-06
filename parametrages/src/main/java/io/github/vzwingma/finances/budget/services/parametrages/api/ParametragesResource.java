@@ -17,7 +17,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controleur REST -
@@ -44,7 +43,6 @@ public class ParametragesResource {
     /**
      * @return la liste des catégories d'opérations
      **/
-     // @throws DataNotFoundException erreur données non trouvées
     @Operation(description = "Liste les catégories d'opérations", summary = "Liste des catégories d'opérations")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "Opération réussie",
@@ -64,5 +62,4 @@ public class ParametragesResource {
         LOG.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1");
         return listeCategories;
     }
-
 }

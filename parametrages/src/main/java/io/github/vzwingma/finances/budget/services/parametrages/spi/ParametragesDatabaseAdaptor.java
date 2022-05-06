@@ -2,16 +2,11 @@ package io.github.vzwingma.finances.budget.services.parametrages.spi;
 
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository;
-import io.quarkus.mongodb.panache.PanacheQuery;
 import io.smallrye.mutiny.Multi;
-import io.smallrye.mutiny.Uni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Service de données en MongoDB fournissant les paramètres
