@@ -3,25 +3,18 @@
  */
 package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.EnumMap;
-import java.util.Map;
-
 import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurDroitsEnum;
 import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurPrefsEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.quarkus.mongodb.panache.common.MongoEntity;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurDroitsEnum;
-import com.terrier.finances.gestion.communs.utilisateur.enums.UtilisateurPrefsEnum;
-import com.terrier.finances.gestion.communs.utils.data.BudgetDateTimeUtils;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * Définition d'un utilisateur de la BDD

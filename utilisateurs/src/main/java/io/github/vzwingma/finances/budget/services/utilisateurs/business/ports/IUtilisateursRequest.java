@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.business.ports;
 
-import com.terrier.finances.gestion.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 
