@@ -31,4 +31,4 @@ jobs:
             ${{ runner.os }}-maven-
       # Runs the Build with Maven
       - name: Build with Maven
-        run: mvn clean install -B -P native --file pom.xml -DskipTests=true
+        run: mvn clean install -B --file pom.xml
