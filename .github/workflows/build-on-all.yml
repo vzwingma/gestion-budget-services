@@ -35,4 +35,4 @@ jobs:
       # Runs the Build with Maven
       - name: Build Native package with MavenW
         run: cd ~/parametrages |
-             mvnw package -Dnative -Dquarkus.native.container-build=true
+             ./../mvnw package -Dnative
