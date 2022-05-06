@@ -3,9 +3,11 @@ package io.github.vzwingma.finances.budget.services.communs.data.parametrages.mo
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.vzwingma.finances.budget.services.communs.data.abstrait.AbstractAPIObjectModel;
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.enums.IdsCategoriesEnum;
+import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Set;
 import java.util.UUID;
@@ -15,7 +17,7 @@ import java.util.UUID;
  * @author vzwingma
  *
  */
-// @Document(collection = "categoriesoperations")
+@MongoEntity(collection = "categoriesoperations")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
@@ -28,24 +30,24 @@ public class CategorieOperation extends AbstractAPIObjectModel implements Compar
 	/**
 	 * Identifiant
 	 */
-	// @Id
-	// @Schema(description = "Identifiant")
+	//@Id
+	@Schema(description = "Identifiant")
 	private String id;
 	/**
 	 * Libelle
 	 */
 	@EqualsAndHashCode.Include
-	// @Schema(description = "Libellé")
+	@Schema(description = "Libellé")
 	private String libelle;
 	/**
 	 * Actif
 	 */
-	// @Schema(description = "Etat d'activité")
+	@Schema(description = "Etat d'activité")
 	private boolean actif;
 	/**
 	 * Liste des sous catégories
 	 */
-	// @Schema(description = "Liste des sous catégories")
+	@Schema(description = "Liste des sous catégories")
 	private Set<CategorieOperation> listeSSCategories;
 
 	/**
@@ -57,7 +59,7 @@ public class CategorieOperation extends AbstractAPIObjectModel implements Compar
 	/**
 	 * Est ce une catégorie ?
 	 */
-	// @Schema(description = "Est ce une catégorie")
+	@Schema(description = "Est ce une catégorie")
 	private boolean categorie = true;
 
 

@@ -1,6 +1,7 @@
 package io.github.vzwingma.finances.budget.services.parametrages.business.ports;
 
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
+import io.smallrye.mutiny.Multi;
 
 import java.util.List;
 

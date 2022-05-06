@@ -4,6 +4,7 @@ package io.github.vzwingma.finances.budget.services.parametrages.business;
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRequest;
+import io.smallrye.mutiny.Multi;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,13 +52,23 @@ public class ParametragesService implements IParametrageRequest {
 	 */
 	public List<CategorieOperation> getCategories(){
 		if(listeCategories.isEmpty()){
-			this.listeCategories = dataParams.chargeCategories();
-			LOGGER.info("Chargement des {} catégories depuis la base de données", this.listeCategories.size());
+			//			LOGGER.info("> Chargement des {} catégories <", categories.size());
+
+			listeCategories = dataParams.chargeCategories()
+					.subscribe().asStream()
+									.filter(c -> c.getListeSSCategories() != null)
+									.peek(c -> {
+										LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
+										c.getListeSSCategories().forEach(s -> LOGGER.debug("[{}][{}]\t\t{}", s.isActif() ? "v" : "X", s.getId(), s));
+									})
+									.map(this::cloneCategorie)
+									.collect(Collectors.toList());
+			return listeCategories;
 		}
-		return listeCategories
-				.stream()
-				.map(this::cloneCategorie)
-				.collect(Collectors.toList());
+		else {
+			return listeCategories;
+
+		}
 	}
 
 

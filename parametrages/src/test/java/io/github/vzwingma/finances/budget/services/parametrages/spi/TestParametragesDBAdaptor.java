@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,13 +30,13 @@ class TestParametragesDBAdaptor {
     }
 
     @Test
-    void testChargeCategoriesInDB(){
+    void testChargeCategoriesInDB() throws ExecutionException, InterruptedException {
 
         // Préparation
         //Mockito.when(db.findAll(CategorieOperation.class)).thenReturn(TestDataCategorieOperation.getListeTestCategories());
 
         // Lancement
-        List<CategorieOperation> cats = db.chargeCategories();
+        List<CategorieOperation> cats = db.chargeCategories().subscribe().asStream().collect(Collectors.toList());
 
         // Vérification
         assertNotNull(cats);

@@ -2,11 +2,15 @@ package io.github.vzwingma.finances.budget.services.parametrages.spi;
 
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository;
+import io.quarkus.mongodb.panache.PanacheQuery;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -27,29 +31,17 @@ public class ParametragesDatabaseAdaptor implements IParametrageRepository { // 
 	/**
 	 * @return la liste des catégories
 	 */
-	public List<CategorieOperation> chargeCategories() {
-			try{
-				LOGGER.trace("Chargement des catégories en BDD");
-				// Ajout des catégories
-				List<CategorieOperation> listeCategories = new ArrayList<>(); //findAll();
-				CategorieOperation c1 = new CategorieOperation();
-				c1.setId("1");
-				c1.setLibelle("Categorie 1");
-				c1.setCategorie(true);
-				listeCategories.add(c1);
+	public Multi<CategorieOperation> chargeCategories() {
 
-				LOGGER.info("> Chargement des {} catégories <", listeCategories.size());
-				listeCategories.stream()
-						.filter(c -> c.getListeSSCategories() != null)
-						.forEach(c -> {
-							LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
-							c.getListeSSCategories().forEach(s -> LOGGER.debug("[{}][{}]\t\t{}", s.isActif() ? "v" : "X", s.getId(), s));
-				});
-				return listeCategories;
-			}
-			catch(Exception e){
-				LOGGER.error("Erreur lors du chargement des catégories");
-				return new ArrayList<>();
-			}
+		try {
+			LOGGER.trace("Chargement des catégories en BDD");
+
+			Multi<CategorieOperation> getCategories = findAll().stream();
+			LOGGER.info("Chargement des catégories en BDD terminé");
+			return getCategories;
+		} catch (Exception e) {
+			LOGGER.error("Erreur lors de la connexion à la BDD", e);
+			return Multi.createFrom().failure(new Exception("Erreur lors de la connexion à la BDD"));
 		}
 	}
+}

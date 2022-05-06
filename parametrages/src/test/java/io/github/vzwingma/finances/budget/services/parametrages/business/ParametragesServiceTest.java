@@ -5,6 +5,8 @@ import io.github.vzwingma.finances.budget.services.parametrages.business.ports.I
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRequest;
 import io.github.vzwingma.finances.budget.services.parametrages.test.TestDataCategoriesOperations;
 import io.quarkus.test.junit.QuarkusTest;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,7 +27,7 @@ public class ParametragesServiceTest {
         spi = Mockito.mock(IParametrageRepository.class);
         parametrageRequest = Mockito.spy(new ParametragesService(spi));
 
-        Mockito.when(spi.chargeCategories()).thenReturn(TestDataCategoriesOperations.getListeTestCategories());
+        Mockito.when(spi.chargeCategories()).thenReturn(Uni.createFrom().multi(Multi.createFrom().items(TestDataCategoriesOperations.getListeTestCategories())));
     }
 
     @Test
