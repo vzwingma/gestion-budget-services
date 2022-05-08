@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.business.ports;
 
-import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoRepository;
 import io.smallrye.mutiny.Uni;
@@ -15,7 +14,7 @@ public interface IUtilisateursRepository extends ReactivePanacheMongoRepository<
      * @param login : login utilisateur
      * @return Utilisateur
      */
-    Uni<Utilisateur> chargeUtilisateur(String login) throws DataNotFoundException;
+    Uni<Utilisateur> chargeUtilisateur(String login);
 
     /**
      * Met à jour l'utilisateur en BDD

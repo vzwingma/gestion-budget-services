@@ -33,7 +33,7 @@ public class UtilisateurDatabaseAdaptor implements IUtilisateursRepository {
 		}
 		catch(Exception e){
 			LOGGER.error("[idUser=?] Erreur lors de la connexion à la BDD", login, e);
-			return Uni.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + login);
+			return Uni.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + login));
 		}
 	}
 

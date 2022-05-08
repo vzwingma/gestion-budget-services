@@ -42,9 +42,10 @@ public class UtilisateurPrefsAPIObject extends AbstractAPIObjectModel {
 	 *        	DROIT_CLOTURE_BUDGET,
 	 * 			DROIT_RAZ_BUDGET
 	 */
-	@Schema(description = "Liste des droits utilisateur\n" +
-			"\t * DROIT_CLOTURE_BUDGET,\n" +
-			"\t * DROIT_RAZ_BUDGET")
+	@Schema(description = """
+   			Liste des droits utilisateur
+			- DROIT_CLOTURE_BUDGET,
+			- DROIT_RAZ_BUDGET""")
 	private Map<UtilisateurDroitsEnum, Boolean> droits;
 
 	/**
