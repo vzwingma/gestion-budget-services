@@ -146,6 +146,8 @@ jobs:
         name: Download DockerFile Paramétrages
         with:
           name: Dockerfile-PARAMS_SERVICE
+      - name: List artefacts
+        run: ls -lh /home/runner/work/gestion-budget-services/gestion-budget-services
       -
         name: Build and push Service Paramétrages
         id: docker_build
