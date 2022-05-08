@@ -7,10 +7,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
-public class ParametragesResourceTest {
+class ParametragesResourceTest {
 
     @Test
-    public void testInfoEndpoint() {
+    void testInfoEndpoint() {
         given()
           .when().get("/parametres/v2")
           .then()
