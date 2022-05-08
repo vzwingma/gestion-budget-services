@@ -153,7 +153,7 @@ jobs:
         with:
           context: /home/runner/work/gestion-budget-services/gestion-budget-services
           platforms: linux/amd64,linux/arm/v7
-          file: Dockerfile-PARAMS_SERVICE
+          file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:parametrages-quarkus-snapshot
       -

@@ -51,22 +51,20 @@ public class ParametragesService implements IParametrageRequest {
 	 */
 	public List<CategorieOperation> getCategories(){
 		if(listeCategories.isEmpty()){
-			//			LOGGER.info("> Chargement des {} catégories <", categories.size());
 
 			listeCategories = dataParams.chargeCategories()
-					.subscribe().asStream()
-									.filter(c -> c.getListeSSCategories() != null)
-									.peek(c -> {
-										LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
-										c.getListeSSCategories().forEach(s -> LOGGER.debug("[{}][{}]\t\t{}", s.isActif() ? "v" : "X", s.getId(), s));
-									})
-									.map(this::cloneCategorie)
-									.collect(Collectors.toList());
+				.subscribe().asStream()
+				.filter(c -> c.getListeSSCategories() != null)
+				.peek(c -> {
+					LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
+					c.getListeSSCategories().forEach(s -> LOGGER.debug("[{}][{}]\t\t{}", s.isActif() ? "v" : "X", s.getId(), s));
+				})
+				.map(this::cloneCategorie)
+				.collect(Collectors.toList());
 			return listeCategories;
 		}
 		else {
 			return listeCategories;
-
 		}
 	}
 
