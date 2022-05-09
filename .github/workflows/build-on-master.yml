@@ -67,8 +67,8 @@ jobs:
       - uses: actions/upload-artifact@v2
         name: Upload DockerFile Params
         with:
-          name: Dockerfile-PARAMS_SERVICE
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/src/main/docker/Dockerfile.native-micro
+          name: Dockerfile.native
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/src/main/docker/Dockerfile.native
 #      - uses: actions/upload-artifact@v2
 #        name: Upload DockerFile Utilisateurs
 #        with:
@@ -145,7 +145,7 @@ jobs:
         id: downloadDocker
         name: Download DockerFile Paramétrages
         with:
-          name: Dockerfile-PARAMS_SERVICE
+          name: Dockerfile.native
       -
         name: Build and push Service Paramétrages
         id: docker_build
@@ -153,9 +153,9 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm/v7
-          file: Dockerfile.native-micro
+          file: Dockerfile.native
           push: true
-          tags: vzwingmabudget/gestion_budget_services:parametrages-quarkus-snapshot
+          tags: vzwingmabudget/gestion_budget_services/parametrages:quarkus-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
