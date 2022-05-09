@@ -23,3 +23,5 @@ bin/
 .env
 
 parametrages/src/main/resources/dev/application.properties
+
+utilisateurs/src/main/resources/dev/application.properties

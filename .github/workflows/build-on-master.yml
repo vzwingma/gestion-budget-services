@@ -117,8 +117,6 @@ jobs:
     needs: build
     steps:
       -
-        uses: actions/checkout@v2
-      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       -
@@ -148,19 +146,12 @@ jobs:
         name: Download DockerFile Paramétrages
         with:
           name: Dockerfile-PARAMS_SERVICE
-      - name: 'Echo download path'
-        run: echo ${{steps.downloadService.outputs.download-path}}          
-      - name: 'Echo download path'
-        run: echo ${{steps.downloadDocker.outputs.download-path}}
-        
-      - name: List artefacts
-        run: ls -lh /home/runner/work/gestion-budget-services/gestion-budget-services
       -
         name: Build and push Service Paramétrages
         id: docker_build
         uses: docker/build-push-action@v3
         with:
-          context: /home/runner/work/gestion-budget-services/gestion-budget-services
+          context: .
           platforms: linux/amd64,linux/arm/v7
           file: Dockerfile.native-micro
           push: true
