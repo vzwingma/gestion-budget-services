@@ -33,15 +33,11 @@ public class ParametragesServiceTest {
     void testGetListeCategories(){
         // Lancement du test
         List<CategorieOperation> listeCat = parametrageRequest.getCategories().await().indefinitely();
-        // Rechargement (et usage du cache)
-        List<CategorieOperation> listeCat2 = parametrageRequest.getCategories().await().indefinitely();
         // Vérification
         assertNotNull(listeCat);
         assertEquals(1, listeCat.size());
         // 1 seul appel à la BDD
         Mockito.verify(spi, Mockito.times(1)).chargeCategories();
-        assertNotNull(listeCat2);
-        assertEquals(1, listeCat2.size());
-        assertEquals(1, listeCat2.get(0).getListeSSCategories().size());
+        assertEquals(1, listeCat.get(0).getListeSSCategories().size());
     }
 }
