@@ -6,7 +6,6 @@ import io.github.vzwingma.finances.budget.services.parametrages.business.ports.I
 import io.github.vzwingma.finances.budget.services.parametrages.test.TestDataCategoriesOperations;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.mutiny.Multi;
-import io.smallrye.mutiny.Uni;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -33,9 +32,9 @@ public class ParametragesServiceTest {
     @Test
     void testGetListeCategories(){
         // Lancement du test
-        List<CategorieOperation> listeCat = parametrageRequest.getCategories();
+        List<CategorieOperation> listeCat = parametrageRequest.getCategories().await().indefinitely();
         // Rechargement (et usage du cache)
-        List<CategorieOperation> listeCat2 = parametrageRequest.getCategories();
+        List<CategorieOperation> listeCat2 = parametrageRequest.getCategories().await().indefinitely();
         // Vérification
         assertNotNull(listeCat);
         assertEquals(1, listeCat.size());

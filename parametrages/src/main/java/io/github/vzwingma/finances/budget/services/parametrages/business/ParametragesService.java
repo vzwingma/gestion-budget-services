@@ -4,17 +4,16 @@ package io.github.vzwingma.finances.budget.services.parametrages.business;
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRequest;
+import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Service fournissant les paramètres
@@ -44,28 +43,23 @@ public class ParametragesService implements IParametrageRequest {
 	 * Liste des catégories en cache
 	 * (A usage interne uniquement !!! Pour réponse : Clonage obligatoire)
 	 */
-	private List<CategorieOperation> listeCategories = new ArrayList<>();
+	private Uni<List<CategorieOperation>> listeCategories;
 
 	/**
 	 * @return liste des catégories
 	 */
-	public List<CategorieOperation> getCategories(){
-		if(listeCategories.isEmpty()){
+	public Uni<List<CategorieOperation>> getCategories(){
 
-			listeCategories = dataParams.chargeCategories()
-				.subscribe().asStream()
-				.filter(c -> c.getListeSSCategories() != null)
-				.peek(c -> {
-					LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
-					c.getListeSSCategories().forEach(s -> LOGGER.debug("[{}][{}]\t\t{}", s.isActif() ? "v" : "X", s.getId(), s));
-				})
-				.map(this::cloneCategorie)
-				.collect(Collectors.toList());
-			return listeCategories;
-		}
-		else {
-			return listeCategories;
-		}
+		return dataParams.chargeCategories()
+					.filter(c -> c.getListeSSCategories() != null && !c.getListeSSCategories().isEmpty())
+					//async call for log
+					.invoke(c -> {
+						LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
+						c.getListeSSCategories().forEach(s -> LOGGER.debug("[{}][{}]\t\t{}", s.isActif() ? "v" : "X", s.getId(), s));
+					})
+					.filter(CategorieOperation::isActif)
+					.map(this::cloneCategorie)
+					.collect().asList();
 	}
 
 

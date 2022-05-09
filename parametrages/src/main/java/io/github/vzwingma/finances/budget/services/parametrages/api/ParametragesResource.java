@@ -3,6 +3,7 @@ package io.github.vzwingma.finances.budget.services.parametrages.api;
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRequest;
+import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -35,8 +36,8 @@ public class ParametragesResource {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String info() {
-        return "API Parametrages";
+    public Uni<String> info() {
+        return Uni.createFrom().item("API Parametrages");
     }
 
 
@@ -55,11 +56,11 @@ public class ParametragesResource {
     @GET
     @Path(BudgetApiUrlEnum.PARAMS_CATEGORIES)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<CategorieOperation> getCategories() {
+    public Uni<List<CategorieOperation>> getCategories() {
 
-        List<CategorieOperation> listeCategories = paramsServices.getCategories();
-
-        LOG.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1");
-        return listeCategories;
+        return paramsServices.getCategories()
+                .invoke(listeCategories -> {
+                    LOG.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1");
+        });
     }
 }
