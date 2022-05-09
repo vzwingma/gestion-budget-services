@@ -1,11 +1,12 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.business;
 
-import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRepository;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRequest;
 import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,7 +21,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UtilisateursService implements IUtilisateursRequest {
 
-
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateursService.class);
 	/**
 	 * Utilisateurs
 	 */
@@ -39,31 +43,31 @@ public class UtilisateursService implements IUtilisateursRequest {
 	 * @param loginUtilisateur
 	 * @return date de dernier accès
 	 */
-	public Uni<Utilisateur> getUtilisateur(String loginUtilisateur) throws DataNotFoundException {
-		Uni<Utilisateur> utilisateur = dataDBUsers.chargeUtilisateur(loginUtilisateur);
-		// Enregistrement de la date du dernier accès à maintenant
-		final LocalDateTime[] dernierAcces = new LocalDateTime[1];
-
-		Uni<Utilisateur> user = utilisateur
-				.map(u -> {
-					dernierAcces[0] = u.getDernierAcces();
-					u.setDernierAcces(LocalDateTime.now());
-					dataDBUsers.majUtilisateur(u);
-					u.setDernierAcces(dernierAcces[0]);
-
+	public Uni<Utilisateur> getUtilisateur(String loginUtilisateur)  {
+		// Enregistrement de la date du dernier accès à maintenant, en async
+		return dataDBUsers.chargeUtilisateur(loginUtilisateur)
+				.invoke(user -> {
+					LOGGER.info("[idUser={}] {} accède à l'application", user.getId(), user.getLogin());
+					updateUtilisateurLastConnection(user);
 				});
-;
-
-		return user;
 	}
+
+	/**
+	 * Mise à jour de la date de dernier accès
+	 * @param utilisateurUni
+	 */
+	private void updateUtilisateurLastConnection(Utilisateur utilisateurUni) {
+
+		utilisateurUni.setDernierAcces(LocalDateTime.now());
+		dataDBUsers.majUtilisateur(utilisateurUni);
+	};
 	/**
 	 * Date de dernier accès
 	 * @param login login de l'utilisateur
 	 * @return date de dernier accès
-	 * @throws DataNotFoundException données non trouvées
 	 */
-	public LocalDateTime getLastAccessDate(String login) throws DataNotFoundException{
-		Uni<Utilisateur> utilisateur = dataDBUsers.chargeUtilisateur(login);
-		return utilisateur.onItem().tragetDernierAcces();
+	public Uni<LocalDateTime> getLastAccessDate(String login) {
+		return getUtilisateur(login)
+				.map(Utilisateur::getDernierAcces);
 	}
 }

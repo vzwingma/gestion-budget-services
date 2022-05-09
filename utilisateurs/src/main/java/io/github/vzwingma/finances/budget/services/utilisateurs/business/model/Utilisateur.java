@@ -10,6 +10,8 @@ import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.types.ObjectId;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -30,7 +32,7 @@ public class Utilisateur implements Serializable {
 	 */
 	private static final long serialVersionUID = 6535669274718528190L;
 	
-	private String id;
+	private ObjectId id;
 	// Login
 	private String login;
 	
@@ -41,10 +43,12 @@ public class Utilisateur implements Serializable {
 	/**
 	 * Préférences
 	 */
+	@BsonIgnore
 	private Map<UtilisateurPrefsEnum, String> prefsUtilisateur = new EnumMap<>(UtilisateurPrefsEnum.class);
 	/**
 	 * Droits
 	 */
+	@BsonIgnore
 	private Map<UtilisateurDroitsEnum, Boolean> droits = new EnumMap<>(UtilisateurDroitsEnum.class);
 	
 	
