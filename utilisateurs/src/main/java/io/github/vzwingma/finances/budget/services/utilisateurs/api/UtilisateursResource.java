@@ -64,7 +64,7 @@ public class UtilisateursResource {
     @Path(BudgetApiUrlEnum.USERS_ACCESS_DATE)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur() throws UserAccessForbiddenException {
-        String idProprietaire = "vzwingma2"; //getIdProprietaire();
+        String idProprietaire = "vzwingma"; //getIdProprietaire();
         if(idProprietaire != null) {
             return utilisateursService.getLastAccessDate(idProprietaire)
                     .onFailure().recoverWithNull()
@@ -79,7 +79,6 @@ public class UtilisateursResource {
         else {
             return Uni.createFrom().failure(new UserAccessForbiddenException("Propriétaire introuvable"));
         }
-
     }
 
 
@@ -102,14 +101,18 @@ public class UtilisateursResource {
         String idProprietaire ="vzwingma"; // getIdProprietaire();
         if(idProprietaire != null){
             return utilisateursService.getUtilisateur(idProprietaire)
+                    .onFailure().recoverWithNull()
                     .map(utilisateur -> {
-                        Map<UtilisateurPrefsEnum, String> prefsUtilisateur = utilisateur.getPrefsUtilisateur();
-                        Map<UtilisateurDroitsEnum, Boolean> droitsUtilisateur = utilisateur.getDroits();
-                        LOG.info("Preferences Utilisateur : {} | {}", prefsUtilisateur, droitsUtilisateur);
                         UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
                         prefs.setIdUtilisateur(idProprietaire);
-                        prefs.setPreferences(prefsUtilisateur);
-                        prefs.setDroits(droitsUtilisateur);
+
+                        if(utilisateur != null) {
+                            Map<UtilisateurPrefsEnum, String> prefsUtilisateur = utilisateur.getPrefsUtilisateur();
+                            Map<UtilisateurDroitsEnum, Boolean> droitsUtilisateur = utilisateur.getDroits();
+                            LOG.info("Preferences Utilisateur : {} | {}", prefsUtilisateur, droitsUtilisateur);
+                            prefs.setPreferences(prefsUtilisateur);
+                            prefs.setDroits(droitsUtilisateur);
+                        }
                         return prefs;
                     });
         }
