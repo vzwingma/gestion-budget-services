@@ -13,7 +13,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # BUILD
+  # BUILD COMMUNS
   build-communs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -37,6 +37,34 @@ jobs:
       # Runs the Build with Maven
       - name: Build Communs with Maven
         run: mvn clean install -B --file communs/pom.xml
+
+    # SONAR
+  sonar-scan:
+      # The type of runner that the job will run on
+      runs-on: ubuntu-latest
+
+      # Steps represent a sequence of tasks that will be executed as part of the job
+      steps:
+        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        - uses: actions/checkout@v2
+        - name: Set up JDK 17
+          uses: actions/setup-java@v1
+          with:
+            java-version: 17
+        # Step that does that actual cache save and restore
+        - uses: actions/cache@v1
+          with:
+            path: ~/.m2/repository
+            key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+            restore-keys: |
+              ${{ runner.os }}-maven-
+        # Runs a single command using the runners shell
+        - name: Build with Maven
+          run: mvn clean compile sonar:sonar -B -P prod -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.projectKey=gestion-budget-services --file pom.xml
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   # BUILD
   build-quarkus-parametrages:
     # The type of runner that the job will run on
@@ -112,32 +140,7 @@ jobs:
 #        with:
 #          path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/src/main/external-ressources/docker/Dockerfile-COMPTES_SERVICE
 #          name: Dockerfile-COMPTES_SERVICE
- # SONAR
-  sonar:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      # Runs a single command using the runners shell
-      - name: Build with Maven
-        run: mvn clean compile sonar:sonar -B -P prod -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.projectKey=gestion-budget-services --file pom.xml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   # PUBLISH DOCKER IMAGES
   # Image PARAMETRAGES
   docker-parametrages:
@@ -183,7 +186,7 @@ jobs:
           platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services/parametrages:quarkus-snapshot
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}/parametrages:quarkus-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
