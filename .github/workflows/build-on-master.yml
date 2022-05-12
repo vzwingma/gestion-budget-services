@@ -145,15 +145,15 @@ jobs:
         id: downloadDocker
         name: Download DockerFile Paramétrages
         with:
-          name: Dockerfile.native
+          name: Dockerfile.native-micro
       -
         name: Build and push Service Paramétrages
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm/v7
-          file: Dockerfile.native
+          platforms: linux/amd64
+          file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services/parametrages:quarkus-snapshot
       -
