@@ -67,8 +67,8 @@ jobs:
       - uses: actions/upload-artifact@v2
         name: Upload DockerFile Params
         with:
-          name: Dockerfile.native
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/src/main/docker/Dockerfile.native
+          name: Dockerfile.native-micro
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/src/main/docker/Dockerfile.native-micro
 #      - uses: actions/upload-artifact@v2
 #        name: Upload DockerFile Utilisateurs
 #        with:
