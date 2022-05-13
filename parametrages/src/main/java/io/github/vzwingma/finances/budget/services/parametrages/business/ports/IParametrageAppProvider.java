@@ -8,7 +8,7 @@ import java.util.List;
 /**
  *  Application Provider Interface de Paramétrages
  */
-public interface IParametrageRequest {
+public interface IParametrageAppProvider {
 
 
     /**

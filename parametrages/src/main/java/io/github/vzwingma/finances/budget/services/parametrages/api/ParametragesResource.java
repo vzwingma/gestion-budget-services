@@ -2,7 +2,7 @@ package io.github.vzwingma.finances.budget.services.parametrages.api;
 
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
-import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRequest;
+import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Controleur REST -
- * Adapteur du port {@link io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRequest}
+ * Adapteur du port {@link IParametrageAppProvider}
  * @author vzwingma
  *
  */
@@ -32,7 +32,7 @@ public class ParametragesResource {
 
 
     @Inject
-    private IParametrageRequest paramsServices;
+    IParametrageAppProvider paramsServices;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -59,8 +59,6 @@ public class ParametragesResource {
     public Uni<List<CategorieOperation>> getCategories() {
 
         return paramsServices.getCategories()
-                .invoke(listeCategories -> {
-                    LOG.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1");
-        });
+                .invoke(listeCategories -> LOG.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1"));
     }
 }

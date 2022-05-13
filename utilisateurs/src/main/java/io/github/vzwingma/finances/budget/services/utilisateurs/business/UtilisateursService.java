@@ -2,7 +2,7 @@ package io.github.vzwingma.finances.budget.services.utilisateurs.business;
 
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRepository;
-import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRequest;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursAppProvider;
 import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  */
 @ApplicationScoped
 @NoArgsConstructor
-public class UtilisateursService implements IUtilisateursRequest {
+public class UtilisateursService implements IUtilisateursAppProvider {
 
 	/**
 	 * Logger

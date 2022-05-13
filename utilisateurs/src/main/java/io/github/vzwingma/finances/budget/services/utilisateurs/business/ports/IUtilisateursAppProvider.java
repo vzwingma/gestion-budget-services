@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 /**
  * Port de l'Application Provider Interface des Utilisateurs
  */
-public interface IUtilisateursRequest {
+public interface IUtilisateursAppProvider {
 
     /**
      * Chargement d'un utilisateur
      * @param idUtilisateur login de l'utilisateur
      * @return Utilisateur correspondant au login
-     * @throws UserAccessForbiddenException erreur d'accès
+     * @throws DataNotFoundException erreur d'accès
      */
     Uni<Utilisateur> getUtilisateur(String idUtilisateur) throws DataNotFoundException;
 

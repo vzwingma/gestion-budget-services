@@ -7,7 +7,7 @@ import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiU
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
-import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRequest;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursAppProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -37,7 +37,7 @@ public class UtilisateursResource {
     private static final Logger LOG = LoggerFactory.getLogger(UtilisateursResource.class);
 
     @Inject
-    private IUtilisateursRequest utilisateursService;
+    IUtilisateursAppProvider service;
 
 
     @GET
@@ -66,7 +66,7 @@ public class UtilisateursResource {
     public Uni<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur() throws UserAccessForbiddenException {
         String idProprietaire = "vzwingma"; //getIdProprietaire();
         if(idProprietaire != null) {
-            return utilisateursService.getLastAccessDate(idProprietaire)
+            return service.getLastAccessDate(idProprietaire)
                     //.onFailure().recoverWithNull()
                     .onItem().transform(lastAccess -> {
                         LOG.info("LastAccessTime : {}", lastAccess);
@@ -100,7 +100,7 @@ public class UtilisateursResource {
     public Uni<UtilisateurPrefsAPIObject> getPreferencesUtilisateur() throws DataNotFoundException {
         String idProprietaire ="vzwingma"; // getIdProprietaire();
         if(idProprietaire != null){
-            return utilisateursService.getUtilisateur(idProprietaire)
+            return service.getUtilisateur(idProprietaire)
                     .onFailure().recoverWithNull()
                     .map(utilisateur -> {
                         UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();

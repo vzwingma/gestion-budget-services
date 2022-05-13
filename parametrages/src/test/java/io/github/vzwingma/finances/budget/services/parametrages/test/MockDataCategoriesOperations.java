@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Jeu de données Catégorie
  */
-public class TestDataCategoriesOperations {
+public class MockDataCategoriesOperations {
 
     public static List<CategorieOperation> getListeTestCategories(){
         List<CategorieOperation> categoriesFromSPI = new ArrayList<>();

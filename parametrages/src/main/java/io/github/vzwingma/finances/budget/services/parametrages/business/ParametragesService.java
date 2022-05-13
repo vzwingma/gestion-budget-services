@@ -3,7 +3,7 @@ package io.github.vzwingma.finances.budget.services.parametrages.business;
 
 import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository;
-import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRequest;
+import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import java.util.Set;
  */
 @ApplicationScoped
 @NoArgsConstructor
-public class ParametragesService implements IParametrageRequest {
+public class ParametragesService implements IParametrageAppProvider {
 
 
 	/**
@@ -33,7 +33,7 @@ public class ParametragesService implements IParametrageRequest {
 	 * Service Provider Interface des données
 	 */
 	@Inject
-	private IParametrageRepository dataParams;
+	IParametrageRepository dataParams;
 
 	public ParametragesService(IParametrageRepository parametrageRepository){
 		this.dataParams = parametrageRepository;
