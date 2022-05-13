@@ -29,8 +29,7 @@ public class UtilisateurDatabaseAdaptor implements IUtilisateursRepository {
 	public Uni<Utilisateur> chargeUtilisateur(String login) {
 		try{
 			LOGGER.info("[idUser=?] Recherche de l'utilisateur [{}]", login);
-			return find("login", login).firstResult()
-					.onItem().ifNull().failWith(new DataNotFoundException("Utilisateur non trouvé"));
+			return find("login", login).singleResult();
 		}
 		catch(Exception e){
 			LOGGER.error("[idUser=?] Erreur lors de la connexion à la BDD", login, e);

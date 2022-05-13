@@ -67,7 +67,7 @@ public class UtilisateursResource {
         String idProprietaire = "vzwingma"; //getIdProprietaire();
         if(idProprietaire != null) {
             return utilisateursService.getLastAccessDate(idProprietaire)
-                    .onFailure().recoverWithNull()
+                    //.onFailure().recoverWithNull()
                     .onItem().transform(lastAccess -> {
                         LOG.info("LastAccessTime : {}", lastAccess);
                         UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();

@@ -11,7 +11,7 @@
   <modules>
     <module>communs</module>
     <module>parametrages</module>
-    <!-- module>utilisateurs</module -->
+    <module>utilisateurs</module>
   </modules>
 
   <properties>
@@ -73,7 +73,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
     </dependency>
-
     <!-- OpenAPI -->
     <dependency>
       <groupId>io.quarkus</groupId>

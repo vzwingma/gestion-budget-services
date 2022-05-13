@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.parametrages.api;
+package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
 import io.quarkus.test.junit.QuarkusTest;
@@ -8,15 +8,15 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
-class ParametragesResourceTest {
+public class UtilisateursResourceTest {
 
     @Test
-    void testInfoEndpoint() {
+    public void testInfoEndpoint() {
         given()
-          .when().get(BudgetApiUrlEnum.PARAMS_BASE)
+          .when().get(BudgetApiUrlEnum.USERS_BASE)
           .then()
              .statusCode(200)
-             .body(is("API Parametrages"));
+             .body(is("API Utilisateurs"));
     }
 
 }
