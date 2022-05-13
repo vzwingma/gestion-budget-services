@@ -3,6 +3,7 @@ package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
 import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurPrefsEnum;
 import org.bson.types.ObjectId;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 /**
@@ -18,6 +19,12 @@ public class MockDataUtilisateur {
         userOK.setLogin("Test");
         userOK.setPrefsUtilisateur(new HashMap<>());
         userOK.getPrefsUtilisateur().put(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE, "Nouvelle");
+        return userOK;
+    }
+
+    public static Utilisateur getTestUtilisateurWithDate(){
+        Utilisateur userOK = getTestUtilisateur();
+        userOK.setDernierAcces(LocalDateTime.now());
         return userOK;
     }
 }
