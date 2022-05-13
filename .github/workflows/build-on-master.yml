@@ -186,7 +186,7 @@ jobs:
           platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/parametrages:quarkus-snapshot
+          tags: vzwingmabudget/gestion_budget_services:parametrages-quarkus-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
