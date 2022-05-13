@@ -34,7 +34,7 @@ class ParametragesResourceTest {
         // Test
         given() .when().get(BudgetApiUrlEnum.PARAMS_BASE + BudgetApiUrlEnum.PARAMS_CATEGORIES)
                 .then()
-                .statusCode(200)
-                .body(Matchers.containsString(MockDataCategoriesOperations.getListeTestCategories().get(0).getLibelle()));
+                    .statusCode(200)
+                    .body(Matchers.containsString(MockDataCategoriesOperations.getListeTestCategories().get(0).getLibelle()));
     }
 }

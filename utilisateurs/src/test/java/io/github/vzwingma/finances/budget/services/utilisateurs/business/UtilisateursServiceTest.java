@@ -1,6 +1,7 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.business;
 
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.MockDataUtilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursAppProvider;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,5 +60,17 @@ public class UtilisateursServiceTest {
         //Vérification
         Mockito.verify(serviceDataProvider, Mockito.times(1)).chargeUtilisateur(Mockito.anyString());
         Mockito.verify(serviceDataProvider, Mockito.never()).majUtilisateur(Mockito.any());
+    }
+
+
+    @Test
+    void testGetLastAccessUtilisateur() throws UserAccessForbiddenException {
+        // Lancement du test
+        LocalDateTime lastAccess = appProvider.getLastAccessDate("Test").await().indefinitely();
+        // Vérification
+        assertNotNull(lastAccess);
+        // 1 seul appel à la BDD pour charger l'utilisateur et 1 pour le mettre à jour
+        Mockito.verify(serviceDataProvider, Mockito.times(1)).chargeUtilisateur(Mockito.anyString());
+        Mockito.verify(serviceDataProvider, Mockito.times(1)).majUtilisateur(Mockito.any());
     }
 }
