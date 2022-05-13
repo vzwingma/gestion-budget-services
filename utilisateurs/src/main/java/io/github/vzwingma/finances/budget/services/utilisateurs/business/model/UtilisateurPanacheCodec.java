@@ -2,6 +2,8 @@ package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
 
 
 import com.mongodb.MongoClientSettings;
+import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurDroitsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurPrefsEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import org.bson.*;
 import org.bson.codecs.Codec;
@@ -40,15 +42,13 @@ public class UtilisateurPanacheCodec implements CollectibleCodec<Utilisateur> {
 
     @Override
     public BsonValue getDocumentId(Utilisateur utilisateur) {
-        BsonValue bsonValue = null;
         if (documentHasId(utilisateur)) {
-            bsonValue = new BsonString(utilisateur.getId().toString());
+            return new BsonString(utilisateur.getId().toString());
         }
         else{
             generateIdIfAbsentFromDocument(utilisateur);
             return getDocumentId(utilisateur);
         }
-        return bsonValue;
     }
 
     /**
@@ -65,8 +65,11 @@ public class UtilisateurPanacheCodec implements CollectibleCodec<Utilisateur> {
         utilisateur.setLibelle(document.getString("libelle"));
         utilisateur.setLogin(document.getString("login"));
         utilisateur.setDernierAcces(BudgetDateTimeUtils.getLocalDateTimeFromMillisecond(document.getDate("dernierAcces").getTime()));
-     //   document.getList("prefsUtilisateur", Document.class).forEach(pref -> {} );
+        document.get("prefsUtilisateur", Document.class)
+                .forEach((key, value) -> utilisateur.getPrefsUtilisateur().put(UtilisateurPrefsEnum.valueOf(key), value.toString()));
 
+        document.get("droits", Document.class)
+                .forEach((key, value) -> utilisateur.getDroits().put(UtilisateurDroitsEnum.valueOf(key), Boolean.valueOf(value.toString())));
         return utilisateur;
     }
 

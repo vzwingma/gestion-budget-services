@@ -1,5 +1,7 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
 
+import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurDroitsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurPrefsEnum;
 import org.bson.BsonReader;
 import org.bson.json.JsonReader;
 import org.bson.types.ObjectId;
@@ -24,9 +26,11 @@ public class TestUtilisateurPanacheCodec {
         assertEquals("test", utilisateur.getLogin());
         assertEquals("54aa7db30bc460e1aeb95596", utilisateur.getId().toString());
         assertNotNull(utilisateur.getDernierAcces());
-       // assertEquals(true, utilisateur.getDroits().get(DroitsUtilisateur.DROIT_CLOTURE_BUDGET));
-       // assertEquals(true, utilisateur.getDroits().get(DroitsUtilisateur.DROIT_RAZ_BUDGET));
-
+        // validation des préférences
+        assertEquals("prevue", utilisateur.getPrefsUtilisateur().get(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE));
+        // validation des droits
+        assertEquals(true, utilisateur.getDroits().get(UtilisateurDroitsEnum.DROIT_CLOTURE_BUDGET));
+        assertEquals(true, utilisateur.getDroits().get(UtilisateurDroitsEnum.DROIT_RAZ_BUDGET));
     }
 
     @Test

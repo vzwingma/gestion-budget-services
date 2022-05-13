@@ -29,18 +29,18 @@ public class UtilisateursService implements IUtilisateursRequest {
 	 * Utilisateurs
 	 */
 	@Inject
-	private IUtilisateursRepository dataDBUsers;
+	IUtilisateursRepository dataDBUsers;
 
 	/**
 	 * Constructeur (pour les tests)
-	 * @param spiUtilisateurs
+	 * @param spiUtilisateurs Service port Interface Utilisateurs
 	 */
 	public UtilisateursService(IUtilisateursRepository spiUtilisateurs){
 		this.dataDBUsers = spiUtilisateurs;
 	}
 
 	/**
-	 * @param loginUtilisateur
+	 * @param loginUtilisateur login de l'utilisateur
 	 * @return date de dernier accès
 	 */
 	public Uni<Utilisateur> getUtilisateur(String loginUtilisateur)  {
@@ -54,13 +54,13 @@ public class UtilisateursService implements IUtilisateursRequest {
 
 	/**
 	 * Mise à jour de la date de dernier accès
-	 * @param utilisateurUni
+	 * @param utilisateurUni utilisateur connecté
 	 */
 	private void updateUtilisateurLastConnection(Utilisateur utilisateurUni) {
 
 		utilisateurUni.setDernierAcces(LocalDateTime.now());
 		dataDBUsers.majUtilisateur(utilisateurUni);
-	};
+	}
 	/**
 	 * Date de dernier accès
 	 * @param login login de l'utilisateur
