@@ -103,10 +103,51 @@ jobs:
 
       # Upload Docker
       - uses: actions/upload-artifact@v2
-        name: Upload DockerFile Params
+        name: Upload DockerFile Parametrages
         with:
           name: Dockerfile.native-micro
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/src/main/docker/Dockerfile.native-micro
+  build-quarkus-utilisateurs:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: build-communs
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # Step that does that actual cache save and restore
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      # Runs a single command using the runners shell
+      - name: Build Utilisateurs Native App with Maven
+        run: mvn clean install -B -P native --file utilisateurs/pom.xml
+      # Upload Releases Snapshot
+      - uses: actions/upload-artifact@v2
+        name: Upload Service Utilisateurs
+        with:
+          name: utilisateurs-runner
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs/target/utilisateurs-runner
+
+      # Upload Docker
+      - uses: actions/upload-artifact@v2
+        name: Upload DockerFile utilisateurs
+        with:
+          name: Dockerfile.native-micro
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs/src/main/docker/Dockerfile.native-micro
 
 
 
@@ -187,6 +228,54 @@ jobs:
           file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:parametrages-quarkus-snapshot
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  # Image UTILISATEURS
+  docker-utilisateurs:
+    runs-on: ubuntu-latest
+    needs: build-quarkus-utilisateurs
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/download-artifact@v3
+        id: downloadService
+        name: Download Service Utilisateurs
+        with:
+          name: utilisateurs-runner
+      - uses: actions/download-artifact@v3
+        id: downloadDocker
+        name: Download DockerFile Utiliateurs
+        with:
+          name: Dockerfile.native-micro
+      -
+        name: Build and push Service Utiliateurs
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64
+          file: Dockerfile.native-micro
+          push: true
+          tags: vzwingmabudget/gestion_budget_services:utilisateurs-quarkus-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
