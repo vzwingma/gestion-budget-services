@@ -2,15 +2,19 @@ package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.UtilisateursService;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.MockDataUtilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursAppProvider;
+import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.smallrye.mutiny.Uni;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import javax.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
@@ -28,14 +32,18 @@ public class UtilisateursResourceTest {
     }
 
 
+    @Inject
+    IUtilisateursAppProvider utilisateurService;
 
-    @InjectMock
-    IUtilisateursAppProvider parametragesService;
+    @BeforeAll
+    public static void init() {
+        QuarkusMock.installMockForType(Mockito.mock(UtilisateursService.class), UtilisateursService.class);
+    }
     @Test
     void testGetLastAccessDate() {
         // Init des données
         Utilisateur utilisateurExpected = MockDataUtilisateur.getTestUtilisateurWithDate();
-        Mockito.when(parametragesService.getUtilisateur(Mockito.anyString()))
+        Mockito.when(utilisateurService.getUtilisateur(Mockito.anyString()))
                 .thenReturn(Uni.createFrom().item(utilisateurExpected));
         // Test
         given() .when().get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL)
@@ -49,7 +57,7 @@ public class UtilisateursResourceTest {
     void testGetPreferences() {
         // Init des données
         Utilisateur utilisateurExpected = MockDataUtilisateur.getTestUtilisateurWithDate();
-        Mockito.when(parametragesService.getUtilisateur(Mockito.anyString()))
+        Mockito.when(utilisateurService.getUtilisateur(Mockito.anyString()))
                 .thenReturn(Uni.createFrom().item(utilisateurExpected));
         // Test
         given() .when().get(BudgetApiUrlEnum.USERS_PREFS_FULL)
@@ -63,7 +71,7 @@ public class UtilisateursResourceTest {
     void testForUtilisateurUnkown() {
         // Init des données
         Utilisateur utilisateurExpected = MockDataUtilisateur.getTestUtilisateurWithDate();
-        Mockito.when(parametragesService.getUtilisateur(Mockito.anyString()))
+        Mockito.when(utilisateurService.getUtilisateur(Mockito.anyString()))
                 .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Utilisateur introuvable")));
         // Test
         given() .when().get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL)
