@@ -37,7 +37,12 @@ jobs:
       # Runs the Build with Maven
       - name: Build Communs with Maven
         run: mvn clean install -B --file communs/pom.xml
-
+      # Upload DockerFile
+      - uses: actions/upload-artifact@v2
+        name: Upload DockerFile Parametrages
+        with:
+          name: Dockerfile.native-micro
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native-micro
     # SONAR
   sonar-scan:
       # The type of runner that the job will run on
@@ -101,12 +106,6 @@ jobs:
           name: parametrages-runner
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/target/parametrages-runner
 
-      # Upload Docker
-      - uses: actions/upload-artifact@v2
-        name: Upload DockerFile Parametrages
-        with:
-          name: Dockerfile.native-micro
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/src/main/docker/Dockerfile.native-micro
   build-quarkus-utilisateurs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -141,15 +140,6 @@ jobs:
         with:
           name: utilisateurs-runner
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs/target/utilisateurs-runner
-
-      # Upload Docker
-      - uses: actions/upload-artifact@v2
-        name: Upload DockerFile utilisateurs
-        with:
-          name: Dockerfile.native-micro
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs/src/main/docker/Dockerfile.native-micro
-
-
 
   #      - uses: actions/upload-artifact@v2
   #        name: Upload Service Utilisateurs
@@ -215,7 +205,7 @@ jobs:
           name: parametrages-runner
       - uses: actions/download-artifact@v3
         id: downloadDocker
-        name: Download DockerFile Paramétrages
+        name: Download DockerFile
         with:
           name: Dockerfile.native-micro
       -
@@ -263,11 +253,11 @@ jobs:
           name: utilisateurs-runner
       - uses: actions/download-artifact@v3
         id: downloadDocker
-        name: Download DockerFile Utiliateurs
+        name: Download DockerFile
         with:
           name: Dockerfile.native-micro
       -
-        name: Build and push Service Utiliateurs
+        name: Build and push Service Utilisateurs
         id: docker_build
         uses: docker/build-push-action@v3
         with:
