@@ -17,7 +17,7 @@ import javax.enterprise.context.ApplicationScoped;
         info = @Info(
                 title = "Gestion de Budgets : µService de paramétrages",
                 description = "API du service de paramétrages",
-                version = "1.0.0",
+                version = "17.0.0",
                 contact = @Contact(
                         name = "Vincent Zwingmann",
                         email = "vincent.zwingmann@github.com"),

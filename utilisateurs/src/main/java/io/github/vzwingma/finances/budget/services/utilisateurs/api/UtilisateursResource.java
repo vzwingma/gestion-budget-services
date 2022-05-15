@@ -1,5 +1,6 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
 import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurDroitsEnum;
 import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurPrefsEnum;
 import io.github.vzwingma.finances.budget.services.communs.data.model.UtilisateurPrefsAPIObject;
@@ -30,20 +31,13 @@ import java.util.Map;
  *
  */
 @Path(BudgetApiUrlEnum.USERS_BASE)
-public class UtilisateursResource {
+public class UtilisateursResource extends AbstractAPIResource {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(UtilisateursResource.class);
 
     @Inject
     IUtilisateursAppProvider service;
-
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String info() {
-        return "API Utilisateurs";
-    }
 
 
     /**

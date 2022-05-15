@@ -1,5 +1,6 @@
 package io.github.vzwingma.finances.budget.services.comptes.api;
 
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.comptes.business.ports.IComptesAppProvider;
@@ -27,19 +28,13 @@ import java.util.List;
  *
  */
 @Path(BudgetApiUrlEnum.COMPTES_BASE)
-public class ComptesResource {
+public class ComptesResource extends AbstractAPIResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(ComptesResource.class);
 
 
     @Inject
     IComptesAppProvider services;
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public Uni<String> info() {
-        return Uni.createFrom().item("API Comptes");
-    }
 
 
     /**

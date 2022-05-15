@@ -15,7 +15,7 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.containsString;
 
 @QuarkusTest
 class ParametragesResourceTest {
@@ -26,7 +26,7 @@ class ParametragesResourceTest {
           .when().get(BudgetApiUrlEnum.PARAMS_BASE)
           .then()
              .statusCode(200)
-             .body(is("API Parametrages"));
+             .body(containsString("API Budget - parametrages"));
     }
 
     @Inject

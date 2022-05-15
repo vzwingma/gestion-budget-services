@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.comptes.config;
+package io.github.vzwingma.finances.budget.services.utilisateurs.config;
 
 
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
@@ -12,11 +12,11 @@ import javax.enterprise.context.ApplicationScoped;
 @OpenAPIDefinition(
         tags = {
                 @Tag(name="application", description="Gestion de budget"),
-                @Tag(name="operations", description="Operations en rapport avec les comptes")
+                @Tag(name="operations", description="Operations en rapport avec les utilisateurs")
         },
         info = @Info(
-                title = "Gestion de Budgets : µService de comptes",
-                description = "API du service de comptes",
+                title = "Gestion de Budgets : µService des utilisateurs",
+                description = "API du service d'utilisateurs",
                 version = "17.0.0",
                 contact = @Contact(
                         name = "Vincent Zwingmann",

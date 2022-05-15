@@ -1,8 +1,8 @@
-package io.github.vzwingma.finances.budget.services.operations.api;
+package io.github.vzwingma.finances.budget.services.comptes.api;
 
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
-import io.github.vzwingma.finances.budget.services.operations.business.OperationsService;
-import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
+import io.github.vzwingma.finances.budget.services.comptes.business.ComptesService;
+import io.github.vzwingma.finances.budget.services.comptes.business.ports.IComptesAppProvider;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,23 +15,24 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 
 @QuarkusTest
-class OperationsResourceTest {
+class ComptesResourceTest {
+
 
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(BudgetApiUrlEnum.BUDGET_BASE)
+          .when().get(BudgetApiUrlEnum.PARAMS_BASE)
           .then()
              .statusCode(200)
-                .body(containsString("API Budget - operations"));
+                .body(containsString("API Budget - comptes"));
     }
 
     @Inject
-    IOperationsAppProvider budgetService;
+    IComptesAppProvider parametragesService;
 
     @BeforeAll
     public static void init() {
-        QuarkusMock.installMockForType(Mockito.mock(OperationsService.class), OperationsService.class);
+        QuarkusMock.installMockForType(Mockito.mock(ComptesService.class), ComptesService.class);
     }
 
 }

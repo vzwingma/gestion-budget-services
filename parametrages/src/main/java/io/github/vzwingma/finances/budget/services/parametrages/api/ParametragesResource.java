@@ -1,5 +1,6 @@
 package io.github.vzwingma.finances.budget.services.parametrages.api;
 
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
@@ -26,19 +27,12 @@ import java.util.List;
  *
  */
 @Path(BudgetApiUrlEnum.PARAMS_BASE)
-public class ParametragesResource {
+public class ParametragesResource extends AbstractAPIResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(ParametragesResource.class);
 
-
     @Inject
     IParametrageAppProvider paramsServices;
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public Uni<String> info() {
-        return Uni.createFrom().item("API Parametrages");
-    }
 
 
     /**
