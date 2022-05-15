@@ -34,17 +34,19 @@ public class ComptesService implements IComptesAppProvider {
 	IComptesRepository dataComptes;
 
 	@Override
-	public boolean isCompteActif(String idCompte) {
-		return false;
+	public Uni<Boolean> isCompteActif(String idCompte) {
+		return dataComptes.isCompteActif(idCompte);
 	}
 
 	@Override
 	public Uni<CompteBancaire> getCompteById(String idCompte, String idUtilisateur) {
-		return null;
+		return dataComptes.chargeCompteParId(idCompte, idUtilisateur);
 	}
 
 	@Override
 	public Uni<List<CompteBancaire>> getComptesUtilisateur(String idUtilisateur) {
-		return null;
+		return dataComptes.chargeComptes(idUtilisateur)
+				.invoke(compte -> LOGGER.info("Compte [{}] chargé pour l'utilisateur {}", compte, idUtilisateur))
+				.collect().asList();
 	}
 }

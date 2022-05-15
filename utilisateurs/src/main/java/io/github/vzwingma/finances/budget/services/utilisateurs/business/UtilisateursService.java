@@ -46,6 +46,7 @@ public class UtilisateursService implements IUtilisateursAppProvider {
 	public Uni<Utilisateur> getUtilisateur(String loginUtilisateur)  {
 		// Enregistrement de la date du dernier accès à maintenant, en async
 		return dataDBUsers.chargeUtilisateur(loginUtilisateur)
+				//async call for logging
 				.invoke(user -> {
 					LOGGER.info("[idUser={}] {} accède à l'application", user.getId(), user.getLogin());
 					updateUtilisateurLastConnection(user);

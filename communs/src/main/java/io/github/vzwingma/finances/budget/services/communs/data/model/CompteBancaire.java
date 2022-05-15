@@ -22,6 +22,9 @@ public class CompteBancaire  extends AbstractAPIObjectModel {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
+
+
+
 	//Id
 	@Schema(description = "Identifiant")
 	private String id;
@@ -67,7 +70,13 @@ public class CompteBancaire  extends AbstractAPIObjectModel {
 		private String libelle;
 	}
 	
-	
+	public static CompteBancaire getCompteInactif(){
+		CompteBancaire compte = new CompteBancaire();
+		compte.setId("inactif");
+		compte.setLibelle("Compte inactif");
+		compte.setActif(false);
+		return compte;
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

@@ -15,7 +15,7 @@ public interface IComptesAppProvider {
      * @param idCompte id du compte
      * @return etat du compte
      */
-    boolean isCompteActif(String idCompte);
+    Uni<Boolean> isCompteActif(String idCompte);
 
     /**
      * Recherche du compte par id
