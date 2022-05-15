@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Classe de test du service UtilisateursService
  */
-public class UtilisateursServiceTest {
+class UtilisateursServiceTest {
 
 
     private IUtilisateursAppProvider appProvider;
@@ -32,8 +32,8 @@ public class UtilisateursServiceTest {
         serviceDataProvider = Mockito.mock(IUtilisateursRepository.class);
         appProvider = Mockito.spy(new UtilisateursService(serviceDataProvider));
 
-        Mockito.when(serviceDataProvider.chargeUtilisateur(Mockito.eq("Test"))).thenReturn(Uni.createFrom().item(MockDataUtilisateur.getTestUtilisateur()));
-        Mockito.when(serviceDataProvider.chargeUtilisateur(Mockito.eq("Test2"))).thenReturn(Uni.createFrom().failure(new DataNotFoundException("Utilisateur non trouvé")));
+        Mockito.when(serviceDataProvider.chargeUtilisateur("Test")).thenReturn(Uni.createFrom().item(MockDataUtilisateur.getTestUtilisateur()));
+        Mockito.when(serviceDataProvider.chargeUtilisateur("Test2")).thenReturn(Uni.createFrom().failure(new DataNotFoundException("Utilisateur non trouvé")));
     }
 
     @Test

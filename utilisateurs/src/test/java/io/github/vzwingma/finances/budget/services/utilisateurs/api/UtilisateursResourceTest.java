@@ -20,7 +20,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 
 @QuarkusTest
-public class UtilisateursResourceTest {
+class UtilisateursResourceTest {
 
     @Test
     public void testInfoEndpoint() {

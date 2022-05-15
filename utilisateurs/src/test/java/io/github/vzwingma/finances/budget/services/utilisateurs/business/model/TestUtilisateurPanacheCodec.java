@@ -12,11 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Test class for {@link UtilisateurPanacheCodec}.
  */
-public class TestUtilisateurPanacheCodec {
+class TestUtilisateurPanacheCodec {
 
 
     @Test
-    public void testDecode() {
+    void testDecode() {
 
         final String utilisateurJSON = "{\"_id\":{\"$oid\":\"54aa7db30bc460e1aeb95596\"},\"login\":\"test\",\"dernierAcces\":{\"$date\":{\"$numberLong\":\"1537219119633\"}},\"prefsUtilisateur\":{\"PREFS_STATUT_NLLE_DEPENSE\":\"prevue\"},\"droits\":{\"DROIT_CLOTURE_BUDGET\":true,\"DROIT_RAZ_BUDGET\":true}}";
         
@@ -34,7 +34,7 @@ public class TestUtilisateurPanacheCodec {
     }
 
     @Test
-    public void testType(){
+    void testType(){
         assertEquals(Utilisateur.class, new UtilisateurPanacheCodec().getEncoderClass());
     }
 
@@ -43,7 +43,7 @@ public class TestUtilisateurPanacheCodec {
     @Test : test pour vérifier qu'un documentId est bien généré
      */
     @Test
-    public void testDocumentId(){
+    void testDocumentId(){
         Utilisateur user = new Utilisateur();
         assertNotNull(new UtilisateurPanacheCodec().getDocumentId(user).toString());
 

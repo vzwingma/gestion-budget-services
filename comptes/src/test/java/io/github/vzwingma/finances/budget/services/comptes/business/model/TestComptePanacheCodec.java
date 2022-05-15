@@ -16,7 +16,7 @@ public class TestComptePanacheCodec {
 
 
     @Test
-    public void testDecode() {
+    void testDecode() {
 
         final String utilisateurJSON = "{\"_id\":\"test\",\"libelle\":\"BANQUE - TEST\",\"proprietaire\":{\"_id\":{\"$oid\":\"54aa7db30bc460e1aeb95596\"},\"login\":\"test\",\"libelle\":\"test\"},\"itemIcon\":\"img/banque.png\",\"ordre\":{\"$numberInt\":\"12\"},\"actif\":true,\"_class\":\"com.terrier.finances.gestion.communs.comptes.model.v12.CompteBancaire\"}";
         
@@ -34,7 +34,7 @@ public class TestComptePanacheCodec {
     }
 
     @Test
-    public void testType(){
+    void testType(){
         assertEquals(CompteBancaire.class, new ComptePanacheCodec().getEncoderClass());
     }
 
@@ -43,7 +43,7 @@ public class TestComptePanacheCodec {
     @Test : test pour vérifier qu'un documentId est bien généré
      */
     @Test
-    public void testDocumentId(){
+    void testDocumentId(){
         CompteBancaire compte1 = new CompteBancaire();
         assertNotNull(new ComptePanacheCodec().getDocumentId(compte1).toString());
 
