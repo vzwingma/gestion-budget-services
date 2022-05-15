@@ -21,14 +21,14 @@ class ComptesResourceTest {
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(BudgetApiUrlEnum.PARAMS_BASE)
+          .when().get(BudgetApiUrlEnum.COMPTES_BASE)
           .then()
              .statusCode(200)
                 .body(containsString("API Budget - comptes"));
     }
 
     @Inject
-    IComptesAppProvider parametragesService;
+    IComptesAppProvider comptesService;
 
     @BeforeAll
     public static void init() {
