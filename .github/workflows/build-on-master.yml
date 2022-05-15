@@ -25,7 +25,7 @@ jobs:
         with:
           java-version: 17
       # Step that does that actual cache save and restore
-      - uses: actions/cache@v1
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -36,7 +36,7 @@ jobs:
         run: mvn clean install -B --file communs/pom.xml
       # Upload DockerFile
       - uses: actions/upload-artifact@v2
-        name: Upload DockerFile Parametrages
+        name: Upload DockerFile
         with:
           name: Dockerfile.native-micro
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native-micro
@@ -54,7 +54,7 @@ jobs:
           with:
             java-version: 17
         # Step that does that actual cache save and restore
-        - uses: actions/cache@v1
+        - uses: actions/cache@v3
           with:
             path: ~/.m2/repository
             key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -86,7 +86,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}          
       # Step that does that actual cache save and restore
-      - uses: actions/cache@v1
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -120,7 +120,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       # Step that does that actual cache save and restore
-      - uses: actions/cache@v1
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -154,7 +154,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       # Step that does that actual cache save and restore
-      - uses: actions/cache@v1
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -188,7 +188,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       # Step that does that actual cache save and restore
-      - uses: actions/cache@v1
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -219,7 +219,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
       -
         name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -267,7 +267,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
       -
         name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -315,7 +315,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
       -
         name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -363,7 +363,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
       -
         name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
