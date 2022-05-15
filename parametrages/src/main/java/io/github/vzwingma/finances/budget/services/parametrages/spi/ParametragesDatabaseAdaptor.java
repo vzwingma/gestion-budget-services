@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.parametrages.spi;
 
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametragesRepository;
 import io.smallrye.mutiny.Multi;
 import org.slf4j.Logger;

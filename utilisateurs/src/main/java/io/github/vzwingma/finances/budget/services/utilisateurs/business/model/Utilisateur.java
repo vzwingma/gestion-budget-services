@@ -3,8 +3,8 @@
  */
 package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
 
-import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurDroitsEnum;
-import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurPrefsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurDroitsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurPrefsEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.EnumMap;
@@ -26,11 +27,9 @@ import java.util.Map;
 @Getter @Setter @NoArgsConstructor
 public class Utilisateur implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6535669274718528190L;
-	
+	@Serial
+	private static final long serialVersionUID = 1L;
+	//ID
 	private ObjectId id;
 	// Login
 	private String login;
@@ -69,12 +68,7 @@ public class Utilisateur implements Serializable {
 	}
 	
 	public String toFullString(){
-		StringBuilder builder = new StringBuilder();
-		builder.append("Utilisateur [id=").append(login)
-				.append(", dateDernierAcces=")
-				.append(dernierAcces != null ? BudgetDateTimeUtils.getLibelleDate(dernierAcces) : "nulle").append(", libelle=").append(libelle)
-				.append("]");
-		return builder.toString();
+		return String.format("Utilisateur [id=%s, dateDernerAcces=%s, libelle=%s]", this.login, dernierAcces != null ? BudgetDateTimeUtils.getLibelleDate(dernierAcces) : "nulle", this.libelle);
 	}
 
 }

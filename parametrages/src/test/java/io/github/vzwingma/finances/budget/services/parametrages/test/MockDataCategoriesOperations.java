@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.parametrages.test;
 
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 
 import java.util.ArrayList;
 import java.util.HashSet;

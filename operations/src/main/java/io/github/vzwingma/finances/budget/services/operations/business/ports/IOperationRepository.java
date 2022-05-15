@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.operations.business.ports;
 
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoRepository;
 
 /**

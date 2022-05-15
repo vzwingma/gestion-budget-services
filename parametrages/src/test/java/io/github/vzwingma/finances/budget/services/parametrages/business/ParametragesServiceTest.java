@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.parametrages.business;
 
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametragesRepository;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.github.vzwingma.finances.budget.services.parametrages.test.MockDataCategoriesOperations;

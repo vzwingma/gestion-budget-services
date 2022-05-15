@@ -1,8 +1,8 @@
-package io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.model;
+package io.github.vzwingma.finances.budget.services.communs.data.model;
 
 import io.github.vzwingma.finances.budget.services.communs.data.abstrait.AbstractAPIObjectModel;
-import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurDroitsEnum;
-import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurPrefsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurDroitsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurPrefsEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -20,36 +20,31 @@ import java.util.Map;
 public class UtilisateurPrefsAPIObject extends AbstractAPIObjectModel {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7746155427438885252L;
-
-	/**
-	 * @param idUtilisateur :Id de l'utilisateur associé
+	 * Id de l'utilisateur associé
 	 */
 	@NonNull
 	@Schema(description = "Id de l'utilisateur")
 	private String idUtilisateur;
 
 	/**
-	 * @param lastAccessTime : Date de dernier accès
+	 * Date de dernier accès
 	 */
 	@Schema(description = "Date de dernier accès")
 	private Long lastAccessTime;
 
 	/**
-	 * @param droits : Liste des droits utilisateur
+	 * Liste des droits utilisateur
 	 *        	DROIT_CLOTURE_BUDGET,
 	 * 			DROIT_RAZ_BUDGET
 	 */
 	@Schema(description = """
-   			Liste des droits utilisateur
+			Liste des droits utilisateur
 			- DROIT_CLOTURE_BUDGET,
 			- DROIT_RAZ_BUDGET""")
 	private Map<UtilisateurDroitsEnum, Boolean> droits;
 
 	/**
-	 * @param preferences : Liste des préférences utilisateurs
+	 * Liste des préférences utilisateurs
 	 *        PREFS_STATUT_NLLE_DEPENSE
 	 */
 	@Schema(description = "Liste des préférences utilisateurs\n" +

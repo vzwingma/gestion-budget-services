@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.enums;
+package io.github.vzwingma.finances.budget.services.communs.data.enums;
 
 /**
  * Id des catégories
@@ -14,7 +14,7 @@ public enum IdsCategoriesEnum {
 	FRAIS_REMBOURSABLES("b20a46a5-92ab-47a8-a70d-ecb64ddf02ce");
 	
 	
-	private String id;
+	private final String id;
 	
 	/**
 	 * Constructeur

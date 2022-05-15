@@ -1,7 +1,7 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
 
-import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurDroitsEnum;
-import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurPrefsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurDroitsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurPrefsEnum;
 import org.bson.BsonReader;
 import org.bson.json.JsonReader;
 import org.bson.types.ObjectId;

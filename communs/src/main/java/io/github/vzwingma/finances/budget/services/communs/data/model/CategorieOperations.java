@@ -1,14 +1,15 @@
-package io.github.vzwingma.finances.budget.services.communs.data.parametrages.model;
+package io.github.vzwingma.finances.budget.services.communs.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.vzwingma.finances.budget.services.communs.data.abstrait.AbstractAPIObjectModel;
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.enums.IdsCategoriesEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.enums.IdsCategoriesEnum;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.io.Serial;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,10 +24,8 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class CategorieOperations extends AbstractAPIObjectModel implements Comparable<CategorieOperations> { //
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1755547774539137070L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Identifiant
 	 */

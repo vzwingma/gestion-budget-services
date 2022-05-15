@@ -1,8 +1,8 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
-import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurDroitsEnum;
-import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.enums.UtilisateurPrefsEnum;
-import io.github.vzwingma.finances.budget.services.communs.data.utilisateurs.model.UtilisateurPrefsAPIObject;
+import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurDroitsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurPrefsEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.model.UtilisateurPrefsAPIObject;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
