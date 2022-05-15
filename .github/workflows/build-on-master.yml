@@ -38,13 +38,13 @@ jobs:
         env:
           MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
       - name: List files in Workspace
-          run: |
+        run: |
             ls ${{ github.workspace }}
       - name: List files in M2
-          run: |
+        run: |
             ls /home/runner/.m2/repository
       - name: List files in M2 Communs
-          run: |
+        run: |
             ls /home/runner/.m2/repository/io/github/vzwingma/finances/budget/communs/15.1.0-SNAPSHOT/
       # Upload DockerFile
       - uses: actions/upload-artifact@v2
@@ -106,13 +106,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: List files in Workspace
-          run: |
+        run: |
             ls ${{ github.workspace }}
       - name: List files in M2
-          run: |
+        run: |
             ls /home/runner/.m2/repository
       - name: List files in M2 Communs
-          run: |
+        run: |
             ls /home/runner/.m2/repository/io/github/vzwingma/finances/budget/communs/15.1.0-SNAPSHOT/
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
