@@ -37,7 +37,15 @@ jobs:
         run: mvn clean install -B --file communs/pom.xml
         env:
           MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
-
+      - name: List files in Workspace
+          run: |
+            ls ${{ github.workspace }}
+      - name: List files in M2
+          run: |
+            ls /home/runner/.m2/repository
+      - name: List files in M2 Communs
+          run: |
+            ls /home/runner/.m2/repository/io/github/vzwingma/finances/budget/communs/15.1.0-SNAPSHOT/
       # Upload DockerFile
       - uses: actions/upload-artifact@v2
         name: Upload DockerFile
@@ -97,11 +105,21 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: List files in Workspace
+          run: |
+            ls ${{ github.workspace }}
+      - name: List files in M2
+          run: |
+            ls /home/runner/.m2/repository
+      - name: List files in M2 Communs
+          run: |
+            ls /home/runner/.m2/repository/io/github/vzwingma/finances/budget/communs/15.1.0-SNAPSHOT/
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
-        run: mvn clean install -B -P native --file parametrages/pom.xml
+        run: mvn install -B -P native --file parametrages/pom.xml
         env:
           MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
+
 
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
@@ -136,7 +154,7 @@ jobs:
             ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build Utilisateurs Native App with Maven
-        run: mvn clean install -B -P native --file utilisateurs/pom.xml
+        run: mvn install -B -P native --file utilisateurs/pom.xml
         env:
           MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
 
@@ -173,7 +191,7 @@ jobs:
             ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
-        run: mvn clean install -B -P native --file comptes/pom.xml
+        run: mvn install -B -P native --file comptes/pom.xml
         env:
           MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
 
@@ -210,7 +228,7 @@ jobs:
             ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
-        run: mvn clean install -B -P native --file operations/pom.xml
+        run: mvn install -B -P native --file operations/pom.xml
         env:
           MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
       # Upload Releases Snapshot
