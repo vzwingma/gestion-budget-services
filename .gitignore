@@ -25,3 +25,7 @@ bin/
 parametrages/src/main/resources/dev/application.properties
 
 utilisateurs/src/main/resources/dev/application.properties
+
+comptes/src/main/resources/dev/application.properties
+
+operations/src/main/resources/dev/application.properties
