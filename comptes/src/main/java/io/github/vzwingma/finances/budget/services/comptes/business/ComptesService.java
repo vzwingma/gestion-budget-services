@@ -46,7 +46,7 @@ public class ComptesService implements IComptesAppProvider {
 	@Override
 	public Uni<List<CompteBancaire>> getComptesUtilisateur(String idUtilisateur) {
 		return dataComptes.chargeComptes(idUtilisateur)
-				.invoke(compte -> LOGGER.info("Compte [{}] chargé pour l'utilisateur {}", compte, idUtilisateur))
+				.invoke(compte -> LOGGER.trace("Compte [{}] chargé pour l'utilisateur {}", compte.getLibelle(), idUtilisateur))
 				.collect().asList();
 	}
 }

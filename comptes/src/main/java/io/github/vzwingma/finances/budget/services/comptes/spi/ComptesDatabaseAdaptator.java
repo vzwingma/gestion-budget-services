@@ -12,7 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Service de données en MongoDB fournissant les comptes.
- * Adapteur du port {@link io.github.vzwingma.finances.budget.services.comptes.business.ports.IComptesRepository}
+ * Adapteur du port {@link IComptesRepository}
  * @author vzwingma
  *
  */
@@ -55,11 +55,10 @@ public class ComptesDatabaseAdaptator implements IComptesRepository { // extends
 	public Uni<CompteBancaire> chargeCompteParId(String idCompte, String idUtilisateur) {
 		try{
 			LOGGER.info("[idCompte={}] Chargement du compte", idCompte);
-			return find("id", idCompte)
+			return find("_id", idCompte)
 					.singleResult()
 					.onItem()
-						.ifNull().failWith(new DataNotFoundException("Compte non trouvé"))
-			;
+						.ifNull().failWith(new DataNotFoundException("Compte non trouvé"));
 		}
 		catch(Exception e){
 			LOGGER.error("[idUser=?] Erreur lors de la connexion à la BDD", e);
