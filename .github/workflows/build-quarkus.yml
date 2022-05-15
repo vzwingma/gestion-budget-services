@@ -1,4 +1,5 @@
-name: CI on Snapshot
+name: CI Full - native snapshot apps
+
 
 # Controls when the action will run. 
 on:
