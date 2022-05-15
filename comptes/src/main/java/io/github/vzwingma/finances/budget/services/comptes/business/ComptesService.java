@@ -35,6 +35,10 @@ public class ComptesService implements IComptesAppProvider {
 	@Inject
 	IComptesRepository dataComptes;
 
+	public ComptesService(IComptesRepository dataComptes) {
+		this.dataComptes = dataComptes;
+	}
+
 	@Override
 	public Uni<Boolean> isCompteActif(String idCompte) {
 		return dataComptes.isCompteActif(idCompte);
