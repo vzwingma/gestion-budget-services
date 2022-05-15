@@ -53,13 +53,6 @@ jobs:
           uses: actions/setup-java@v1
           with:
             java-version: 17
-        # Step that does that actual cache save and restore
-        - uses: actions/cache@v3
-          with:
-            path: ~/.m2/repository
-            key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-            restore-keys: |
-              ${{ runner.os }}-maven-
         # Runs a single command using the runners shell
         - name: Build with Maven
           run: mvn clean compile sonar:sonar -B -P prod -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.projectKey=gestion-budget-services --file pom.xml
@@ -85,13 +78,6 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}          
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
         run: mvn clean install -B -P native --file parametrages/pom.xml
