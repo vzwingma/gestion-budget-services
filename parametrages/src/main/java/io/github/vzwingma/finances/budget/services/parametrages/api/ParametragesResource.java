@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.parametrages.api;
 
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
+import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.smallrye.mutiny.Uni;
@@ -48,7 +48,7 @@ public class ParametragesResource {
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "Opération réussie",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CategorieOperation.class)) }),
+                            schema = @Schema(implementation = CategorieOperations.class)) }),
             @APIResponse(responseCode = "401", description = "L'action n'est pas authentifiée"),
             @APIResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
             @APIResponse(responseCode = "404", description = "Session introuvable")
@@ -56,7 +56,7 @@ public class ParametragesResource {
     @GET
     @Path(BudgetApiUrlEnum.PARAMS_CATEGORIES)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<List<CategorieOperation>> getCategories() {
+    public Uni<List<CategorieOperations>> getCategories() {
 
         return paramsServices.getCategories()
                 .invoke(listeCategories -> LOG.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1"));

@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.parametrages.business.ports;
 
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
+import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperations;
 import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoRepository;
 import io.smallrye.mutiny.Multi;
 
@@ -9,11 +9,11 @@ import io.smallrye.mutiny.Multi;
  * @author vzwingma
  *
  */
-public interface IParametrageRepository extends ReactivePanacheMongoRepository<CategorieOperation> {
+public interface IParametragesRepository extends ReactivePanacheMongoRepository<CategorieOperations> {
 
 
     /**
      * @return la liste des catégories
      */
-    public Multi<CategorieOperation> chargeCategories();
+    Multi<CategorieOperations> chargeCategories();
 }

@@ -1,8 +1,8 @@
 package io.github.vzwingma.finances.budget.services.parametrages.business;
 
 
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
-import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository;
+import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametragesRepository;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
@@ -33,9 +33,9 @@ public class ParametragesService implements IParametrageAppProvider {
 	 * Service Provider Interface des données
 	 */
 	@Inject
-	IParametrageRepository dataParams;
+	IParametragesRepository dataParams;
 
-	public ParametragesService(IParametrageRepository parametrageRepository){
+	public ParametragesService(IParametragesRepository parametrageRepository){
 		this.dataParams = parametrageRepository;
 	}
 
@@ -43,12 +43,12 @@ public class ParametragesService implements IParametrageAppProvider {
 	 * Liste des catégories en cache
 	 * (A usage interne uniquement !!! Pour réponse : Clonage obligatoire)
 	 */
-	private Uni<List<CategorieOperation>> listeCategories;
+	private Uni<List<CategorieOperations>> listeCategories;
 
 	/**
 	 * @return liste des catégories
 	 */
-	public Uni<List<CategorieOperation>> getCategories(){
+	public Uni<List<CategorieOperations>> getCategories(){
 
 		return dataParams.chargeCategories()
 					.filter(c -> c.getListeSSCategories() != null && !c.getListeSSCategories().isEmpty())
@@ -57,7 +57,7 @@ public class ParametragesService implements IParametrageAppProvider {
 						LOGGER.debug("[{}][{}] {}", c.isActif() ? "v" : "X", c.getId(), c);
 						c.getListeSSCategories().forEach(s -> LOGGER.debug("[{}][{}]\t\t{}", s.isActif() ? "v" : "X", s.getId(), s));
 					})
-					.filter(CategorieOperation::isActif)
+					.filter(CategorieOperations::isActif)
 					.map(this::cloneCategorie)
 					.collect().asList();
 	}
@@ -67,23 +67,23 @@ public class ParametragesService implements IParametrageAppProvider {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
-	private CategorieOperation cloneCategorie(CategorieOperation categorie) {
+	private CategorieOperations cloneCategorie(CategorieOperations categorie) {
 		if(categorie != null && categorie.isActif()){
-			CategorieOperation clone = new CategorieOperation();
+			CategorieOperations clone = new CategorieOperations();
 			clone.setId(categorie.getId());
 			clone.setActif(categorie.isActif());
 			clone.setCategorie(categorie.isCategorie());
 			// Pas de clone de la catégorie parente pour éviter les récursions
 			clone.setLibelle(categorie.getLibelle());
-			Set<CategorieOperation> setSSCatsClones = new HashSet<>();
+			Set<CategorieOperations> setSSCatsClones = new HashSet<>();
 			if(categorie.getListeSSCategories() != null && !categorie.getListeSSCategories().isEmpty()){
 
 				categorie.getListeSSCategories()
 						.stream()
 						// #125
-						.filter(CategorieOperation::isActif)
+						.filter(CategorieOperations::isActif)
 						.forEach(ssC -> {
-							CategorieOperation ssCClone = cloneCategorie(ssC);
+							CategorieOperations ssCClone = cloneCategorie(ssC);
 							// Réinjection de la catégorie parente
 							ssCClone.setCategorieParente(clone);
 							setSSCatsClones.add(ssCClone);

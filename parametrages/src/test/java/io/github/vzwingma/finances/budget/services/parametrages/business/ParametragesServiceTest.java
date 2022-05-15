@@ -1,7 +1,7 @@
 package io.github.vzwingma.finances.budget.services.parametrages.business;
 
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
-import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository;
+import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametragesRepository;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.github.vzwingma.finances.budget.services.parametrages.test.MockDataCategoriesOperations;
 import io.quarkus.test.junit.QuarkusTest;
@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ParametragesServiceTest {
 
     private IParametrageAppProvider parametrageAppProvider;
-    private IParametrageRepository parametrageServiceProvider;
+    private IParametragesRepository parametrageServiceProvider;
 
     @BeforeEach
     public void setup() {
-        parametrageServiceProvider = Mockito.mock(IParametrageRepository.class);
+        parametrageServiceProvider = Mockito.mock(IParametragesRepository.class);
         parametrageAppProvider = Mockito.spy(new ParametragesService(parametrageServiceProvider));
 
         Mockito.when(parametrageServiceProvider.chargeCategories()).thenReturn(Multi.createFrom().items(MockDataCategoriesOperations.getListeTestCategories().stream()));
@@ -32,7 +32,7 @@ public class ParametragesServiceTest {
     @Test
     void testGetListeCategories(){
         // Lancement du test
-        List<CategorieOperation> listeCat = parametrageAppProvider.getCategories().await().indefinitely();
+        List<CategorieOperations> listeCat = parametrageAppProvider.getCategories().await().indefinitely();
         // Vérification
         assertNotNull(listeCat);
         assertEquals(1, listeCat.size());

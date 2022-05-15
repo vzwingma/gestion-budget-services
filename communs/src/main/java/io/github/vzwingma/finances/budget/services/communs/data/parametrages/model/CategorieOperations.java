@@ -21,7 +21,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public class CategorieOperation extends AbstractAPIObjectModel implements Comparable<CategorieOperation> { //
+public class CategorieOperations extends AbstractAPIObjectModel implements Comparable<CategorieOperations> { //
 
 	/**
 	 * 
@@ -48,13 +48,13 @@ public class CategorieOperation extends AbstractAPIObjectModel implements Compar
 	 * Liste des sous catégories
 	 */
 	@Schema(description = "Liste des sous catégories")
-	private Set<CategorieOperation> listeSSCategories;
+	private Set<CategorieOperations> listeSSCategories;
 
 	/**
 	 * Catégorie
 	 */
 	@JsonIgnore
-	private CategorieOperation categorieParente;
+	private CategorieOperations categorieParente;
 
 	/**
 	 * Est ce une catégorie ?
@@ -66,7 +66,7 @@ public class CategorieOperation extends AbstractAPIObjectModel implements Compar
 	/**
 	 * Constructeur pour Spring Data MongSB
 	 */
-	public CategorieOperation(){
+	public CategorieOperations(){
 		this.id = UUID.randomUUID().toString();
 	}
 	
@@ -74,21 +74,21 @@ public class CategorieOperation extends AbstractAPIObjectModel implements Compar
 	 * Constructeur pour le clone
 	 * @param typeCategorie id du parent
 	 */
-	public CategorieOperation(IdsCategoriesEnum typeCategorie){
+	public CategorieOperations(IdsCategoriesEnum typeCategorie){
 		this.id = typeCategorie.getId();
 	}
 
 	/**
 	 * @return the listeSSCategories
 	 */
-	public Set<CategorieOperation> getListeSSCategories() {
+	public Set<CategorieOperations> getListeSSCategories() {
 		return listeSSCategories;
 	}
 
 	/**
 	 * @param listeSSCategories the listeSSCategories to set
 	 */
-	public void setListeSSCategories(Set<CategorieOperation> listeSSCategories) {
+	public void setListeSSCategories(Set<CategorieOperations> listeSSCategories) {
 		if(isCategorie()) {
 			this.listeSSCategories = listeSSCategories;
 		}
@@ -107,7 +107,7 @@ public class CategorieOperation extends AbstractAPIObjectModel implements Compar
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(CategorieOperation o) {
+	public int compareTo(CategorieOperations o) {
 		if(o != null){
 			return this.libelle.compareTo(o.getLibelle());
 		}

@@ -1,7 +1,7 @@
 package io.github.vzwingma.finances.budget.services.parametrages.spi;
 
-import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperation;
-import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository;
+import io.github.vzwingma.finances.budget.services.communs.data.parametrages.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametragesRepository;
 import io.smallrye.mutiny.Multi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +10,12 @@ import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Service de données en MongoDB fournissant les paramètres
- * Adapteur du port {@link io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageRepository}
+ * Adapteur du port {@link IParametragesRepository}
  * @author vzwingma
  *
  */
 @ApplicationScoped
-public class ParametragesDatabaseAdaptor implements IParametrageRepository { // extends AbstractDatabaseServiceProvider<CategorieOperation>
+public class ParametragesDatabaseAdaptor implements IParametragesRepository { // extends AbstractDatabaseServiceProvider<CategorieOperation>
 
 
 	/**
@@ -26,12 +26,12 @@ public class ParametragesDatabaseAdaptor implements IParametrageRepository { // 
 	/**
 	 * @return la liste des catégories
 	 */
-	public Multi<CategorieOperation> chargeCategories() {
+	public Multi<CategorieOperations> chargeCategories() {
 
 		try {
 			LOGGER.trace("Chargement des catégories en BDD");
 
-			Multi<CategorieOperation> getCategories = findAll().stream();
+			Multi<CategorieOperations> getCategories = findAll().stream();
 			LOGGER.info("Chargement des catégories en BDD terminé");
 			return getCategories;
 		} catch (Exception e) {

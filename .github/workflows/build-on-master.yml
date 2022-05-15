@@ -11,14 +11,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # BUILD COMMUNS
   build-communs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout sources
@@ -75,7 +72,6 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     needs: build-communs
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -110,7 +106,6 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     needs: build-communs
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -141,36 +136,74 @@ jobs:
           name: utilisateurs-runner
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs/target/utilisateurs-runner
 
-  #      - uses: actions/upload-artifact@v2
-  #        name: Upload Service Utilisateurs
-  #        with:
-  #          path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs_service/target/service-utilisateurs.jar
-  #          name: service-utilisateurs.jar
-  #      - uses: actions/upload-artifact@v2
-  #        name: Upload Service Budgets
-  #        with:
-  #          path: /home/runner/work/gestion-budget-services/gestion-budget-services/budgets_service/target/service-budgets.jar
-  #          name: service-budgets.jar
-  #      - uses: actions/upload-artifact@v2
-  #        name: Upload Service Comptes
-  #        with:
-  #          path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/target/service-comptes.jar
-  #          name: service-comptes.jar
-#      - uses: actions/upload-artifact@v2
-#        name: Upload DockerFile Utilisateurs
-#        with:
-#          path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs_service/src/main/external-ressources/docker/Dockerfile-UTILISATEURS_SERVICE
-#          name: Dockerfile-UTILISATEURS_SERVICE
-#      - uses: actions/upload-artifact@v2
-#        name: Upload DockerFile Budgets
-#        with:
-#          path: /home/runner/work/gestion-budget-services/gestion-budget-services/budgets_service/src/main/external-ressources/docker/Dockerfile-BUDGETS_SERVICE
-#          name: Dockerfile-BUDGETS_SERVICE
-#      - uses: actions/upload-artifact@v2
-#        name: Upload DockerFile Comptes
-#        with:
-#          path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes_service/src/main/external-ressources/docker/Dockerfile-COMPTES_SERVICE
-#          name: Dockerfile-COMPTES_SERVICE
+  build-quarkus-comptes:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: build-communs
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # Step that does that actual cache save and restore
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      # Runs a single command using the runners shell
+      - name: Build Comptes Native App with Maven
+        run: mvn clean install -B -P native --file comptes/pom.xml
+      # Upload Releases Snapshot
+      - uses: actions/upload-artifact@v2
+        name: Upload Service Comptes
+        with:
+          name: comptes-runner
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes/target/comptes-runner
+
+  build-quarkus-operations:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: build-communs
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # Step that does that actual cache save and restore
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      # Runs a single command using the runners shell
+      - name: Build Comptes Native App with Maven
+        run: mvn clean install -B -P native --file operations/pom.xml
+      # Upload Releases Snapshot
+      - uses: actions/upload-artifact@v2
+        name: Upload Service Operations
+        with:
+          name: operations-runner
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/operations/target/operations-runner
+
 
   # PUBLISH DOCKER IMAGES
   # Image PARAMETRAGES
@@ -266,6 +299,102 @@ jobs:
           file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:utilisateurs-quarkus-snapshot
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  # Image COMPTES
+  docker-comptes:
+    runs-on: ubuntu-latest
+    needs: build-quarkus-comptes
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/download-artifact@v3
+        id: downloadService
+        name: Download Service Comptes
+        with:
+          name: comptes-runner
+      - uses: actions/download-artifact@v3
+        id: downloadDocker
+        name: Download DockerFile
+        with:
+          name: Dockerfile.native-micro
+      -
+        name: Build and push Service Comptes
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64
+          file: Dockerfile.native-micro
+          push: true
+          tags: vzwingmabudget/gestion_budget_services:comptes-quarkus-snapshot
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  # Image OPERATIONS
+  docker-operations:
+    runs-on: ubuntu-latest
+    needs: build-quarkus-operations
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/download-artifact@v3
+        id: downloadService
+        name: Download Service Opérations
+        with:
+          name: operations-runner
+      - uses: actions/download-artifact@v3
+        id: downloadDocker
+        name: Download DockerFile
+        with:
+          name: Dockerfile.native-micro
+      -
+        name: Build and push Service Opérations
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64
+          file: Dockerfile.native-micro
+          push: true
+          tags: vzwingmabudget/gestion_budget_services:operations-quarkus-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
