@@ -30,10 +30,8 @@ public class ParametragesDatabaseAdaptor implements IParametragesRepository { //
 
 		try {
 			LOGGER.trace("Chargement des catégories en BDD");
-
-			Multi<CategorieOperations> getCategories = findAll().stream();
-			LOGGER.info("Chargement des catégories en BDD terminé");
-			return getCategories;
+			return findAll().stream()
+					.invoke(cat -> LOGGER.debug("Chargement de la catégorie [{}] en BDD terminé", cat));
 		} catch (Exception e) {
 			LOGGER.error("Erreur lors de la connexion à la BDD", e);
 			return Multi.createFrom().failure(new Exception("Erreur lors de la connexion à la BDD"));
