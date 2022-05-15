@@ -6,6 +6,7 @@ import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.io.Serial;
@@ -63,7 +64,7 @@ public class CompteBancaire  extends AbstractAPIObjectModel {
 		@Serial
 		private static final long serialVersionUID = 1L;
 		//Id
-		private String id;
+		private ObjectId id;
 		// Login
 		private String login;
 		// Libellé
@@ -108,10 +109,9 @@ public class CompteBancaire  extends AbstractAPIObjectModel {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof CompteBancaire)) {
+		if (!(obj instanceof CompteBancaire other)) {
 			return false;
 		}
-		CompteBancaire other = (CompteBancaire) obj;
 		if (id == null) {
 			return other.id == null;
 		} else return id.equals(other.id);
