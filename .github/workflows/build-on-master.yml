@@ -87,7 +87,7 @@ jobs:
             ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
-        run: mvn clean install -B -P native --file parametrages/pom.xml
+        run: mvn clean install -B -P native --file pom.xml
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Paramétrages
