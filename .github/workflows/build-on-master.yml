@@ -4,7 +4,7 @@ name: CI on Snapshot
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ master, feat/quarkus ]
   pull_request:
     branches: [ master ]
 
@@ -28,9 +28,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: -maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            -maven-
       # Runs the Build with Maven
       - name: Build Communs with Maven
         run: mvn clean install -B --file communs/pom.xml
@@ -82,9 +82,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: -maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            -maven-
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
         run: mvn clean install -B -P native --file pom.xml
@@ -116,9 +116,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: -maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            -maven-
       # Runs a single command using the runners shell
       - name: Build Utilisateurs Native App with Maven
         run: mvn clean install -B -P native --file utilisateurs/pom.xml
@@ -150,9 +150,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: -maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            -maven-
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
         run: mvn clean install -B -P native --file comptes/pom.xml
@@ -184,9 +184,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: -maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            -maven-
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
         run: mvn clean install -B -P native --file operations/pom.xml
@@ -215,9 +215,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: -buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            -buildx-
       -
         name: Login to DockerHub
         uses: docker/login-action@v1
@@ -263,9 +263,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: -buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            -buildx-
       -
         name: Login to DockerHub
         uses: docker/login-action@v1
@@ -311,9 +311,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: -buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            -buildx-
       -
         name: Login to DockerHub
         uses: docker/login-action@v1
@@ -359,9 +359,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: -buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            -buildx-
       -
         name: Login to DockerHub
         uses: docker/login-action@v1
