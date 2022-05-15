@@ -97,7 +97,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
-        run: mvn install -Dmaven.repo.local=/home/runner/.m2/repository -P native --file parametrages/pom.xml
+        run: mvn install -Dmaven.repo.local=/home/runner/.m2/repository -o -P native --file parametrages/pom.xml
 
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
