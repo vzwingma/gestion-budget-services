@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Test class for {@link ComptePanacheCodec}.
  */
-public class TestComptePanacheCodec {
+class TestComptePanacheCodec {
 
 
     @Test

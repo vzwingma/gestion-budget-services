@@ -15,21 +15,21 @@ import org.mockito.Mockito;
 import java.util.List;
 
 @QuarkusTest
-public class ComptesServiceTest {
+class ComptesServiceTest {
 
     private IComptesAppProvider comptesAppProvider;
     private IComptesRepository comptesRepository;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         comptesRepository = Mockito.mock(IComptesRepository.class);
         comptesAppProvider = Mockito.spy(new ComptesService(comptesRepository));
     }
 
     @Test
-    public void testGetComptes(){
+    void testGetComptes(){
 
-        Mockito.when(comptesRepository.chargeComptes(Mockito.eq("test"))).thenReturn(Multi.createFrom().items(MockDataComptes.getListeComptes().stream()));
+        Mockito.when(comptesRepository.chargeComptes("test")).thenReturn(Multi.createFrom().items(MockDataComptes.getListeComptes().stream()));
 
         List<CompteBancaire> comptes = comptesAppProvider.getComptesUtilisateur("test").await().indefinitely();
         Assertions.assertNotNull(comptes);
@@ -39,9 +39,9 @@ public class ComptesServiceTest {
     }
 
     @Test
-    public void testGetCompteById(){
+    void testGetCompteById(){
 
-        Mockito.when(comptesRepository.chargeCompteParId(Mockito.eq("A3"), Mockito.anyString())).thenReturn(Uni.createFrom().item(MockDataComptes.getCompte1()));
+        Mockito.when(comptesRepository.chargeCompteParId("A3", Mockito.anyString())).thenReturn(Uni.createFrom().item(MockDataComptes.getCompte1()));
 
         CompteBancaire compte = comptesAppProvider.getCompteById("A3", "test").await().indefinitely();
         Assertions.assertNotNull(compte);
@@ -50,8 +50,8 @@ public class ComptesServiceTest {
     }
 
     @Test
-    public void testGetCompteActif(){
-        Mockito.when(comptesRepository.isCompteActif(Mockito.eq("A3"))).thenReturn(Uni.createFrom().item(Boolean.TRUE));
+    void testGetCompteActif(){
+        Mockito.when(comptesRepository.isCompteActif("A3")).thenReturn(Uni.createFrom().item(Boolean.TRUE));
 
         Assertions.assertTrue(comptesAppProvider.isCompteActif("A3").await().indefinitely());
     }

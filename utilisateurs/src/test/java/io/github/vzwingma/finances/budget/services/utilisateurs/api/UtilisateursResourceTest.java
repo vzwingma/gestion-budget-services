@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 class UtilisateursResourceTest {
 
     @Test
-    public void testInfoEndpoint() {
+    void testInfoEndpoint() {
         given()
           .when().get(BudgetApiUrlEnum.USERS_BASE)
           .then()
