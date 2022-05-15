@@ -25,15 +25,19 @@ jobs:
         with:
           java-version: 17
       # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
+      - name: Cache Maven repository
+        uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
-          key: -maven-${{ hashFiles('**/pom.xml') }}
+          path: /home/runner/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            -maven-
+            ${{ runner.os }}-maven-
       # Runs the Build with Maven
       - name: Build Communs with Maven
         run: mvn clean install -B --file communs/pom.xml
+        env:
+          MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
+
       # Upload DockerFile
       - uses: actions/upload-artifact@v2
         name: Upload DockerFile
@@ -53,10 +57,18 @@ jobs:
           uses: actions/setup-java@v1
           with:
             java-version: 17
+        - name: Cache Maven repository
+          uses: actions/cache@v3
+          with:
+            path: /home/runner/.m2/repository
+            key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+            restore-keys: |
+              ${{ runner.os }}-maven-
         # Runs a single command using the runners shell
         - name: Build with Maven
           run: mvn clean compile sonar:sonar -B -P prod -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.projectKey=gestion-budget-services --file pom.xml
           env:
+            MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -78,16 +90,19 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
+      - name: Cache Maven repository
+        uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
-          key: -maven-${{ hashFiles('**/pom.xml') }}
+          path: /home/runner/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            -maven-
+            ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
         run: mvn clean install -B -P native --file parametrages/pom.xml
+        env:
+          MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
+
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Paramétrages
@@ -112,16 +127,19 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
+      - name: Cache Maven repository
+        uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
-          key: -maven-${{ hashFiles('**/pom.xml') }}
+          path: /home/runner/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            -maven-
+            ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build Utilisateurs Native App with Maven
         run: mvn clean install -B -P native --file utilisateurs/pom.xml
+        env:
+          MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
+
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Utilisateurs
@@ -146,16 +164,19 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
+      - name: Cache Maven repository
+        uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
-          key: -maven-${{ hashFiles('**/pom.xml') }}
+          path: /home/runner/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            -maven-
+            ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
         run: mvn clean install -B -P native --file comptes/pom.xml
+        env:
+          MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
+
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Comptes
@@ -180,16 +201,18 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
+      - name: Cache Maven repository
+        uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
-          key: -maven-${{ hashFiles('**/pom.xml') }}
+          path: /home/runner/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            -maven-
+            ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
         run: mvn clean install -B -P native --file operations/pom.xml
+        env:
+          MAVEN_OPTS: "-Dmaven.repo.local=/home/runner/.m2/repository"
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Operations
