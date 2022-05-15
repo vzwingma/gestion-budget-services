@@ -11,11 +11,6 @@
 
     <artifactId>communs</artifactId>
 
-    <properties>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
-    </properties>
-
 <!-- Skip Quarkus build for Communs -->
     <build>
         <plugins>
@@ -29,4 +24,11 @@
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>Owner</name>
+            <url>https://maven.pkg.github.com/vzwingma/gestion-budget-services</url>
+        </repository>
+    </distributionManagement>
 </project>
