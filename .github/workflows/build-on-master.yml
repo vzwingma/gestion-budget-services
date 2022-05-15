@@ -33,10 +33,7 @@ jobs:
             ${{ runner.os }}-maven-
       # Runs the Build with Maven
       - name: Build Communs with Maven
-        run: mvn clean package deploy -B --file communs/pom.xml
-        env:
-          GITHUB_USER_REF: ${{ secrets.GIT_USERNAME }}
-          GITHUB_TOKEN_REF: ${{ secrets.GIT_TOKEN }}
+        run: mvn clean install -B --file communs/pom.xml
       # Upload DockerFile
       - uses: actions/upload-artifact@v2
         name: Upload DockerFile

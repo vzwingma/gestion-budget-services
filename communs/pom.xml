@@ -24,11 +24,5 @@
             </plugin>
         </plugins>
     </build>
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>vzwingma</name>
-            <url>https://maven.pkg.github.com/vzwingma/gestion-budget-services</url>
-        </repository>
-    </distributionManagement>
+
 </project>
