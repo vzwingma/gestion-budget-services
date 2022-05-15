@@ -25,7 +25,7 @@ public class OperationsResource {
 
 
     @Inject
-    IOperationsAppProvider budgetService;
+    IOperationsAppProvider operationsService;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)

@@ -15,15 +15,15 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
-class BudgetsResourceTest {
+class OperationsResourceTest {
 
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(BudgetApiUrlEnum.PARAMS_BASE)
+          .when().get(BudgetApiUrlEnum.BUDGET_BASE)
           .then()
              .statusCode(200)
-             .body(is("API Budgets"));
+             .body(is("API Opérations"));
     }
 
     @Inject
