@@ -4,42 +4,12 @@ name: CI on Snapshot
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ feat/quarkus ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  # BUILD COMMUNS
-  build-communs:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout sources
-        uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      # Runs the Build with Maven
-      - name: Build Communs with Maven
-        run: mvn clean install -B --file communs/pom.xml
-      # Upload DockerFile
-      - uses: actions/upload-artifact@v2
-        name: Upload DockerFile
-        with:
-          name: Dockerfile.native-micro
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native-micro
     # SONAR
   sonar-scan:
       # The type of runner that the job will run on
@@ -61,10 +31,9 @@ jobs:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # BUILD
-  build-quarkus-parametrages:
+  build-quarkus-apps:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    needs: build-communs
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -86,111 +55,30 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       # Runs a single command using the runners shell
-      - name: Build Parametrage Native App with Maven
+      - name: Build Native Apps with Maven
         run: mvn clean install -B -P native --file pom.xml
+      # Upload DockerFile
+      - uses: actions/upload-artifact@v2
+        name: Upload DockerFile
+        with:
+          name: Dockerfile.native-micro
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native-micro
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Paramétrages
         with:
           name: parametrages-runner
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/parametrages/target/parametrages-runner
-
-  build-quarkus-utilisateurs:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    needs: build-communs
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      # Runs a single command using the runners shell
-      - name: Build Utilisateurs Native App with Maven
-        run: mvn clean install -B -P native --file utilisateurs/pom.xml
-      # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Utilisateurs
         with:
           name: utilisateurs-runner
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/utilisateurs/target/utilisateurs-runner
-
-  build-quarkus-comptes:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    needs: build-communs
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      # Runs a single command using the runners shell
-      - name: Build Comptes Native App with Maven
-        run: mvn clean install -B -P native --file comptes/pom.xml
-      # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Comptes
         with:
           name: comptes-runner
           path: /home/runner/work/gestion-budget-services/gestion-budget-services/comptes/target/comptes-runner
-
-  build-quarkus-operations:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    needs: build-communs
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      # Step that does that actual cache save and restore
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      # Runs a single command using the runners shell
-      - name: Build Comptes Native App with Maven
-        run: mvn clean install -B -P native --file operations/pom.xml
-      # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Operations
         with:
@@ -202,7 +90,7 @@ jobs:
   # Image PARAMETRAGES
   docker-parametrages:
     runs-on: ubuntu-latest
-    needs: build-quarkus-parametrages
+    needs: build-quarkus-apps
     steps:
       -
         name: Set up QEMU
@@ -250,7 +138,7 @@ jobs:
   # Image UTILISATEURS
   docker-utilisateurs:
     runs-on: ubuntu-latest
-    needs: build-quarkus-utilisateurs
+    needs: build-quarkus-apps
     steps:
       -
         name: Set up QEMU
@@ -298,7 +186,7 @@ jobs:
   # Image COMPTES
   docker-comptes:
     runs-on: ubuntu-latest
-    needs: build-quarkus-comptes
+    needs: build-quarkus-apps
     steps:
       -
         name: Set up QEMU
@@ -346,7 +234,7 @@ jobs:
   # Image OPERATIONS
   docker-operations:
     runs-on: ubuntu-latest
-    needs: build-quarkus-operations
+    needs: build-quarkus-apps
     steps:
       -
         name: Set up QEMU
