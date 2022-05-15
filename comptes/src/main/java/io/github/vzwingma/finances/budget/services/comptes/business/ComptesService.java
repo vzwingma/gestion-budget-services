@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service fournissant les comptes
@@ -47,6 +49,11 @@ public class ComptesService implements IComptesAppProvider {
 	public Uni<List<CompteBancaire>> getComptesUtilisateur(String idUtilisateur) {
 		return dataComptes.chargeComptes(idUtilisateur)
 				.invoke(compte -> LOGGER.trace("Compte [{}] chargé pour l'utilisateur {}", compte.getLibelle(), idUtilisateur))
-				.collect().asList();
+				.collect().asList()
+				.onItem()
+					.transform(comptes ->
+							comptes.stream()
+								.sorted(Comparator.comparingInt(CompteBancaire::getOrdre))
+								.collect(Collectors.toList()));
 	}
 }

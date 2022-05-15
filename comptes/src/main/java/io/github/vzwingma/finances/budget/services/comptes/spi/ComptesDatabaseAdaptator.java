@@ -35,9 +35,7 @@ public class ComptesDatabaseAdaptator implements IComptesRepository { // extends
 			LOGGER.info("[idUser={}] Chargement des comptes de l'utilisateur", idUtilisateur);
 			return find("proprietaire.login", idUtilisateur)
 					.stream()
-					//.sorted((compte1, compte2) -> Integer.compare(compte1.getOrdre(), compte2.getOrdre()))
-					//.collect(Collectors.toList());
-							.invoke(compte -> LOGGER.debug("Chargement du compte [{}] en BDD terminé", compte.getLibelle()));
+					.invoke(compte -> LOGGER.debug("Chargement du compte [{}] en BDD terminé", compte.getLibelle()));
 		}
 		catch(Exception e){
 			LOGGER.error("[idUser={}] Erreur lors de la connexion à la BDD", idUtilisateur, e);
