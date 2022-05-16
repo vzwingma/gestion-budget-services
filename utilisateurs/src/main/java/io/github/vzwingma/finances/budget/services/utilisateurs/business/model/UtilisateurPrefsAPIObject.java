@@ -1,8 +1,6 @@
-package io.github.vzwingma.finances.budget.services.communs.data.model;
+package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
 
 import io.github.vzwingma.finances.budget.services.communs.data.abstrait.AbstractAPIObjectModel;
-import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurDroitsEnum;
-import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurPrefsEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

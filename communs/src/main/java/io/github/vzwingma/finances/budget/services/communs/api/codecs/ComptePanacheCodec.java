@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.communs.data.model.codecs;
+package io.github.vzwingma.finances.budget.services.communs.api.codecs;
 
 
 import com.mongodb.MongoClientSettings;

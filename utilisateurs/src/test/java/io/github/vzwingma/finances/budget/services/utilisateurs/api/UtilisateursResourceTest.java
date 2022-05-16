@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
-import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.UtilisateursService;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.MockDataUtilisateur;

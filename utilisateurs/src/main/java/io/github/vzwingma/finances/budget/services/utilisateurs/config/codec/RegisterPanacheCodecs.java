@@ -1,5 +1,6 @@
-package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
+package io.github.vzwingma.finances.budget.services.utilisateurs.config.codec;
 
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;

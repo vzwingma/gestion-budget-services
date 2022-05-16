@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.parametrages.api;
 
-import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ParametragesService;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.github.vzwingma.finances.budget.services.parametrages.test.MockDataCategoriesOperations;

@@ -1,7 +1,7 @@
 package io.github.vzwingma.finances.budget.services.comptes.business.model;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
-import io.github.vzwingma.finances.budget.services.communs.data.model.codecs.ComptePanacheCodec;
+import io.github.vzwingma.finances.budget.services.communs.api.codecs.ComptePanacheCodec;
 import org.bson.BsonReader;
 import org.bson.json.JsonReader;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.communs.data.enums;
+package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
 
 /**
  * 

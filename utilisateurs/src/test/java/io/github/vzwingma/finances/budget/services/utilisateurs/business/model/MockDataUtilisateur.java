@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
 
-import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurPrefsEnum;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;

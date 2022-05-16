@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.communs.utils.data;
+package io.github.vzwingma.finances.budget.services.communs.api;
 
 /**
  * Enum des URL d'API
@@ -15,13 +15,6 @@ public class BudgetApiUrlEnum {
 	public static final String PARAM_ID_BUDGET = "idBudget";
 	public static final String PARAM_ID_COMPTE = "idCompte";
 	public static final String PARAM_ID_OPERATION = "idOperation";
-	
-	/**
-	 * Actuators
-	 */
-	public static final String ACTUATORS_BASE = "/actuator";		
-	public static final String ACTUATORS_INFO = "/info";
-	public static final String ACTUATORS_INFO_FULL = ACTUATORS_BASE + ACTUATORS_INFO;
 
 	/**
 	 * Utilisateurs

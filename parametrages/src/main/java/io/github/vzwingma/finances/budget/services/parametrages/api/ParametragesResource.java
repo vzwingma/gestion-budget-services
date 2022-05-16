@@ -2,7 +2,7 @@ package io.github.vzwingma.finances.budget.services.parametrages.api;
 
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
-import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;

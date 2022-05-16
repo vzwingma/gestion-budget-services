@@ -1,10 +1,10 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
-import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurDroitsEnum;
-import io.github.vzwingma.finances.budget.services.communs.data.enums.UtilisateurPrefsEnum;
-import io.github.vzwingma.finances.budget.services.communs.data.model.UtilisateurPrefsAPIObject;
-import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurDroitsEnum;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsEnum;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsAPIObject;
+import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursAppProvider;
@@ -57,7 +57,7 @@ public class UtilisateursResource extends AbstractAPIResource {
     @Path(BudgetApiUrlEnum.USERS_ACCESS_DATE)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur() throws UserAccessForbiddenException {
-        String idProprietaire = "vzwingma"; //getIdProprietaire();
+        String idProprietaire = "vzwingma2"; //getIdProprietaire();
         if(idProprietaire != null) {
             return service.getLastAccessDate(idProprietaire)
                     .onFailure()

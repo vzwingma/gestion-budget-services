@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.comptes.api;
 
-import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.comptes.business.ComptesService;
 import io.github.vzwingma.finances.budget.services.comptes.business.ports.IComptesAppProvider;
 import io.quarkus.test.junit.QuarkusMock;
