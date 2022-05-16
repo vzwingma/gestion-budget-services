@@ -57,7 +57,7 @@ public class UtilisateursResource extends AbstractAPIResource {
     @Path(BudgetApiUrlEnum.USERS_ACCESS_DATE)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur() throws UserAccessForbiddenException {
-        String idProprietaire = "vzwingma2"; //getIdProprietaire();
+        String idProprietaire = "vzwingma"; //getIdProprietaire();
         if(idProprietaire != null) {
             return service.getLastAccessDate(idProprietaire)
                     .onFailure()
