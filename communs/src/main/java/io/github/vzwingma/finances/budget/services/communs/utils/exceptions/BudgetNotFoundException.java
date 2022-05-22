@@ -1,5 +1,7 @@
 package io.github.vzwingma.finances.budget.services.communs.utils.exceptions;
 
+import java.io.Serial;
+
 /**
  * Budget non trouvé
  * @author vzwingma
@@ -7,10 +9,8 @@ package io.github.vzwingma.finances.budget.services.communs.utils.exceptions;
  */
 public class BudgetNotFoundException extends AbstractBusinessException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7444641623195237945L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Exception Budget introuvable

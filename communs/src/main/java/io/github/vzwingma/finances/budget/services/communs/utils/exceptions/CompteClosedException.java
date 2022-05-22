@@ -1,5 +1,7 @@
 package io.github.vzwingma.finances.budget.services.communs.utils.exceptions;
 
+import java.io.Serial;
+
 /**
  * Budget non trouvé
  * @author vzwingma
@@ -7,11 +9,8 @@ package io.github.vzwingma.finances.budget.services.communs.utils.exceptions;
  */
 public class CompteClosedException extends AbstractBusinessException {
 
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5654536011914512355L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Erreur compte clos

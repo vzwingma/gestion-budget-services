@@ -13,7 +13,10 @@ public abstract  class AbstractAPIExceptionsHandler implements ExceptionMapper<A
 
     @Override
     public Response toResponse(AbstractBusinessException e) {
-        if(e instanceof DataNotFoundException) {
+        if(e instanceof BadParametersException) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+        else if(e instanceof DataNotFoundException) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
         else if(e instanceof BudgetNotFoundException) {

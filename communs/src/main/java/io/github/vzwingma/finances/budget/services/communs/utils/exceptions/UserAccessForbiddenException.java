@@ -1,5 +1,7 @@
 package io.github.vzwingma.finances.budget.services.communs.utils.exceptions;
 
+import java.io.Serial;
+
 /**
  * Utilisateur non authentifié
  * @author vzwingma
@@ -7,10 +9,8 @@ package io.github.vzwingma.finances.budget.services.communs.utils.exceptions;
  */
 public class UserAccessForbiddenException extends AbstractBusinessException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5428709492299879225L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Message d'erreur

@@ -2,7 +2,7 @@ package io.github.vzwingma.finances.budget.services.utilisateurs.business;
 
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
-import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.MockDataUtilisateur;
+import io.github.vzwingma.finances.budget.services.utilisateurs.test.data.MockDataUtilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursAppProvider;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRepository;

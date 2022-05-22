@@ -1,7 +1,7 @@
 package io.github.vzwingma.finances.budget.services.operations.api;
 
 import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
-import io.github.vzwingma.finances.budget.services.operations.business.OperationsService;
+import io.github.vzwingma.finances.budget.services.operations.business.BudgetService;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -31,7 +31,7 @@ class OperationsResourceTest {
 
     @BeforeAll
     public static void init() {
-        QuarkusMock.installMockForType(Mockito.mock(OperationsService.class), OperationsService.class);
+        QuarkusMock.installMockForType(Mockito.mock(BudgetService.class), BudgetService.class);
     }
 
 }

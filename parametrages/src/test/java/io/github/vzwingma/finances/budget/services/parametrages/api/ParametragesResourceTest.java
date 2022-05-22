@@ -3,7 +3,7 @@ package io.github.vzwingma.finances.budget.services.parametrages.api;
 import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ParametragesService;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
-import io.github.vzwingma.finances.budget.services.parametrages.test.MockDataCategoriesOperations;
+import io.github.vzwingma.finances.budget.services.parametrages.test.data.MockDataCategoriesOperations;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.mutiny.Uni;

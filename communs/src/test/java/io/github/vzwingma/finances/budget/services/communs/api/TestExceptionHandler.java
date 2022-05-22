@@ -16,6 +16,7 @@ public class TestExceptionHandler {
         Assertions.assertEquals(406, exceptionHandler.toResponse(new CompteClosedException("CompteClosedException")).getStatus());
         Assertions.assertEquals(401, exceptionHandler.toResponse(new UserNotAuthorizedException("UserNotAuthorizedException")).getStatus());
         Assertions.assertEquals(403, exceptionHandler.toResponse(new UserAccessForbiddenException("UserAccessForbiddenException")).getStatus());
+        Assertions.assertEquals(400, exceptionHandler.toResponse(new BadParametersException("BadParametersException")).getStatus());
     }
 
     // Classe concrète de test

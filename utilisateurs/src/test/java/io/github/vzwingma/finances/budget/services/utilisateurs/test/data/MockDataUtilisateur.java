@@ -1,5 +1,7 @@
-package io.github.vzwingma.finances.budget.services.utilisateurs.business.model;
+package io.github.vzwingma.finances.budget.services.utilisateurs.test.data;
 
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsEnum;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.comptes.test;
+package io.github.vzwingma.finances.budget.services.comptes.test.data;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 

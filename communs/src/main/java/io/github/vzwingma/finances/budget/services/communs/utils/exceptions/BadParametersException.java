@@ -3,11 +3,11 @@ package io.github.vzwingma.finances.budget.services.communs.utils.exceptions;
 import java.io.Serial;
 
 /**
- * Erreur sur le chargement de données
+ * Erreur sur les paramètres en entrée
  * @author vzwingma
  *
  */
-public class DataNotFoundException extends AbstractBusinessException {
+public class BadParametersException extends AbstractBusinessException {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -15,7 +15,7 @@ public class DataNotFoundException extends AbstractBusinessException {
 	/**
 	 * @param message d'erreur
 	 */
-	public DataNotFoundException(String message) {
+	public BadParametersException(String message) {
 		super(message);
 	}
 }

@@ -111,32 +111,32 @@ public class BudgetDataUtils {
 
 	/**
 	 * Ajout du solde à fin du mois courant
-	 * @param budget  budget à modifier 
+	 * @param soldes soldes du budget à modifier
 	 * @param soldeAAjouter  valeur à ajouter
 	 */
-	public static void ajouteASoldeNow(BudgetMensuel budget, double soldeAAjouter) {
-		budget.getSoldes().setSoldeAtMaintenant(budget.getSoldes().getSoldeAtMaintenant() + soldeAAjouter);
+	public static void ajouteASoldeNow(BudgetMensuel.Soldes soldes, double soldeAAjouter) {
+		soldes.setSoldeAtMaintenant(soldes.getSoldeAtMaintenant() + soldeAAjouter);
 	}
 
 	/**
 	 * Ajout du solde à fin du mois courant
-	 * @param budget  budget à modifier 
+	 * @param soldes soldes du budget à modifier
 	 * @param soldeAAjouter  valeur à ajouter
 	 */
-	public static void ajouteASoldeFin(BudgetMensuel budget, double soldeAAjouter) {
-		budget.getSoldes().setSoldeAtFinMoisCourant(budget.getSoldes().getSoldeAtFinMoisCourant() + soldeAAjouter);
+	public static void ajouteASoldeFin(BudgetMensuel.Soldes soldes, double soldeAAjouter) {
+		soldes.setSoldeAtFinMoisCourant(soldes.getSoldeAtFinMoisCourant() + soldeAAjouter);
 	}
 
 
 	/**
 	 * Mise à jour des valeurs depuis le mois précédent
-	 * @param budget budget à modifier
+	 * @param soldes soldes du budget à modifier
 	 * @param resultatMoisPrecedent the resultatMoisPrecedent to set
 	 */
-	public static void setResultatMoisPrecedent(BudgetMensuel budget, Double resultatMoisPrecedent) {
-		budget.getSoldes().setSoldeAtFinMoisCourant(resultatMoisPrecedent);
-		budget.getSoldes().setSoldeAtFinMoisPrecedent(resultatMoisPrecedent);
-		budget.getSoldes().setSoldeAtMaintenant(resultatMoisPrecedent);
+	public static void setResultatMoisPrecedent(BudgetMensuel.Soldes soldes, Double resultatMoisPrecedent) {
+		soldes.setSoldeAtFinMoisCourant(resultatMoisPrecedent);
+		soldes.setSoldeAtFinMoisPrecedent(resultatMoisPrecedent);
+		soldes.setSoldeAtMaintenant(resultatMoisPrecedent);
 	}
 	
 	

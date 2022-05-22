@@ -3,7 +3,7 @@ package io.github.vzwingma.finances.budget.services.parametrages.business;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametragesRepository;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
-import io.github.vzwingma.finances.budget.services.parametrages.test.MockDataCategoriesOperations;
+import io.github.vzwingma.finances.budget.services.parametrages.test.data.MockDataCategoriesOperations;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.mutiny.Multi;
 import org.junit.jupiter.api.BeforeEach;
