@@ -4,9 +4,6 @@ package io.github.vzwingma.finances.budget.services.operations.business;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
-import io.github.vzwingma.finances.budget.services.operations.business.model.budget.TotauxCategorie;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IComptesServiceProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
@@ -258,63 +255,6 @@ public class BudgetService implements IBudgetAppProvider {
 	}
 
 
-	/**
-	 * Calcul du total de la catégorie du budget via l'opération en cours
-	 * @param budget budget à calculer
-	 * @param operation opération à traiter
-	 */
-	private void calculBudgetTotalCategories(BudgetMensuel budget, LigneOperation operation) {
-
-		if(operation.getCategorie() != null && operation.getCategorie().getId() != null) {
-			Double valeurOperation = operation.getValeur();
-			TotauxCategorie valeursCat = new TotauxCategorie();
-			if(budget.getTotauxParCategories().get(operation.getCategorie().getId()) != null){
-				valeursCat = budget.getTotauxParCategories().get(operation.getCategorie().getId());
-			}
-			valeursCat.setLibelleCategorie(operation.getCategorie().getLibelle());
-			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
-				valeursCat.ajouterATotalAtMaintenant(valeurOperation);
-				valeursCat.ajouterATotalAtFinMoisCourant(valeurOperation);
-			}
-			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
-				valeursCat.ajouterATotalAtFinMoisCourant(valeurOperation);
-			}
-			LOGGER.debug("Total par catégorie [idCat={} : {}]", operation.getCategorie().getId(), valeursCat);
-			budget.getTotauxParCategories().put(operation.getCategorie().getId(), valeursCat);
-		}
-		else {
-			LOGGER.warn("L'opération [{}] n'a pas de catégorie [{}]", operation, operation.getCategorie() );
-		}
-	}
-
-	/**
-	 * Calcul du total de la sous catégorie du budget via l'opération en cours
-	 * @param budget budget à calculer
-	 * @param operation opération à traiter
-	 *
-	 * */
-	private void calculBudgetTotalSsCategories(BudgetMensuel budget, LigneOperation operation) {
-		if(operation.getSsCategorie() != null && operation.getSsCategorie().getId() != null) {
-			Double valeurOperation = operation.getValeur();
-			TotauxCategorie valeursSsCat = new TotauxCategorie();
-			if( budget.getTotauxParSSCategories().get(operation.getSsCategorie().getId()) != null){
-				valeursSsCat = budget.getTotauxParSSCategories().get(operation.getSsCategorie().getId());
-			}
-			valeursSsCat.setLibelleCategorie(operation.getSsCategorie().getLibelle());
-			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
-				valeursSsCat.ajouterATotalAtMaintenant(valeurOperation);
-				valeursSsCat.ajouterATotalAtFinMoisCourant(valeurOperation);
-			}
-			if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
-				valeursSsCat.ajouterATotalAtFinMoisCourant(valeurOperation);
-			}
-			LOGGER.debug("Total par ss catégorie [idCat={} : {}]", operation.getSsCategorie().getId(), valeursSsCat);
-			budget.getTotauxParSSCategories().put(operation.getSsCategorie().getId(), valeursSsCat);
-		}
-		else {
-			LOGGER.warn("L'opération [{}]  n'a pas de sous-catégorie [{}]", operation, operation.getSsCategorie() );
-		}
-	}
 
 	/**
 	 * Calcul du budget Courant et sauvegarde
