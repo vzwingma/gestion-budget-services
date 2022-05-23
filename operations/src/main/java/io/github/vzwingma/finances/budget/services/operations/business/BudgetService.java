@@ -3,6 +3,8 @@ package io.github.vzwingma.finances.budget.services.operations.business;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
@@ -192,6 +194,14 @@ public class BudgetService implements IBudgetAppProvider {
 	 * @return budget nouvellement créé
 	 */
 	protected Uni<BudgetMensuel> initNewBudget(CompteBancaire compteBancaire, String idProprietaire, Month mois, int annee) {
+
+		//Vérification du compte
+		if(compteBancaire == null) {
+			return Uni.createFrom().failure(new DataNotFoundException("Compte bancaire non trouvé"));
+		} else if (!compteBancaire.isActif()) {
+			return Uni.createFrom().failure(new CompteClosedException("Compte bancaire inactif"));
+		}
+
 		LOGGER.info("Initialisation du budget {} de {}/{}", compteBancaire.getLibelle(), mois, annee);
 		BudgetMensuel budgetInitVide = new BudgetMensuel();
 		budgetInitVide.setActif(true);
@@ -272,7 +282,20 @@ public class BudgetService implements IBudgetAppProvider {
 
 	@Override
 	public Uni<BudgetMensuel> reinitialiserBudgetMensuel(String idBudget, String idProprietaire) {
-		return null;
+		LOGGER.info("Réinitialisation du budget {}", idBudget);
+		// Chargement du budget et compte
+		return getBudgetMensuel(idBudget, idProprietaire)
+				.flatMap(budget -> {
+					LOGGER.info("Réinitialisation du budget {}", budget.getId());
+					Uni<CompteBancaire> compte = this.comptesService.getCompteById(budget.getIdCompteBancaire(), idProprietaire);
+					Uni<BudgetMensuel> budgetUni = Uni.createFrom().item(budget);
+					return Uni.combine()
+							.all()
+							.unis(budgetUni, compte)
+							.asTuple();
+				})
+				// Si pas d'erreur, réinitialisation du budget
+		.onItem().transformToUni(tuple -> initNewBudget(tuple.getItem2(), idProprietaire, tuple.getItem1().getMois(), tuple.getItem1().getAnnee()));
 	}
 
 	@Override

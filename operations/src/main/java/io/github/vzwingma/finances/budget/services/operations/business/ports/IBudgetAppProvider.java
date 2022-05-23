@@ -29,7 +29,8 @@ public interface IBudgetAppProvider {
     Uni<BudgetMensuel> getBudgetMensuel(String idBudget, String idProprietaire);
     /**
      * Réinitialiser un budget mensuel
-     * @param idBudget budget mensuel
+     *
+     * @param idBudget       budget mensuel
      * @param idProprietaire propriétaire du budget
      */
     Uni<BudgetMensuel> reinitialiserBudgetMensuel(String idBudget, String idProprietaire) ;

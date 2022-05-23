@@ -1,6 +1,7 @@
 package io.github.vzwingma.finances.budget.services.operations.business;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
@@ -11,6 +12,7 @@ import io.github.vzwingma.finances.budget.services.operations.test.data.MockData
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.mutiny.Uni;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -187,5 +189,52 @@ public class BudgetServiceTest {
         this.budgetAppProvider.recalculSoldes(budget);
         assertEquals(0, budget.getSoldes().getSoldeAtMaintenant().intValue());
         assertEquals(123, budget.getSoldes().getSoldeAtFinMoisCourant().intValue());
+    }
+
+    @Test
+    void testReinitBudget(){
+        // When
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt()))
+                .thenReturn(
+                    Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
+
+        Mockito.when(mockCompteServiceProvider.getCompteById(anyString(), anyString()))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+        //Test
+        budgetAppProvider.reinitialiserBudgetMensuel(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue().getId(), "test").await().indefinitely();
+    }
+
+
+    @Test
+    void testReinitCompteClosed(){
+        // When
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt()))
+                .thenReturn(
+                        Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
+
+        Mockito.when(mockCompteServiceProvider.getCompteById(anyString(), anyString()))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteInactif()));
+        //Test
+
+        CompletionException exception = Assertions.assertThrows(CompletionException.class,
+                () -> budgetAppProvider.reinitialiserBudgetMensuel(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue().getId(), "test").await().indefinitely());
+        assertEquals(CompteClosedException.class, exception.getCause().getClass());
+    }
+
+
+    @Test
+    void testReinitCompteUnknown(){
+        // When
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt()))
+                .thenReturn(
+                        Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
+
+        Mockito.when(mockCompteServiceProvider.getCompteById(anyString(), anyString()))
+                .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Compte introuvable")));
+        //Test
+
+        CompletionException exception = Assertions.assertThrows(CompletionException.class,
+                () -> budgetAppProvider.reinitialiserBudgetMensuel(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue().getId(), "test").await().indefinitely());
+        assertEquals(DataNotFoundException.class, exception.getCause().getClass());
     }
 }
