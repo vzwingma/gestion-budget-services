@@ -52,11 +52,10 @@ public class ComptesDatabaseAdaptator implements IComptesRepository { // extends
 	 */
 	public Uni<CompteBancaire> chargeCompteParId(String idCompte, String idUtilisateur) {
 		try{
-			LOGGER.info("[idCompte={}] Chargement du compte", idCompte);
+			LOGGER.info("[idUser={}] [idCompte={}] Chargement du compte", idUtilisateur, idCompte);
 			return find("_id", idCompte)
 					.singleResult()
-					.onItem()
-						.ifNull().failWith(new DataNotFoundException("Compte non trouvé"));
+					.invoke(compte -> LOGGER.debug("[idUser={}] Chargement du compte [{}] en BDD terminé", idUtilisateur, compte.getLibelle()));
 		}
 		catch(Exception e){
 			LOGGER.error("[idUser=?] Erreur lors de la connexion à la BDD", e);

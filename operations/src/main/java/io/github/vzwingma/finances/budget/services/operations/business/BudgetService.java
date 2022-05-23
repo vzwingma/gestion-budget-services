@@ -70,8 +70,8 @@ public class BudgetService implements IBudgetAppProvider {
 	public Uni<BudgetMensuel> getBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) {
 		LOGGER.debug("Chargement du budget {} de {}/{}", idCompte, mois, annee);
 		return this.comptesService.getCompteById(idCompte, idProprietaire)
-				.onItem()
-				.ifNotNull()
+				.invoke(compte -> LOGGER.debug("-> Compte correspodant {}", compte))
+				.onItem().ifNotNull()
 				.transformToUni(compte -> {
 					if(Boolean.TRUE.equals(compte.isActif())){
 						return chargerBudgetMensuelSurCompteActif(idProprietaire, compte, mois, annee);

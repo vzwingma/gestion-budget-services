@@ -55,7 +55,7 @@ public class ComptesResource extends AbstractAPIResource {
         LOG.info("getComptes");
         String proprietaire = "vzwingma";
         return this.services.getComptesUtilisateur(proprietaire)
-                .invoke(listeComptes -> LOG.info("[idUser={}] Chargement des {} comptes", proprietaire, listeComptes != null ? listeComptes.size() : "-1"));
+                .invoke(listeComptes -> LOG.info("[idUser={}] {} comptes chargés", proprietaire, listeComptes != null ? listeComptes.size() : "-1"));
     }
 
     /**
@@ -78,6 +78,6 @@ public class ComptesResource extends AbstractAPIResource {
         String proprietaire = "vzwingma";
         LOG.info("[idCompte={}] getCompte", idCompte);
         return this.services.getCompteById(idCompte, proprietaire)
-                .invoke(compte -> LOG.info("[idUser={}] Chargement du compte [{}]", proprietaire, compte != null ? compte.getLibelle() : "-1"));
+                .invoke(compte -> LOG.info("[idUser={}] Compte chargé : [{}]", proprietaire, compte != null ? compte.getLibelle() : "-1"));
     }
 }

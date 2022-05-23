@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.operations.business.ports;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
@@ -15,7 +14,7 @@ import java.time.Month;
  * @author vzwingma
  *
  */
-public interface IOperationsRepository extends ReactivePanacheMongoRepository<CategorieOperations> {
+public interface IOperationsRepository extends ReactivePanacheMongoRepository<BudgetMensuel> {
 
     /**
      * Chargement du budget mensuel
