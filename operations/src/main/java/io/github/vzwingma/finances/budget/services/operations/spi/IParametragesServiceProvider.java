@@ -12,9 +12,9 @@ import java.util.List;
 /**
  * Service Provider Interface de {@link }
  */
-@RegisterRestClient(configKey = "parametrages-service")
 @Path(ParametragesApiUrlEnum.PARAMS_BASE)
-public interface IParametragesServiceProvider { //extends IServiceProvider {
+@RegisterRestClient(configKey = "parametrages-service")
+public interface IParametragesServiceProvider {
 
     /**
      * Recherche d'une catégorie
@@ -22,6 +22,7 @@ public interface IParametragesServiceProvider { //extends IServiceProvider {
      * @return catégorie correspondante. Null sinon
      */
    @GET
+   @Path("")
    Uni<CategorieOperations> getCategorieParId(String id);
 
     /**

@@ -11,9 +11,7 @@ import io.github.vzwingma.finances.budget.services.operations.business.model.bud
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LibellesOperationsAPIObject;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
-import io.github.vzwingma.finances.budget.services.operations.spi.IComptesServiceProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
-import io.github.vzwingma.finances.budget.services.operations.spi.IParametragesServiceProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -48,11 +46,6 @@ public class OperationsResource extends AbstractAPIResource {
 
     @Inject
     IOperationsAppProvider operationsService;
-
-    private IParametragesServiceProvider paramClientApi;
-
-
-    private IComptesServiceProvider compteClientApi;
 
     private String getIdProprietaire() {
         return "vzwingmann";

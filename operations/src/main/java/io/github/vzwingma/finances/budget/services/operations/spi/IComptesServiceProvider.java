@@ -3,7 +3,7 @@ package io.github.vzwingma.finances.budget.services.operations.spi;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.operations.api.enums.ComptesApiUrlEnum;
 import io.smallrye.mutiny.Uni;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,9 +11,9 @@ import javax.ws.rs.Path;
 /**
  * Service Provider Interface de {@link }
  */
-@RestClient
 @Path(ComptesApiUrlEnum.COMPTES_BASE)
-public interface IComptesServiceProvider { // extends IServiceProvider {
+@RegisterRestClient(configKey = "comptes-service")
+public interface IComptesServiceProvider {
 
     /**
      * Recherche du compte
