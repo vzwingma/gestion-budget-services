@@ -89,34 +89,62 @@ public class BudgetService implements IBudgetAppProvider {
 		LOGGER.debug("Chargement du budget de {}/{} du compte actif {} ", mois, annee, compteBancaire.getId());
 
 			return this.dataOperationsProvider.chargeBudgetMensuel(compteBancaire, mois, annee)
-					// Si le budget n'existe pas, on le crée
-					.onFailure().recoverWithUni(initNewBudget(compteBancaire, idProprietaire, mois, annee))
+					.invoke(budgetMensuel -> LOGGER.debug("Budget mensuel chargé {}", budgetMensuel))
 					.onItem()
-					.transform(budgetMensuel -> budgetMensuel );
+					// rechargement du solde mois précédent (s'il a changé)
+					.transformToUni(budgetMensuel -> recalculSoldeAFinMoisPrecedent(budgetMensuel, compteBancaire) )
+					.onItem()
+					// recalcul de tous les soldes du budget courant
+					.invoke(this::recalculSoldes)
+					// Sauvegarde du budget
+					.call(this::sauvegardeBudget);
+				//	.onFailure().recoverWithUni(initNewBudget(compteBancaire, idProprietaire, mois, annee));
 	}
 
-	private void recalculSoldeAFinMoisPrecedent(final BudgetMensuel budgetMensuel, CompteBancaire compteBancaire) {
+	/**
+	 * Recalcul du solde à la fin du mois précédent
+	 * @param budgetMensuel budget mensuel
+	 * @param compteBancaire	compte
+	 * @return budget mensuel recalculé
+	 */
+	private Uni<BudgetMensuel> recalculSoldeAFinMoisPrecedent(final BudgetMensuel budgetMensuel, CompteBancaire compteBancaire) {
 		// Maj du budget ssi budget actif
 		if (budgetMensuel != null && budgetMensuel.isActif()) {
 			// Recalcul du résultat du mois précédent
 			Month moisPrecedent = budgetMensuel.getMois().minus(1);
 			int anneePrecedente = Month.DECEMBER.equals(moisPrecedent) ? budgetMensuel.getAnnee() - 1 : budgetMensuel.getAnnee();
 
-			LOGGER.debug("Chargement du budget du mois précédent du compte actif {} : {}/{}", compteBancaire, moisPrecedent, anneePrecedente);
-			/*
-			budgetMensuel = this.dataOperationsProvider.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente)
+			LOGGER.debug("Recalcul du solde à partir du budget du mois précédent du compte actif {} : {}/{}", compteBancaire, moisPrecedent, anneePrecedente);
+
+			return this.dataOperationsProvider.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente)
 					.onItem()
 					.ifNotNull()
-					.call(budgetPrecedent -> {
+					.transformToUni(budgetPrecedent -> {
 						budgetMensuel.getSoldes().setSoldeAtFinMoisPrecedent(budgetPrecedent.getSoldes().getSoldeAtFinMoisCourant());
-						return budgetMensuel;
-					})
-				//	.call(budgetMensuelSoldeAJour -> calculEtSauvegardeBudget(budgetMensuelSoldeAJour));
-
-				 */
+						return Uni.createFrom().item(budgetMensuel);
+					});
 		}
+		else{
+			LOGGER.debug("Budget inactif, pas de recalcul du solde à partir du budget du mois précédent du compte actif {}", compteBancaire);
+			return Uni.createFrom().item(budgetMensuel);
+		}
+
 	}
 
+	/**
+	 * Calcul des soldes du budget mensuel
+	 *
+	 * @param budget budget à calculer
+	 */
+	@Override
+	public void recalculSoldes(BudgetMensuel budget) {
+
+		LOGGER.info("(Re)Calcul des soldes du budget : {}", budget.getId());
+		BudgetDataUtils.razCalculs(budget);
+
+		this.operationsAppProvider.calculSoldes(budget.getListeOperations(), budget.getSoldes(), budget.getTotauxParCategories(), budget.getTotauxParSSCategories());
+		LOGGER.debug("Solde prévu\t| {}\t| {}", budget.getSoldes().getSoldeAtMaintenant(), budget.getSoldes().getSoldeAtFinMoisCourant());
+	}
 
 	/**
 	 * Chargement du budget du mois courant pour le compte inactif
@@ -239,32 +267,18 @@ public class BudgetService implements IBudgetAppProvider {
 	}
 
 
-	/**
-	 * Calcul du résumé
-	 * @param budget budget à calculer
-	 */
-	@Override
-	public void calculBudget(BudgetMensuel budget) {
-
-		LOGGER.info("(Re)Calcul du budget : {}", budget);
-		BudgetDataUtils.razCalculs(budget);
-
-		this.operationsAppProvider.calculSoldes(budget.getListeOperations(), budget.getSoldes(), budget.getTotauxParCategories(), budget.getTotauxParSSCategories());
-		LOGGER.debug("Solde prévu\t| {}\t| {}", budget.getSoldes().getSoldeAtMaintenant(), budget.getSoldes().getSoldeAtFinMoisCourant());
-
-	}
 
 
 
 	/**
 	 * Calcul du budget Courant et sauvegarde
+	 *
 	 * @param budget budget à sauvegarder
 	 */
-	private BudgetMensuel calculEtSauvegardeBudget(BudgetMensuel budget) {
+
+	private Uni<BudgetMensuel> sauvegardeBudget(BudgetMensuel budget) {
 		budget.setDateMiseAJour(LocalDateTime.now());
-		calculBudget(budget);
-		dataOperationsProvider.sauvegardeBudgetMensuel(budget);
-		return budget;
+		return dataOperationsProvider.sauvegardeBudgetMensuel(budget);
 	}
 
 	@Override

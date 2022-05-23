@@ -130,6 +130,6 @@ public class BudgetMensuel extends AbstractAPIObjectModel implements Serializabl
 	 */
 	@Override
 	public String toString() {
-		return String.format("BudgetMensuel [id=%s, mois=%s, annee=%s, actif=%s, dateMiseAJour=%s, idCompteBancaire=%s, soldes=%s]", id, mois, annee, actif, dateMiseAJour != null ? BudgetDateTimeUtils.getLibelleDate(dateMiseAJour) : "null", idCompteBancaire, soldes);
+		return String.format("BudgetMensuel [id=%s, mois=%s, annee=%s, actif=%s, dateMiseAJour=%s, idCompteBancaire=%s, soldes=%s], %s opérations", id, mois, annee, actif, dateMiseAJour != null ? BudgetDateTimeUtils.getLibelleDate(dateMiseAJour) : "null", idCompteBancaire, soldes, listeOperations != null ? listeOperations.size() : 0);
 	}
 }

@@ -1,11 +1,10 @@
-package io.github.vzwingma.finances.budget.services.communs.data.enums;
+package io.github.vzwingma.finances.budget.services.operations.business.model;
 
 /**
  * Id des catégories
  * @author vzwingma
  *
  */
-@Deprecated
 public enum IdsCategoriesEnum {
 
 	TRANSFERT_INTERCOMPTE("ed3f6100-5dbd-4b68-860e-0c97ae1bbc63"),

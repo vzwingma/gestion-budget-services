@@ -60,7 +60,7 @@ public interface IBudgetAppProvider {
      *
      * @param budget budget à calculer
      */
-    void calculBudget(BudgetMensuel budget);
+    void recalculSoldes(BudgetMensuel budget);
 
     /**
      * Charge la date du premier budget déclaré pour ce compte pour cet utilisateur

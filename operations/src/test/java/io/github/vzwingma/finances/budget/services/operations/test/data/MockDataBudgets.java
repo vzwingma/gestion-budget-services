@@ -1,8 +1,8 @@
 package io.github.vzwingma.finances.budget.services.operations.test.data;
 
-import io.github.vzwingma.finances.budget.services.communs.data.enums.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
+import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
@@ -31,17 +31,17 @@ public class MockDataBudgets {
     }
 
     public static CompteBancaire getCompteInactif(){
-        CompteBancaire c1 = new CompteBancaire();
-        c1.setActif(false);
-        c1.setId("C2");
-        c1.setLibelle("Libelle2");
-        c1.setProprietaire(new CompteBancaire.Proprietaire());
-        c1.getProprietaire().setLogin("test");
-        c1.setOrdre(2);
-        return c1;
+        CompteBancaire c2 = new CompteBancaire();
+        c2.setActif(false);
+        c2.setId("C2");
+        c2.setLibelle("Libelle2");
+        c2.setProprietaire(new CompteBancaire.Proprietaire());
+        c2.getProprietaire().setLogin("test");
+        c2.setOrdre(2);
+        return c2;
     }
 
-    public static BudgetMensuel getBudgetCompteC1(){
+    public static BudgetMensuel getBudgetInactifCompteC1(){
         // Budget
         BudgetMensuel bo = new BudgetMensuel();
         bo.setIdCompteBancaire(getCompte().getId());
@@ -49,24 +49,24 @@ public class MockDataBudgets {
         bo.setAnnee(2022);
         bo.setActif(false);
         bo.setId(getCompte().getId()+"_2022_1");
+
         bo.getSoldes().setSoldeAtFinMoisCourant(0D);
         bo.getSoldes().setSoldeAtMaintenant(1000D);
         bo.setDateMiseAJour(LocalDateTime.now());
         bo.getSoldes().setSoldeAtFinMoisPrecedent(0D);
 
-        bo.getListeOperations().addAll(MockDataOperations.get3LignesOperations(getCompte()));
         return bo;
     }
 
-    public static BudgetMensuel getBudgetCompteC3OperationPrevue(){
+    public static BudgetMensuel getBudgetActifCompteC1et1operationPrevue(){
 
         BudgetMensuel budget = new BudgetMensuel();
         budget.setActif(true);
         budget.getSoldes().setSoldeAtFinMoisPrecedent(0D);
         budget.setListeOperations(new ArrayList<>());
         BudgetDataUtils.razCalculs(budget);
-        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
-        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS);
+        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
+        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
         dep.setCategorieParente(cat);
 
         LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
@@ -75,21 +75,23 @@ public class MockDataBudgets {
 
         budget.setMois(Month.JANUARY);
         budget.setAnnee(2022);
-        budget.setIdCompteBancaire(getBudgetCompteC1().getIdCompteBancaire());
-        budget.setId(BudgetDataUtils.getBudgetId(getBudgetCompteC1().getIdCompteBancaire(), budget.getMois(), budget.getAnnee()));
+        budget.setIdCompteBancaire(getCompte().getId());
+        budget.setId(BudgetDataUtils.getBudgetId(budget.getIdCompteBancaire(), budget.getMois(), budget.getAnnee()));
         return budget;
     }
 
 
-    public static BudgetMensuel getBudgetCompteC2(){
+    public static BudgetMensuel getBudgetPrecedentCompteC1(){
         // Budget
         BudgetMensuel bo = new BudgetMensuel();
         bo.setIdCompteBancaire(getCompte().getId());
-        bo.setMois(Month.JULY);
-        bo.setAnnee(2018);
-        bo.setActif(true);
-        bo.setId(getCompte().getId()+"_2018_7");
-        bo.getSoldes().setSoldeAtFinMoisCourant(0D);
+        bo.setMois(Month.DECEMBER);
+        bo.setAnnee(2021);
+        bo.setActif(false);
+        bo.setIdCompteBancaire(getCompte().getId());
+        bo.setId(BudgetDataUtils.getBudgetId(bo.getIdCompteBancaire(), bo.getMois(), bo.getAnnee()));
+
+        bo.getSoldes().setSoldeAtFinMoisCourant(1000D);
         bo.getSoldes().setSoldeAtMaintenant(1000D);
         bo.setDateMiseAJour(LocalDateTime.now());
         bo.getSoldes().setSoldeAtFinMoisPrecedent(0D);

@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.operations.business.model.budget;
 
-import io.github.vzwingma.finances.budget.services.communs.data.enums.IdsCategoriesEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.TypeOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;

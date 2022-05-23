@@ -2,7 +2,6 @@ package io.github.vzwingma.finances.budget.services.communs.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.vzwingma.finances.budget.services.communs.data.abstrait.AbstractAPIObjectModel;
-import io.github.vzwingma.finances.budget.services.communs.data.enums.IdsCategoriesEnum;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -71,10 +70,10 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	
 	/**
 	 * Constructeur pour le clone
-	 * @param typeCategorie id du parent
+	 * @param guidCategorie guidCategorie du parent
 	 */
-	public CategorieOperations(IdsCategoriesEnum typeCategorie){
-		this.id = typeCategorie.getId();
+	public CategorieOperations(String guidCategorie){
+		this.id = guidCategorie;
 	}
 
 	/**
