@@ -8,6 +8,7 @@ import io.github.vzwingma.finances.budget.services.operations.business.ports.ICo
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
 import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataBudgets;
+import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.mutiny.Uni;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,14 +115,25 @@ public class BudgetServiceTest {
     }
 
     @Test
-    public void testGetNoBudgetCompteActif() {
+    public void testInitNewBudgetOnCompteActif() {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString(), anyString()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+
+        BudgetMensuel bcree = MockDataBudgets.getBudgetPrecedentCompteC1();
+        bcree.setId("C1_2022_05");
+        bcree.setAnnee(2022);
+        bcree.setMois(Month.MAY);
+        bcree.setActif(true);
+        bcree.setNewBudget(true);
+        bcree.getListeOperations().clear();
+        BudgetDataUtils.razCalculs(bcree);
+
         Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt()))
-                .thenReturn(
-                        Uni.createFrom().failure(new DataNotFoundException("Budget introuvable")));
+                .thenReturn(Uni.createFrom().nullItem(), Uni.createFrom().item(bcree));
+
+        Mockito.when(mockOperationDataProvider.sauvegardeBudgetMensuel(any(BudgetMensuel.class))).thenReturn(Uni.createFrom().item(bcree));
         // Test
         BudgetMensuel budgetCharge = budgetAppProvider.getBudgetMensuel("C1", Month.MAY, 2022, "test")
                 .await().indefinitely();
@@ -130,19 +142,20 @@ public class BudgetServiceTest {
         assertNotNull(budgetCharge);
         assertEquals("C1_2022_05", budgetCharge.getId());
         Mockito.verify(budgetAppProvider, Mockito.times(1)).getBudgetMensuel("C1", Month.MAY, 2022, "test");
-        Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(any(BudgetMensuel.class));
+        Mockito.verify(mockOperationDataProvider, Mockito.times(2)).sauvegardeBudgetMensuel(any(BudgetMensuel.class));
     }
 
 
+
     @Test
-    public void testGetBudgetByParamsCompteInactif() {
+    public void testGetBudgetSurCompteInactif() {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString(), anyString()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteInactif()));
         Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt()))
                 .thenReturn(
-                  //      Uni.createFrom().failure(new DataNotFoundException("Budget introuvable")),
+                        Uni.createFrom().nullItem(),
                         Uni.createFrom().item(MockDataBudgets.getBudgetInactifCompteC1()));
         // Test
         BudgetMensuel budgetCharge = budgetAppProvider.getBudgetMensuel("C1", Month.JANUARY, 2022, "test")
@@ -151,7 +164,8 @@ public class BudgetServiceTest {
         // Assertion
         assertNotNull(budgetCharge);
         assertEquals("C1_2022_1", budgetCharge.getId());
-        Mockito.verify(budgetAppProvider, Mockito.times(1)).getBudgetMensuel("C1", Month.JANUARY, 2022, "test");
+        Mockito.verify(mockOperationDataProvider, Mockito.times(1)).chargeBudgetMensuel(any(CompteBancaire.class), eq(Month.JANUARY), eq(2022));
+        Mockito.verify(mockOperationDataProvider, Mockito.times(1)).chargeBudgetMensuel(any(CompteBancaire.class), eq(Month.DECEMBER), eq(2021));
     }
 
 
