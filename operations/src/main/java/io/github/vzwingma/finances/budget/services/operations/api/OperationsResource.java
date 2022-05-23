@@ -11,9 +11,9 @@ import io.github.vzwingma.finances.budget.services.operations.business.model.bud
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LibellesOperationsAPIObject;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
-import io.github.vzwingma.finances.budget.services.operations.business.ports.IComptesServiceProvider;
+import io.github.vzwingma.finances.budget.services.operations.spi.IComptesServiceProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
-import io.github.vzwingma.finances.budget.services.operations.business.ports.IParametragesServiceProvider;
+import io.github.vzwingma.finances.budget.services.operations.spi.IParametragesServiceProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;

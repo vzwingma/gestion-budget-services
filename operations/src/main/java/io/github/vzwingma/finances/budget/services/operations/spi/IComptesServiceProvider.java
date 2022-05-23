@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.operations.business.ports;
+package io.github.vzwingma.finances.budget.services.operations.spi;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.operations.api.enums.ComptesApiUrlEnum;

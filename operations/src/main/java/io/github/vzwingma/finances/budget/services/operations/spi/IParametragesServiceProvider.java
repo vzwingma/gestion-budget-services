@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.operations.business.ports;
+package io.github.vzwingma.finances.budget.services.operations.spi;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.operations.api.enums.ParametragesApiUrlEnum;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Service Provider Interface de {@link }
  */
-@RegisterRestClient
+@RegisterRestClient(configKey = "parametrages-service")
 @Path(ParametragesApiUrlEnum.PARAMS_BASE)
 public interface IParametragesServiceProvider { //extends IServiceProvider {
 

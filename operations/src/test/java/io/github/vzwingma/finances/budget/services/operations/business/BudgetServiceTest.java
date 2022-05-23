@@ -7,7 +7,7 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.Data
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
-import io.github.vzwingma.finances.budget.services.operations.business.ports.IComptesServiceProvider;
+import io.github.vzwingma.finances.budget.services.operations.spi.IComptesServiceProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
 import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataBudgets;
