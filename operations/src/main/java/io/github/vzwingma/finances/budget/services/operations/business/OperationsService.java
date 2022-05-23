@@ -49,6 +49,13 @@ public class OperationsService implements IOperationsAppProvider {
 		return null;
 	}
 
+	/**
+	 * Calcul des soldes
+	 * @param operations opérations
+	 * @param soldes soldes
+	 * @param totauxCategorieMap map des totaux par catégorie
+	 * @param totauxSsCategoriesMap map des totaux par sous catégorie
+	 */
 	@Override
 	public void calculSoldes(List<LigneOperation> operations, BudgetMensuel.Soldes soldes, Map<String, TotauxCategorie> totauxCategorieMap, Map<String, TotauxCategorie> totauxSsCategoriesMap) {
 

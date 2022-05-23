@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
-import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.UtilisateursService;
 import io.github.vzwingma.finances.budget.services.utilisateurs.test.data.MockDataUtilisateur;
@@ -25,7 +24,7 @@ class UtilisateursResourceTest {
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(BudgetApiUrlEnum.USERS_BASE)
+          .when().get(UtilisateursApiUrlEnum.USERS_BASE)
           .then()
              .statusCode(200)
                 .body(containsString("API Budget - utilisateurs"));
@@ -46,7 +45,7 @@ class UtilisateursResourceTest {
         Mockito.when(utilisateurService.getUtilisateur(Mockito.anyString()))
                 .thenReturn(Uni.createFrom().item(utilisateurExpected));
         // Test
-        given() .when().get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL)
+        given() .when().get(UtilisateursApiUrlEnum.USERS_BASE + UtilisateursApiUrlEnum.USERS_ACCESS_DATE)
                 .then()
                     .statusCode(200)
                     .body(Matchers.containsString("lastAccessTime"));
@@ -60,7 +59,7 @@ class UtilisateursResourceTest {
         Mockito.when(utilisateurService.getUtilisateur(Mockito.anyString()))
                 .thenReturn(Uni.createFrom().item(utilisateurExpected));
         // Test
-        given() .when().get(BudgetApiUrlEnum.USERS_PREFS_FULL)
+        given() .when().get(UtilisateursApiUrlEnum.USERS_BASE + UtilisateursApiUrlEnum.USERS_PREFS)
                 .then()
                 .statusCode(200)
                 .body(Matchers.containsString("\"preferences\":{\"PREFS_STATUT_NLLE_DEPENSE\":\"Nouvelle\"}"));
@@ -74,7 +73,7 @@ class UtilisateursResourceTest {
         Mockito.when(utilisateurService.getUtilisateur(Mockito.anyString()))
                 .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Utilisateur introuvable")));
         // Test
-        given() .when().get(BudgetApiUrlEnum.USERS_ACCESS_DATE_FULL)
+        given() .when().get(UtilisateursApiUrlEnum.USERS_BASE + UtilisateursApiUrlEnum.USERS_ACCESS_DATE)
                 .then()
                 .statusCode(200)
                 .body(Matchers.containsString("\"lastAccessTime\":null"));

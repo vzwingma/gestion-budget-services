@@ -2,7 +2,6 @@ package io.github.vzwingma.finances.budget.services.parametrages.api;
 
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
-import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -26,7 +25,7 @@ import java.util.List;
  * @author vzwingma
  *
  */
-@Path(BudgetApiUrlEnum.PARAMS_BASE)
+@Path(ParametragesApiUrlEnum.PARAMS_BASE)
 public class ParametragesResource extends AbstractAPIResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(ParametragesResource.class);
@@ -48,7 +47,7 @@ public class ParametragesResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Session introuvable")
     })
     @GET
-    @Path(BudgetApiUrlEnum.PARAMS_CATEGORIES)
+    @Path(ParametragesApiUrlEnum.PARAMS_CATEGORIES)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<List<CategorieOperations>> getCategories() {
 

@@ -1,12 +1,11 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
-import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurDroitsEnum;
-import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsEnum;
-import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsAPIObject;
-import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurDroitsEnum;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsAPIObject;
+import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsEnum;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursAppProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -30,7 +29,7 @@ import java.util.Map;
  * @author vzwingma
  *
  */
-@Path(BudgetApiUrlEnum.USERS_BASE)
+@Path(UtilisateursApiUrlEnum.USERS_BASE)
 public class UtilisateursResource extends AbstractAPIResource {
 
 
@@ -54,7 +53,7 @@ public class UtilisateursResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Session introuvable")
     })
     @GET
-    @Path(BudgetApiUrlEnum.USERS_ACCESS_DATE)
+    @Path(UtilisateursApiUrlEnum.USERS_ACCESS_DATE)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur() throws UserAccessForbiddenException {
         String idProprietaire = "vzwingma2"; //getIdProprietaire();
@@ -90,7 +89,7 @@ public class UtilisateursResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Session introuvable")
     })
     @GET
-    @Path(BudgetApiUrlEnum.USERS_PREFS)
+    @Path(UtilisateursApiUrlEnum.USERS_PREFS)
     public Uni<UtilisateurPrefsAPIObject> getPreferencesUtilisateur() {
         String idProprietaire ="vzwingma"; // getIdProprietaire();
         if(idProprietaire != null){

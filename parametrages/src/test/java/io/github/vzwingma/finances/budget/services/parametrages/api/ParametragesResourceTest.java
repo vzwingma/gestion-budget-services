@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.parametrages.api;
 
-import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ParametragesService;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.github.vzwingma.finances.budget.services.parametrages.test.data.MockDataCategoriesOperations;
@@ -23,7 +22,7 @@ class ParametragesResourceTest {
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(BudgetApiUrlEnum.PARAMS_BASE)
+          .when().get(ParametragesApiUrlEnum.PARAMS_BASE)
           .then()
              .statusCode(200)
              .body(containsString("API Budget - parametrages"));
@@ -42,7 +41,7 @@ class ParametragesResourceTest {
         // Init des données
         Mockito.when(parametragesService.getCategories()).thenReturn(Uni.createFrom().item(MockDataCategoriesOperations.getListeTestCategories()));
         // Test
-        given() .when().get(BudgetApiUrlEnum.PARAMS_BASE + BudgetApiUrlEnum.PARAMS_CATEGORIES)
+        given() .when().get(ParametragesApiUrlEnum.PARAMS_BASE + ParametragesApiUrlEnum.PARAMS_CATEGORIES)
                 .then()
                     .statusCode(200)
                     .body(Matchers.containsString(MockDataCategoriesOperations.getListeTestCategories().get(0).getLibelle()));

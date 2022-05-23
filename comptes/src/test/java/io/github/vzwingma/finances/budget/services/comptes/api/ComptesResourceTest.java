@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.comptes.api;
 
-import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.comptes.business.ComptesService;
 import io.github.vzwingma.finances.budget.services.comptes.business.ports.IComptesAppProvider;
 import io.quarkus.test.junit.QuarkusMock;
@@ -21,7 +20,7 @@ class ComptesResourceTest {
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(BudgetApiUrlEnum.COMPTES_BASE)
+          .when().get(ComptesApiUrlEnum.COMPTES_BASE)
           .then()
              .statusCode(200)
                 .body(containsString("API Budget - comptes"));

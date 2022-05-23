@@ -2,7 +2,6 @@ package io.github.vzwingma.finances.budget.services.comptes.api;
 
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
-import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.comptes.business.ports.IComptesAppProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -27,7 +26,7 @@ import java.util.List;
  * @author vzwingma
  *
  */
-@Path(BudgetApiUrlEnum.COMPTES_BASE)
+@Path(ComptesApiUrlEnum.COMPTES_BASE)
 public class ComptesResource extends AbstractAPIResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(ComptesResource.class);
@@ -50,7 +49,7 @@ public class ComptesResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Session introuvable")
     })
     @GET
-    @Path(BudgetApiUrlEnum.COMPTES_LIST)
+    @Path(ComptesApiUrlEnum.COMPTES_LIST)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<List<CompteBancaire>> getComptesUtilisateur() {
         LOG.info("getComptes");
@@ -73,7 +72,7 @@ public class ComptesResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(BudgetApiUrlEnum.COMPTES_ID)
+    @Path(ComptesApiUrlEnum.COMPTES_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<CompteBancaire> getCompteUtilisateur(@RestPath String idCompte) {
         String proprietaire = "vzwingma";

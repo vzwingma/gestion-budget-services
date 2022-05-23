@@ -5,6 +5,7 @@ import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDate
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BadParametersException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserNotAuthorizedException;
+import io.github.vzwingma.finances.budget.services.operations.api.enums.OperationsApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.IntervallesCompteAPIObject;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LibellesOperationsAPIObject;
@@ -296,7 +297,7 @@ public class OperationsResource extends AbstractAPIResource {
         LOG.info("[idBudget={}][idOperation={}] createOrUpdateOperation", idBudget, idOperation);
         if(operation != null && idBudget != null && getIdProprietaire() != null){
             operation.setId(idOperation);
-            operationsService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
+      //      operationsService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
 
             return operationsService.updateOperationInBudget(idBudget, operation, getIdProprietaire());
 
@@ -342,7 +343,7 @@ public class OperationsResource extends AbstractAPIResource {
         if(operation != null && idBudget != null){
 
             operation.setId(idOperation);
-            operationsService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
+       //     operationsService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
             return operationsService.createOperationIntercompte(idBudget, operation, idCompte, getIdProprietaire());
         }
         else{
