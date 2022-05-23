@@ -1,6 +1,7 @@
 package io.github.vzwingma.finances.budget.services.operations.business;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
+import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.concurrent.CompletionException;
 
@@ -261,5 +263,25 @@ public class BudgetServiceTest {
         assertEquals(budgetDesactive.getListeOperations().get(0).getEtat(), EtatOperationEnum.REPORTEE);
 
         Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(eq(budgetDesactive));
+    }
+
+
+
+
+    @Test
+    void testIsBudgetUptoDate(){
+        // When
+        BudgetMensuel budgetADesactiver = MockDataBudgets.getBudgetActifCompteC1et1operationPrevue();
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(eq(budgetADesactiver.getId())))
+                .thenReturn(Uni.createFrom().item(budgetADesactiver));
+
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(eq("notFound")))
+                .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Budget introuvable")));
+
+
+        // Test
+        assertTrue(budgetAppProvider.isBudgetIHMUpToDate(budgetADesactiver.getId(), BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(LocalDateTime.now())).await().indefinitely());
+
+        assertFalse(budgetAppProvider.isBudgetIHMUpToDate("notFound", BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(LocalDateTime.now())).await().indefinitely());
     }
 }

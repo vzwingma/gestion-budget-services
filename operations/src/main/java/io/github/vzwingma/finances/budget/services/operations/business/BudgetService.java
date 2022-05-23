@@ -2,6 +2,7 @@ package io.github.vzwingma.finances.budget.services.operations.business;
 
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
+import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
@@ -272,6 +273,12 @@ public class BudgetService implements IBudgetAppProvider {
 		return budget;
 	}
 
+	/**
+	 * Chargement du budget mensuel
+	 * @param idBudget id du budget
+	 * @param idProprietaire id du propriétaire
+	 * @return budget mensuel
+	 */
 	@Override
 	public Uni<BudgetMensuel> getBudgetMensuel(String idBudget, String idProprietaire) {
 		try {
@@ -281,6 +288,12 @@ public class BudgetService implements IBudgetAppProvider {
 		}
 	}
 
+	/**
+	 * Réinitialisation du budget
+	 * @param idBudget       budget mensuel
+	 * @param idProprietaire propriétaire du budget
+	 * @return budget mensuel réinitialisé
+	 */
 	@Override
 	public Uni<BudgetMensuel> reinitialiserBudgetMensuel(String idBudget, String idProprietaire) {
 		LOGGER.info("Réinitialisation du budget {}", idBudget);
@@ -294,11 +307,23 @@ public class BudgetService implements IBudgetAppProvider {
 				.onItem().transformToUni(tuple -> initNewBudget(tuple.getItem2(), idProprietaire, tuple.getItem1().getMois(), tuple.getItem1().getAnnee()));
 	}
 
+	/**
+	 * Budget mensuel actif
+	 * @param idBudget id budget
+	 * @return résultat de l'activation
+	 */
 	@Override
 	public Uni<Boolean> isBudgetMensuelActif(String idBudget) {
 		return this.dataOperationsProvider.isBudgetActif(idBudget);
 	}
 
+	/**
+	 * Dés/Activation du budget mensuel
+	 * @param idBudgetMensuel id budget mensuel
+	 * @param budgetActif etat du budget
+	 * @param idProprietaire id du propriétaire
+	 * @return budget mensuel mis à jour
+	 */
 	@Override
 	public Uni<BudgetMensuel> setBudgetActif(String idBudgetMensuel, boolean budgetActif, String idProprietaire) {
 		LOGGER.info("{} du budget {} de {}", budgetActif ? "Réouverture" : "Fermeture", idBudgetMensuel, idProprietaire);
@@ -327,9 +352,21 @@ public class BudgetService implements IBudgetAppProvider {
 		}
 	}
 
+	/**
+	 *
+	 * @param idBudget identifiant du budget
+	 * @param dateSurIHM Date affichée
+	 * @return budget up to date ?
+	 */
 	@Override
 	public Uni<Boolean> isBudgetIHMUpToDate(String idBudget, Long dateSurIHM) {
-		return null;
+		return this.dataOperationsProvider.chargeBudgetMensuel(idBudget)
+				.onItem().transform(budgetMensuel -> {
+					LOGGER.debug("Budget : Date mise à jour : {} / Date IHM : {}",
+							BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(budgetMensuel.getDateMiseAJour()), dateSurIHM);
+					return dateSurIHM >= BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(budgetMensuel.getDateMiseAJour());
+				})
+				.onFailure().recoverWithItem(Boolean.FALSE);
 	}
 
 

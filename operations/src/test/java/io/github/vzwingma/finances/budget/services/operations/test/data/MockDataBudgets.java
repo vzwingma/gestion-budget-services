@@ -61,22 +61,25 @@ public class MockDataBudgets {
     public static BudgetMensuel getBudgetActifCompteC1et1operationPrevue(){
 
         BudgetMensuel budget = new BudgetMensuel();
-        budget.setActif(true);
-        budget.getSoldes().setSoldeAtFinMoisPrecedent(0D);
-        budget.setListeOperations(new ArrayList<>());
-        BudgetDataUtils.razCalculs(budget);
-        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
-        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
-        dep.setCategorieParente(cat);
-
-        LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
-        test1.setId("TEST1");
-        budget.getListeOperations().add(test1);
-
         budget.setMois(Month.JANUARY);
         budget.setAnnee(2022);
         budget.setIdCompteBancaire(getCompte().getId());
         budget.setId(BudgetDataUtils.getBudgetId(budget.getIdCompteBancaire(), budget.getMois(), budget.getAnnee()));
+
+        budget.setActif(true);
+        budget.setDateMiseAJour(LocalDateTime.now().minusDays(1));
+        // Soldes
+        budget.getSoldes().setSoldeAtFinMoisPrecedent(0D);
+        budget.setListeOperations(new ArrayList<>());
+        BudgetDataUtils.razCalculs(budget);
+        // Opération
+        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
+        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
+        dep.setCategorieParente(cat);
+        LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
+        test1.setId("TEST1");
+        budget.getListeOperations().add(test1);
+
         return budget;
     }
 
