@@ -4,6 +4,7 @@ import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBanc
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IComptesServiceProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
@@ -148,7 +149,6 @@ public class BudgetServiceTest {
     }
 
 
-
     @Test
     public void testGetBudgetSurCompteInactif() {
 
@@ -171,12 +171,11 @@ public class BudgetServiceTest {
     }
 
 
-
     /**
      * Test #121
      */
     @Test
-    void testCalculBudget(){
+    void testCalculBudget() {
         assertNotNull(this.operationsAppProvider);
         BudgetMensuel budget = MockDataBudgets.getBudgetActifCompteC1et1operationPrevue();
         assertNotNull(budget);
@@ -192,11 +191,11 @@ public class BudgetServiceTest {
     }
 
     @Test
-    void testReinitBudget(){
+    void testReinitBudget() {
         // When
         Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt()))
                 .thenReturn(
-                    Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
+                        Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
 
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString(), anyString()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
@@ -206,7 +205,7 @@ public class BudgetServiceTest {
 
 
     @Test
-    void testReinitCompteClosed(){
+    void testReinitCompteClosed() {
         // When
         Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt()))
                 .thenReturn(
@@ -223,7 +222,7 @@ public class BudgetServiceTest {
 
 
     @Test
-    void testReinitCompteUnknown(){
+    void testReinitCompteUnknown() {
         // When
         Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt()))
                 .thenReturn(
@@ -236,5 +235,31 @@ public class BudgetServiceTest {
         CompletionException exception = Assertions.assertThrows(CompletionException.class,
                 () -> budgetAppProvider.reinitialiserBudgetMensuel(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue().getId(), "test").await().indefinitely());
         assertEquals(DataNotFoundException.class, exception.getCause().getClass());
+    }
+
+
+    @Test
+    void testIsBudgetActif(){
+        // When
+        Mockito.when(mockOperationDataProvider.isBudgetActif(anyString())).thenReturn(Uni.createFrom().item(true));
+
+        // Test
+        assertTrue(budgetAppProvider.isBudgetMensuelActif(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue().getId()).await().indefinitely());
+    }
+
+
+    @Test
+    void testSetBudgetInactif(){
+        // When
+        BudgetMensuel budgetADesactiver = MockDataBudgets.getBudgetActifCompteC1et1operationPrevue();
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(anyString())).thenReturn(Uni.createFrom().item(budgetADesactiver));
+
+        // Test
+        BudgetMensuel budgetDesactive = budgetAppProvider.setBudgetActif(budgetADesactiver.getId(), false,"test").await().indefinitely();
+
+        assertFalse(budgetDesactive.isActif());
+        assertEquals(budgetDesactive.getListeOperations().get(0).getEtat(), EtatOperationEnum.REPORTEE);
+
+        Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(eq(budgetDesactive));
     }
 }

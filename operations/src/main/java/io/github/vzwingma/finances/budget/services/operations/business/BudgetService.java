@@ -5,6 +5,7 @@ import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBanc
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserNotAuthorizedException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
@@ -285,27 +286,45 @@ public class BudgetService implements IBudgetAppProvider {
 		LOGGER.info("Réinitialisation du budget {}", idBudget);
 		// Chargement du budget et compte
 		return getBudgetMensuel(idBudget, idProprietaire)
-				.flatMap(budget -> {
-					LOGGER.info("Réinitialisation du budget {}", budget.getId());
-					Uni<CompteBancaire> compte = this.comptesService.getCompteById(budget.getIdCompteBancaire(), idProprietaire);
-					Uni<BudgetMensuel> budgetUni = Uni.createFrom().item(budget);
-					return Uni.combine()
-							.all()
-							.unis(budgetUni, compte)
-							.asTuple();
-				})
+				.flatMap(budget -> Uni.combine().all()
+							  			.unis(Uni.createFrom().item(budget),
+											  this.comptesService.getCompteById(budget.getIdCompteBancaire(), idProprietaire))
+										.asTuple())
 				// Si pas d'erreur, réinitialisation du budget
-		.onItem().transformToUni(tuple -> initNewBudget(tuple.getItem2(), idProprietaire, tuple.getItem1().getMois(), tuple.getItem1().getAnnee()));
+				.onItem().transformToUni(tuple -> initNewBudget(tuple.getItem2(), idProprietaire, tuple.getItem1().getMois(), tuple.getItem1().getAnnee()));
 	}
 
 	@Override
 	public Uni<Boolean> isBudgetMensuelActif(String idBudget) {
-		return null;
+		return this.dataOperationsProvider.isBudgetActif(idBudget);
 	}
 
 	@Override
 	public Uni<BudgetMensuel> setBudgetActif(String idBudgetMensuel, boolean budgetActif, String idProprietaire) {
-		return null;
+		LOGGER.info("{} du budget {} de {}", budgetActif ? "Réouverture" : "Fermeture", idBudgetMensuel, idProprietaire);
+		if(idProprietaire != null){
+			return dataOperationsProvider.chargeBudgetMensuel(idBudgetMensuel)
+					.map(budgetMensuel -> {
+						budgetMensuel.setActif(budgetActif);
+						budgetMensuel.setDateMiseAJour(LocalDateTime.now());
+						//  #119 #141 : Toutes les opérations en attente sont reportées
+						if(!budgetActif){
+							budgetMensuel.getListeOperations()
+									.stream()
+									.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
+									.forEach(op -> op.setEtat(EtatOperationEnum.REPORTEE));
+						}
+						return budgetMensuel;
+					})
+					.onItem()
+						.ifNotNull()
+							.invoke(this::recalculSoldes)
+							// Sauvegarde du budget
+							.call(this::sauvegardeBudget);
+		}
+		else{
+			return Uni.createFrom().failure(new UserNotAuthorizedException("Le propriétaire n'a pas été trouvé"));
+		}
 	}
 
 	@Override
@@ -318,7 +337,7 @@ public class BudgetService implements IBudgetAppProvider {
 
 
 	/**
-	 * Calcul du budget Courant et sauvegarde
+	 * sauvegarde du budget Courant
 	 *
 	 * @param budget budget à sauvegarder
 	 */
