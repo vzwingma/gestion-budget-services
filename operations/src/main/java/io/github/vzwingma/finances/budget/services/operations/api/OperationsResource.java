@@ -1,9 +1,10 @@
 package io.github.vzwingma.finances.budget.services.operations.api;
 
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
-import io.github.vzwingma.finances.budget.services.communs.api.BudgetApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
-import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.*;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BadParametersException;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserNotAuthorizedException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.IntervallesCompteAPIObject;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LibellesOperationsAPIObject;
@@ -35,7 +36,7 @@ import java.util.Set;
  * @author vzwingma
  *
  */
-@Path(BudgetApiUrlEnum.BUDGET_BASE)
+@Path(OperationsApiUrlEnum.BUDGET_BASE)
 public class OperationsResource extends AbstractAPIResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(OperationsResource.class);
@@ -71,7 +72,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=BudgetApiUrlEnum.BUDGET_QUERY)
+    @Path(value=OperationsApiUrlEnum.BUDGET_QUERY)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> getBudget(
             @RestPath("idCompte") String idCompte,
@@ -106,7 +107,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=BudgetApiUrlEnum.BUDGET_ID)
+    @Path(value=OperationsApiUrlEnum.BUDGET_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> getBudget(
             @RestPath("idBudget") String idBudget) {
@@ -136,7 +137,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "405", description = "Compte clos. Impossible de réinitialiser le budget")
     })
     @DELETE
-    @Path(value=BudgetApiUrlEnum.BUDGET_ID)
+    @Path(value=OperationsApiUrlEnum.BUDGET_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> reinitializeBudget(@RestPath("idBudget") String idBudget){
         LOG.info("[idBudget={}] reinitialisation", idBudget);
@@ -163,27 +164,18 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=BudgetApiUrlEnum.BUDGET_ETAT)
+    @Path(value=OperationsApiUrlEnum.BUDGET_ETAT)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Boolean> isBudgetActif(
             @RestPath("idBudget") String idBudget,
-            @RestQuery(value = "false") Boolean isActif) {
+            @QueryParam(value = "actif") Boolean actif) {
 
-        LOG.trace("[idBudget={}] actif ? : {}", idBudget, isActif);
+        LOG.trace("[idBudget={}] actif ? : {}", idBudget, actif);
 
-        if(Boolean.TRUE.equals(isActif)){
+        if(Boolean.TRUE.equals(actif)){
             return budgetService.isBudgetMensuelActif(idBudget);
-            /*
-                    ;
-            LOG.info("[idBudget={}] isActif ? : {}",idBudget, isBudgetActif );
-            if(isBudgetActif){
-                return ResponseEntity.ok(true);
-            }
-            else{
-                return ResponseEntity.status(HttpStatus.LOCKED).build();
-            } */
         }
-        return Uni.createFrom().failure(new BadParametersException("Les paramètres {idBudget}=" +idBudget + " et {actif}=" + isActif + " ne sont pas valides"));
+        return Uni.createFrom().failure(new BadParametersException("Les paramètres {idBudget}=" +idBudget + " et {actif}=" + actif + " ne sont pas valides"));
     }
 
 
@@ -202,7 +194,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "426", description = "Le Budget a été mis à jour par rapport à la date renvoyée")
     })
     @GET
-    @Path(value=BudgetApiUrlEnum.BUDGET_UP_TO_DATE)
+    @Path(value=OperationsApiUrlEnum.BUDGET_UP_TO_DATE)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Boolean> isBudgetUptoDate(
             @RestPath("idBudget") String idBudget, @RestQuery(value="uptodateto") Long uptodateto) {
@@ -233,15 +225,14 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "500", description = "Opération en échec")
     })
     @POST
-    @Path(value=BudgetApiUrlEnum.BUDGET_ETAT)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path(value=OperationsApiUrlEnum.BUDGET_ETAT)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> setBudgetActif(
             @RestPath("idBudget") String idBudget,
-            @RestQuery(value="actif") Boolean setActif) {
+            @QueryParam(value="actif") Boolean actif) {
 
-        LOG.info("[idBudget={}] set Actif : {}", idBudget, setActif );
-        return budgetService.setBudgetActif(idBudget, setActif, getIdProprietaire());
+        LOG.info("[idBudget={}] set Actif : {}", idBudget, actif );
+        return budgetService.setBudgetActif(idBudget, actif, getIdProprietaire());
     }
 
 
@@ -259,7 +250,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @POST
-    @Path(value=BudgetApiUrlEnum.BUDGET_OPERATION_DERNIERE)
+    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION_DERNIERE)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Boolean> setAsDerniereOperation(
@@ -294,7 +285,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "423", description = "Compte clos")
     })
     @POST
-    @Path(value=BudgetApiUrlEnum.BUDGET_OPERATION)
+    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> createOrUpdateOperation(
@@ -338,7 +329,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "423", description = "Compte clos")
     })
     @POST
-    @Path(value=BudgetApiUrlEnum.BUDGET_OPERATION_INTERCOMPTE)
+    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION_INTERCOMPTE)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> createOperationIntercomptes(
@@ -377,7 +368,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "405", description = "Compte clos")
     })
     @DELETE
-    @Path(value=BudgetApiUrlEnum.BUDGET_OPERATION)
+    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> deleteOperation(
@@ -408,7 +399,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=BudgetApiUrlEnum.BUDGET_COMPTE_INTERVALLES)
+    @Path(value=OperationsApiUrlEnum.BUDGET_COMPTE_INTERVALLES)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@RestPath("idCompte") String idCompte) {
         LOG.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
@@ -451,7 +442,7 @@ public class OperationsResource extends AbstractAPIResource {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=BudgetApiUrlEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES)
+    @Path(value=OperationsApiUrlEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES)
     @Produces(MediaType.APPLICATION_JSON)
     public  Uni<LibellesOperationsAPIObject> getLibellesOperations(@RestPath("idCompte") String idCompte, @RestQuery("annee") Integer annee) {
         LOG.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);
