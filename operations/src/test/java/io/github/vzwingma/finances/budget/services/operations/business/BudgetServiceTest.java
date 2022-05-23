@@ -106,7 +106,8 @@ public class BudgetServiceTest {
         // bien le recacul du solde de fin de budget précédent
         assertEquals(b0.getSoldes().getSoldeAtFinMoisCourant(), budgetCharge.getSoldes().getSoldeAtFinMoisPrecedent());
         // bien le recalcul global des soldes
-
+        assertEquals(1000D, budgetCharge.getSoldes().getSoldeAtMaintenant());
+        assertEquals(1123D, budgetCharge.getSoldes().getSoldeAtFinMoisCourant());
 
         Mockito.verify(mockOperationDataProvider, Mockito.times(2)).chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt());
         Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(any(BudgetMensuel.class));
