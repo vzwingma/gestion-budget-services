@@ -25,7 +25,7 @@
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 
 		<sonar.projectKey>gestion-budget-services</sonar.projectKey>
-		<open-api.version>1.6.8</open-api.version>
+		<open-api.version>1.6.9</open-api.version>
 	</properties>
 
 	<issueManagement>
