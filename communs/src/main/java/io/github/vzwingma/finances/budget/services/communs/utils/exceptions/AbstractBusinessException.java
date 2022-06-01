@@ -44,7 +44,6 @@ public class AbstractBusinessException extends Exception {
 	 * @param ex exception
 	 */
 	private void logErreur(String libelleErreur, Throwable ex){
-		// Logger
 		Logger logger = LoggerFactory.getLogger(this.getClass());
 		if(ex != null){
 			logger.error("{}", libelleErreur);
