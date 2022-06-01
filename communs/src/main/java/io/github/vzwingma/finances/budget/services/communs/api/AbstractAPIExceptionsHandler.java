@@ -14,23 +14,23 @@ public abstract  class AbstractAPIExceptionsHandler implements ExceptionMapper<A
     @Override
     public Response toResponse(AbstractBusinessException e) {
         if(e instanceof BadParametersException) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getLibelle()).build();
         }
         else if(e instanceof DataNotFoundException) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getLibelle()).build();
         }
         else if(e instanceof BudgetNotFoundException) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getLibelle()).build();
         }
         else if(e instanceof CompteClosedException) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getLibelle()).build();
         }
         else if(e instanceof UserNotAuthorizedException) {
-            return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity(e.getLibelle()).build();
         }
         else if(e instanceof UserAccessForbiddenException) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(e.getLibelle()).build();
         }
-        return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage()).build();
+        return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getLibelle()).build();
     }
 }
