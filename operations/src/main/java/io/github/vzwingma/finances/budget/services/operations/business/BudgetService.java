@@ -3,7 +3,6 @@ package io.github.vzwingma.finances.budget.services.operations.business;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
-import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserNotAuthorizedException;
@@ -244,16 +243,17 @@ public class BudgetService implements IBudgetAppProvider {
 						setBudgetActif(budgetPrecedent.getId(), false, idProprietaire);
 					}
 				})
-				.map(budgetPrecedent -> initBudgetFromBudgetPrecedent(budgetInitVide, budgetPrecedent, idProprietaire));
+				.map(budgetPrecedent -> initBudgetFromBudgetPrecedent(budgetInitVide, budgetPrecedent));
 				// La sauvegarde du budget initialisé est faite dans le flux suivant
 	}
 
 	/**
 	 * Initialisation du budget à partir du budget du mois précédent
-	 * @param budget budget à calculer
+	 *
+	 * @param budget          budget à calculer
 	 * @param budgetPrecedent budget du mois précédent
 	 */
-	private BudgetMensuel initBudgetFromBudgetPrecedent(BudgetMensuel budget, BudgetMensuel budgetPrecedent, String proprietaire) {
+	private BudgetMensuel initBudgetFromBudgetPrecedent(BudgetMensuel budget, BudgetMensuel budgetPrecedent) {
 		// Calcul
 		if(budgetPrecedent != null){
 			recalculSoldes(budgetPrecedent);
@@ -277,17 +277,13 @@ public class BudgetService implements IBudgetAppProvider {
 
 	/**
 	 * Chargement du budget mensuel
+	 *
 	 * @param idBudget id du budget
-	 * @param idProprietaire id du propriétaire
 	 * @return budget mensuel
 	 */
 	@Override
-	public Uni<BudgetMensuel> getBudgetMensuel(String idBudget, String idProprietaire) {
-		try {
-			return getBudgetMensuel(BudgetDataUtils.getCompteFromBudgetId(idBudget), BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget), idProprietaire);
-		} catch (BudgetNotFoundException e) {
-			return Uni.createFrom().failure(e);
-		}
+	public Uni<BudgetMensuel> getBudgetMensuel(String idBudget) {
+		return this.dataOperationsProvider.chargeBudgetMensuel(idBudget);
 	}
 
 	/**
@@ -300,7 +296,7 @@ public class BudgetService implements IBudgetAppProvider {
 	public Uni<BudgetMensuel> reinitialiserBudgetMensuel(String idBudget, String idProprietaire) {
 		LOGGER.info("Réinitialisation du budget {}", idBudget);
 		// Chargement du budget et compte
-		return getBudgetMensuel(idBudget, idProprietaire)
+		return getBudgetMensuel(idBudget)
 				.flatMap(budget -> Uni.combine().all()
 							  			.unis(Uni.createFrom().item(budget),
 											  this.comptesService.getCompteById(budget.getIdCompteBancaire(), idProprietaire))

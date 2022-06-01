@@ -21,7 +21,7 @@ import java.util.Optional;
  *
  */
 @ApplicationScoped
-public class OperationDatabaseAdaptor implements IOperationsRepository { // extends AbstractDatabaseServiceProvider<CategorieOperation>
+public class OperationDatabaseAdaptor implements IOperationsRepository {
 
 
 	/**
@@ -29,6 +29,7 @@ public class OperationDatabaseAdaptor implements IOperationsRepository { // exte
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(OperationDatabaseAdaptor.class);
 
+	private static final String ATTRIBUT_BUDGET_ID = "_id";
 	private static final String ATTRIBUT_COMPTE_ID = "idCompteBancaire";
 	private static final String ATTRIBUT_ANNEE = "annee";
 	private static final String ATTRIBUT_MOIS = "mois";
@@ -36,30 +37,53 @@ public class OperationDatabaseAdaptor implements IOperationsRepository { // exte
 	@Override
 	public Uni<BudgetMensuel> chargeBudgetMensuel(CompteBancaire compte, Month mois, int annee) {
 		LOGGER.info("Chargement du budget {}/{} du compte {} ", mois, annee, compte.getId());
-
-		return find(ATTRIBUT_COMPTE_ID + "=?1 and " + ATTRIBUT_MOIS + "=?2 and " + ATTRIBUT_ANNEE + "=?3", compte.getId(), mois.toString(), annee)
+		return find(ATTRIBUT_COMPTE_ID + " = ?1 and " + ATTRIBUT_MOIS + " = ?2 and " + ATTRIBUT_ANNEE + " = ?3", compte.getId(), mois.toString(), annee)
 				.singleResultOptional()
-				.onItem()
-					.ifNull()
-						.failWith(new BudgetNotFoundException("Erreur lors du chargement du budget pour le compte " + compte.getId() + " du mois " + mois + " de l'année " + annee))
-				.map(Optional::get)
+				.onItem().transform(Optional::orElseThrow)
+				.onFailure()
+					.transform(e -> new BudgetNotFoundException("Erreur lors du chargement du budget pour le compte " + compte.getId() + " du mois " + mois + " de l'année " + annee))
 				.invoke(budget -> LOGGER.debug("\t> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size()));
 	}
 
+	/**
+	 *
+	 * @param idBudget id budget
+	 * @return budget actif ?
+	 */
 	@Override
 	public Uni<Boolean> isBudgetActif(String idBudget) {
-		return null;
+		LOGGER.trace("Budget {} est actif ?", idBudget);
+		return chargeBudgetMensuel(idBudget).map(BudgetMensuel::isActif);
 	}
 
+	/**
+	 *
+	 * @param idBudget identifiant du budget
+	 * @return budget mensuel correspondant à l'identifiant
+	 */
 	@Override
 	public Uni<BudgetMensuel> chargeBudgetMensuel(String idBudget) {
-		return null;
+
+		LOGGER.info("Chargement du budget {}", idBudget);
+		return find(ATTRIBUT_BUDGET_ID + "=?1", idBudget)
+				.singleResultOptional()
+				.onItem().transform(Optional::orElseThrow)
+					.onFailure()
+					.transform(e -> new BudgetNotFoundException("Erreur lors du chargement du budget " + idBudget))
+				.invoke(budget -> LOGGER.debug("\t> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size()));
 	}
 
-	@Override
-	public Multi<LigneOperation> chargerLignesDepenses(String idBudget) {
-		return null;
+	/**
+	 * Liste des lignes opérations d'un budget
+	 * @param budget budget concerné
+	 * @return liste des opérations
+
+	public Multi<LigneOperation> chargerLignesOperations(String idBudget) {
+		return chargeBudgetMensuel(idBudget)
+				.map(budget -> budget.getListeOperations())
+				.onItem().transformToMulti(ligneOperations -> Multi.createFrom().iterable(ligneOperations));
 	}
+	 */
 
 	@Override
 	public Uni<BudgetMensuel> sauvegardeBudgetMensuel(BudgetMensuel budget) {
@@ -75,6 +99,12 @@ public class OperationDatabaseAdaptor implements IOperationsRepository { // exte
 
 	@Override
 	public Multi<String> chargeLibellesOperations(String idCompte, int annee) {
-		return null;
+		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
+		final String query = ATTRIBUT_COMPTE_ID + "=?1 and " + ATTRIBUT_ANNEE + "= ?2";
+		return find(query, idCompte, annee)
+				.stream()
+				.map(BudgetMensuel::getListeOperations)
+				.map(listOperations -> listOperations.parallelStream().map(LigneOperation::getLibelle).toList())
+				.flatMap(listLibelles -> Multi.createFrom().iterable(listLibelles));
 	}
 }

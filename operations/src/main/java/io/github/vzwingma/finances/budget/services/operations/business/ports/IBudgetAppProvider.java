@@ -22,11 +22,11 @@ public interface IBudgetAppProvider {
     Uni<BudgetMensuel> getBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) ;
     /**
      * Charger budget
-     * @param idProprietaire id du propriétaire
+     *
      * @param idBudget id du budget
      * @return budget correspondant aux paramètres
      */
-    Uni<BudgetMensuel> getBudgetMensuel(String idBudget, String idProprietaire);
+    Uni<BudgetMensuel> getBudgetMensuel(String idBudget);
     /**
      * Réinitialiser un budget mensuel
      *

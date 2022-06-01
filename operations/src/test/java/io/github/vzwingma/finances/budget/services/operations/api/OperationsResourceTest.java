@@ -14,10 +14,12 @@ import org.mockito.Mockito;
 
 import javax.inject.Inject;
 
+import java.time.Month;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 
 @QuarkusTest
 class OperationsResourceTest {
@@ -91,5 +93,72 @@ class OperationsResourceTest {
                 .then()
                 .statusCode(200)
                 .body(Matchers.containsString("false"));
+    }
+
+    @Test
+    void testGetBudgetById() {
+        // Init des données
+        Mockito.when(budgetService.getBudgetMensuel(anyString()))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
+        // Test
+        String url = OperationsApiUrlEnum.BUDGET_BASE
+                + OperationsApiUrlEnum.BUDGET_ID.replace(OperationsApiUrlEnum.PARAM_ID_BUDGET, "1");
+
+        given() .when().get(url)
+                .then()
+                .statusCode(200)
+                .body(Matchers.containsString("TEST1"));
+    }
+
+    @Test
+    void testGetBudgetByNoId() {
+        // Test
+        String url = OperationsApiUrlEnum.BUDGET_BASE + OperationsApiUrlEnum.BUDGET_ID;
+
+        given() .when().get(url)
+                .then()
+                .statusCode(500);
+    }
+    @Test
+    void testGetBudgetByParams() {
+        // Init des données
+        Mockito.when(budgetService.getBudgetMensuel(anyString(), any(Month.class), anyInt(), anyString()))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
+        // Test
+        String url = OperationsApiUrlEnum.BUDGET_BASE
+                + OperationsApiUrlEnum.BUDGET_QUERY + "?idCompte=1&mois=1&annee=2020";
+
+        given() .when().get(url)
+                .then()
+                .statusCode(200)
+                .body(Matchers.containsString("TEST1"));
+    }
+
+
+
+    @Test
+    void testGetBudgetByParamsKO() {
+        // Test
+        String url = OperationsApiUrlEnum.BUDGET_BASE + OperationsApiUrlEnum.BUDGET_QUERY;
+
+        given() .when().get(url)
+                .then()
+                .statusCode(500);
+    }
+
+
+    @Test
+    void testReinitBudget() {
+        // Init des données
+        Mockito.when(budgetService.reinitialiserBudgetMensuel(anyString(), anyString()))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
+        // Test
+        String url = OperationsApiUrlEnum.BUDGET_BASE
+                + OperationsApiUrlEnum.BUDGET_ID.replace(OperationsApiUrlEnum.PARAM_ID_BUDGET, "1");
+
+        given() .when().delete(url)
+                .then()
+                .statusCode(200)
+                .body(Matchers.containsString("TEST1"));
     }
 }

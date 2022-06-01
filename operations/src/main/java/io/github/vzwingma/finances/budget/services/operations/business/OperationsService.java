@@ -7,6 +7,7 @@ import io.github.vzwingma.finances.budget.services.operations.business.model.bud
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
+import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +35,8 @@ public class OperationsService implements IOperationsAppProvider {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(OperationsService.class);
 
+	@Inject
+	IOperationsRepository dataOperationsProvider;
 
 	@Override
 	public void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
@@ -41,7 +45,7 @@ public class OperationsService implements IOperationsAppProvider {
 
 	@Override
 	public Multi<String> getLibellesOperations(String idCompte, int annee) {
-		return null;
+		return dataOperationsProvider.chargeLibellesOperations(idCompte, annee);
 	}
 
 	@Override

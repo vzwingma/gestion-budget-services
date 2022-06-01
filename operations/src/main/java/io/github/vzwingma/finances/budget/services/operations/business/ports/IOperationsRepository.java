@@ -2,7 +2,6 @@ package io.github.vzwingma.finances.budget.services.operations.business.ports;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoRepository;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
@@ -40,12 +39,12 @@ public interface IOperationsRepository extends ReactivePanacheMongoRepository<Bu
     Uni<BudgetMensuel> chargeBudgetMensuel(String idBudget) ;
 
 
-    /**
+    /*
      *
      * @param idBudget id du budget
      * @return liste des dépenses du budget
      */
-    Multi<LigneOperation> chargerLignesDepenses(String idBudget) ;
+    // Multi<LigneOperation> chargerLignesOperations(String idBudget) ;
 
     /**
      * Sauvegarde du budget mensuel

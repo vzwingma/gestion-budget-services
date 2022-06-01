@@ -69,10 +69,10 @@ public class OperationsResource extends AbstractAPIResource {
     @Path(value=OperationsApiUrlEnum.BUDGET_QUERY)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> getBudget(
-            @RestPath("idCompte") String idCompte,
-            @RestPath("mois") Integer mois,
-            @RestPath("annee") Integer annee) {
-        LOG.info("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
+            @RestQuery("idCompte") String idCompte,
+            @RestQuery("mois") Integer mois,
+            @RestQuery("annee") Integer annee) {
+        LOG.trace("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
 
         if(mois != null && annee != null){
             try{
@@ -103,12 +103,11 @@ public class OperationsResource extends AbstractAPIResource {
     @GET
     @Path(value=OperationsApiUrlEnum.BUDGET_ID)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<BudgetMensuel> getBudget(
-            @RestPath("idBudget") String idBudget) {
+    public Uni<BudgetMensuel> getBudget(@RestPath("idBudget") String idBudget) {
 
-        LOG.info("[idBudget={}] chargeBudget", idBudget);
+        LOG.trace("[idBudget={}] chargeBudget", idBudget);
         if(idBudget != null){
-            return budgetService.getBudgetMensuel(idBudget, getIdProprietaire());
+            return budgetService.getBudgetMensuel(idBudget);
         }
         else{
             return Uni.createFrom().failure(new BadParametersException("L'id du budget doit être renseigné"));
@@ -134,7 +133,7 @@ public class OperationsResource extends AbstractAPIResource {
     @Path(value=OperationsApiUrlEnum.BUDGET_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> reinitializeBudget(@RestPath("idBudget") String idBudget){
-        LOG.info("[idBudget={}] reinitialisation", idBudget);
+        LOG.trace("[idBudget={}] reinitialisation", idBudget);
         String proprietaire = getIdProprietaire();
         if(idBudget != null && proprietaire != null){
             return budgetService.reinitialiserBudgetMensuel(idBudget, proprietaire);
@@ -162,9 +161,9 @@ public class OperationsResource extends AbstractAPIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Boolean> isBudgetActif(
             @RestPath("idBudget") String idBudget,
-            @QueryParam(value = "actif") Boolean actif) {
+            @RestQuery(value = "actif") Boolean actif) {
 
-        LOG.trace("[idBudget={}] actif ? : {}", idBudget, actif);
+        LOG.debug("[idBudget={}] actif ? : {}", idBudget, actif);
 
         if(Boolean.TRUE.equals(actif)){
             return budgetService.isBudgetMensuelActif(idBudget);
@@ -223,12 +222,16 @@ public class OperationsResource extends AbstractAPIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> setBudgetActif(
             @RestPath("idBudget") String idBudget,
-            @QueryParam(value="actif") Boolean actif) {
+            @RestQuery(value="actif") Boolean actif) {
 
         LOG.info("[idBudget={}] set Actif : {}", idBudget, actif );
         return budgetService.setBudgetActif(idBudget, actif, getIdProprietaire());
     }
 
+
+    /* ********************************************************
+     *                      OPERATIONS
+     *********************************************************/
 
 
     /**
@@ -453,8 +456,8 @@ public class OperationsResource extends AbstractAPIResource {
                         else{
                             return null;
                         }
-                    })
-                    .onItem().ifNull().failWith(new DataNotFoundException("Impossible de trouver les libellés des opérations pour le compte " + idCompte));
+                    });
+                    //.onItem().ifNull().failWith(new DataNotFoundException("Impossible de trouver les libellés des opérations pour le compte " + idCompte));
         }
         else {
             return Uni.createFrom().failure(new UserNotAuthorizedException("L'utilisateur n'est pas authentifié"));
