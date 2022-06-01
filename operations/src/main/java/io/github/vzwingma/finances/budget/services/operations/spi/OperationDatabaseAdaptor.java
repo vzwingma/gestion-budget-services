@@ -2,9 +2,11 @@ package io.github.vzwingma.finances.budget.services.operations.spi;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
+import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.slf4j.Logger;
@@ -93,8 +95,19 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 	}
 
 	@Override
-	public Uni<BudgetMensuel[]> getPremierDernierBudgets(String compte) {
-		return null;
+	public Uni<BudgetMensuel[]> getPremierDernierBudgets(String idCompte) {
+		return list(ATTRIBUT_COMPTE_ID, Sort.ascending(ATTRIBUT_ANNEE, ATTRIBUT_BUDGET_ID), idCompte)
+				.map(b -> {
+					if(b != null && !b.isEmpty()){
+						return new BudgetMensuel[] { b.get(0), b.get(b.size() - 1) };
+					}
+					else{
+						return null;
+					}
+				})
+				.onItem()
+					.ifNull().failWith(new DataNotFoundException("Erreur lors du chargement des intervalles de budgets de " + idCompte))
+				.invoke(budget -> LOGGER.info("\t> Réception de l'intervalle de budgets -> {} / {}", budget[0].getId(), budget[1].getId()));
 	}
 
 	@Override

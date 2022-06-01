@@ -33,7 +33,7 @@ public class OperationsApiUrlEnum {
 	/// ou
 	// - uptodateto (long timestamp)
 	public static final String BUDGET_UP_TO_DATE = "/"+PARAM_ID_BUDGET+"/upToDate";
-	public static final String BUDGET_COMPTE_INTERVALLES = "/"+PARAM_ID_BUDGET+"/intervalles";
+	public static final String BUDGET_COMPTE_INTERVALLES = "/"+PARAM_ID_COMPTE+"/intervalles";
 	public static final String BUDGET_COMPTE_OPERATIONS_LIBELLES = "/"+PARAM_ID_COMPTE+"/operations/libelles";
 
 	/**

@@ -256,12 +256,6 @@ public class OperationsResource extends AbstractAPIResource {
 
         LOG.info("[idBudget={}][idOperation={}] setAsDerniereOperation", idBudget, idOperation);
         return operationsService.setLigneAsDerniereOperation(idBudget, idOperation, getIdProprietaire());
-/*        if(resultat){
-            return ResponseEntity.ok().build();
-        }
-        else {
-            return ResponseEntity.noContent().build();
-        } */
     }
 
 
@@ -400,7 +394,12 @@ public class OperationsResource extends AbstractAPIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@RestPath("idCompte") String idCompte) {
         LOG.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
-        if(getIdProprietaire() != null) {
+        if(getIdProprietaire() == null) {
+            return Uni.createFrom().failure(new UserNotAuthorizedException("L'utilisateur n'est pas authentifié"));
+        }
+        if(idCompte == null){
+                return Uni.createFrom().failure(new BadParametersException("Le paramètre idCompte est obligatoire"));
+        }
             return this.budgetService.getIntervallesBudgets(idCompte)
                     .onItem()
                         .transform(intervalles -> {
@@ -416,10 +415,6 @@ public class OperationsResource extends AbstractAPIResource {
                         })
                     .onItem()
                         .ifNull().failWith(new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte));
-        }
-        else {
-            return Uni.createFrom().failure(new UserNotAuthorizedException("L'utilisateur n'est pas authentifié"));
-            }
     }
 
 
@@ -456,8 +451,9 @@ public class OperationsResource extends AbstractAPIResource {
                         else{
                             return null;
                         }
-                    });
-                    //.onItem().ifNull().failWith(new DataNotFoundException("Impossible de trouver les libellés des opérations pour le compte " + idCompte));
+                    })
+                    .onItem()
+                        .ifNull().failWith(new DataNotFoundException("Impossible de trouver les libellés des opérations pour le compte " + idCompte));
         }
         else {
             return Uni.createFrom().failure(new UserNotAuthorizedException("L'utilisateur n'est pas authentifié"));
