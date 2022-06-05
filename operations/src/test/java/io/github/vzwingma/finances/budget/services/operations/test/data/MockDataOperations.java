@@ -1,8 +1,11 @@
 package io.github.vzwingma.finances.budget.services.operations.test.data;
 
+import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
+import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.TypeOperationEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,5 +38,15 @@ public class MockDataOperations {
         lo.setLibelle("Opération "+numero);
         return lo;
 
+    }
+
+
+    public static LigneOperation getOperationPrelevement(){
+        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
+        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
+        dep.setCategorieParente(cat);
+        LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
+        test1.setId("TEST1");
+        return test1;
     }
 }

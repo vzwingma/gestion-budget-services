@@ -1,12 +1,7 @@
 package io.github.vzwingma.finances.budget.services.operations.test.data;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
-import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.TypeOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 
 import java.time.LocalDateTime;
@@ -73,12 +68,7 @@ public class MockDataBudgets {
         budget.setListeOperations(new ArrayList<>());
         BudgetDataUtils.razCalculs(budget);
         // Opération
-        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
-        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
-        dep.setCategorieParente(cat);
-        LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
-        test1.setId("TEST1");
-        budget.getListeOperations().add(test1);
+        budget.getListeOperations().add(MockDataOperations.getOperationPrelevement());
 
         return budget;
     }

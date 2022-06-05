@@ -7,7 +7,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.github.vzwingma.finances.budget.services.communs.data.abstrait.AbstractAPIObjectModel;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +15,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -24,7 +24,7 @@ import java.util.UUID;
  * @author vzwingma
  *
  */
-@Getter @Setter @NoArgsConstructor @EqualsAndHashCode(callSuper = false)
+@Getter @Setter @NoArgsConstructor
 public class LigneOperation extends AbstractAPIObjectModel implements Comparable<LigneOperation> {
 
 	/**
@@ -238,5 +238,18 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 			return dateC.compareTo(dateCo);
 		}
 		return 0;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		LigneOperation that = (LigneOperation) o;
+		return id.equals(that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

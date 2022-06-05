@@ -3,21 +3,26 @@ package io.github.vzwingma.finances.budget.services.operations.business;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
+import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.TotauxCategorie;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.TypeOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
+import io.github.vzwingma.finances.budget.services.operations.spi.IParametragesServiceProvider;
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -47,6 +52,18 @@ public class OperationsService implements IOperationsAppProvider {
 	@Inject
 	IBudgetAppProvider budgetService;
 
+	@RestClient
+	@Inject
+	IParametragesServiceProvider parametragesService;
+
+	private CategorieOperations categorieRemboursement;
+
+	@PostConstruct
+	public void init() {
+		LOGGER.info("Initialisation du service d'opérations");
+		categorieRemboursement = this.parametragesService.getCategorieParId(IdsCategoriesEnum.REMBOURSEMENT.getId()).await().indefinitely();
+	}
+
 
 	@Override
 	public void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
@@ -72,10 +89,6 @@ public class OperationsService implements IOperationsAppProvider {
 		return dataOperationsProvider.chargeLibellesOperations(idCompte, annee);
 	}
 
-	@Override
-	public Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination) {
-		return null;
-	}
 
 	/**
 	 * Calcul des soldes
@@ -198,12 +211,83 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	@Override
-	public Uni<BudgetMensuel> deleteOperation(String idBudget, String idOperation) {
+	public List<LigneOperation> addOperation(List<LigneOperation> operations, LigneOperation ligneOperation)  {
+		// Si mise à jour d'une opération, on l'enlève
+		int rangMaj = operations.indexOf(ligneOperation);
+		operations.removeIf(op -> op.getId().equals(ligneOperation.getId()));
+
+		if (ligneOperation.getEtat() != null) {
+			LigneOperation ligneUpdatedOperation = updateOperation(ligneOperation);
+			if (rangMaj >= 0) {
+				LOGGER.debug("Mise à jour de l'opération {}", ligneUpdatedOperation);
+				operations.add(rangMaj, ligneUpdatedOperation);
+			} else {
+				LOGGER.debug("Ajout de l'opération {} dans le budget", ligneUpdatedOperation);
+				operations.add(ligneUpdatedOperation);
+
+				// Si frais remboursable : ajout du remboursement en prévision
+				// #62 : et en mode création
+				if (ligneOperation.getSsCategorie() != null
+						&& ligneOperation.getCategorie() != null
+						&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())
+						&& this.categorieRemboursement != null) {
+					operations.add(addOperationRemboursement(ligneOperation));
+				}
+			}
+		} else {
+			LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
+		}
+		return operations;
+	}
+
+
+
+	/**
+	 * @param ligneOperation opération
+	 * @return ligneOperation màj
+	 */
+	private LigneOperation updateOperation(LigneOperation ligneOperation) {
+		ligneOperation.getAutresInfos().setDateMaj(LocalDateTime.now());
+		// TODO : nomProprietaire à ajouter
+		ligneOperation.getAutresInfos().setAuteur("vzwingmann");
+		if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
+			if(ligneOperation.getAutresInfos().getDateOperation() == null){
+				ligneOperation.getAutresInfos().setDateOperation(LocalDateTime.now());
+			}
+		}
+		else {
+			ligneOperation.getAutresInfos().setDateOperation(null);
+		}
+		return ligneOperation;
+	}
+
+	/**
+	 * @param ligneOperation ligne d'opération à ajouter
+	 * @return ligne de remboursement
+	 */
+	private LigneOperation addOperationRemboursement(LigneOperation ligneOperation) {
+		LigneOperation ligneRemboursement = new LigneOperation(
+						this.categorieRemboursement,
+						"[Remboursement] " + ligneOperation.getLibelle(),
+						TypeOperationEnum.CREDIT,
+						Math.abs(ligneOperation.getValeur()),
+						EtatOperationEnum.REPORTEE,
+						ligneOperation.isPeriodique());
+		// TODO : nomProprietaire à ajouter
+		ligneRemboursement.getAutresInfos().setAuteur("vzwingmann");
+		ligneRemboursement.getAutresInfos().setDateMaj(LocalDateTime.now());
+		return ligneRemboursement;
+	}
+
+
+	@Override
+	public Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination) {
 		return null;
 	}
 
+
 	@Override
-	public Uni<BudgetMensuel> updateOperationInBudget(String idBudget, LigneOperation ligneOperation) {
+	public Uni<BudgetMensuel> deleteOperation(String idBudget, String idOperation) {
 		return null;
 	}
 }

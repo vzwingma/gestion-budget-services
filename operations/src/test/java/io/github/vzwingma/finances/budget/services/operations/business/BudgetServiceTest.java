@@ -6,10 +6,12 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.Comp
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
 import io.github.vzwingma.finances.budget.services.operations.spi.IComptesServiceProvider;
 import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataBudgets;
+import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataOperations;
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.mutiny.Uni;
@@ -289,4 +291,37 @@ public class BudgetServiceTest {
     }
 
 
+    @Test
+    void testUpdateBudgetCompteClos(){
+        // When
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(anyString()))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetInactifCompteC1()));
+
+        Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteInactif()));
+
+        // Test
+        CompletionException exception = Assertions.assertThrows(CompletionException.class,
+                () -> budgetAppProvider.addOperationInBudget("idBudget", MockDataOperations.getOperationPrelevement()).await().indefinitely());
+        assertEquals(CompteClosedException.class, exception.getCause().getClass());
+
+    }
+    @Test
+    void testUpdateBudget(){
+        // When
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(anyString()))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
+
+        Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+
+        // Test
+        LigneOperation ligneOperation = MockDataOperations.getOperationPrelevement();
+        BudgetMensuel budgetMensuelAJour = budgetAppProvider.addOperationInBudget("C1_2022_01", ligneOperation).await().indefinitely();
+        assertEquals(1, budgetMensuelAJour.getListeOperations().size());
+
+        Mockito.verify(budgetAppProvider, Mockito.times(1)).recalculSoldes(any(BudgetMensuel.class));
+        Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(any(BudgetMensuel.class));
+
+    }
 }
