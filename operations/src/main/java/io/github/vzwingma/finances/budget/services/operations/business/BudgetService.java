@@ -5,7 +5,6 @@ import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBanc
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
-import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserNotAuthorizedException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
@@ -15,6 +14,7 @@ import io.github.vzwingma.finances.budget.services.operations.spi.IComptesServic
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ import java.time.Month;
  *
  */
 @ApplicationScoped
-@NoArgsConstructor
+@NoArgsConstructor @Setter
 public class BudgetService implements IBudgetAppProvider {
 
 
@@ -52,28 +52,24 @@ public class BudgetService implements IBudgetAppProvider {
 	@Inject
 	IOperationsAppProvider operationsAppProvider;
 
-	public BudgetService(IOperationsRepository budgetsRepository, IComptesServiceProvider comptesService, IOperationsAppProvider operationsService){
-		this.dataOperationsProvider = budgetsRepository;
-		this.comptesService = comptesService;
-		this.operationsAppProvider = operationsService;
-	}
 
 	/**
 	 * Chargement du budget du mois courant
+	 *
 	 * @param idCompte compte
-	 * @param mois mois
-	 * @param annee année
+	 * @param mois     mois
+	 * @param annee    année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
 	@Override
-	public Uni<BudgetMensuel> getBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) {
+	public Uni<BudgetMensuel> getBudgetMensuel(String idCompte, Month mois, int annee) {
 		LOGGER.debug("Chargement du budget {} de {}/{}", idCompte, mois, annee);
-		return this.comptesService.getCompteById(idCompte, idProprietaire)
-				.invoke(compte -> LOGGER.debug("-> Compte correspodant {}", compte))
+		return this.comptesService.getCompteById(idCompte)
+				.invoke(compte -> LOGGER.debug("-> Compte correspondant {}", compte))
 				.onItem().ifNotNull()
 				.transformToUni(compte -> {
 					if(Boolean.TRUE.equals(compte.isActif())){
-						return chargerBudgetMensuelSurCompteActif(idProprietaire, compte, mois, annee);
+						return chargerBudgetMensuelSurCompteActif(compte, mois, annee);
 					}
 					else{
 						return chargerBudgetMensuelSurCompteInactif(compte, mois, annee);
@@ -85,19 +81,19 @@ public class BudgetService implements IBudgetAppProvider {
 
 	/**
 	 * Chargement du budget du mois courant pour le compte actif
-	 * @param idProprietaire id du propriétaire
+	 *
 	 * @param compteBancaire compte
-	 * @param mois mois
-	 * @param annee année
+	 * @param mois           mois
+	 * @param annee          année
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
-	private Uni<BudgetMensuel> chargerBudgetMensuelSurCompteActif(String idProprietaire, CompteBancaire compteBancaire, Month mois, int annee) {
+	private Uni<BudgetMensuel> chargerBudgetMensuelSurCompteActif(CompteBancaire compteBancaire, Month mois, int annee) {
 		LOGGER.debug("Chargement du budget de {}/{} du compte actif {} ", mois, annee, compteBancaire.getId());
 
 			return this.dataOperationsProvider.chargeBudgetMensuel(compteBancaire, mois, annee)
 					// Budget introuvable - init d'un nouveau budget
 					.onItem()
-						.ifNull().switchTo(() -> initNewBudget(compteBancaire, idProprietaire, mois, annee))
+						.ifNull().switchTo(() -> initNewBudget(compteBancaire, mois, annee))
 
 					.invoke(budgetMensuel -> LOGGER.debug("Budget mensuel chargé {}", budgetMensuel))
 					// rechargement du solde mois précédent (s'il a changé)
@@ -191,12 +187,13 @@ public class BudgetService implements IBudgetAppProvider {
 
 	/**
 	 * Init new budget
+	 *
 	 * @param compteBancaire compte
-	 * @param mois mois
-	 * @param annee année
+	 * @param mois           mois
+	 * @param annee          année
 	 * @return budget nouvellement créé
 	 */
-	protected Uni<BudgetMensuel> initNewBudget(CompteBancaire compteBancaire, String idProprietaire, Month mois, int annee) {
+	protected Uni<BudgetMensuel> initNewBudget(CompteBancaire compteBancaire, Month mois, int annee) {
 
 		//Vérification du compte
 		if(compteBancaire == null) {
@@ -235,12 +232,12 @@ public class BudgetService implements IBudgetAppProvider {
 		// MAJ Calculs à partir du mois précédent
 		// Recherche du budget précédent
 		// Si impossible : on retourne le budget initialisé
-		return getBudgetMensuel(compteBancaire.getId(),mois.minus(1) , Month.DECEMBER.equals(mois.minus(1)) ? annee -1 : annee, idProprietaire)
+		return getBudgetMensuel(compteBancaire.getId(),mois.minus(1) , Month.DECEMBER.equals(mois.minus(1)) ? annee -1 : annee)
 				.onItem()
 				.invoke(budgetPrecedent -> {
 					if(budgetPrecedent != null){
 						// #115 : Cloture automatique du mois précédent
-						setBudgetActif(budgetPrecedent.getId(), false, idProprietaire);
+						setBudgetActif(budgetPrecedent.getId(), false);
 					}
 				})
 				.map(budgetPrecedent -> initBudgetFromBudgetPrecedent(budgetInitVide, budgetPrecedent));
@@ -288,21 +285,21 @@ public class BudgetService implements IBudgetAppProvider {
 
 	/**
 	 * Réinitialisation du budget
-	 * @param idBudget       budget mensuel
-	 * @param idProprietaire propriétaire du budget
+	 *
+	 * @param idBudget budget mensuel
 	 * @return budget mensuel réinitialisé
 	 */
 	@Override
-	public Uni<BudgetMensuel> reinitialiserBudgetMensuel(String idBudget, String idProprietaire) {
+	public Uni<BudgetMensuel> reinitialiserBudgetMensuel(String idBudget) {
 		LOGGER.info("Réinitialisation du budget {}", idBudget);
 		// Chargement du budget et compte
 		return getBudgetMensuel(idBudget)
 				.flatMap(budget -> Uni.combine().all()
 							  			.unis(Uni.createFrom().item(budget),
-											  this.comptesService.getCompteById(budget.getIdCompteBancaire(), idProprietaire))
+											  this.comptesService.getCompteById(budget.getIdCompteBancaire()))
 										.asTuple())
 				// Si pas d'erreur, réinitialisation du budget
-				.onItem().transformToUni(tuple -> initNewBudget(tuple.getItem2(), idProprietaire, tuple.getItem1().getMois(), tuple.getItem1().getAnnee()));
+				.onItem().transformToUni(tuple -> initNewBudget(tuple.getItem2(), tuple.getItem1().getMois(), tuple.getItem1().getAnnee()));
 	}
 
 	/**
@@ -317,15 +314,14 @@ public class BudgetService implements IBudgetAppProvider {
 
 	/**
 	 * Dés/Activation du budget mensuel
+	 *
 	 * @param idBudgetMensuel id budget mensuel
-	 * @param budgetActif etat du budget
-	 * @param idProprietaire id du propriétaire
+	 * @param budgetActif     etat du budget
 	 * @return budget mensuel mis à jour
 	 */
 	@Override
-	public Uni<BudgetMensuel> setBudgetActif(String idBudgetMensuel, boolean budgetActif, String idProprietaire) {
-		LOGGER.info("{} du budget {} de {}", budgetActif ? "Réouverture" : "Fermeture", idBudgetMensuel, idProprietaire);
-		if(idProprietaire != null){
+	public Uni<BudgetMensuel> setBudgetActif(String idBudgetMensuel, boolean budgetActif) {
+		LOGGER.info("{} du budget {}", budgetActif ? "Réouverture" : "Fermeture", idBudgetMensuel);
 			return dataOperationsProvider.chargeBudgetMensuel(idBudgetMensuel)
 					.map(budgetMensuel -> {
 						budgetMensuel.setActif(budgetActif);
@@ -344,10 +340,7 @@ public class BudgetService implements IBudgetAppProvider {
 							.invoke(this::recalculSoldes)
 							// Sauvegarde du budget
 							.call(this::sauvegardeBudget);
-		}
-		else{
-			return Uni.createFrom().failure(new UserNotAuthorizedException("Le propriétaire n'a pas été trouvé"));
-		}
+
 	}
 
 	/**

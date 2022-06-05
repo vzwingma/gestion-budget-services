@@ -14,12 +14,13 @@ public interface IBudgetAppProvider {
 
     /**
      * Chargement du budget du mois courant
+     *
      * @param idCompte compte
-     * @param mois mois
-     * @param annee année
+     * @param mois     mois
+     * @param annee    année
      * @return budget mensuel chargé et initialisé à partir des données précédentes
      */
-    Uni<BudgetMensuel> getBudgetMensuel(String idCompte, Month mois, int annee, String idProprietaire) ;
+    Uni<BudgetMensuel> getBudgetMensuel(String idCompte, Month mois, int annee) ;
     /**
      * Charger budget
      *
@@ -30,10 +31,9 @@ public interface IBudgetAppProvider {
     /**
      * Réinitialiser un budget mensuel
      *
-     * @param idBudget       budget mensuel
-     * @param idProprietaire propriétaire du budget
+     * @param idBudget budget mensuel
      */
-    Uni<BudgetMensuel> reinitialiserBudgetMensuel(String idBudget, String idProprietaire) ;
+    Uni<BudgetMensuel> reinitialiserBudgetMensuel(String idBudget) ;
 
     /**
      * Chargement de l'état du budget du mois courant en consultation
@@ -47,7 +47,7 @@ public interface IBudgetAppProvider {
      *
      * @param budgetActif etat du budget
      */
-    Uni<BudgetMensuel> setBudgetActif(String idBudgetMensuel, boolean budgetActif, String idProprietaire);
+    Uni<BudgetMensuel> setBudgetActif(String idBudgetMensuel, boolean budgetActif);
     /**
      * Indique si l'IHM est out of date
      * @param idBudget identifiant du budget

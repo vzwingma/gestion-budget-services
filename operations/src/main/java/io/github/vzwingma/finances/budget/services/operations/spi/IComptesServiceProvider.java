@@ -17,11 +17,11 @@ public interface IComptesServiceProvider {
 
     /**
      * Recherche du compte
+     *
      * @param idCompte id du Compte
-     * @param proprietaire proprietaire du compte
      * @return compte correspondant
      */
     @GET
     @Path(ComptesApiUrlEnum.COMPTES_ID)
-    Uni<CompteBancaire> getCompteById(String idCompte , String proprietaire);
+    Uni<CompteBancaire> getCompteById(String idCompte);
 }

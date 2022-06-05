@@ -47,7 +47,7 @@ class OperationsResourceTest {
     @Test
     void tesSetEtatActif() {
         // Init des données
-        Mockito.when(budgetService.setBudgetActif(anyString(), anyBoolean(), anyString()))
+        Mockito.when(budgetService.setBudgetActif(anyString(), anyBoolean()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
         // Test
         String url = OperationsApiUrlEnum.BUDGET_BASE
@@ -122,7 +122,7 @@ class OperationsResourceTest {
     @Test
     void testGetBudgetByParams() {
         // Init des données
-        Mockito.when(budgetService.getBudgetMensuel(anyString(), any(Month.class), anyInt(), anyString()))
+        Mockito.when(budgetService.getBudgetMensuel(anyString(), any(Month.class), anyInt()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
         // Test
         String url = OperationsApiUrlEnum.BUDGET_BASE
@@ -150,7 +150,7 @@ class OperationsResourceTest {
     @Test
     void testReinitBudget() {
         // Init des données
-        Mockito.when(budgetService.reinitialiserBudgetMensuel(anyString(), anyString()))
+        Mockito.when(budgetService.reinitialiserBudgetMensuel(anyString()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
         // Test
         String url = OperationsApiUrlEnum.BUDGET_BASE

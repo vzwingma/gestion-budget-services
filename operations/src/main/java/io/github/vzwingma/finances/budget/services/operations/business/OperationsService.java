@@ -2,23 +2,29 @@ package io.github.vzwingma.finances.budget.services.operations.business;
 
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.TotauxCategorie;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
+import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Service fournissant les calculs de budget sur les opérations
@@ -26,7 +32,7 @@ import java.util.Map;
  *
  */
 @ApplicationScoped
-@NoArgsConstructor
+@NoArgsConstructor @Setter
 public class OperationsService implements IOperationsAppProvider {
 
 
@@ -38,8 +44,26 @@ public class OperationsService implements IOperationsAppProvider {
 	@Inject
 	IOperationsRepository dataOperationsProvider;
 
+	@Inject
+	IBudgetAppProvider budgetService;
+
+
 	@Override
 	public void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
+		try {
+			CategorieOperations catFound = BudgetDataUtils.getCategorieById(operation.getSsCategorie().getId(), categories);
+			if(catFound != null) {
+				operation.getSsCategorie().setId(catFound.getId());
+				operation.getSsCategorie().setLibelle(catFound.getLibelle());
+				operation.getCategorie().setId(catFound.getCategorieParente().getId());
+				operation.getCategorie().setLibelle(catFound.getCategorieParente().getLibelle());
+				return;
+			}
+		}
+		catch (Exception e) {
+			LOGGER.warn("Impossible de retrouver la sous catégorie : {}", operation.getSsCategorie(), e);
+		}
+		LOGGER.warn("Impossible de retrouver la sous catégorie : {} parmi la liste ci dessous. Le fonctionnement peut être incorrect. \n {}", operation.getSsCategorie(), categories);
 
 	}
 
@@ -49,7 +73,7 @@ public class OperationsService implements IOperationsAppProvider {
 	}
 
 	@Override
-	public Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination, String idProprietaire) {
+	public Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination) {
 		return null;
 	}
 
@@ -146,17 +170,40 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	@Override
-	public Uni<Boolean> setLigneAsDerniereOperation(String idBudget, String ligneId, String idProprietaire) {
+	public Uni<Boolean> setLigneAsDerniereOperation(String idBudget, String ligneId) {
+		LOGGER.info("[idBudget={}][idOperation={}] Tag de la ligne comme dernière opération", idBudget, ligneId);
+		final AtomicBoolean operationUpdate = new AtomicBoolean(false);
+		return this.budgetService.getBudgetMensuel(idBudget)
+				.onItem()
+				.invoke(budget -> {
+					if(budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()) {
+						budget.getListeOperations()
+							.parallelStream()
+							.forEach(op -> {
+								op.setTagDerniereOperation(ligneId.equals(op.getId()));
+								operationUpdate.set(ligneId.equals(op.getId()));
+							});
+						// Mise à jour du budget
+						budget.setDateMiseAJour(LocalDateTime.now());
+				}})
+				.call(budget -> {
+					if(operationUpdate.get()) {
+						return this.dataOperationsProvider.sauvegardeBudgetMensuel(budget);
+					}
+					else{
+						return Uni.createFrom().failure(new DataNotFoundException("L'opération "+ligneId+" n'a pas été trouvée dans le budget "+idBudget));
+					}
+				}).onItem().transform(Objects::nonNull);
+			}
+
+
+	@Override
+	public Uni<BudgetMensuel> deleteOperation(String idBudget, String idOperation) {
 		return null;
 	}
 
 	@Override
-	public Uni<BudgetMensuel> deleteOperation(String idBudget, String idOperation, String idProprietaire) {
-		return null;
-	}
-
-	@Override
-	public Uni<BudgetMensuel> updateOperationInBudget(String idBudget, LigneOperation ligneOperation, String idProprietaire) {
+	public Uni<BudgetMensuel> updateOperationInBudget(String idBudget, LigneOperation ligneOperation) {
 		return null;
 	}
 }

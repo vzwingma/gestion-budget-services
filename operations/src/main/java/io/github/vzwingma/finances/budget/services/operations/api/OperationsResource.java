@@ -4,7 +4,6 @@ import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResour
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BadParametersException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
-import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserNotAuthorizedException;
 import io.github.vzwingma.finances.budget.services.operations.api.enums.OperationsApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.IntervallesCompteAPIObject;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
@@ -47,9 +46,6 @@ public class OperationsResource extends AbstractAPIResource {
     @Inject
     IOperationsAppProvider operationsService;
 
-    private String getIdProprietaire() {
-        return "vzwingmann";
-    }
     /**
      * Retour le budget d'un utilisateur
      * @param idCompte id du compte
@@ -76,7 +72,7 @@ public class OperationsResource extends AbstractAPIResource {
 
         if(mois != null && annee != null){
             try{
-                return budgetService.getBudgetMensuel(idCompte, Month.of(mois), annee, getIdProprietaire());
+                return budgetService.getBudgetMensuel(idCompte, Month.of(mois), annee);
             }
             catch(NumberFormatException e){
                 return Uni.createFrom().failure(new BadParametersException("Mois et année doivent être des entiers"));
@@ -134,9 +130,8 @@ public class OperationsResource extends AbstractAPIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> reinitializeBudget(@RestPath("idBudget") String idBudget){
         LOG.trace("[idBudget={}] reinitialisation", idBudget);
-        String proprietaire = getIdProprietaire();
-        if(idBudget != null && proprietaire != null){
-            return budgetService.reinitialiserBudgetMensuel(idBudget, proprietaire);
+        if(idBudget != null){
+            return budgetService.reinitialiserBudgetMensuel(idBudget);
         }
         else{
             return Uni.createFrom().failure(new BadParametersException("L'id du budget doit être renseigné"));
@@ -225,7 +220,7 @@ public class OperationsResource extends AbstractAPIResource {
             @RestQuery(value="actif") Boolean actif) {
 
         LOG.info("[idBudget={}] set Actif : {}", idBudget, actif );
-        return budgetService.setBudgetActif(idBudget, actif, getIdProprietaire());
+        return budgetService.setBudgetActif(idBudget, actif);
     }
 
 
@@ -255,7 +250,7 @@ public class OperationsResource extends AbstractAPIResource {
             @RestPath("idOperation") String idOperation)  {
 
         LOG.info("[idBudget={}][idOperation={}] setAsDerniereOperation", idBudget, idOperation);
-        return operationsService.setLigneAsDerniereOperation(idBudget, idOperation, getIdProprietaire());
+        return operationsService.setLigneAsDerniereOperation(idBudget, idOperation);
     }
 
 
@@ -285,11 +280,11 @@ public class OperationsResource extends AbstractAPIResource {
             LigneOperation operation) {
 
         LOG.info("[idBudget={}][idOperation={}] createOrUpdateOperation", idBudget, idOperation);
-        if(operation != null && idBudget != null && getIdProprietaire() != null){
+        if(operation != null && idBudget != null){
             operation.setId(idOperation);
       //      operationsService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
 
-            return operationsService.updateOperationInBudget(idBudget, operation, getIdProprietaire());
+            return operationsService.updateOperationInBudget(idBudget, operation);
 
 /*            catch (CompteClosedException e) {
                 return ResponseEntity.unprocessableEntity().build();
@@ -334,7 +329,7 @@ public class OperationsResource extends AbstractAPIResource {
 
             operation.setId(idOperation);
        //     operationsService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
-            return operationsService.createOperationIntercompte(idBudget, operation, idCompte, getIdProprietaire());
+            return operationsService.createOperationIntercompte(idBudget, operation, idCompte);
         }
         else{
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget, idOperation et idCompte sont obligatoires"));
@@ -366,9 +361,9 @@ public class OperationsResource extends AbstractAPIResource {
             @RestPath("idBudget") String idBudget,
             @RestPath("idOperation") String idOperation) {
 
-        if(idOperation != null && idBudget != null && getIdProprietaire() != null){
+        if(idOperation != null && idBudget != null){
             LOG.info("[idBudget={}][idOperation={}] deleteOperation", idBudget, idOperation);
-            return operationsService.deleteOperation(idBudget, idOperation, getIdProprietaire());
+            return operationsService.deleteOperation(idBudget, idOperation);
         }
         else{
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget, et idOperation sont obligatoires"));
@@ -394,9 +389,6 @@ public class OperationsResource extends AbstractAPIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@RestPath("idCompte") String idCompte) {
         LOG.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
-        if(getIdProprietaire() == null) {
-            return Uni.createFrom().failure(new UserNotAuthorizedException("L'utilisateur n'est pas authentifié"));
-        }
         if(idCompte == null){
                 return Uni.createFrom().failure(new BadParametersException("Le paramètre idCompte est obligatoire"));
         }
@@ -438,8 +430,7 @@ public class OperationsResource extends AbstractAPIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public  Uni<LibellesOperationsAPIObject> getLibellesOperations(@RestPath("idCompte") String idCompte, @RestQuery("annee") Integer annee) {
         LOG.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);
-        if(getIdProprietaire() != null) {
-            return this.operationsService.getLibellesOperations(idCompte, annee)
+        return this.operationsService.getLibellesOperations(idCompte, annee)
                     .collect().asList()
                     .map(libelles -> {
                         if(libelles != null && !libelles.isEmpty()){
@@ -454,10 +445,6 @@ public class OperationsResource extends AbstractAPIResource {
                     })
                     .onItem()
                         .ifNull().failWith(new DataNotFoundException("Impossible de trouver les libellés des opérations pour le compte " + idCompte));
-        }
-        else {
-            return Uni.createFrom().failure(new UserNotAuthorizedException("L'utilisateur n'est pas authentifié"));
-        }
     }
 
 }

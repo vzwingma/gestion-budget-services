@@ -104,4 +104,26 @@ public class MockDataBudgets {
         return bo;
 
     }
+
+
+
+    public static BudgetMensuel getBudgetActifCompteC1et3operationsRealisees(){
+
+        BudgetMensuel budget = new BudgetMensuel();
+        budget.setMois(Month.JANUARY);
+        budget.setAnnee(2022);
+        budget.setIdCompteBancaire(getCompte().getId());
+        budget.setId(BudgetDataUtils.getBudgetId(budget.getIdCompteBancaire(), budget.getMois(), budget.getAnnee()));
+
+        budget.setActif(true);
+        budget.setDateMiseAJour(LocalDateTime.now().minusDays(1));
+        // Soldes
+        budget.getSoldes().setSoldeAtFinMoisPrecedent(0D);
+        budget.setListeOperations(new ArrayList<>());
+        BudgetDataUtils.razCalculs(budget);
+        // Opération
+        budget.getListeOperations().addAll(MockDataOperations.get3LignesOperations(MockDataBudgets.getCompte()));
+        BudgetDataUtils.razCalculs(budget);
+        return budget;
+    }
 }

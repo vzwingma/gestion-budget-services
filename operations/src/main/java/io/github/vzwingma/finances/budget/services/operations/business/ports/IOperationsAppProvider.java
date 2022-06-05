@@ -39,32 +39,31 @@ public interface IOperationsAppProvider {
     Multi<String> getLibellesOperations(String idCompte, int annee);
     /**
      * Ajout d'une ligne transfert intercompte
-     * @param ligneOperation ligne de dépense de transfert
+     *
+     * @param ligneOperation      ligne de dépense de transfert
      * @param idCompteDestination compte créditeur
-     * @param idProprietaire auteur de l'action
      */
-    Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination, String idProprietaire);
+    Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination);
     /**
      * Mise à jour de la ligne comme dernière opération
+     *
      * @param ligneId identifiant de ligne
      */
-    Uni<Boolean> setLigneAsDerniereOperation(String idBudget, String ligneId, String idProprietaire);
+    Uni<Boolean> setLigneAsDerniereOperation(String idBudget, String ligneId);
 
     /**
      * Suppression d'une opération
-     * @param idBudget identifiant de budget
+     *
+     * @param idBudget    identifiant de budget
      * @param idOperation ligne opération
-     * @param idProprietaire userSession
-
      */
-    Uni<BudgetMensuel> deleteOperation(String idBudget, String idOperation, String idProprietaire);
+    Uni<BudgetMensuel> deleteOperation(String idBudget, String idOperation);
 
     /**
      * Mise à jour d'une ligne de dépense
-     * @param idBudget identifiant de budget
+     *
+     * @param idBudget       identifiant de budget
      * @param ligneOperation ligne de dépense
-     * @param idProprietaire idProprietaire
-
      */
-    Uni<BudgetMensuel> updateOperationInBudget(String idBudget, final LigneOperation ligneOperation, String idProprietaire) ;
+    Uni<BudgetMensuel> updateOperationInBudget(String idBudget, final LigneOperation ligneOperation) ;
 }
