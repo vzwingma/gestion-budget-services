@@ -29,6 +29,11 @@ jobs:
       # Runs the Build with Maven
       - name: Build Communs with Maven
         run: mvn clean install -B --file communs/pom.xml
+
+      - name: Publish to GitHub Packages Apache Maven
+        run: mvn deploy
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       # Upload DockerFile
       - uses: actions/upload-artifact@v2
         name: Upload DockerFile
