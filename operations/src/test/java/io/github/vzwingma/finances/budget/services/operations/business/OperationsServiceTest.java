@@ -21,7 +21,7 @@ import java.util.concurrent.CompletionException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
-public class OperationsServiceTest {
+class OperationsServiceTest {
 
     private OperationsService operationsAppProvider;
 

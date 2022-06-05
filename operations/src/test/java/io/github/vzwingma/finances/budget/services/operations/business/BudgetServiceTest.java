@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 
 @QuarkusTest
-public class BudgetServiceTest {
+class BudgetServiceTest {
 
     private IOperationsAppProvider operationsAppProvider;
 
@@ -51,7 +51,7 @@ public class BudgetServiceTest {
     }
 
     @Test
-    public void testGetBudgetWithNoCompte() {
+    void testGetBudgetWithNoCompte() {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
@@ -68,7 +68,7 @@ public class BudgetServiceTest {
      * Test du chargement nominal d'un budget actif sur compte actif
      */
     @Test
-    public void testGetBudgetInactifSurCompteActif() {
+    void testGetBudgetInactifSurCompteActif() {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
@@ -92,7 +92,7 @@ public class BudgetServiceTest {
      * Test du chargement nominal d'un budget actif sur compte actif
      */
     @Test
-    public void testGetBudgetActifSurCompteActif() {
+    void testGetBudgetActifSurCompteActif() {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
@@ -125,7 +125,7 @@ public class BudgetServiceTest {
     }
 
     @Test
-    public void testInitNewBudgetOnCompteActif() {
+    void testInitNewBudgetOnCompteActif() {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
@@ -157,7 +157,7 @@ public class BudgetServiceTest {
 
 
     @Test
-    public void testGetBudgetSurCompteInactif() {
+    void testGetBudgetSurCompteInactif() {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
@@ -210,7 +210,9 @@ public class BudgetServiceTest {
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
         //Test
-        budgetAppProvider.reinitialiserBudgetMensuel(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue().getId()).await().indefinitely();
+        BudgetMensuel budgetReinit = budgetAppProvider.reinitialiserBudgetMensuel(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue().getId()).await().indefinitely();
+        // Assertion
+        assertNotNull(budgetReinit);
     }
 
 
@@ -270,9 +272,9 @@ public class BudgetServiceTest {
         BudgetMensuel budgetDesactive = budgetAppProvider.setBudgetActif(budgetADesactiver.getId(), false).await().indefinitely();
 
         assertFalse(budgetDesactive.isActif());
-        assertEquals(budgetDesactive.getListeOperations().get(0).getEtat(), EtatOperationEnum.REPORTEE);
+        assertEquals(EtatOperationEnum.REPORTEE, budgetDesactive.getListeOperations().get(0).getEtat());
 
-        Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(eq(budgetDesactive));
+        Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(budgetDesactive);
     }
 
 
@@ -282,10 +284,10 @@ public class BudgetServiceTest {
     void testIsBudgetUptoDate(){
         // When
         BudgetMensuel budgetADesactiver = MockDataBudgets.getBudgetActifCompteC1et1operationPrevue();
-        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(eq(budgetADesactiver.getId())))
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(budgetADesactiver.getId()))
                 .thenReturn(Uni.createFrom().item(budgetADesactiver));
 
-        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(eq("notFound")))
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel("notFound"))
                 .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Budget introuvable")));
 
 

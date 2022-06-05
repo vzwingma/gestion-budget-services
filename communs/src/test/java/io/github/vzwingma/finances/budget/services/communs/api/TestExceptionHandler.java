@@ -4,12 +4,12 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class TestExceptionHandler {
+class TestExceptionHandler {
 
 
 
     @Test
-    public void testExceptionHandler() {
+    void testExceptionHandler() {
         ExceptionHandler exceptionHandler = new ExceptionHandler();
         Assertions.assertEquals(404, exceptionHandler.toResponse(new DataNotFoundException("DataNotFoundException")).getStatus());
         Assertions.assertEquals(404, exceptionHandler.toResponse(new BudgetNotFoundException("BudgetNotFoundException")).getStatus());

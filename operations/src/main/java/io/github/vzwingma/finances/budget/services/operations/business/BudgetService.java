@@ -261,7 +261,7 @@ public class BudgetService implements IBudgetAppProvider {
 		//Vérification du compte
 		if(compteBancaire == null) {
 			return Uni.createFrom().failure(new DataNotFoundException("Compte bancaire non trouvé"));
-		} else if (!compteBancaire.isActif()) {
+		} else if (Boolean.FALSE.equals(compteBancaire.isActif())) {
 			return Uni.createFrom().failure(new CompteClosedException("Compte bancaire inactif"));
 		}
 

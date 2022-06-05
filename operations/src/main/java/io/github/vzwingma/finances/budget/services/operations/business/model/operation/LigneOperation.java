@@ -223,7 +223,6 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
 		return String.format("LigneOperations [id=%s, categorie=%s, sous-categorie=%s, libelle=%s, typeDepense=%s, etat=%s, valeur=%s, periodique=%s, derniereOperation=%s]"
 				, id, categorie, ssCategorie, libelle, typeOperation, etat, valeur, periodique, tagDerniereOperation);
 	}
