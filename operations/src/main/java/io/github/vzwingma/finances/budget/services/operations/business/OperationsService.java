@@ -287,7 +287,13 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	@Override
-	public Uni<BudgetMensuel> deleteOperation(String idBudget, String idOperation) {
-		return null;
+	public void deleteOperation(List<LigneOperation> operations, String idOperation) {
+		// Si suppression d'une opération, on l'enlève
+		if(operations.removeIf(op -> op.getId().equals(idOperation))) {
+			LOGGER.info("Suppression d'une Opération : {}", idOperation);
+		}
+		else {
+			LOGGER.warn("[idBudget={}][idOperation={}] Impossible de supprimer l'opération. Introuvable", operations, idOperation);
+		}
 	}
 }

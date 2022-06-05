@@ -45,6 +45,15 @@ public interface IBudgetAppProvider {
      * @param ligneOperation ligne de dépense
      */
     Uni<BudgetMensuel> addOperationInBudget(String idBudget, final LigneOperation ligneOperation) ;
+
+    /**
+     * Suppression d'une opération
+     *
+     * @param idBudget    identifiant de budget
+     * @param idOperation ligne opération
+     */
+    Uni<BudgetMensuel> deleteOperationInBudget(String idBudget, String idOperation);
+
     /**
      * Réinitialiser un budget mensuel
      *

@@ -54,10 +54,10 @@ public interface IOperationsAppProvider {
     /**
      * Suppression d'une opération
      *
-     * @param idBudget    identifiant de budget
+     * @param operations  identifiant de budget
      * @param idOperation ligne opération
      */
-    Uni<BudgetMensuel> deleteOperation(String idBudget, String idOperation);
+    void deleteOperation(List<LigneOperation> operations, String idOperation);
 
     /**
      * Mise à jour d'une ligne de dépense dans la liste d'un budget

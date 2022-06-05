@@ -139,7 +139,35 @@ public class BudgetService implements IBudgetAppProvider {
 						.call(this::sauvegardeBudget);
 	}
 
-
+	/**
+	 * Ajout d'une opération dans le budget
+	 * @param idBudget       identifiant de budget
+	 * @param idOperation ligne de dépense à ajouter
+	 * @return budget mensuel mis à jour
+	 */
+	@Override
+	public Uni<BudgetMensuel> deleteOperationInBudget(String idBudget, String idOperation) {
+		return getBudgetAndCompte(idBudget)
+				// Si pas d'erreur, update de l'opération
+				.onItem().ifNotNull()
+				// Vérification du compte
+				.transformToUni(tuple -> {
+					CompteBancaire compteBancaire = tuple.getItem2();
+					if (!Boolean.TRUE.equals(compteBancaire.isActif())) {
+						LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", tuple.getItem1().getIdCompteBancaire());
+						return Uni.createFrom().failure(new CompteClosedException("Impossible de modifier ou créer une opération. Le compte " + tuple.getItem1().getIdCompteBancaire() + " est cloturé"));
+					}
+					return Uni.createFrom().item(tuple.getItem1());
+				})
+				.onItem()
+				.invoke(budgetMensuel -> this.operationsAppProvider.deleteOperation(budgetMensuel.getListeOperations(), idOperation))
+				// recalcul de tous les soldes du budget courant
+				.onItem()
+				.ifNotNull()
+					.invoke(this::recalculSoldes)
+					// Sauvegarde du budget
+					.call(this::sauvegardeBudget);
+	}
 
 	/**
 	 * Recalcul du solde à la fin du mois précédent

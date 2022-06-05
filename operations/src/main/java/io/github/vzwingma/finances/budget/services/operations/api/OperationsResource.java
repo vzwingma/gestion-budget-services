@@ -362,7 +362,7 @@ public class OperationsResource extends AbstractAPIResource {
 
         if(idOperation != null && idBudget != null){
             LOG.info("[idBudget={}][idOperation={}] deleteOperation", idBudget, idOperation);
-            return operationsService.deleteOperation(idBudget, idOperation);
+            return budgetService.deleteOperationInBudget(idBudget, idOperation);
         }
         else{
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget, et idOperation sont obligatoires"));
