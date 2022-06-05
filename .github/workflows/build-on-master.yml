@@ -21,17 +21,11 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v2
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
-      # Step that does that actual cache save and restore
-      - name: Cache Maven repository
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: 'maven'
+
       # Runs the Build with Maven
       - name: Build Communs with Maven
         run: mvn clean install -B --file communs/pom.xml
@@ -51,16 +45,11 @@ jobs:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - uses: actions/checkout@v2
         - name: Set up JDK 17
-          uses: actions/setup-java@v1
+          uses: actions/setup-java@v3
           with:
             java-version: 17
-        - name: Cache Maven repository
-          uses: actions/cache@v3
-          with:
-            path: /home/runner/.m2/repository
-            key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-            restore-keys: |
-              ${{ runner.os }}-maven-
+            cache: 'maven'
+
         # Runs a single command using the runners shell
         - name: Build with Maven
           run: mvn clean compile sonar:sonar -B -P prod -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.projectKey=gestion-budget-services --file pom.xml
@@ -77,22 +66,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
+          cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Cache Maven repository
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
 
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
@@ -113,22 +96,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
+          cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Cache Maven repository
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+
       # Runs a single command using the runners shell
       - name: Build Utilisateurs Native App with Maven
         run: mvn install -B -P native --file utilisateurs/pom.xml
@@ -148,22 +126,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
+          cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Cache Maven repository
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
         run: mvn install -B -P native --file comptes/pom.xml
@@ -183,22 +156,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
+          cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Cache Maven repository
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
         run: mvn install -B -P native --file operations/pom.xml
