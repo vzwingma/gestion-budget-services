@@ -56,12 +56,11 @@ public class OperationsService implements IOperationsAppProvider {
 	@Inject
 	IParametragesServiceProvider parametragesService;
 
-	private CategorieOperations categorieRemboursement;
 
 	@PostConstruct
 	public void init() {
 		LOGGER.info("Initialisation du service d'opérations");
-		categorieRemboursement = this.parametragesService.getCategorieParId(IdsCategoriesEnum.REMBOURSEMENT.getId()).await().indefinitely();
+	//	categorieRemboursement = this.parametragesService.getCategorieParId(IdsCategoriesEnum.REMBOURSEMENT.getId()).await().indefinitely();
 	}
 
 
@@ -229,8 +228,7 @@ public class OperationsService implements IOperationsAppProvider {
 				// #62 : et en mode création
 				if (ligneOperation.getSsCategorie() != null
 						&& ligneOperation.getCategorie() != null
-						&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())
-						&& this.categorieRemboursement != null) {
+						&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())) {
 					operations.add(addOperationRemboursement(ligneOperation));
 				}
 			}
@@ -267,7 +265,7 @@ public class OperationsService implements IOperationsAppProvider {
 	 */
 	private LigneOperation addOperationRemboursement(LigneOperation ligneOperation) {
 		LigneOperation ligneRemboursement = new LigneOperation(
-						this.categorieRemboursement,
+						null, //this.categorieRemboursement,
 						"[Remboursement] " + ligneOperation.getLibelle(),
 						TypeOperationEnum.CREDIT,
 						Math.abs(ligneOperation.getValeur()),

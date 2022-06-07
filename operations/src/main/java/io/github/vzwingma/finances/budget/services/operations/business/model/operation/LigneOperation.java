@@ -10,6 +10,7 @@ import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieO
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.io.Serial;
@@ -169,7 +170,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 		this.libelle = libelle;
 		this.typeOperation = typeDepense;
 		this.periodique = periodique;
-		setValeurFromSaisie(absValeur);
+		putValeurFromSaisie(absValeur);
 		this.etat = etat;
 		this.tagDerniereOperation = false;
 
@@ -188,33 +189,36 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 * @param valeurD : Valeur depuis la saisie (en décimal)
 	 */
 	@JsonIgnore
-	public void setValeurFromSaisie(Double valeurD){
+	@BsonIgnore
+	// Pour ne pas avoir de pb avec Panache, les méthodes "techniques" n'utilisent pas les mots clés "get" et "set"
+	public void putValeurFromSaisie(Double valeurD){
 		if(valeurD != null){
 			this.valeur = Math.abs(valeurD) * (TypeOperationEnum.DEPENSE.equals(this.getTypeOperation()) ? -1 : 1);
 		}
 	}
 	
 	@JsonIgnore
-	public Double getValeurToSaisie() {
+	@BsonIgnore
+	// Pour ne pas avoir de pb avec Panache, les méthodes "techniques" n'utilisent pas les mots clés "get" et "set"
+	public Double retrieveValeurToSaisie() {
 		return Math.abs(this.valeur);
 	}
-	
-	@JsonIgnore
-	public String getAuteur() {
-		return getAutresInfos() != null ? getAutresInfos().getAuteur(): "";
-	}
-	
+
 	/**
 	 * @return dateMaj
 	 */
 	@JsonIgnore
-	public LocalDateTime getDateMaj() {
+	@BsonIgnore
+	// Pour ne pas avoir de pb avec Panache, les méthodes "techniques" n'utilisent pas les mots clés "get" et "set"
+	public LocalDateTime retrieveDateMaj() {
 		return getAutresInfos() != null ? getAutresInfos().getDateMaj() : null;
 	}	/**
 	 * @return dateOpération
 	 */
 	@JsonIgnore
-	public LocalDateTime getDateOperation() {
+	@BsonIgnore
+	// Pour ne pas avoir de pb avec Panache, les méthodes "techniques" n'utilisent pas les mots clés "get" et "set"
+	public LocalDateTime retrieveDateOperation() {
 		return getAutresInfos() != null ? getAutresInfos().getDateOperation() : null;
 	}
 	

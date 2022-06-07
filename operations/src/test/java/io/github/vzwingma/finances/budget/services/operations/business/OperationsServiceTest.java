@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.operations.business;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
@@ -110,7 +109,7 @@ class OperationsServiceTest {
         operation.setEtat(EtatOperationEnum.REALISEE);
         // Test
         List<LigneOperation> operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
-        assertEquals(2, operationsAJour.size());
+        assertEquals(3, operationsAJour.size());
         assertEquals("Medecin", operationsAJour.get(1).getLibelle());
     }
 
@@ -126,7 +125,6 @@ class OperationsServiceTest {
         operation.getCategorie().setId(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
         operation.setLibelle("Medecin");
         operation.setEtat(EtatOperationEnum.REALISEE);
-        operationsAppProvider.setCategorieRemboursement(new CategorieOperations());
         // Test
         List<LigneOperation> operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
 

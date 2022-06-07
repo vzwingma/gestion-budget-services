@@ -167,7 +167,7 @@ public class BudgetDataUtils {
 		ligneOperationClonee.setEtat(EtatOperationEnum.PREVUE);
 		ligneOperationClonee.setPeriodique(ligneOperation.isPeriodique());
 		ligneOperationClonee.setTypeOperation(ligneOperation.getTypeOperation());
-		ligneOperationClonee.setValeurFromSaisie(Math.abs(ligneOperation.getValeur()));
+		ligneOperationClonee.putValeurFromSaisie(Math.abs(ligneOperation.getValeur()));
 		ligneOperationClonee.setTagDerniereOperation(false);
 		return ligneOperationClonee;
 	}
@@ -185,7 +185,7 @@ public class BudgetDataUtils {
 		if(listeOperations != null && !listeOperations.isEmpty()){
 			// Comparaison de date
 			
-			Comparator <LigneOperation> comparator = Comparator.comparing(LigneOperation::getDateOperation, (date1, date2) -> {
+			Comparator <LigneOperation> comparator = Comparator.comparing(LigneOperation::retrieveDateOperation, (date1, date2) -> {
 				if(date1 == null){
 					return 1;
 				}
@@ -198,8 +198,8 @@ public class BudgetDataUtils {
 				}
 			});
 			Optional<LigneOperation> maxDate = listeOperations.stream().max(comparator);
-			if(maxDate.isPresent() && maxDate.get().getDateOperation() != null){
-				localDateDerniereOperation = maxDate.get().getDateOperation().toLocalDate();
+			if(maxDate.isPresent() && maxDate.get().retrieveDateOperation() != null){
+				localDateDerniereOperation = maxDate.get().retrieveDateOperation().toLocalDate();
 			}
 		}
 		return localDateDerniereOperation;
