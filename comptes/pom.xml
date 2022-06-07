@@ -60,7 +60,7 @@
         <dependency>
             <groupId>io.github.vzwingma.finances.budget.services</groupId>
             <artifactId>communs</artifactId>
-            <version>${project.parent.version}</version>
+            <version>15.1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
