@@ -116,12 +116,15 @@ class OperationsResourceTest {
     }
 
     @Test
-    void testGetBudgetByNoId() {
+    void testInfo() {
         // Test
         given() .when().get(OperationsApiUrlEnum.BUDGET_BASE)
                 .then()
-                .statusCode(404);
+                .statusCode(200)
+                .body(containsString("API Budget - operations"));
     }
+
+
     @Test
     void testGetBudgetByParams() {
         // Init des données
