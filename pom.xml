@@ -28,10 +28,13 @@
 
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.9.0.CR1</quarkus.platform.version>
+    <quarkus.platform.version>2.9.2.Final</quarkus.platform.version>
     <lombok.version>1.18.22</lombok.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <jacoco.version>0.8.8</jacoco.version>
   </properties>
+
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -43,6 +46,8 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+
   <dependencies>
     <!-- Reactive -->
     <dependency>
@@ -106,7 +111,16 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jacoco</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+
+
+
   <build>
     <plugins>
       <plugin>
@@ -145,6 +159,8 @@
       </plugin>
     </plugins>
   </build>
+
+  <!-- Profiles -->
   <profiles>
     <profile>
       <id>native</id>
@@ -180,14 +196,38 @@
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
     </profile>
+
+    <profile>
+      <id>sonar</id>
+      <activation>
+        <property>
+          <name>sonar</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+            <executions>
+              <execution>
+                <id>default-prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>
+                  <destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
+                  <append>true</append>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
-  <distributionManagement>
-    <repository>
-      <id>github</id>
-      <name>GitHub vzwingma Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/vzwingma/gestion-budget-services</url>
-    </repository>
-  </distributionManagement>
 
 </project>
