@@ -232,11 +232,14 @@
   <repositories>
     <repository>
       <id>gestion-budget-services-mvn-repo</id>
-      <url>https://raw.github.com/vzwingma/gestion-budget-services/mvn-repo/</url>
+      <url>https://maven.pkg.github.com/vzwingma/gestion-budget-services</url>
       <snapshots>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
       </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
     </repository>
   </repositories>
   <distributionManagement>
