@@ -181,4 +181,13 @@
       </properties>
     </profile>
   </profiles>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub vzwingma Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/vzwingma/gestion-budget-services</url>
+    </repository>
+  </distributionManagement>
+
 </project>
