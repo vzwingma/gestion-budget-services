@@ -77,8 +77,6 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'maven'
-          server-id: github
-          settings-path: ${{ github.workspace }}
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
@@ -87,9 +85,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
-        run: mvn install -P native --file parametrages/pom.xml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn install -P native --file parametrages/pom.xml -s settings.xml
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Paramétrages
@@ -117,11 +113,10 @@ jobs:
           version: 'latest'
           java-version: '17'
           components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Runs a single command using the runners shell
       - name: Build Utilisateurs Native App with Maven
-        run: mvn install -B -P native --file utilisateurs/pom.xml
+        run: mvn install -B -P native --file utilisateurs/pom.xml -s settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases Snapshot
@@ -144,9 +139,6 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'maven'
-          server-id: github
-          server-username: vzwingmann
-          server-password: ${{ secrets.GITHUB_TOKEN }}
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
@@ -156,9 +148,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
-        run: mvn install -B -P native --file comptes/pom.xml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn install -B -P native --file comptes/pom.xml -s settings.xml
 
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
@@ -190,8 +180,6 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
         run: mvn install -B -P native --file operations/pom.xml -s settings.xml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
