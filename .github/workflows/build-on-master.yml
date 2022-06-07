@@ -87,7 +87,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
-        run: mvn install -P native --file parametrages/pom.xml
+        run: mvn install -e -X -P native --file parametrages/pom.xml -s ${{ github.workspace }}/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases Snapshot
@@ -121,7 +121,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build Utilisateurs Native App with Maven
-        run: mvn install -B -P native --file utilisateurs/pom.xml -s settings.xml
+        run: mvn install -B -e -X -P native --file utilisateurs/pom.xml -s settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases Snapshot
@@ -156,7 +156,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
-        run: mvn install -B -P native --file comptes/pom.xml
+        run: mvn install -e -X -B -P native --file comptes/pom.xml -s settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -189,7 +189,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
-        run: mvn install -B -P native --file operations/pom.xml
+        run: mvn install -e -X -B -P native --file operations/pom.xml -s settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
