@@ -231,7 +231,7 @@
   </dependencyManagement>
   <repositories>
     <repository>
-      <id>gestion-budget-services-mvn-repo</id>
+      <id>github</id>
       <url>https://maven.pkg.github.com/vzwingma/gestion-budget-services</url>
       <snapshots>
         <enabled>true</enabled>
