@@ -37,10 +37,11 @@ jobs:
         uses: skjolber/maven-cache-github-action@v1
         with:
           step: save
-    #- name: Publish to GitHub Packages Apache Maven
-      #run: mvn deploy
-      #env:
-        #  GITHUB_TOKEN: ${{ github.token }}
+      - name: Publish to GitHub Packages Apache Maven
+        run: mvn deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Upload DockerFile
       - uses: actions/upload-artifact@v2
         name: Upload DockerFile
