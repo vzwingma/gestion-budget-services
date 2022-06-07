@@ -190,10 +190,12 @@ public class OperationsService implements IOperationsAppProvider {
 				.invoke(budget -> {
 					if(budget.getListeOperations() != null && !budget.getListeOperations().isEmpty()) {
 						budget.getListeOperations()
-							.parallelStream()
 							.forEach(op -> {
 								op.setTagDerniereOperation(ligneId.equals(op.getId()));
-								operationUpdate.set(ligneId.equals(op.getId()));
+								if(ligneId.equals(op.getId())) {
+									LOGGER.debug("L'opération "+ligneId+" a été trouvée dans le budget "+idBudget);
+									operationUpdate.set(true);
+								}
 							});
 						// Mise à jour du budget
 						budget.setDateMiseAJour(LocalDateTime.now());
