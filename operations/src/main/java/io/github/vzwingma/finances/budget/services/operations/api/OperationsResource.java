@@ -11,14 +11,12 @@ import io.github.vzwingma.finances.budget.services.operations.business.model.ope
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
-import io.github.vzwingma.finances.budget.services.operations.spi.IParametragesServiceProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 import org.slf4j.Logger;
@@ -45,9 +43,6 @@ public class OperationsResource extends AbstractAPIResource {
     @Inject
     IBudgetAppProvider budgetService;
 
-    @RestClient
-    @Inject
-    IParametragesServiceProvider parametragesService;
     @Inject
     IOperationsAppProvider operationsService;
 

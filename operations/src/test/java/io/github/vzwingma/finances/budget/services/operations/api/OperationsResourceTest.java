@@ -2,7 +2,9 @@ package io.github.vzwingma.finances.budget.services.operations.api;
 
 import io.github.vzwingma.finances.budget.services.operations.api.enums.OperationsApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.BudgetService;
+import io.github.vzwingma.finances.budget.services.operations.business.OperationsService;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
+import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataBudgets;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -36,9 +38,12 @@ class OperationsResourceTest {
     @Inject
     IBudgetAppProvider budgetService;
 
+    @Inject
+    IOperationsAppProvider operationsService;
     @BeforeAll
     public static void init() {
         QuarkusMock.installMockForType(Mockito.mock(BudgetService.class), BudgetService.class);
+        QuarkusMock.installMockForType(Mockito.mock(OperationsService.class), OperationsService.class);
     }
 
     /**
@@ -113,11 +118,9 @@ class OperationsResourceTest {
     @Test
     void testGetBudgetByNoId() {
         // Test
-        String url = OperationsApiUrlEnum.BUDGET_BASE + OperationsApiUrlEnum.BUDGET_ID;
-
-        given() .when().get(url)
+        given() .when().get(OperationsApiUrlEnum.BUDGET_BASE)
                 .then()
-                .statusCode(500);
+                .statusCode(404);
     }
     @Test
     void testGetBudgetByParams() {
