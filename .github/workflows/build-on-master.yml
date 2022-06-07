@@ -26,11 +26,17 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'maven'
-
+      - name: Restore Maven cache
+        uses: skjolber/maven-cache-github-action@v1
+        with:
+          step: restore
       # Runs the Build with Maven
       - name: Build Communs with Maven
         run: mvn clean install -B --file communs/pom.xml
-
+      - name: Save Maven cache
+        uses: skjolber/maven-cache-github-action@v1
+        with:
+          step: save
     #- name: Publish to GitHub Packages Apache Maven
       #run: mvn deploy
       #env:
@@ -56,7 +62,10 @@ jobs:
             java-version: 17
             distribution: 'adopt'
             cache: 'maven'
-
+        - name: Restore Maven cache
+          uses: skjolber/maven-cache-github-action@v1
+          with:
+            step: restore
         # Runs a single command using the runners shell
         - name: Build with Maven
           run: mvn clean compile sonar:sonar -B -P prod -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.projectKey=gestion-budget-services --file pom.xml
@@ -84,7 +93,10 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Restore Maven cache
+        uses: skjolber/maven-cache-github-action@v1
+        with:
+          step: restore
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
         run: mvn install -P native --file parametrages/pom.xml
@@ -115,6 +127,10 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Restore Maven cache
+        uses: skjolber/maven-cache-github-action@v1
+        with:
+          step: restore
 
       # Runs a single command using the runners shell
       - name: Build Utilisateurs Native App with Maven
@@ -146,6 +162,10 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Restore Maven cache
+        uses: skjolber/maven-cache-github-action@v1
+        with:
+          step: restore
 
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
@@ -177,6 +197,10 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Restore Maven cache
+        uses: skjolber/maven-cache-github-action@v1
+        with:
+          step: restore
 
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
