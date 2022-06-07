@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.vzwingma.finances.budget</groupId>
   <artifactId>services</artifactId>
-  <version>15.1.0-SNAPSHOT</version>
+  <version>15.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
 
@@ -228,12 +228,6 @@
       </build>
     </profile>
   </profiles>
-  <distributionManagement>
-    <repository>
-      <id>github</id>
-      <name>GitHub vzwingma Github Maven Packages</name>
-      <url>https://maven.pkg.github.com/vzwingma/gestion-budget-services</url>
-    </repository>
-  </distributionManagement>
+
 
 </project>

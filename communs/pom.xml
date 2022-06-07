@@ -5,23 +5,18 @@
     <parent>
         <artifactId>services</artifactId>
         <groupId>io.github.vzwingma.finances.budget</groupId>
-        <version>15.1.0-SNAPSHOT</version>
+        <version>15.1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>communs</artifactId>
 
-<!-- Skip Quarkus build for Communs -->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-maven-plugin</artifactId>
-                <version>${quarkus.platform.version}</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <!-- Distribution -->
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub vzwingma Github Maven Packages</name>
+            <url>https://maven.pkg.github.com/vzwingma/gestion-budget-services</url>
+        </repository>
+    </distributionManagement>
 </project>
