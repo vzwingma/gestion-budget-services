@@ -141,7 +141,7 @@ class BudgetServiceTest {
         BudgetDataUtils.razCalculs(bcree);
 
         Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), any(Month.class), anyInt()))
-                .thenReturn(Uni.createFrom().nullItem(), Uni.createFrom().item(bcree));
+                .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Budget introuvable")), Uni.createFrom().item(bcree));
 
         Mockito.when(mockOperationDataProvider.sauvegardeBudgetMensuel(any(BudgetMensuel.class))).thenReturn(Uni.createFrom().item(bcree));
         // Test

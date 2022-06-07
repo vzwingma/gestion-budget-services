@@ -94,9 +94,8 @@ public class BudgetService implements IBudgetAppProvider {
 
 			return this.dataOperationsProvider.chargeBudgetMensuel(compteBancaire, mois, annee)
 					// Budget introuvable - init d'un nouveau budget
-					.onItem()
-						.ifNull().switchTo(() -> initNewBudget(compteBancaire, mois, annee))
-
+					.onFailure()
+						.recoverWithUni(() -> initNewBudget(compteBancaire, mois, annee))
 					.invoke(budgetMensuel -> LOGGER.debug("Budget mensuel chargé {}", budgetMensuel))
 					// rechargement du solde mois précédent (s'il a changé)
 					.onItem().transformToUni(budgetMensuel -> recalculSoldeAFinMoisPrecedent(budgetMensuel, compteBancaire) )
