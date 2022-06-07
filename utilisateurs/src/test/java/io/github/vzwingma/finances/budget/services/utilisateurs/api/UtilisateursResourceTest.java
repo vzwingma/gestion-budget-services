@@ -24,7 +24,7 @@ class UtilisateursResourceTest {
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(UtilisateursApiUrlEnum.USERS_BASE)
+          .when().get("/_info")
           .then()
              .statusCode(200)
                 .body(containsString("API Budget - utilisateurs"));

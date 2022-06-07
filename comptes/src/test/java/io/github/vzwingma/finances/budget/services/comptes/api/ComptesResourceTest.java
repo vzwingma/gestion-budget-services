@@ -20,7 +20,7 @@ class ComptesResourceTest {
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(ComptesApiUrlEnum.COMPTES_BASE)
+          .when().get("/_info")
           .then()
              .statusCode(200)
                 .body(containsString("API Budget - comptes"));

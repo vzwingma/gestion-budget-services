@@ -22,7 +22,7 @@ class ParametragesResourceTest {
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(ParametragesApiUrlEnum.PARAMS_BASE)
+          .when().get("/_info")
           .then()
              .statusCode(200)
              .body(containsString("API Budget - parametrages"));

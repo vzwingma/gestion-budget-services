@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.operations.api;
 
-import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BadParametersException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
@@ -35,7 +34,7 @@ import java.util.Set;
  *
  */
 @Path(OperationsApiUrlEnum.BUDGET_BASE)
-public class OperationsResource extends AbstractAPIResource {
+public class OperationsResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(OperationsResource.class);
 

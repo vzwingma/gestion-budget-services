@@ -29,7 +29,7 @@ class OperationsResourceTest {
     @Test
     void testInfoEndpoint() {
         given()
-          .when().get(OperationsApiUrlEnum.BUDGET_BASE)
+          .when().get("/_info")
           .then()
              .statusCode(200)
                 .body(containsString("API Budget - operations"));
@@ -115,14 +115,6 @@ class OperationsResourceTest {
                 .body(Matchers.containsString("TEST1"));
     }
 
-    @Test
-    void testInfo() {
-        // Test
-        given() .when().get(OperationsApiUrlEnum.BUDGET_BASE)
-                .then()
-                .statusCode(200)
-                .body(containsString("API Budget - operations"));
-    }
 
 
     @Test
