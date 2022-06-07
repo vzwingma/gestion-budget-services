@@ -31,7 +31,7 @@ jobs:
         run: mvn clean install -B --file communs/pom.xml
 
       - name: Publish to GitHub Packages Apache Maven
-        run: mvn --batch-mode deploy --file communs/pom.xml
+        run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

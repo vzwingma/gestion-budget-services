@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>io.github.vzwingma.finances.budget.services</groupId>
     <artifactId>parametrages</artifactId>
     <name>Paramétrages</name>
 

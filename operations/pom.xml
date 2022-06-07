@@ -9,8 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>io.github.vzwingma.finances.budget.services</groupId>
     <artifactId>operations</artifactId>
-    <name>Budgets et opérations</name>
+    <name>Budgets et Opérations</name>
     <build>
         <finalName>${project.artifactId}</finalName>
     </build>
