@@ -20,7 +20,7 @@ public class OperationsApiUrlEnum {
 	/**
 	 * Budget
 	 */
-	public static final String BUDGET_BASE = "/budgets/v2";
+	public static final String BUDGET_BASE = "/budgets/v1";
 	public static final String BUDGET_ID = "/"+ PARAM_ID_BUDGET;
 
 	// Avec en paramètre
