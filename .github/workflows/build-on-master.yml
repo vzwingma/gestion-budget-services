@@ -86,7 +86,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
         run: mvn install -P native --file parametrages/pom.xml
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Paramétrages
@@ -117,7 +118,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build Utilisateurs Native App with Maven
         run: mvn install -B -P native --file utilisateurs/pom.xml
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
         name: Upload Service Utilisateurs
@@ -148,6 +150,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
         run: mvn install -B -P native --file comptes/pom.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
@@ -179,6 +183,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
         run: mvn install -B -P native --file operations/pom.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload Releases Snapshot
       - uses: actions/upload-artifact@v2
