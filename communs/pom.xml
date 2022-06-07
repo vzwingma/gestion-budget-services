@@ -9,8 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>io.github.vzwingma.finances.budget.services</groupId>
     <artifactId>communs</artifactId>
-
+    <version>${project.parent.version}</version>
+    <name>Communs</name>
     <!-- Distribution -->
     <distributionManagement>
         <repository>

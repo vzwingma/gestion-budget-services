@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>comptes</artifactId>
-
+    <name>Comptes</name>
     <build>
         <finalName>${project.artifactId}</finalName>
     </build>
@@ -58,7 +58,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.vzwingma.finances.budget</groupId>
+            <groupId>io.github.vzwingma.finances.budget.services</groupId>
             <artifactId>communs</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

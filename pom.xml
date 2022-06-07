@@ -6,7 +6,7 @@
   <artifactId>services</artifactId>
   <version>15.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-
+  <name>Services</name>
 
   <modules>
     <module>communs</module>

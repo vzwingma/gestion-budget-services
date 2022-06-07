@@ -10,11 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>parametrages</artifactId>
-
-    <properties>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
-    </properties>
+    <name>Paramétrages</name>
 
     <build>
         <finalName>${project.artifactId}</finalName>
@@ -64,7 +60,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.vzwingma.finances.budget</groupId>
+            <groupId>io.github.vzwingma.finances.budget.services</groupId>
             <artifactId>communs</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
