@@ -211,7 +211,6 @@ public class BudgetService implements IBudgetAppProvider {
 		BudgetDataUtils.razCalculs(budget);
 
 		this.operationsAppProvider.calculSoldes(budget.getListeOperations(), budget.getSoldes(), budget.getTotauxParCategories(), budget.getTotauxParSSCategories());
-		LOGGER.debug("Solde prévu\t| {}\t| {}", budget.getSoldes().getSoldeAtMaintenant(), budget.getSoldes().getSoldeAtFinMoisCourant());
 	}
 
 	/**

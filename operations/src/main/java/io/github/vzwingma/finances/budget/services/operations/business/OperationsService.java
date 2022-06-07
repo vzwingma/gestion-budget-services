@@ -116,7 +116,7 @@ public class OperationsService implements IOperationsAppProvider {
 				BudgetDataUtils.ajouteASoldeFin(soldes, valeurOperation);
 			}
 		}
-		LOGGER.debug("Solde prévu\t| {}\t| {}", soldes.getSoldeAtMaintenant(), soldes.getSoldeAtFinMoisCourant());
+		LOGGER.debug("Solde prévu\t| {} | {}", soldes.getSoldeAtMaintenant(), soldes.getSoldeAtFinMoisCourant());
 
 	}
 
@@ -142,7 +142,7 @@ public class OperationsService implements IOperationsAppProvider {
 			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 				valeursCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
-			LOGGER.debug("Total par catégorie [idCat={} : {}]", operation.getCategorie().getId(), valeursCat);
+			LOGGER.trace("Total par catégorie [idCat={} : {}]", operation.getCategorie().getId(), valeursCat);
 			totauxCategorieMap.put(operation.getCategorie().getId(), valeursCat);
 		}
 		else {
@@ -171,7 +171,7 @@ public class OperationsService implements IOperationsAppProvider {
 			if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
 				valeursSsCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
-			LOGGER.debug("Total par ss catégorie [idCat={} : {}]", operation.getSsCategorie().getId(), valeursSsCat);
+			LOGGER.trace("Total par ss catégorie [idSsCat={} : {}]", operation.getSsCategorie().getId(), valeursSsCat);
 			totauxSsCategoriesMap.put(operation.getSsCategorie().getId(), valeursSsCat);
 		}
 		else {
