@@ -1,6 +1,7 @@
 package io.github.vzwingma.finances.budget.services.comptes.api;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
+import io.github.vzwingma.finances.budget.services.comptes.api.enums.ComptesApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.comptes.business.ports.IComptesAppProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;

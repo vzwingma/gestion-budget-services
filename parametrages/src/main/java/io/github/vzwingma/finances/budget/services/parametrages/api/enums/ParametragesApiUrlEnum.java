@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.parametrages.api;
+package io.github.vzwingma.finances.budget.services.parametrages.api.enums;
 
 /**
  * Enum des URL d'API
@@ -15,7 +15,7 @@ public class ParametragesApiUrlEnum {
 	/**
 	 * Paramétrages
 	 */
-	public static final String PARAMS_BASE = "/parametres/v2";
+	public static final String PARAMS_BASE = "/parametres/v1";
 	public static final String PARAMS_CATEGORIES = "/categories";
 
 }

@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.comptes.api;
+package io.github.vzwingma.finances.budget.services.comptes.api.enums;
 
 /**
  * Enum des URL d'API
@@ -16,7 +16,7 @@ public class ComptesApiUrlEnum {
 	/**
 	 * Comptes
 	 */
-	public static final String COMPTES_BASE = "/comptes/v2";
+	public static final String COMPTES_BASE = "/comptes/v1";
 	public static final String COMPTES_LIST = "";
 	public static final String COMPTES_ID = "/"+PARAM_ID_COMPTE ;
 

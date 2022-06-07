@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.utilisateurs.api;
+package io.github.vzwingma.finances.budget.services.utilisateurs.api.enums;
 
 /**
  * Enum des URL d'API

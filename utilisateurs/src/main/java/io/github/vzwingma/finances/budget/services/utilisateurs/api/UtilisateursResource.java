@@ -3,6 +3,7 @@ package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
+import io.github.vzwingma.finances.budget.services.utilisateurs.api.enums.UtilisateursApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurDroitsEnum;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsAPIObject;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsEnum;
