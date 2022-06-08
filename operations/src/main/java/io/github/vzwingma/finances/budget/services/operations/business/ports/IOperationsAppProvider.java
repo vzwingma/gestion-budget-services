@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.operations.business.ports;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.TotauxCategorie;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
@@ -24,12 +23,7 @@ public interface IOperationsAppProvider {
      * @param totauxSsCategoriesMap map des totaux par sous catégorie
      */
     void calculSoldes(List<LigneOperation> operations, BudgetMensuel.Soldes soldes, Map<String, TotauxCategorie> totauxCategorieMap, Map<String, TotauxCategorie> totauxSsCategoriesMap);
-    /**
-     * Réinjection des catégories dans les opérations du budget
-     * @param operation opération
-     * @param categories liste des catégories
-     */
-    void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories);
+
     /**
      * Charge les libelles des opérations
      * @param idCompte identifiant du compte
@@ -62,8 +56,15 @@ public interface IOperationsAppProvider {
     /**
      * Mise à jour d'une ligne de dépense dans la liste d'un budget
      *
-     * @param operations liste des opérations à mettre à jour budget
+     * @param operations     liste des opérations à mettre à jour budget
      * @param ligneOperation ligne de dépense
      */
     List<LigneOperation> addOperation(List<LigneOperation> operations, LigneOperation ligneOperation);
+
+    /**
+     * Ajout d'une opération de remboursement
+     *
+     * @param operationSource     opération source du remboursement
+     */
+    Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource);
 }

@@ -49,4 +49,13 @@ public class MockDataOperations {
         test1.setId("TEST1");
         return test1;
     }
+
+    public static LigneOperation getOperationRemboursement(){
+        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
+        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
+        dep.setCategorieParente(cat);
+        LigneOperation remboursement = new LigneOperation(dep, "TestRemboursement", TypeOperationEnum.DEPENSE, 123D, EtatOperationEnum.REALISEE, false);
+        remboursement.setId("TestRemboursement");
+        return remboursement;
+    }
 }

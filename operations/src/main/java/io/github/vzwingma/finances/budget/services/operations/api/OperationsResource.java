@@ -319,9 +319,7 @@ public class OperationsResource {
 
         LOG.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
         if(operation != null && idBudget != null){
-
             operation.setId(idOperation);
-       //     operationsService.completeCategoriesOnOperation(operation, this.paramClientApi.getCategories());
             return operationsService.createOperationIntercompte(idBudget, operation, idCompte);
         }
         else{

@@ -15,6 +15,7 @@ import io.github.vzwingma.finances.budget.services.operations.spi.IComptesServic
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.tuples.Tuple2;
+import io.smallrye.mutiny.tuples.Tuple3;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -115,26 +116,30 @@ public class BudgetService implements IBudgetAppProvider {
 	 */
 	@Override
 	public Uni<BudgetMensuel> addOperationInBudget(String idBudget, LigneOperation ligneOperation) {
-		return getBudgetAndCompte(idBudget)
+
+		Uni<BudgetMensuel> budgetSurCompteActif = getBudgetAndCompteActif(idBudget)
 				// Si pas d'erreur, update de l'opération
-				.onItem().ifNotNull()
-				// Vérification du compte
-				.transformToUni(tuple -> {
-					CompteBancaire compteBancaire = tuple.getItem2();
-					if (!Boolean.TRUE.equals(compteBancaire.isActif())) {
-						LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", tuple.getItem1().getIdCompteBancaire());
-						return Uni.createFrom().failure(new CompteClosedException("Impossible de modifier ou créer une opération. Le compte " + tuple.getItem1().getIdCompteBancaire() + " est cloturé"));
-					}
-					return Uni.createFrom().item(tuple.getItem1());
-				})
 				.onItem()
-					.invoke(budgetMensuel -> this.operationsAppProvider.addOperation(budgetMensuel.getListeOperations(), ligneOperation))
-				// recalcul de tous les soldes du budget courant
-				.onItem()
-					.ifNotNull()
-						.invoke(this::recalculSoldes)
-						// Sauvegarde du budget
-						.call(this::sauvegardeBudget);
+				.transform(Tuple2::getItem1);
+
+		return Uni.combine().all().unis(
+				budgetSurCompteActif,
+				Uni.createFrom().item(ligneOperation),
+				this.operationsAppProvider.createOperationRemboursement(ligneOperation))
+			.asTuple()
+			// Ajout des opérations standard et remboursement (si non nulle)
+			.invoke(tuple -> {
+				this.operationsAppProvider.addOperation(tuple.getItem1().getListeOperations(), tuple.getItem2());
+				if(tuple.getItem3() != null){
+					this.operationsAppProvider.addOperation(tuple.getItem1().getListeOperations(), tuple.getItem3());
+				}
+			})
+			.onItem().transform(Tuple3::getItem1)
+			// recalcul de tous les soldes du budget courant
+			.onItem().ifNotNull()
+				.invoke(this::recalculSoldes)
+				// Sauvegarde du budget
+				.call(this::sauvegardeBudget);
 	}
 
 	/**
@@ -145,23 +150,13 @@ public class BudgetService implements IBudgetAppProvider {
 	 */
 	@Override
 	public Uni<BudgetMensuel> deleteOperationInBudget(String idBudget, String idOperation) {
-		return getBudgetAndCompte(idBudget)
+		return getBudgetAndCompteActif(idBudget)
 				// Si pas d'erreur, update de l'opération
-				.onItem().ifNotNull()
-				// Vérification du compte
-				.transformToUni(tuple -> {
-					CompteBancaire compteBancaire = tuple.getItem2();
-					if (!Boolean.TRUE.equals(compteBancaire.isActif())) {
-						LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", tuple.getItem1().getIdCompteBancaire());
-						return Uni.createFrom().failure(new CompteClosedException("Impossible de modifier ou créer une opération. Le compte " + tuple.getItem1().getIdCompteBancaire() + " est cloturé"));
-					}
-					return Uni.createFrom().item(tuple.getItem1());
-				})
 				.onItem()
-				.invoke(budgetMensuel -> this.operationsAppProvider.deleteOperation(budgetMensuel.getListeOperations(), idOperation))
+					.transform(Tuple2::getItem1)
+					.invoke(budget -> this.operationsAppProvider.deleteOperation(budget.getListeOperations(), idOperation))
 				// recalcul de tous les soldes du budget courant
-				.onItem()
-				.ifNotNull()
+				.onItem().ifNotNull()
 					.invoke(this::recalculSoldes)
 					// Sauvegarde du budget
 					.call(this::sauvegardeBudget);
@@ -294,11 +289,13 @@ public class BudgetService implements IBudgetAppProvider {
 		// Si impossible : on retourne le budget initialisé
 		return getBudgetMensuel(compteBancaire.getId(),mois.minus(1) , Month.DECEMBER.equals(mois.minus(1)) ? annee -1 : annee)
 				.onItem()
-				.invoke(budgetPrecedent -> {
-					if(budgetPrecedent != null){
-						// #115 : Cloture automatique du mois précédent
-						setBudgetActif(budgetPrecedent.getId(), false);
-					}
+				.call(budgetPrecedent -> {
+					// #115 : Cloture automatique du mois précédent
+					return  setBudgetActif(budgetPrecedent.getId(), false)
+							.onItem().ifNotNull()
+								.invoke(this::recalculSoldes)
+								// Sauvegarde du budget
+								.call(this::sauvegardeBudget);
 				})
 				.map(budgetPrecedent -> initBudgetFromBudgetPrecedent(budgetInitVide, budgetPrecedent));
 				// La sauvegarde du budget initialisé est faite dans le flux suivant
@@ -353,16 +350,15 @@ public class BudgetService implements IBudgetAppProvider {
 	public Uni<BudgetMensuel> reinitialiserBudgetMensuel(String idBudget) {
 		LOGGER.info("Réinitialisation du budget {}", idBudget);
 		// Chargement du budget et compte
-		return getBudgetAndCompte(idBudget)
+		return getBudgetAndCompteActif(idBudget)
 				// Si pas d'erreur, réinitialisation du budget
 				.onItem()
 					.transformToUni(tuple -> initNewBudget(tuple.getItem2(), tuple.getItem1().getMois(), tuple.getItem1().getAnnee()))
 				// recalcul de tous les soldes du budget courant
-				.onItem()
-					.ifNotNull()
-						.invoke(this::recalculSoldes)
+				.onItem().ifNotNull()
+					.invoke(this::recalculSoldes)
 					// Sauvegarde du budget
-						.call(this::sauvegardeBudget);
+					.call(this::sauvegardeBudget);
 	}
 
 	/**
@@ -370,12 +366,23 @@ public class BudgetService implements IBudgetAppProvider {
 	 * @param idBudget id du budget
 	 * @return tuple (budget, compte)
 	 */
-	public Uni<Tuple2<BudgetMensuel, CompteBancaire>> getBudgetAndCompte(String idBudget){
+	private Uni<Tuple2<BudgetMensuel, CompteBancaire>> getBudgetAndCompteActif(String idBudget){
 		return getBudgetMensuel(idBudget)
 				.flatMap(budget -> Uni.combine().all()
 						.unis(Uni.createFrom().item(budget),
 								this.comptesService.getCompteById(budget.getIdCompteBancaire()))
-						.asTuple());
+						.asTuple())
+				// Si pas d'erreur, vérification du compte
+				.onItem().ifNotNull()
+					// Vérification du compte
+					.transformToUni(tuple -> {
+						CompteBancaire compteBancaire = tuple.getItem2();
+						if (!Boolean.TRUE.equals(compteBancaire.isActif())) {
+							LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", tuple.getItem1().getIdCompteBancaire());
+							return Uni.createFrom().failure(new CompteClosedException("Impossible de modifier ou créer une opération. Le compte " + tuple.getItem1().getIdCompteBancaire() + " est cloturé"));
+						}
+						return Uni.createFrom().item(tuple);
+					});
 	}
 
 	/**

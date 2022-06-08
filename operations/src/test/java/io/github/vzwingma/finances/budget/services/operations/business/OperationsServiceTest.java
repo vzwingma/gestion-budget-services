@@ -1,14 +1,18 @@
 package io.github.vzwingma.finances.budget.services.operations.business;
 
+import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
+import io.github.vzwingma.finances.budget.services.operations.spi.IParametragesServiceProvider;
 import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataBudgets;
 import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataOperations;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.mutiny.Uni;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,6 +28,7 @@ class OperationsServiceTest {
 
     private OperationsService operationsAppProvider;
 
+    private IParametragesServiceProvider parametragesServiceProvider;
     private IBudgetAppProvider budgetAppProvider;
     private IOperationsRepository mockOperationDataProvider;
 
@@ -34,6 +39,8 @@ class OperationsServiceTest {
         budgetAppProvider = Mockito.mock(BudgetService.class);
         operationsAppProvider.setDataOperationsProvider(mockOperationDataProvider);
         operationsAppProvider.setBudgetService(budgetAppProvider);
+        parametragesServiceProvider = Mockito.mock(IParametragesServiceProvider.class);
+        operationsAppProvider.setParametragesService(parametragesServiceProvider);
     }
 
     @Test
@@ -96,39 +103,44 @@ class OperationsServiceTest {
 
 
     @Test
+    void testAddOperationRemboursementCatFailure(){
+
+        // When
+        Mockito.when(parametragesServiceProvider.getCategorieParId(Mockito.anyString()))
+                .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Impossible de trouver la catégorie")));
+
+        // Test
+        CompletionException thrown = Assertions.assertThrows(CompletionException.class, () -> operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement()).await().indefinitely());
+        assertEquals("io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException", thrown.getMessage());
+        Mockito.verify(mockOperationDataProvider, Mockito.never()).sauvegardeBudgetMensuel(Mockito.any());
+
+    }
+
+    @Test
     void testAddOperationRemboursementCatUnkown(){
 
         // When
-        List<LigneOperation> listeOperations = new ArrayList<>();
-        listeOperations.add(MockDataOperations.getOperationPrelevement());
-        // Opération à ajouter
-        LigneOperation operation = MockDataOperations.getOperationPrelevement();
-        operation.setId("Test2");
-        operation.getCategorie().setId(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
-        operation.setLibelle("Medecin");
-        operation.setEtat(EtatOperationEnum.REALISEE);
+        Mockito.when(parametragesServiceProvider.getCategorieParId(Mockito.anyString())).thenReturn(Uni.createFrom().nullItem());
+
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
-        assertEquals(3, operationsAJour.size());
-        assertEquals("Medecin", operationsAJour.get(1).getLibelle());
+        CompletionException thrown = Assertions.assertThrows(CompletionException.class, () -> operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement()).await().indefinitely());
+        assertEquals("io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException", thrown.getMessage());
+        Mockito.verify(mockOperationDataProvider, Mockito.never()).sauvegardeBudgetMensuel(Mockito.any());
+
     }
 
     @Test
     void testAddOperationRemboursement(){
 
         // When
-        List<LigneOperation> listeOperations = new ArrayList<>();
-        listeOperations.add(MockDataOperations.getOperationPrelevement());
-        // Opération à ajouter
-        LigneOperation operation = MockDataOperations.getOperationPrelevement();
-        operation.setId("Test2");
-        operation.getCategorie().setId(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
-        operation.setLibelle("Medecin");
-        operation.setEtat(EtatOperationEnum.REALISEE);
+        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
+        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
+        dep.setCategorieParente(cat);
+        Mockito.when(parametragesServiceProvider.getCategorieParId(Mockito.anyString())).thenReturn(Uni.createFrom().item(dep));
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
+        LigneOperation operationRemb = operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement()).await().indefinitely();
 
-        assertEquals(3, operationsAJour.size());
-        assertEquals("[Remboursement] Medecin", operationsAJour.get(2).getLibelle());
+        assertNotNull(operationRemb);
+        assertEquals("[Remboursement] TestRemboursement", operationRemb.getLibelle());
     }
 }

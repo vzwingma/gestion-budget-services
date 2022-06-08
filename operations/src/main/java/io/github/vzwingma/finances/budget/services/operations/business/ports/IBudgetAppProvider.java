@@ -1,10 +1,8 @@
 package io.github.vzwingma.finances.budget.services.operations.business.ports;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.tuples.Tuple2;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -31,12 +29,7 @@ public interface IBudgetAppProvider {
      * @return budget correspondant aux paramètres
      */
     Uni<BudgetMensuel> getBudgetMensuel(String idBudget);
-    /**
-     * Chargement du budget et du compte en double Uni
-     * @param idBudget id du budget
-     * @return tuple (budget, compte)
-     */
-    Uni<Tuple2<BudgetMensuel, CompteBancaire>> getBudgetAndCompte(String idBudget);
+
 
     /**
      * Mise à jour d'une ligne de dépense

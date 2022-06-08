@@ -22,7 +22,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -56,16 +55,12 @@ public class OperationsService implements IOperationsAppProvider {
 	@Inject
 	IParametragesServiceProvider parametragesService;
 
-
-	@PostConstruct
-	public void init() {
-		LOGGER.info("Initialisation du service d'opérations");
-	//	categorieRemboursement = this.parametragesService.getCategorieParId(IdsCategoriesEnum.REMBOURSEMENT.getId()).await().indefinitely();
-	}
-
-
-	@Override
-	public void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
+	/**
+	 * Réinjection des catégories dans les opérations du budget
+	 * @param operation opération
+	 * @param categories liste des catégories
+	 */
+	private void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
 		try {
 			CategorieOperations catFound = BudgetDataUtils.getCategorieById(operation.getSsCategorie().getId(), categories);
 			if(catFound != null) {
@@ -225,14 +220,6 @@ public class OperationsService implements IOperationsAppProvider {
 			} else {
 				LOGGER.debug("Ajout de l'opération {} dans le budget", ligneUpdatedOperation);
 				operations.add(ligneUpdatedOperation);
-
-				// Si frais remboursable : ajout du remboursement en prévision
-				// #62 : et en mode création
-				if (ligneOperation.getSsCategorie() != null
-						&& ligneOperation.getCategorie() != null
-						&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())) {
-					operations.add(addOperationRemboursement(ligneOperation));
-				}
 			}
 		} else {
 			LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
@@ -262,26 +249,62 @@ public class OperationsService implements IOperationsAppProvider {
 	}
 
 	/**
+	 * Si frais remboursable : ajout du remboursement en prévision
+	 * #62 : et en mode création
+	 * @param operationSource ligne d'opération source, ajoutée
+	 * @return ligne de remboursement
+	 */
+	@Override
+	public Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource){
+
+		// Si l'opération est une remboursement, on ajoute la catégorie de remboursement
+		if (operationSource.getSsCategorie() != null
+				&& operationSource.getCategorie() != null
+				&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(operationSource.getCategorie().getId())) {
+
+			return Uni.combine().all().unis(
+							Uni.createFrom().item(operationSource),
+							this.parametragesService.getCategorieParId(IdsCategoriesEnum.REMBOURSEMENT.getId()))
+					.asTuple()
+					.map(tuple -> createOperationRemboursement(tuple.getItem1(), tuple.getItem2()))
+					.onItem()
+						.ifNull().failWith(new DataNotFoundException("Impossible de créer le remboursement car la catégorie de remboursement n'a pas été trouvée"));
+		}
+		else{
+			return Uni.createFrom().nullItem();
+		}
+	}
+
+	/**
+	 * Si frais remboursable : ajout du remboursement en prévision
+	 * #62 : et en mode création
 	 * @param ligneOperation ligne d'opération à ajouter
 	 * @return ligne de remboursement
 	 */
-	private LigneOperation addOperationRemboursement(LigneOperation ligneOperation) {
-		LigneOperation ligneRemboursement = new LigneOperation(
-						null, //this.categorieRemboursement,
-						"[Remboursement] " + ligneOperation.getLibelle(),
-						TypeOperationEnum.CREDIT,
-						Math.abs(ligneOperation.getValeur()),
-						EtatOperationEnum.REPORTEE,
-						ligneOperation.isPeriodique());
-		// TODO : nomProprietaire à ajouter
-		ligneRemboursement.getAutresInfos().setAuteur("vzwingmann");
-		ligneRemboursement.getAutresInfos().setDateMaj(LocalDateTime.now());
-		return ligneRemboursement;
+
+	private LigneOperation createOperationRemboursement(LigneOperation ligneOperation, CategorieOperations categorieRemboursement) {
+		if(categorieRemboursement != null) {
+			LigneOperation ligneRemboursement = new LigneOperation(
+					categorieRemboursement,
+					"[Remboursement] " + ligneOperation.getLibelle(),
+					TypeOperationEnum.CREDIT,
+					Math.abs(ligneOperation.getValeur()),
+					EtatOperationEnum.REPORTEE,
+					ligneOperation.isPeriodique());
+			// TODO : nomProprietaire à ajouter
+			ligneRemboursement.getAutresInfos().setAuteur("vzwingmann");
+			ligneRemboursement.getAutresInfos().setDateMaj(LocalDateTime.now());
+			return ligneRemboursement;
+		}
+		else{
+			return null;
+		}
 	}
 
 
 	@Override
 	public Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination) {
+	//	completeCategoriesOnOperation(ligneOperation, this.paramClientApi.getCategories());
 		return null;
 	}
 
