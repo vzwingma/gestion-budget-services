@@ -108,8 +108,6 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'maven'
-          server-id: github
-          server-password: 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
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
