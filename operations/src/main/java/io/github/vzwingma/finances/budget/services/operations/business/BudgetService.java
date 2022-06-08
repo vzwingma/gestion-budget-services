@@ -100,8 +100,7 @@ public class BudgetService implements IBudgetAppProvider {
 					// rechargement du solde mois précédent (s'il a changé)
 					.onItem().transformToUni(budgetMensuel -> recalculSoldeAFinMoisPrecedent(budgetMensuel, compteBancaire) )
 					// recalcul de tous les soldes du budget courant
-					.onItem()
-						.ifNotNull()
+					.onItem().ifNotNull()
 						.invoke(this::recalculSoldes)
 						// Sauvegarde du budget
 						.call(this::sauvegardeBudget);
@@ -356,7 +355,14 @@ public class BudgetService implements IBudgetAppProvider {
 		// Chargement du budget et compte
 		return getBudgetAndCompte(idBudget)
 				// Si pas d'erreur, réinitialisation du budget
-				.onItem().transformToUni(tuple -> initNewBudget(tuple.getItem2(), tuple.getItem1().getMois(), tuple.getItem1().getAnnee()));
+				.onItem()
+					.transformToUni(tuple -> initNewBudget(tuple.getItem2(), tuple.getItem1().getMois(), tuple.getItem1().getAnnee()))
+				// recalcul de tous les soldes du budget courant
+				.onItem()
+					.ifNotNull()
+						.invoke(this::recalculSoldes)
+					// Sauvegarde du budget
+						.call(this::sauvegardeBudget);
 	}
 
 	/**

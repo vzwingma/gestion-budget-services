@@ -213,6 +213,7 @@ class BudgetServiceTest {
         BudgetMensuel budgetReinit = budgetAppProvider.reinitialiserBudgetMensuel(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue().getId()).await().indefinitely();
         // Assertion
         assertNotNull(budgetReinit);
+        Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(budgetReinit);
     }
 
 
