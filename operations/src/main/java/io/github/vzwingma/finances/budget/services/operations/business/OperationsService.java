@@ -40,9 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class OperationsService implements IOperationsAppProvider {
 
 
-	/**
-	 * Logger
-	 */
+	// Logger
 	private static final Logger LOGGER = LoggerFactory.getLogger(OperationsService.class);
 
 	@Inject
@@ -60,6 +58,7 @@ public class OperationsService implements IOperationsAppProvider {
 	 * @param operation opération
 	 * @param categories liste des catégories
 	 */
+	// TODO : A supprimer ?
 	private void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
 		try {
 			CategorieOperations catFound = BudgetDataUtils.getCategorieById(operation.getSsCategorie().getId(), categories);

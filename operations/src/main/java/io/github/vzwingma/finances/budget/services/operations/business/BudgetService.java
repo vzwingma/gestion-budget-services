@@ -67,7 +67,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 */
 	@Override
 	public Uni<BudgetMensuel> getBudgetMensuel(String idCompte, Month mois, int annee) {
-		LOGGER.debug("Chargement du budget {} de {}/{}", idCompte, mois, annee);
+		LOGGER.debug("[idBudget={}] Chargement du budget {} de {}/{}", BudgetDataUtils.getBudgetId(idCompte, mois, annee), idCompte, mois, annee);
 		return this.comptesService.getCompteById(idCompte)
 				.invoke(compte -> LOGGER.debug("-> Compte correspondant {}", compte))
 				.onItem().ifNotNull()
@@ -92,13 +92,13 @@ public class BudgetService implements IBudgetAppProvider {
 	 * @return budget mensuel chargé et initialisé à partir des données précédentes
 	 */
 	private Uni<BudgetMensuel> chargerBudgetMensuelSurCompteActif(CompteBancaire compteBancaire, Month mois, int annee) {
-		LOGGER.debug("Chargement du budget de {}/{} du compte actif {} ", mois, annee, compteBancaire.getId());
+		LOGGER.debug("[idBudget={}] Chargement du budget de {}/{} du compte actif {} ", BudgetDataUtils.getBudgetId(compteBancaire.getId(), mois, annee), mois, annee, compteBancaire.getId() );
 
 			return this.dataOperationsProvider.chargeBudgetMensuel(compteBancaire, mois, annee)
 					// Budget introuvable - init d'un nouveau budget
 					.onFailure()
 						.recoverWithUni(() -> initNewBudget(compteBancaire, mois, annee))
-					.invoke(budgetMensuel -> LOGGER.debug("Budget mensuel chargé {}", budgetMensuel))
+					.invoke(budgetMensuel -> LOGGER.debug("[idBudget={}] Budget mensuel chargé {}", budgetMensuel.getId(), budgetMensuel))
 					// rechargement du solde mois précédent (s'il a changé)
 					.onItem().transformToUni(budgetMensuel -> recalculSoldeAFinMoisPrecedent(budgetMensuel, compteBancaire) )
 					// recalcul de tous les soldes du budget courant
@@ -237,14 +237,12 @@ public class BudgetService implements IBudgetAppProvider {
 
 			LOGGER.debug("Recalcul du solde à partir du budget du mois précédent du compte actif {} : {}/{}", compteBancaire, moisPrecedent, anneePrecedente);
 
-			return this.dataOperationsProvider.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente)
-					.onItem().transformToUni(budgetPrecedent -> {
-							if(budgetPrecedent != null) {
-								budgetMensuel.getSoldes().setSoldeAtFinMoisPrecedent(budgetPrecedent.getSoldes().getSoldeAtFinMoisCourant());
-							}
-							return Uni.createFrom().item(budgetMensuel);
-						})
-;
+			return Uni.combine().all().unis(
+						Uni.createFrom().item(budgetMensuel),
+						this.dataOperationsProvider.chargeBudgetMensuel(compteBancaire, moisPrecedent, anneePrecedente)
+			).asTuple()
+				.invoke(tuple -> tuple.getItem1().getSoldes().setSoldeAtFinMoisPrecedent(tuple.getItem2().getSoldes().getSoldeAtFinMoisCourant()))
+					.map(Tuple2::getItem1);
 		}
 		else{
 			LOGGER.debug("Budget inactif, pas de recalcul du solde à partir du budget du mois précédent du compte actif {}", compteBancaire);
@@ -261,7 +259,7 @@ public class BudgetService implements IBudgetAppProvider {
 	@Override
 	public void recalculSoldes(BudgetMensuel budget) {
 
-		LOGGER.info("(Re)Calcul des soldes du budget : {}", budget.getId());
+		LOGGER.info("[idBudget={}] (Re)Calcul des soldes du budget", budget.getId());
 		BudgetDataUtils.razCalculs(budget);
 
 		this.operationsAppProvider.calculSoldes(budget.getListeOperations(), budget.getSoldes(), budget.getTotauxParCategories(), budget.getTotauxParSSCategories());
@@ -275,7 +273,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 * @return budget mensuel chargé à partir des données précédentes
 	 */
 	private Uni<BudgetMensuel> chargerBudgetMensuelSurCompteInactif(CompteBancaire compteBancaire, Month mois, int annee) {
-		LOGGER.debug("Chargement du budget du compte inactif {} de {}/{}", compteBancaire.getId(), mois, annee);
+		LOGGER.debug("[idBudget={}] Chargement du budget du compte inactif {} de {}/{}", BudgetDataUtils.getBudgetId(compteBancaire.getId(), mois, annee), compteBancaire.getId(), mois, annee);
 
 		// Calcul de paramètres pour le recovery
 		Month moisPrecedent = mois.minus(1);
@@ -295,7 +293,7 @@ public class BudgetService implements IBudgetAppProvider {
 						budgetMensuel.setActif(false);
 						return budgetMensuel;
 					})
-					.invoke(budgetMensuel -> LOGGER.info("Budget du compte inactif {} de {}/{} chargé : {}", compteBancaire.getId(), mois, annee, budgetMensuel));
+					.invoke(budgetMensuel -> LOGGER.info("[idBudget={}] Budget du compte inactif {} de {}/{} chargé : {}", budgetMensuel.getId(), compteBancaire.getId(), mois, annee, budgetMensuel));
 	}
 
 
@@ -316,8 +314,9 @@ public class BudgetService implements IBudgetAppProvider {
 		} else if (Boolean.FALSE.equals(compteBancaire.isActif())) {
 			return Uni.createFrom().failure(new CompteClosedException("Compte bancaire inactif"));
 		}
-
-		LOGGER.info("Initialisation du budget {} de {}/{}", compteBancaire.getLibelle(), mois, annee);
+		String idBudget = BudgetDataUtils.getBudgetId(compteBancaire.getId(), mois, annee);
+		LOGGER.warn("[idBudget={}] Budget introuvable ou non initialisé", idBudget);
+		LOGGER.info("[idBudget={}] Initialisation du budget {} de {}/{}", idBudget, compteBancaire.getId(), mois, annee);
 		BudgetMensuel budgetInitVide = new BudgetMensuel();
 		budgetInitVide.setActif(true);
 		budgetInitVide.setAnnee(annee);
@@ -347,15 +346,14 @@ public class BudgetService implements IBudgetAppProvider {
 		// MAJ Calculs à partir du mois précédent
 		// Recherche du budget précédent
 		// Si impossible : on retourne le budget initialisé
-		return getBudgetMensuel(compteBancaire.getId(),mois.minus(1) , Month.DECEMBER.equals(mois.minus(1)) ? annee -1 : annee)
+		String idBudgetPrecedent = BudgetDataUtils.getBudgetId(compteBancaire.getId(), mois.minus(1), Month.DECEMBER.equals(mois.minus(1)) ? annee -1 : annee);
+		LOGGER.debug("[idBudget={}] Chargement du budget précédent pour initialisation", idBudgetPrecedent);
+		return getBudgetMensuel(idBudgetPrecedent)
 				.onItem()
 				.call(budgetPrecedent -> {
+					LOGGER.debug("[idBudget={}] Budget précédent trouvé : {}", budgetPrecedent.getId(), budgetPrecedent);
 					// #115 : Cloture automatique du mois précédent
-					return  setBudgetActif(budgetPrecedent.getId(), false)
-							.onItem().ifNotNull()
-								.invoke(this::recalculSoldes)
-								// Sauvegarde du budget
-								.call(this::sauvegardeBudget);
+					return  setBudgetActif(budgetPrecedent.getId(), false);
 				})
 				.map(budgetPrecedent -> initBudgetFromBudgetPrecedent(budgetInitVide, budgetPrecedent));
 				// La sauvegarde du budget initialisé est faite dans le flux suivant
@@ -364,21 +362,21 @@ public class BudgetService implements IBudgetAppProvider {
 	/**
 	 * Initialisation du budget à partir du budget du mois précédent
 	 *
-	 * @param budget          budget à calculer
+	 * @param budgetInitVide  budget à initialiser
 	 * @param budgetPrecedent budget du mois précédent
 	 */
-	private BudgetMensuel initBudgetFromBudgetPrecedent(BudgetMensuel budget, BudgetMensuel budgetPrecedent) {
+	private BudgetMensuel initBudgetFromBudgetPrecedent(BudgetMensuel budgetInitVide, BudgetMensuel budgetPrecedent) {
 		// Calcul
 		if(budgetPrecedent != null){
 			recalculSoldes(budgetPrecedent);
-			budget.setIdCompteBancaire(budgetPrecedent.getIdCompteBancaire());
+			budgetInitVide.setIdCompteBancaire(budgetPrecedent.getIdCompteBancaire());
 			// #116 : Le résultat du moins précédent est le compte réel, pas le compte avancé
-			budget.getSoldes().setSoldeAtFinMoisPrecedent(budgetPrecedent.getSoldes().getSoldeAtFinMoisCourant());
-			budget.setDateMiseAJour(LocalDateTime.now());
+			budgetInitVide.getSoldes().setSoldeAtFinMoisPrecedent(budgetPrecedent.getSoldes().getSoldeAtFinMoisCourant());
+			budgetInitVide.setDateMiseAJour(LocalDateTime.now());
 			if(budgetPrecedent.getListeOperations() != null){
 
 				// Recopie de toutes les opérations périodiques, et reportées
-				budget.getListeOperations().addAll(
+				budgetInitVide.getListeOperations().addAll(
 						budgetPrecedent.getListeOperations()
 								.stream()
 								.filter(op -> op.isPeriodique() || EtatOperationEnum.REPORTEE.equals(op.getEtat()))
@@ -386,7 +384,7 @@ public class BudgetService implements IBudgetAppProvider {
 								.toList());
 			}
 		}
-		return budget;
+		return budgetInitVide;
 	}
 
 	/**
@@ -464,7 +462,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 */
 	@Override
 	public Uni<BudgetMensuel> setBudgetActif(String idBudgetMensuel, boolean budgetActif) {
-		LOGGER.info("{} du budget {}", budgetActif ? "Réouverture" : "Fermeture", idBudgetMensuel);
+		LOGGER.info("[idBudget={}] {} du budget",idBudgetMensuel, budgetActif ? "Réouverture" : "Fermeture");
 			return dataOperationsProvider.chargeBudgetMensuel(idBudgetMensuel)
 					.map(budgetMensuel -> {
 						budgetMensuel.setActif(budgetActif);
