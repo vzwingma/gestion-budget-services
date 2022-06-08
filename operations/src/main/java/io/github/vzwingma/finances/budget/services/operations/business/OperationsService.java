@@ -22,7 +22,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -41,9 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class OperationsService implements IOperationsAppProvider {
 
 
-	/**
-	 * Logger
-	 */
+	// Logger
 	private static final Logger LOGGER = LoggerFactory.getLogger(OperationsService.class);
 
 	@Inject
@@ -56,16 +53,13 @@ public class OperationsService implements IOperationsAppProvider {
 	@Inject
 	IParametragesServiceProvider parametragesService;
 
-
-	@PostConstruct
-	public void init() {
-		LOGGER.info("Initialisation du service d'opérations");
-	//	categorieRemboursement = this.parametragesService.getCategorieParId(IdsCategoriesEnum.REMBOURSEMENT.getId()).await().indefinitely();
-	}
-
-
-	@Override
-	public void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
+	/**
+	 * Réinjection des catégories dans les opérations du budget
+	 * @param operation opération
+	 * @param categories liste des catégories
+	 */
+	// TODO : A supprimer ?
+	private void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
 		try {
 			CategorieOperations catFound = BudgetDataUtils.getCategorieById(operation.getSsCategorie().getId(), categories);
 			if(catFound != null) {
@@ -85,7 +79,9 @@ public class OperationsService implements IOperationsAppProvider {
 
 	@Override
 	public Multi<String> getLibellesOperations(String idCompte, int annee) {
-		return dataOperationsProvider.chargeLibellesOperations(idCompte, annee);
+		return dataOperationsProvider.chargeLibellesOperations(idCompte, annee)
+				// #124 : suppression des tags [] dans les libellés
+				.map(BudgetDataUtils::deleteTagFromString);
 	}
 
 
@@ -220,19 +216,11 @@ public class OperationsService implements IOperationsAppProvider {
 		if (ligneOperation.getEtat() != null) {
 			LigneOperation ligneUpdatedOperation = updateOperation(ligneOperation);
 			if (rangMaj >= 0) {
-				LOGGER.debug("Mise à jour de l'opération {}", ligneUpdatedOperation);
+				LOGGER.debug("Mise à jour de l'opération : {}", ligneUpdatedOperation);
 				operations.add(rangMaj, ligneUpdatedOperation);
 			} else {
-				LOGGER.debug("Ajout de l'opération {} dans le budget", ligneUpdatedOperation);
+				LOGGER.debug("Ajout de l'opération : {}", ligneUpdatedOperation);
 				operations.add(ligneUpdatedOperation);
-
-				// Si frais remboursable : ajout du remboursement en prévision
-				// #62 : et en mode création
-				if (ligneOperation.getSsCategorie() != null
-						&& ligneOperation.getCategorie() != null
-						&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(ligneOperation.getCategorie().getId())) {
-					operations.add(addOperationRemboursement(ligneOperation));
-				}
 			}
 		} else {
 			LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
@@ -262,27 +250,83 @@ public class OperationsService implements IOperationsAppProvider {
 	}
 
 	/**
+	 * Si frais remboursable : ajout du remboursement en prévision
+	 * #62 : et en mode création
+	 * @param operationSource ligne d'opération source, ajoutée
+	 * @return ligne de remboursement
+	 */
+	@Override
+	public Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource){
+
+		// Si l'opération est une remboursement, on ajoute la catégorie de remboursement
+		if (operationSource.getSsCategorie() != null
+				&& operationSource.getCategorie() != null
+				&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(operationSource.getCategorie().getId())) {
+
+			return Uni.combine().all().unis(
+							Uni.createFrom().item(operationSource),
+							this.parametragesService.getCategorieParId(IdsCategoriesEnum.REMBOURSEMENT.getId()))
+					.asTuple()
+					.map(tuple -> createOperationRemboursement(tuple.getItem1(), tuple.getItem2()))
+					.onItem()
+						.ifNull().failWith(new DataNotFoundException("Impossible de créer le remboursement car la catégorie de remboursement n'a pas été trouvée"));
+		}
+		else{
+			return Uni.createFrom().nullItem();
+		}
+	}
+
+	/**
+	 * Si frais remboursable : ajout du remboursement en prévision
+	 * #62 : et en mode création
 	 * @param ligneOperation ligne d'opération à ajouter
 	 * @return ligne de remboursement
 	 */
-	private LigneOperation addOperationRemboursement(LigneOperation ligneOperation) {
-		LigneOperation ligneRemboursement = new LigneOperation(
-						null, //this.categorieRemboursement,
-						"[Remboursement] " + ligneOperation.getLibelle(),
-						TypeOperationEnum.CREDIT,
-						Math.abs(ligneOperation.getValeur()),
-						EtatOperationEnum.REPORTEE,
-						ligneOperation.isPeriodique());
-		// TODO : nomProprietaire à ajouter
-		ligneRemboursement.getAutresInfos().setAuteur("vzwingmann");
-		ligneRemboursement.getAutresInfos().setDateMaj(LocalDateTime.now());
-		return ligneRemboursement;
+
+	private LigneOperation createOperationRemboursement(LigneOperation ligneOperation, CategorieOperations categorieRemboursement) {
+		if(categorieRemboursement != null) {
+			LigneOperation ligneRemboursement = new LigneOperation(
+					categorieRemboursement,
+					"[Remboursement] " + ligneOperation.getLibelle(),
+					TypeOperationEnum.CREDIT,
+					Math.abs(ligneOperation.getValeur()),
+					EtatOperationEnum.REPORTEE,
+					ligneOperation.isPeriodique());
+			// TODO : nomProprietaire à ajouter
+			ligneRemboursement.getAutresInfos().setAuteur("vzwingmann");
+			ligneRemboursement.getAutresInfos().setDateMaj(LocalDateTime.now());
+			return ligneRemboursement;
+		}
+		else{
+			return null;
+		}
 	}
 
 
+
 	@Override
-	public Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination) {
-		return null;
+	public List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible){
+
+		// #59 : Cohérence des états
+		EtatOperationEnum etatDepenseTransfert;
+		switch (ligneOperationSource.getEtat()) {
+			case ANNULEE -> etatDepenseTransfert = EtatOperationEnum.ANNULEE;
+			case REPORTEE -> etatDepenseTransfert = EtatOperationEnum.REPORTEE;
+			// pour tous les autres cas, on prend l'état de l'opération source
+			default -> etatDepenseTransfert = EtatOperationEnum.PREVUE;
+		}
+
+		LigneOperation ligneTransfert = new LigneOperation(
+				ligneOperationSource.getCategorie(),
+				ligneOperationSource.getSsCategorie(),
+				libelleOperationCible,
+				TypeOperationEnum.CREDIT,
+				Math.abs(ligneOperationSource.getValeur()),
+				etatDepenseTransfert,
+				ligneOperationSource.isPeriodique());
+		LOGGER.debug("Ajout de l'opération [{}] dans le budget", ligneTransfert);
+		operations.add(ligneTransfert);
+		return operations;
 	}
 
 

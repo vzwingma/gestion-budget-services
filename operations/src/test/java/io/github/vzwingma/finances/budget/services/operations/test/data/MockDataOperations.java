@@ -40,7 +40,14 @@ public class MockDataOperations {
 
     }
 
-
+    public static LigneOperation getOperationIntercompte(){
+        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.getId());
+        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.getId());
+        dep.setCategorieParente(cat);
+        LigneOperation test1 = new LigneOperation(dep, "TestIntercompte", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
+        test1.setId("TestIntercompte");
+        return test1;
+    }
     public static LigneOperation getOperationPrelevement(){
         CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
         CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
@@ -48,5 +55,14 @@ public class MockDataOperations {
         LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
         test1.setId("TEST1");
         return test1;
+    }
+
+    public static LigneOperation getOperationRemboursement(){
+        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
+        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
+        dep.setCategorieParente(cat);
+        LigneOperation remboursement = new LigneOperation(dep, "TestRemboursement", TypeOperationEnum.DEPENSE, 123D, EtatOperationEnum.REALISEE, false);
+        remboursement.setId("TestRemboursement");
+        return remboursement;
     }
 }

@@ -25,6 +25,15 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'maven'
+      # Update version
+      - name: Get tag Version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+      - name: Apply version
+        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
+      - name: Commit version
+        run: mvn versions:commit
+
       # Runs the Build with Maven
       - name: Build Communs with Maven
         run: mvn clean install -B --file communs/pom.xml
@@ -122,7 +131,6 @@ jobs:
           version: 'latest'
           java-version: '17'
           components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven

@@ -1,6 +1,5 @@
 package io.github.vzwingma.finances.budget.services.operations.business.ports;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.TotauxCategorie;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
@@ -24,12 +23,7 @@ public interface IOperationsAppProvider {
      * @param totauxSsCategoriesMap map des totaux par sous catégorie
      */
     void calculSoldes(List<LigneOperation> operations, BudgetMensuel.Soldes soldes, Map<String, TotauxCategorie> totauxCategorieMap, Map<String, TotauxCategorie> totauxSsCategoriesMap);
-    /**
-     * Réinjection des catégories dans les opérations du budget
-     * @param operation opération
-     * @param categories liste des catégories
-     */
-    void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories);
+
     /**
      * Charge les libelles des opérations
      * @param idCompte identifiant du compte
@@ -40,10 +34,12 @@ public interface IOperationsAppProvider {
     /**
      * Ajout d'une ligne transfert intercompte
      *
-     * @param ligneOperation      ligne de dépense de transfert
-     * @param idCompteDestination compte créditeur
+     * @param operations            liste des opérations à mettre à jour budget
+     * @param ligneOperationSource  ligne de dépense, source, pour créer une nouvelle opération
+     * @param libelleOperationCible libelle de la nouvelle opération
+     * @return liste des opérations à mettre à jour dans le budget, avec l'intercompte
      */
-    Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination);
+    List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible);
     /**
      * Mise à jour de la ligne comme dernière opération
      *
@@ -62,8 +58,15 @@ public interface IOperationsAppProvider {
     /**
      * Mise à jour d'une ligne de dépense dans la liste d'un budget
      *
-     * @param operations liste des opérations à mettre à jour budget
+     * @param operations     liste des opérations à mettre à jour budget
      * @param ligneOperation ligne de dépense
      */
     List<LigneOperation> addOperation(List<LigneOperation> operations, LigneOperation ligneOperation);
+
+    /**
+     * Ajout d'une opération de remboursement
+     *
+     * @param operationSource     opération source du remboursement
+     */
+    Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource);
 }
