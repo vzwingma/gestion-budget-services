@@ -34,10 +34,12 @@ public interface IOperationsAppProvider {
     /**
      * Ajout d'une ligne transfert intercompte
      *
-     * @param ligneOperation      ligne de dépense de transfert
-     * @param idCompteDestination compte créditeur
+     * @param operations            liste des opérations à mettre à jour budget
+     * @param ligneOperationSource  ligne de dépense, source, pour créer une nouvelle opération
+     * @param libelleOperationCible libelle de la nouvelle opération
+     * @return liste des opérations à mettre à jour dans le budget, avec l'intercompte
      */
-    Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination);
+    List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible);
     /**
      * Mise à jour de la ligne comme dernière opération
      *

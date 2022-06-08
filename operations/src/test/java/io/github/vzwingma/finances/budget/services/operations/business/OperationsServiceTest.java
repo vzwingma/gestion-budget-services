@@ -103,6 +103,37 @@ class OperationsServiceTest {
 
 
     @Test
+    void testAddOperationIntercompte(){
+
+        // When
+        List<LigneOperation> listeOperations = new ArrayList<>();
+        listeOperations.add(MockDataOperations.getOperationPrelevement());
+        // Opération à ajouter
+        LigneOperation operation = MockDataOperations.getOperationIntercompte();
+        operation.setEtat(EtatOperationEnum.REALISEE);
+        // Test
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle());
+        assertEquals(2, operationsAJour.size());
+        assertEquals(EtatOperationEnum.PREVUE, operationsAJour.get(1).getEtat());
+    }
+
+
+    @Test
+    void testAddOperationIntercompteReportee(){
+
+        // When
+        List<LigneOperation> listeOperations = new ArrayList<>();
+        listeOperations.add(MockDataOperations.getOperationPrelevement());
+        // Opération à ajouter
+        LigneOperation operation = MockDataOperations.getOperationIntercompte();
+        operation.setEtat(EtatOperationEnum.REPORTEE);
+        // Test
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle());
+        assertEquals(2, operationsAJour.size());
+        assertEquals(EtatOperationEnum.REPORTEE, operationsAJour.get(1).getEtat());
+    }
+
+    @Test
     void testAddOperationRemboursementCatFailure(){
 
         // When

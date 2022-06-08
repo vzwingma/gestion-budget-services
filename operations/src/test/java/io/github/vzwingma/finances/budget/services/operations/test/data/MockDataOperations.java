@@ -40,7 +40,14 @@ public class MockDataOperations {
 
     }
 
-
+    public static LigneOperation getOperationIntercompte(){
+        CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.getId());
+        CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.getId());
+        dep.setCategorieParente(cat);
+        LigneOperation test1 = new LigneOperation(dep, "TestIntercompte", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
+        test1.setId("TestIntercompte");
+        return test1;
+    }
     public static LigneOperation getOperationPrelevement(){
         CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
         CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());

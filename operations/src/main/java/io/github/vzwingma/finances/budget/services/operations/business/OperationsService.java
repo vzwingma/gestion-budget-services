@@ -80,7 +80,9 @@ public class OperationsService implements IOperationsAppProvider {
 
 	@Override
 	public Multi<String> getLibellesOperations(String idCompte, int annee) {
-		return dataOperationsProvider.chargeLibellesOperations(idCompte, annee);
+		return dataOperationsProvider.chargeLibellesOperations(idCompte, annee)
+				// #124 : suppression des tags [] dans les libellés
+				.map(BudgetDataUtils::deleteTagFromString);
 	}
 
 
@@ -215,10 +217,10 @@ public class OperationsService implements IOperationsAppProvider {
 		if (ligneOperation.getEtat() != null) {
 			LigneOperation ligneUpdatedOperation = updateOperation(ligneOperation);
 			if (rangMaj >= 0) {
-				LOGGER.debug("Mise à jour de l'opération {}", ligneUpdatedOperation);
+				LOGGER.debug("Mise à jour de l'opération : {}", ligneUpdatedOperation);
 				operations.add(rangMaj, ligneUpdatedOperation);
 			} else {
-				LOGGER.debug("Ajout de l'opération {} dans le budget", ligneUpdatedOperation);
+				LOGGER.debug("Ajout de l'opération : {}", ligneUpdatedOperation);
 				operations.add(ligneUpdatedOperation);
 			}
 		} else {
@@ -302,10 +304,30 @@ public class OperationsService implements IOperationsAppProvider {
 	}
 
 
+
 	@Override
-	public Uni<BudgetMensuel> createOperationIntercompte(String idBudget, LigneOperation ligneOperation, String idCompteDestination) {
-	//	completeCategoriesOnOperation(ligneOperation, this.paramClientApi.getCategories());
-		return null;
+	public List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible){
+
+		// #59 : Cohérence des états
+		EtatOperationEnum etatDepenseTransfert;
+		switch (ligneOperationSource.getEtat()) {
+			case ANNULEE -> etatDepenseTransfert = EtatOperationEnum.ANNULEE;
+			case REPORTEE -> etatDepenseTransfert = EtatOperationEnum.REPORTEE;
+			// pour tous les autres cas, on prend l'état de l'opération source
+			default -> etatDepenseTransfert = EtatOperationEnum.PREVUE;
+		}
+
+		LigneOperation ligneTransfert = new LigneOperation(
+				ligneOperationSource.getCategorie(),
+				ligneOperationSource.getSsCategorie(),
+				libelleOperationCible,
+				TypeOperationEnum.CREDIT,
+				Math.abs(ligneOperationSource.getValeur()),
+				etatDepenseTransfert,
+				ligneOperationSource.isPeriodique());
+		LOGGER.debug("Ajout de l'opération [{}] dans le budget", ligneTransfert);
+		operations.add(ligneTransfert);
+		return operations;
 	}
 
 

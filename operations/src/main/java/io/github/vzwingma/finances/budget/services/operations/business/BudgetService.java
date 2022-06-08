@@ -3,6 +3,7 @@ package io.github.vzwingma.finances.budget.services.operations.business;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
@@ -143,11 +144,70 @@ public class BudgetService implements IBudgetAppProvider {
 	}
 
 	/**
-	 * Ajout d'une opération dans le budget
-	 * @param idBudget       identifiant de budget
-	 * @param idOperation ligne de dépense à ajouter
+	 * Création des opérations inter-comptes
+	 * @param idBudget identifiant du budget source
+	 * @param ligneOperation ligne de dépense à ajouter
+	 * @param idCompteDestination identifiant du compte de destination
 	 * @return budget mensuel mis à jour
 	 */
+	@Override
+	public Uni<BudgetMensuel> createOperationsIntercomptes(String idBudget, final LigneOperation ligneOperation, String idCompteDestination) {
+
+		try {
+			final String libelleOperation = ligneOperation.getLibelle();
+			String idBudgetDestination = BudgetDataUtils.getBudgetId(idCompteDestination, BudgetDataUtils.getMoisFromBudgetId(idBudget), BudgetDataUtils.getAnneeFromBudgetId(idBudget));
+			String idCompteSource = BudgetDataUtils.getCompteFromBudgetId(idBudget);
+
+			LOGGER.info("Ajout d'un transfert intercompte de {} vers {} ({}) > {} ", idBudget, idBudgetDestination, idCompteDestination, ligneOperation);
+
+			/*
+			 * Opération sur Compte source
+			 */
+			Uni<BudgetMensuel> budgetCourant = getBudgetAndCompteActif(idBudget)
+				.invoke(tuple -> tuple.mapItem2(compteSource -> this.comptesService.getCompteById(idCompteDestination)))
+				.invoke(tuple -> {
+					ligneOperation.setLibelle("[vers "+tuple.getItem2().getLibelle()+"] " + libelleOperation);
+					this.operationsAppProvider.addOperation(tuple.getItem1().getListeOperations(), ligneOperation);
+				})
+				.map(Tuple2::getItem1)
+				.onItem().ifNotNull()
+					.invoke(this::recalculSoldes)
+					// Sauvegarde du budget
+					.call(this::sauvegardeBudget);
+
+			/*
+			 * Opération sur Compte cible
+			 */
+
+			Uni<BudgetMensuel> budgetCible = getBudgetAndCompteActif(idBudgetDestination)
+				.invoke(tuple -> tuple.mapItem2(compteSource -> this.comptesService.getCompteById(idCompteSource)))
+				.invoke(tuple -> {
+					String libelleOperationCible = "[vers "+tuple.getItem2().getLibelle()+"] " + libelleOperation;
+					this.operationsAppProvider.addOperationIntercompte(tuple.getItem1().getListeOperations(), ligneOperation, libelleOperationCible);
+				})
+				.map(Tuple2::getItem1)
+				.onItem().ifNotNull()
+					.invoke(this::recalculSoldes)
+					// Sauvegarde du budget
+					.call(this::sauvegardeBudget);
+
+			return Uni.combine().all().unis(budgetCourant, budgetCible)
+					.asTuple()
+					.onItem()
+						.ifNotNull().transform(Tuple2::getItem1);
+
+		} catch (BudgetNotFoundException e) {
+			LOGGER.error("Erreur lors de la création de l'opération intercompte", e);
+			return Uni.createFrom().failure(e);
+		}
+	}
+
+		/**
+         * Ajout d'une opération dans le budget
+         * @param idBudget       identifiant de budget
+         * @param idOperation ligne de dépense à ajouter
+         * @return budget mensuel mis à jour
+         */
 	@Override
 	public Uni<BudgetMensuel> deleteOperationInBudget(String idBudget, String idOperation) {
 		return getBudgetAndCompteActif(idBudget)

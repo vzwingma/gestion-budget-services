@@ -72,7 +72,7 @@ class BudgetServiceTest {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
-                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteC1()));
 
         Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(any(CompteBancaire.class), eq(Month.JANUARY), eq(2022)))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetInactifCompteC1()));
@@ -96,7 +96,7 @@ class BudgetServiceTest {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
-                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteC1()));
 
         BudgetMensuel b1 = MockDataBudgets.getBudgetActifCompteC1et1operationPrevue();
         BudgetMensuel b0 = MockDataBudgets.getBudgetPrecedentCompteC1();
@@ -129,7 +129,7 @@ class BudgetServiceTest {
 
         // Initialisation
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
-                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteC1()));
 
         BudgetMensuel bcree = MockDataBudgets.getBudgetPrecedentCompteC1();
         bcree.setId("C1_2022_05");
@@ -208,7 +208,7 @@ class BudgetServiceTest {
                         Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
 
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
-                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteC1()));
         //Test
         BudgetMensuel budgetReinit = budgetAppProvider.reinitialiserBudgetMensuel(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue().getId()).await().indefinitely();
         // Assertion
@@ -321,7 +321,7 @@ class BudgetServiceTest {
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
 
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
-                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteC1()));
 
         // Test
         LigneOperation ligneOperation = MockDataOperations.getOperationPrelevement();
@@ -334,6 +334,29 @@ class BudgetServiceTest {
     }
 
 
+    @Test
+    void testCreateOperationIntercompte(){
+        // When
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel("C1_2022_01"))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
+        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel("C2_2022_01"))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC2et0operationPrevue()));
+
+
+        Mockito.when(mockCompteServiceProvider.getCompteById("C1"))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteC1()));
+        Mockito.when(mockCompteServiceProvider.getCompteById("C2"))
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteC2()));
+
+        // Test
+        LigneOperation ligneOperation = MockDataOperations.getOperationIntercompte();
+        BudgetMensuel budgetMensuelAJour = budgetAppProvider.createOperationsIntercomptes("C1_2022_01", ligneOperation, "C2" ).await().indefinitely();
+        assertEquals(2, budgetMensuelAJour.getListeOperations().size());
+
+        Mockito.verify(budgetAppProvider, Mockito.times(2)).recalculSoldes(any(BudgetMensuel.class));
+        Mockito.verify(mockOperationDataProvider, Mockito.times(2)).sauvegardeBudgetMensuel(any(BudgetMensuel.class));
+
+    }
 
     @Test
     void testDeleteOperationInBudget(){
@@ -342,7 +365,7 @@ class BudgetServiceTest {
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
 
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
-                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteC1()));
 
         // Test
         LigneOperation ligneOperation = MockDataOperations.getOperationPrelevement();
@@ -362,7 +385,7 @@ class BudgetServiceTest {
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
 
         Mockito.when(mockCompteServiceProvider.getCompteById(anyString()))
-                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompte()));
+                .thenReturn(Uni.createFrom().item(MockDataBudgets.getCompteC1()));
 
         // Test
         LigneOperation ligneOperation = MockDataOperations.getOperationPrelevement();

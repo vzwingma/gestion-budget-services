@@ -320,7 +320,7 @@ public class OperationsResource {
         LOG.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
         if(operation != null && idBudget != null){
             operation.setId(idOperation);
-            return operationsService.createOperationIntercompte(idBudget, operation, idCompte);
+            return budgetService.createOperationsIntercomptes(idBudget, operation, idCompte);
         }
         else{
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget, idOperation et idCompte sont obligatoires"));

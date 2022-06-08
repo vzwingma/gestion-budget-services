@@ -14,36 +14,39 @@ import java.util.ArrayList;
 public class MockDataBudgets {
 
 
-    public static CompteBancaire getCompte(){
+    public static CompteBancaire getCompteC1(){
+        return getCompteCx(1);
+    }
+    public static CompteBancaire getCompteC2(){
+        return getCompteCx(2);
+    }
+
+    private static CompteBancaire getCompteCx(int noCompte){
         CompteBancaire c1 = new CompteBancaire();
         c1.setActif(true);
-        c1.setId("C1");
-        c1.setLibelle("Libelle1");
+        c1.setId("C" + noCompte);
+        c1.setLibelle("Libelle" + noCompte);
         c1.setProprietaire(new CompteBancaire.Proprietaire());
         c1.getProprietaire().setLogin("test");
-        c1.setOrdre(1);
+        c1.setOrdre(noCompte);
         return c1;
     }
 
+
     public static CompteBancaire getCompteInactif(){
-        CompteBancaire c2 = new CompteBancaire();
+        CompteBancaire c2 = getCompteCx(2);
         c2.setActif(false);
-        c2.setId("C2");
-        c2.setLibelle("Libelle2");
-        c2.setProprietaire(new CompteBancaire.Proprietaire());
-        c2.getProprietaire().setLogin("test");
-        c2.setOrdre(2);
         return c2;
     }
 
     public static BudgetMensuel getBudgetInactifCompteC1(){
         // Budget
         BudgetMensuel bo = new BudgetMensuel();
-        bo.setIdCompteBancaire(getCompte().getId());
+        bo.setIdCompteBancaire(getCompteC1().getId());
         bo.setMois(Month.JANUARY);
         bo.setAnnee(2022);
         bo.setActif(false);
-        bo.setId(getCompte().getId()+"_2022_1");
+        bo.setId(getCompteC1().getId()+"_2022_1");
 
         bo.getSoldes().setSoldeAtFinMoisCourant(0D);
         bo.getSoldes().setSoldeAtMaintenant(1000D);
@@ -58,7 +61,7 @@ public class MockDataBudgets {
         BudgetMensuel budget = new BudgetMensuel();
         budget.setMois(Month.JANUARY);
         budget.setAnnee(2022);
-        budget.setIdCompteBancaire(getCompte().getId());
+        budget.setIdCompteBancaire(getCompteC1().getId());
         budget.setId(BudgetDataUtils.getBudgetId(budget.getIdCompteBancaire(), budget.getMois(), budget.getAnnee()));
 
         budget.setActif(true);
@@ -74,14 +77,30 @@ public class MockDataBudgets {
     }
 
 
+    public static BudgetMensuel getBudgetActifCompteC2et0operationPrevue(){
+
+        BudgetMensuel budget = new BudgetMensuel();
+        budget.setMois(Month.JANUARY);
+        budget.setAnnee(2022);
+        budget.setIdCompteBancaire(getCompteCx(2).getId());
+        budget.setId(BudgetDataUtils.getBudgetId(budget.getIdCompteBancaire(), budget.getMois(), budget.getAnnee()));
+
+        budget.setActif(true);
+        budget.setDateMiseAJour(LocalDateTime.now().minusDays(1));
+        // Soldes
+        budget.getSoldes().setSoldeAtFinMoisPrecedent(0D);
+        return budget;
+    }
+
+
     public static BudgetMensuel getBudgetPrecedentCompteC1(){
         // Budget
         BudgetMensuel bo = new BudgetMensuel();
-        bo.setIdCompteBancaire(getCompte().getId());
+        bo.setIdCompteBancaire(getCompteC1().getId());
         bo.setMois(Month.DECEMBER);
         bo.setAnnee(2021);
         bo.setActif(false);
-        bo.setIdCompteBancaire(getCompte().getId());
+        bo.setIdCompteBancaire(getCompteC1().getId());
         bo.setId(BudgetDataUtils.getBudgetId(bo.getIdCompteBancaire(), bo.getMois(), bo.getAnnee()));
 
         bo.getSoldes().setSoldeAtFinMoisCourant(1000D);
@@ -89,8 +108,8 @@ public class MockDataBudgets {
         bo.setDateMiseAJour(LocalDateTime.now());
         bo.getSoldes().setSoldeAtFinMoisPrecedent(0D);
 
-        bo.getListeOperations().add(MockDataOperations.getOperationRealisee(getCompte(), 1));
-        bo.getListeOperations().add(MockDataOperations.getOperationRealisee(getCompte(), 2));
+        bo.getListeOperations().add(MockDataOperations.getOperationRealisee(getCompteC1(), 1));
+        bo.getListeOperations().add(MockDataOperations.getOperationRealisee(getCompteC1(), 2));
         return bo;
 
     }
@@ -102,7 +121,7 @@ public class MockDataBudgets {
         BudgetMensuel budget = new BudgetMensuel();
         budget.setMois(Month.JANUARY);
         budget.setAnnee(2022);
-        budget.setIdCompteBancaire(getCompte().getId());
+        budget.setIdCompteBancaire(getCompteC1().getId());
         budget.setId(BudgetDataUtils.getBudgetId(budget.getIdCompteBancaire(), budget.getMois(), budget.getAnnee()));
 
         budget.setActif(true);
@@ -112,7 +131,7 @@ public class MockDataBudgets {
         budget.setListeOperations(new ArrayList<>());
         BudgetDataUtils.razCalculs(budget);
         // Opération
-        budget.getListeOperations().addAll(MockDataOperations.get3LignesOperations(MockDataBudgets.getCompte()));
+        budget.getListeOperations().addAll(MockDataOperations.get3LignesOperations(MockDataBudgets.getCompteC1()));
         BudgetDataUtils.razCalculs(budget);
         return budget;
     }
