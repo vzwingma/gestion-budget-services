@@ -441,20 +441,18 @@ public class OperationsResource {
         LOG.trace("Libellés Opérations de l'année {}", annee);
         return this.operationsService.getLibellesOperations(idCompte, annee)
                     .collect().asList()
-                    .map(libelles -> {
+                    .flatMap(libelles -> {
                         if(libelles != null && !libelles.isEmpty()){
                             LibellesOperationsAPIObject libellesO = new LibellesOperationsAPIObject();
                             libellesO.setIdCompte(idCompte);
                             libellesO.setLibellesOperations(Set.copyOf(libelles));
-                            return libellesO;
+                            LOG.info("{} libellés chargés", libellesO.getLibellesOperations().size());
+                            return Uni.createFrom().item(libellesO);
                         }
                         else{
-                            return null;
+                            return Uni.createFrom().failure(new DataNotFoundException("Impossible de trouver les libellés des opérations pour le compte " + idCompte));
                         }
-                    })
-                    .onItem()
-                        .ifNull().failWith(new DataNotFoundException("Impossible de trouver les libellés des opérations pour le compte " + idCompte))
-                .invoke(i -> BusinessTraceContext.get().remove(BusinessTraceContextKeyEnum.COMPTE));
+                    });
 
     }
 

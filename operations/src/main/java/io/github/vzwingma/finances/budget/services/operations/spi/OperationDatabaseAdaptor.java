@@ -70,7 +70,7 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 	@Override
 	public Uni<BudgetMensuel> chargeBudgetMensuel(String idBudget) {
 
-		LOGGER.info("[idBudget={}] Chargement du budget", idBudget);
+		LOGGER.info("Chargement du budget");
 		return find(ATTRIBUT_BUDGET_ID + "=?1", idBudget)
 				.singleResultOptional()
 				.onItem().transform(Optional::orElseThrow)
