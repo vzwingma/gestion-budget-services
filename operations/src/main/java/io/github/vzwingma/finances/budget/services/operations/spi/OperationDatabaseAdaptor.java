@@ -114,7 +114,7 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 
 	@Override
 	public Multi<String> chargeLibellesOperations(String idCompte, int annee) {
-		LOGGER.info("Chargement des libellés des dépenses du compte {} de {}", idCompte, annee);
+		LOGGER.info("Chargement des libellés des dépenses du compte pour l'année {}", annee);
 		final String query = ATTRIBUT_COMPTE_ID + "=?1 and " + ATTRIBUT_ANNEE + "= ?2";
 		return find(query, idCompte, annee)
 				.stream()
