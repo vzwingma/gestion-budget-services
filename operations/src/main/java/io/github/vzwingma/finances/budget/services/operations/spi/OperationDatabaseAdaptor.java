@@ -101,16 +101,14 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 	@Override
 	public Uni<BudgetMensuel[]> getPremierDernierBudgets(String idCompte) {
 		return list(ATTRIBUT_COMPTE_ID, Sort.ascending(ATTRIBUT_ANNEE, ATTRIBUT_BUDGET_ID), idCompte)
-				.map(b -> {
+				.flatMap(b -> {
 					if(b != null && !b.isEmpty()){
-						return new BudgetMensuel[] { b.get(0), b.get(b.size() - 1) };
+						return Uni.createFrom().item(new BudgetMensuel[] { b.get(0), b.get(b.size() - 1) });
 					}
 					else{
-						return null;
+						return Uni.createFrom().failure(new DataNotFoundException("Erreur lors du chargement des intervalles de budgets de " + idCompte));
 					}
 				})
-				.onItem()
-					.ifNull().failWith(new DataNotFoundException("Erreur lors du chargement des intervalles de budgets de " + idCompte))
 				.invoke(budget -> LOGGER.info("\t> Réception de l'intervalle de budgets -> {} / {}", budget[0].getId(), budget[1].getId()));
 	}
 

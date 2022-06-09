@@ -402,22 +402,17 @@ public class OperationsResource {
         LOG.trace("getIntervallesBudgetsCompte");
 
         return this.budgetService.getIntervallesBudgets(idCompte)
-                    .onItem()
-                        .transform(intervalles -> {
-                            if(intervalles != null && intervalles.length >= 2){
-                                IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
-                                intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getNbDayFromLocalDate(intervalles[0]));
-                                intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getNbDayFromLocalDate(intervalles[1]));
-                                return intervallesAPI;
-                            }
-                            else{
-                                return null;
-                            }
-                        })
-                    .onItem()
-                        .ifNull().failWith(new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte))
-                .invoke(i -> BusinessTraceContext.get().remove(BusinessTraceContextKeyEnum.COMPTE));
-
+            .onItem().transformToUni(intervalles -> {
+                if(intervalles != null && intervalles.length >= 2){
+                    IntervallesCompteAPIObject intervallesAPI = new IntervallesCompteAPIObject();
+                    intervallesAPI.setDatePremierBudget(BudgetDateTimeUtils.getNbDayFromLocalDate(intervalles[0]));
+                    intervallesAPI.setDateDernierBudget(BudgetDateTimeUtils.getNbDayFromLocalDate(intervalles[1]));
+                    return Uni.createFrom().item(intervallesAPI);
+            }
+            else{
+                return Uni.createFrom().failure(new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte));
+            }
+        });
     }
 
 
