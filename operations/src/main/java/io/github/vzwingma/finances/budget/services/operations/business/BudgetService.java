@@ -69,8 +69,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 */
 	@Override
 	public Uni<BudgetMensuel> getBudgetMensuel(String idCompte, Month mois, int annee) {
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, BudgetDataUtils.getBudgetId(idCompte, mois, annee));
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.COMPTE, idCompte).put(BusinessTraceContextKeyEnum.BUDGET, BudgetDataUtils.getBudgetId(idCompte, mois, annee));
 		LOGGER.debug("Chargement du budget de {}/{}", mois, annee);
 		return this.comptesService.getCompteById(idCompte)
 				.invoke(compte -> LOGGER.debug("-> Compte correspondant : {}", compte))
@@ -126,7 +125,7 @@ public class BudgetService implements IBudgetAppProvider {
 				// Si pas d'erreur, update de l'opération
 				.onItem()
 				.transform(Tuple2::getItem1);
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.OPERATION, ligneOperation.getId());
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.OPERATION, ligneOperation.getId());
 		return Uni.combine().all().unis(
 				budgetSurCompteActif,
 				Uni.createFrom().item(ligneOperation),
@@ -173,8 +172,7 @@ public class BudgetService implements IBudgetAppProvider {
 					this.comptesService.getCompteById(idCompteDestination))
 				.asTuple()
 				.invoke(tuple -> {
-					BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
-					BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, idCompteDestination);
+					BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.COMPTE, idCompteDestination);
 					ligneOperation.setLibelle("[vers "+tuple.getItem2().getLibelle()+"] " + libelleOperation);
 					this.operationsAppProvider.addOperation(tuple.getItem1().getListeOperations(), ligneOperation);
 				})
@@ -194,8 +192,7 @@ public class BudgetService implements IBudgetAppProvider {
 					this.comptesService.getCompteById(idCompteSource))
 				.asTuple()
 				.invoke(tuple -> {
-					BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudgetDestination);
-					BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, idCompteSource);
+					BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudgetDestination).put(BusinessTraceContextKeyEnum.COMPTE, idCompteSource);
 					String libelleOperationCible = "[vers "+tuple.getItem2().getLibelle()+"] " + libelleOperation;
 					this.operationsAppProvider.addOperationIntercompte(tuple.getItem1().getListeOperations(), ligneOperation, libelleOperationCible);
 				})
@@ -209,8 +206,7 @@ public class BudgetService implements IBudgetAppProvider {
 					.asTuple()
 					.onItem()
 						.invoke(tuple -> {
-							BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
-							BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, idCompteSource);
+							BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.COMPTE, idCompteSource);
 						})
 					.onItem()
 						.ifNotNull().transform(Tuple2::getItem1);
@@ -230,7 +226,7 @@ public class BudgetService implements IBudgetAppProvider {
 	@Override
 	public Uni<BudgetMensuel> deleteOperationInBudget(String idBudget, String idOperation) {
 
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
 		return getBudgetAndCompteActif(idBudget)
 				// Si pas d'erreur, update de l'opération
 				.onItem()
@@ -280,7 +276,7 @@ public class BudgetService implements IBudgetAppProvider {
 	@Override
 	public void recalculSoldes(BudgetMensuel budget) {
 
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, budget.getId());
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, budget.getId());
 		LOGGER.info("(Re)Calcul des soldes du budget");
 		BudgetDataUtils.razCalculs(budget);
 
@@ -368,7 +364,7 @@ public class BudgetService implements IBudgetAppProvider {
 		// Recherche du budget précédent
 		// Si impossible : on retourne le budget initialisé
 		String idBudgetPrecedent = BudgetDataUtils.getBudgetId(compteBancaire.getId(), mois.minus(1), Month.DECEMBER.equals(mois.minus(1)) ? annee -1 : annee);
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudgetPrecedent);
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudgetPrecedent);
 		LOGGER.debug("Chargement du budget précédent pour initialisation");
 		return getBudgetMensuel(idBudgetPrecedent)
 				.onItem()
@@ -389,7 +385,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 */
 	private BudgetMensuel initBudgetFromBudgetPrecedent(BudgetMensuel budgetInitVide, BudgetMensuel budgetPrecedent) {
 		// Calcul
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, budgetInitVide.getId());
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, budgetInitVide.getId());
 		if(budgetPrecedent != null){
 			recalculSoldes(budgetPrecedent);
 			budgetInitVide.setIdCompteBancaire(budgetPrecedent.getIdCompteBancaire());
@@ -418,7 +414,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 */
 	@Override
 	public Uni<BudgetMensuel> getBudgetMensuel(String idBudget) {
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
 		return this.dataOperationsProvider.chargeBudgetMensuel(idBudget);
 	}
 
@@ -449,7 +445,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 * @return tuple (budget, compte)
 	 */
 	private Uni<Tuple2<BudgetMensuel, CompteBancaire>> getBudgetAndCompteActif(String idBudget){
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
 		return getBudgetMensuel(idBudget)
 				.flatMap(budget -> Uni.combine().all()
 						.unis(Uni.createFrom().item(budget),
@@ -460,7 +456,7 @@ public class BudgetService implements IBudgetAppProvider {
 					// Vérification du compte
 					.transformToUni(tuple -> {
 						CompteBancaire compteBancaire = tuple.getItem2();
-						BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, compteBancaire.getId());
+						BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.COMPTE, compteBancaire.getId());
 
 						if (!Boolean.TRUE.equals(compteBancaire.isActif())) {
 							LOGGER.warn("Impossible de modifier ou créer une opération. Le compte {} est cloturé", tuple.getItem1().getIdCompteBancaire());

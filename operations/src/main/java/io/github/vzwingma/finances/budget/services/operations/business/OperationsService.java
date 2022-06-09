@@ -211,7 +211,7 @@ public class OperationsService implements IOperationsAppProvider {
 
 	@Override
 	public List<LigneOperation> addOperation(List<LigneOperation> operations, LigneOperation ligneOperation)  {
-		BusinessTraceContext.put(BusinessTraceContextKeyEnum.OPERATION, ligneOperation.getId());
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.OPERATION, ligneOperation.getId());
 		// Si mise à jour d'une opération, on l'enlève
 		int rangMaj = operations.indexOf(ligneOperation);
 		operations.removeIf(op -> op.getId().equals(ligneOperation.getId()));
