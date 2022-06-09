@@ -1,6 +1,8 @@
 package io.github.vzwingma.finances.budget.services.comptes.api;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.comptes.api.enums.ComptesApiUrlEnum;
 import io.github.vzwingma.finances.budget.services.comptes.business.ports.IComptesAppProvider;
 import io.smallrye.mutiny.Uni;
@@ -52,10 +54,13 @@ public class ComptesResource {
     @Path(ComptesApiUrlEnum.COMPTES_LIST)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<List<CompteBancaire>> getComptesUtilisateur() {
-        LOG.info("getComptes");
+
         String proprietaire = "vzwingma";
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.USER, proprietaire);
+        BusinessTraceContext.remove(BusinessTraceContextKeyEnum.COMPTE);
+        LOG.info("getComptes");
         return this.services.getComptesUtilisateur(proprietaire)
-                .invoke(listeComptes -> LOG.info("[idUser={}] {} comptes chargés", proprietaire, listeComptes != null ? listeComptes.size() : "-1"));
+                .invoke(listeComptes -> LOG.info("{} comptes chargés", listeComptes != null ? listeComptes.size() : "-1"));
     }
 
     /**
@@ -75,9 +80,13 @@ public class ComptesResource {
     @Path(ComptesApiUrlEnum.COMPTES_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<CompteBancaire> getCompteUtilisateur(@RestPath String idCompte) {
+
         String proprietaire = "vzwingma";
-        LOG.info("[idCompte={}] getCompte", idCompte);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.USER, proprietaire);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+
+        LOG.info("getCompte");
         return this.services.getCompteById(idCompte, proprietaire)
-                .invoke(compte -> LOG.info("[idUser={}] Compte chargé : [{}]", proprietaire, compte != null ? compte.getLibelle() : "-1"));
+                .invoke(compte -> LOG.info("Compte chargé : [{}]", compte != null ? compte.getLibelle() : "-1"));
     }
 }

@@ -15,7 +15,7 @@ import javax.enterprise.context.ApplicationScoped;
  *
  */
 @ApplicationScoped
-public class ParametragesDatabaseAdaptor implements IParametragesRepository { // extends AbstractDatabaseServiceProvider<CategorieOperation>
+public class ParametragesDatabaseAdaptor implements IParametragesRepository {
 
 
 	/**
@@ -29,7 +29,7 @@ public class ParametragesDatabaseAdaptor implements IParametragesRepository { //
 	public Multi<CategorieOperations> chargeCategories() {
 
 		try {
-			LOGGER.trace("Chargement des catégories en BDD");
+			LOGGER.info("Chargement des catégories en BDD");
 			return findAll().stream()
 					.invoke(cat -> LOGGER.debug("Chargement de la catégorie [{}] en BDD terminé", cat));
 		} catch (Exception e) {

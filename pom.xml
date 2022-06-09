@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.vzwingma.finances.budget</groupId>
   <artifactId>services</artifactId>
-  <version>17.0.0-SNAPSHOT</version>
+  <version>17.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Services</name>
 
@@ -53,6 +53,14 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-opentracing</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-mongo-common</artifactId>
     </dependency>
     <!-- Quarkus -->
     <dependency>
