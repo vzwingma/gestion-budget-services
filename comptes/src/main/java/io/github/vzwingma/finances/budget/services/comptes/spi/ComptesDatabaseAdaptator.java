@@ -38,7 +38,7 @@ public class ComptesDatabaseAdaptator implements IComptesRepository {
 					.invoke(compte -> LOGGER.debug("Chargement du compte [{}] en BDD terminé", compte.getLibelle()));
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors de la connexion à la BDD", e);
+			LOGGER.error("Erreur lors de la connexion à la BDD lors de la recherche de comptes", e);
 			return Multi.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche des comptes "));
 		}
 	}
@@ -58,7 +58,7 @@ public class ComptesDatabaseAdaptator implements IComptesRepository {
 					.invoke(compte -> LOGGER.debug("Chargement du compte [{}] en BDD terminé", compte.getLibelle()));
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur lors de la connexion à la BDD", e);
+			LOGGER.error("Erreur lors de la connexion à la BDD lors de la recherche de compte", e);
 			return Uni.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche du compte " + idCompte));
 		}
 	}
@@ -80,7 +80,7 @@ public class ComptesDatabaseAdaptator implements IComptesRepository {
 					.invoke(compteActif -> LOGGER.info("Compte actif ? {}", compteActif));
 		}
 		catch(Exception e) {
-			LOGGER.error("Erreur lors de la connexion à la BDD", e);
+			LOGGER.error("Erreur lors de la connexion à la BDD lors de la recherche d'activité de comptes", e);
 			return Uni.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche du compte " + idCompte));
 		}
 	}

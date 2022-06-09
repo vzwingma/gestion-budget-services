@@ -31,7 +31,7 @@ import java.util.List;
 @Path(ParametragesApiUrlEnum.PARAMS_BASE)
 public class ParametragesResource {
 
-    private final Logger LOG = LoggerFactory.getLogger(ParametragesResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ParametragesResource.class);
     @Inject
     IParametrageAppProvider paramsServices;
 

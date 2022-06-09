@@ -17,6 +17,7 @@ public class RootAPIResource extends AbstractAPIResource {
     @GET
     @Path("_info")
     @Produces(MediaType.APPLICATION_JSON)
+    @Override
     public Uni<Info> info() {
         return super.info();
     }

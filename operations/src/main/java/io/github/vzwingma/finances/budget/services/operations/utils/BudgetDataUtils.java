@@ -127,17 +127,6 @@ public class BudgetDataUtils {
 		soldes.setSoldeAtFinMoisCourant(soldes.getSoldeAtFinMoisCourant() + soldeAAjouter);
 	}
 
-
-	/**
-	 * Mise à jour des valeurs depuis le mois précédent
-	 * @param soldes soldes du budget à modifier
-	 * @param resultatMoisPrecedent the resultatMoisPrecedent to set
-	 */
-	public static void setResultatMoisPrecedent(BudgetMensuel.Soldes soldes, Double resultatMoisPrecedent) {
-		soldes.setSoldeAtFinMoisCourant(resultatMoisPrecedent);
-		soldes.setSoldeAtFinMoisPrecedent(resultatMoisPrecedent);
-		soldes.setSoldeAtMaintenant(resultatMoisPrecedent);
-	}
 	
 	
 	/**
@@ -243,7 +232,8 @@ public class BudgetDataUtils {
 	 * @param id id de la catégorie
 	 * @param listeCategories liste des catégories
 	 * @return catégorie correspondante
-	 * Deprecated : En doublon avec le service de Paramétrage
+	 * @deprecated : En doublon avec le service de Paramétrage
+	 * @since 17.0.0
 	 */
 	@Deprecated
 	public static CategorieOperations getCategorieById(String id, List<CategorieOperations> listeCategories){

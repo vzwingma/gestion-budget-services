@@ -10,10 +10,10 @@ public enum BusinessTraceContextKeyEnum {
     BUDGET("idBudget"),
     OPERATION("idOperation");
 
-    private final String Libelle;
+    private final String keyId;
 
-    BusinessTraceContextKeyEnum(String key) {
-        this.Libelle = key;
+    BusinessTraceContextKeyEnum(String keyId) {
+        this.keyId = keyId;
     }
 
 }
