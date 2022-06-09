@@ -53,10 +53,10 @@ public class ParametragesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<List<CategorieOperations>> getCategories() {
 
-        BusinessTraceContext.put(BusinessTraceContextKeyEnum.USER, "User");
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.USER, "User");
         return paramsServices.getCategories()
                 .invoke(listeCategories -> LOG.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1"))
-                .invoke(l -> BusinessTraceContext.remove(BusinessTraceContextKeyEnum.USER));
+                .invoke(l -> BusinessTraceContext.get().remove(BusinessTraceContextKeyEnum.USER));
     }
 
 
@@ -79,10 +79,10 @@ public class ParametragesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<CategorieOperations> getCategorieById(@RestPath String idCategorie) {
 
-        BusinessTraceContext.put(BusinessTraceContextKeyEnum.USER, "User");
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.USER, "User");
 
         return paramsServices.getCategorieById(idCategorie)
                 .invoke(categorie -> LOG.info("[idCategorie={}] Chargement de la {}catégorie : {}", idCategorie, categorie != null && categorie.isCategorie() ? "" : "sous-", categorie))
-                .invoke(l -> BusinessTraceContext.remove(BusinessTraceContextKeyEnum.USER));
+                .invoke(l -> BusinessTraceContext.get().remove(BusinessTraceContextKeyEnum.USER));
     }
 }

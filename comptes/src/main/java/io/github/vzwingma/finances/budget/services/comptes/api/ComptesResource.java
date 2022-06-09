@@ -56,8 +56,7 @@ public class ComptesResource {
     public Uni<List<CompteBancaire>> getComptesUtilisateur() {
 
         String proprietaire = "vzwingma";
-        BusinessTraceContext.put(BusinessTraceContextKeyEnum.USER, proprietaire);
-        BusinessTraceContext.remove(BusinessTraceContextKeyEnum.COMPTE);
+        BusinessTraceContext.getclear().remove(BusinessTraceContextKeyEnum.COMPTE).put(BusinessTraceContextKeyEnum.USER, proprietaire);
         LOG.info("getComptes");
         return this.services.getComptesUtilisateur(proprietaire)
                 .invoke(listeComptes -> LOG.info("{} comptes chargés", listeComptes != null ? listeComptes.size() : "-1"));
@@ -82,8 +81,7 @@ public class ComptesResource {
     public Uni<CompteBancaire> getCompteUtilisateur(@RestPath String idCompte) {
 
         String proprietaire = "vzwingma";
-        BusinessTraceContext.put(BusinessTraceContextKeyEnum.USER, proprietaire);
-        BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.USER, proprietaire).put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
 
         LOG.info("getCompte");
         return this.services.getCompteById(idCompte, proprietaire)

@@ -11,23 +11,55 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BusinessTraceContext {
 
 
+    private final static BusinessTraceContext INSTANCE = new BusinessTraceContext();
+
+
+    /**
+     * Retourne l'instance du contexte de trace métier
+     *
+     * @return instance du contexte de trace métier
+     */
+    public static BusinessTraceContext get() {
+        return INSTANCE;
+    }
+
+    /**
+     * retourne l'instance après raz
+     * @return instance raz
+     */
+    public static BusinessTraceContext getclear() {
+        return get().clear();
+    }
+
+    /**
+     * Contexte raz
+     * @return instance raz
+     */
+    public BusinessTraceContext clear() {
+        Arrays.stream(BusinessTraceContextKeyEnum.values())
+                .forEach(key -> MDC.remove(key.getLibelle()));
+        calculateBudgetContext();
+        return INSTANCE;
+    }
     /**
      * Ajout d'une clé métier dans les traces
      * @param key key métier
      * @param value value métier de la clé
      */
-    public static void put(BusinessTraceContextKeyEnum key, String value) {
+    public BusinessTraceContext put(BusinessTraceContextKeyEnum key, String value) {
         MDC.put(key.getLibelle(), value);
         calculateBudgetContext();
+        return INSTANCE;
     }
 
     /**
      * Suppression d'une clé métier dans les traces
      * @param key clé métier
      */
-    public static void remove(BusinessTraceContextKeyEnum key) {
+    public BusinessTraceContext remove(BusinessTraceContextKeyEnum key) {
         MDC.remove(key.getLibelle());
         calculateBudgetContext();
+        return INSTANCE;
     }
 
     private static void calculateBudgetContext() {
