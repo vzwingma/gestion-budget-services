@@ -17,7 +17,7 @@ import javax.enterprise.context.ApplicationScoped;
  *
  */
 @ApplicationScoped
-public class ComptesDatabaseAdaptator implements IComptesRepository { // extends AbstractDatabaseServiceProvider<CategorieOperation>
+public class ComptesDatabaseAdaptator implements IComptesRepository {
 
 
 	/**
@@ -32,13 +32,13 @@ public class ComptesDatabaseAdaptator implements IComptesRepository { // extends
 	 */
 	public Multi<CompteBancaire> chargeComptes(String idUtilisateur) {
 		try{
-			LOGGER.info("[idUser={}] Chargement des comptes de l'utilisateur", idUtilisateur);
+			LOGGER.info("Chargement des comptes de l'utilisateur");
 			return find("proprietaire.login", idUtilisateur)
 					.stream()
 					.invoke(compte -> LOGGER.debug("Chargement du compte [{}] en BDD terminé", compte.getLibelle()));
 		}
 		catch(Exception e){
-			LOGGER.error("[idUser={}] Erreur lors de la connexion à la BDD", idUtilisateur, e);
+			LOGGER.error("Erreur lors de la connexion à la BDD", e);
 			return Multi.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche des comptes "));
 		}
 	}
@@ -52,13 +52,13 @@ public class ComptesDatabaseAdaptator implements IComptesRepository { // extends
 	 */
 	public Uni<CompteBancaire> chargeCompteParId(String idCompte, String idUtilisateur) {
 		try{
-			LOGGER.info("[idUser={}] [idCompte={}] Chargement du compte", idUtilisateur, idCompte);
+			LOGGER.info("Chargement du compte");
 			return find("_id", idCompte)
 					.singleResult()
-					.invoke(compte -> LOGGER.debug("[idUser={}] Chargement du compte [{}] en BDD terminé", idUtilisateur, compte.getLibelle()));
+					.invoke(compte -> LOGGER.debug("Chargement du compte [{}] en BDD terminé", compte.getLibelle()));
 		}
 		catch(Exception e){
-			LOGGER.error("[idUser=?] Erreur lors de la connexion à la BDD", e);
+			LOGGER.error("Erreur lors de la connexion à la BDD", e);
 			return Uni.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche du compte " + idCompte));
 		}
 	}
@@ -77,10 +77,10 @@ public class ComptesDatabaseAdaptator implements IComptesRepository { // extends
 						.ifNull()
 							.failWith(new DataNotFoundException("Compte non trouvé"))
 						.map(compte -> compte.orElse(CompteBancaire.getCompteInactif()).getActif())
-					.invoke(compteActif -> LOGGER.info("[idCompte={}] Compte actif ? {}", idCompte, compteActif));
+					.invoke(compteActif -> LOGGER.info("Compte actif ? {}", compteActif));
 		}
 		catch(Exception e) {
-			LOGGER.error("[idUser=?] Erreur lors de la connexion à la BDD", e);
+			LOGGER.error("Erreur lors de la connexion à la BDD", e);
 			return Uni.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche du compte " + idCompte));
 		}
 	}

@@ -39,6 +39,13 @@ public interface IBudgetAppProvider {
      */
     Uni<BudgetMensuel> addOperationInBudget(String idBudget, final LigneOperation ligneOperation) ;
 
+    /**
+     * Création d'une opération intercompte
+     * @param idBudget id du budget source
+     * @param ligneOperation opération intercompte source
+     * @param idCompteDestination id du compte destination
+     * @return budget mensuel source modifié
+     */
     Uni<BudgetMensuel> createOperationsIntercomptes(String idBudget, LigneOperation ligneOperation, String idCompteDestination) ;
     /**
      * Suppression d'une opération

@@ -1,6 +1,8 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
 import io.github.vzwingma.finances.budget.services.utilisateurs.api.enums.UtilisateursApiUrlEnum;
@@ -58,10 +60,9 @@ public class UtilisateursResource extends AbstractAPIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<UtilisateurPrefsAPIObject> getLastAccessDateUtilisateur() throws UserAccessForbiddenException {
         String idProprietaire = "vzwingma"; //getIdProprietaire();
+        BusinessTraceContext.get().clear().put(BusinessTraceContextKeyEnum.USER, idProprietaire);
         if(idProprietaire != null) {
             return service.getLastAccessDate(idProprietaire)
-                    .onFailure()
-                        .recoverWithUni(Uni.createFrom().failure(new UserAccessForbiddenException("Utilisateur introuvable")))
                     .onItem().transform(lastAccess -> {
                         LOG.info("LastAccessTime : {}", lastAccess);
                         UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
@@ -93,10 +94,9 @@ public class UtilisateursResource extends AbstractAPIResource {
     @Path(UtilisateursApiUrlEnum.USERS_PREFS)
     public Uni<UtilisateurPrefsAPIObject> getPreferencesUtilisateur() {
         String idProprietaire ="vzwingma"; // getIdProprietaire();
+        BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.USER, idProprietaire);
         if(idProprietaire != null){
             return service.getUtilisateur(idProprietaire)
-                    .onFailure()
-                        .recoverWithUni(Uni.createFrom().failure(new UserAccessForbiddenException("Utilisateur introuvable")))
                     .map(utilisateur -> {
                         UtilisateurPrefsAPIObject prefs = new UtilisateurPrefsAPIObject();
                         prefs.setIdUtilisateur(idProprietaire);

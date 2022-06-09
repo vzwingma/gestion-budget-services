@@ -28,13 +28,14 @@ public class UtilisateurDatabaseAdaptor implements IUtilisateursRepository {
 	 */
 	public Uni<Utilisateur> chargeUtilisateur(String login) {
 		try{
-			LOGGER.info("[idUser=?] Recherche de l'utilisateur [{}]", login);
+			LOGGER.info("Recherche de l'utilisateur [{}]", login);
 			return find("login", login)
-					.singleResult()
+					.singleResultOptional()
+					.map(utilisateur -> utilisateur.orElse(null))
 					.onItem().ifNull().failWith(new DataNotFoundException("Utilisateur non trouvé"));
 		}
 		catch(Exception e){
-			LOGGER.error("[idUser=?] Erreur lors de la connexion à la BDD", e);
+			LOGGER.error("Erreur lors de la connexion à la BDD", e);
 			return Uni.createFrom().failure(new DataNotFoundException("Erreur lors de la recherche d'utilisateur " + login));
 		}
 	}
@@ -45,12 +46,12 @@ public class UtilisateurDatabaseAdaptor implements IUtilisateursRepository {
 	 */
 	public void majUtilisateur(Utilisateur utilisateur){
 		try{
-			LOGGER.info("[idUser={}] Mise à jour de l'utilisateur [{}]", utilisateur.getId(), utilisateur.getLogin());
+			LOGGER.info("Mise à jour de l'utilisateur [{}]", utilisateur.getLogin());
 			persist(utilisateur)
-					.subscribe().with(item -> LOGGER.info("[idUser={}] Utilisateur [{}] mis à jour", utilisateur.getId(), utilisateur.getLogin()));
+					.subscribe().with(item -> LOGGER.info("Utilisateur [{}] mis à jour", utilisateur.getLogin()));
 		}
 		catch(Exception e){
-			LOGGER.error("[idUser={}] Erreur lors de la sauvegarde de l'utilisateur", utilisateur.getId(), e);
+			LOGGER.error("Erreur lors de la sauvegarde de l'utilisateur", e);
 		}
 	}
 }

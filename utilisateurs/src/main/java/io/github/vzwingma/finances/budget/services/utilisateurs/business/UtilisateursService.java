@@ -48,7 +48,7 @@ public class UtilisateursService implements IUtilisateursAppProvider {
 		return dataDBUsers.chargeUtilisateur(loginUtilisateur)
 				//async call for logging
 				.invoke(user -> {
-					LOGGER.info("[idUser={}] {} accède à l'application", user.getId(), user.getLogin());
+					LOGGER.info("{} accède à l'application", user.getLogin());
 					updateUtilisateurLastConnection(user);
 				});
 	}

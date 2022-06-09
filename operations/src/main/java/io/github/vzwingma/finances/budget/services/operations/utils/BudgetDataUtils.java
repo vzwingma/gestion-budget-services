@@ -243,7 +243,9 @@ public class BudgetDataUtils {
 	 * @param id id de la catégorie
 	 * @param listeCategories liste des catégories
 	 * @return catégorie correspondante
+	 * Deprecated : En doublon avec le service de Paramétrage
 	 */
+	@Deprecated
 	public static CategorieOperations getCategorieById(String id, List<CategorieOperations> listeCategories){
 		CategorieOperations categorie = null;
 		if(id != null && listeCategories != null && !listeCategories.isEmpty()){

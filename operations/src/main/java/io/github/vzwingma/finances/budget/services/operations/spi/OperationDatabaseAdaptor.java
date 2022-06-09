@@ -1,11 +1,14 @@
 package io.github.vzwingma.finances.budget.services.operations.spi;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
+import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
@@ -38,6 +41,7 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 
 	@Override
 	public Uni<BudgetMensuel> chargeBudgetMensuel(CompteBancaire compte, Month mois, int annee) {
+		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, BudgetDataUtils.getBudgetId(compte.getId(), mois, annee));
 		LOGGER.info("Chargement du budget {}/{} du compte {} ", mois, annee, compte.getId());
 		return find(ATTRIBUT_COMPTE_ID + " = ?1 and " + ATTRIBUT_MOIS + " = ?2 and " + ATTRIBUT_ANNEE + " = ?3", compte.getId(), mois.toString(), annee)
 				.singleResultOptional()
@@ -66,7 +70,7 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 	@Override
 	public Uni<BudgetMensuel> chargeBudgetMensuel(String idBudget) {
 
-		LOGGER.info("[idBudget={}] Chargement du budget", idBudget);
+		LOGGER.info("Chargement du budget");
 		return find(ATTRIBUT_BUDGET_ID + "=?1", idBudget)
 				.singleResultOptional()
 				.onItem().transform(Optional::orElseThrow)
@@ -97,16 +101,14 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 	@Override
 	public Uni<BudgetMensuel[]> getPremierDernierBudgets(String idCompte) {
 		return list(ATTRIBUT_COMPTE_ID, Sort.ascending(ATTRIBUT_ANNEE, ATTRIBUT_BUDGET_ID), idCompte)
-				.map(b -> {
+				.flatMap(b -> {
 					if(b != null && !b.isEmpty()){
-						return new BudgetMensuel[] { b.get(0), b.get(b.size() - 1) };
+						return Uni.createFrom().item(new BudgetMensuel[] { b.get(0), b.get(b.size() - 1) });
 					}
 					else{
-						return null;
+						return Uni.createFrom().failure(new DataNotFoundException("Erreur lors du chargement des intervalles de budgets de " + idCompte));
 					}
 				})
-				.onItem()
-					.ifNull().failWith(new DataNotFoundException("Erreur lors du chargement des intervalles de budgets de " + idCompte))
 				.invoke(budget -> LOGGER.info("\t> Réception de l'intervalle de budgets -> {} / {}", budget[0].getId(), budget[1].getId()));
 	}
 
