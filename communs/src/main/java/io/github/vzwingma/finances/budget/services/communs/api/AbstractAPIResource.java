@@ -1,5 +1,6 @@
 package io.github.vzwingma.finances.budget.services.communs.api;
 
+import io.github.vzwingma.finances.budget.services.communs.data.model.Info;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -15,9 +16,7 @@ public abstract class AbstractAPIResource {
     @ConfigProperty(name = "quarkus.application.version")
     String applicationVersion;
 
-    public Uni<String> info() {
-        return Uni.createFrom().item("API Budget - " + applicationName + " - " + applicationVersion);
+    public Uni<Info> info() {
+        return Uni.createFrom().item(new Info(applicationName, applicationVersion));
     }
-
-
 }
