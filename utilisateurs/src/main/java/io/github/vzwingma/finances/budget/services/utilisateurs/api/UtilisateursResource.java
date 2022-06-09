@@ -1,5 +1,6 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPILoggerInterceptor;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
@@ -15,6 +16,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.jboss.resteasy.reactive.server.ServerRequestFilter;
+import org.jboss.resteasy.reactive.server.ServerResponseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,8 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.core.MediaType;
 import java.util.Map;
 
@@ -32,7 +37,7 @@ import java.util.Map;
  *
  */
 @Path(UtilisateursApiUrlEnum.USERS_BASE)
-public class UtilisateursResource {
+public class UtilisateursResource extends AbstractAPILoggerInterceptor {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(UtilisateursResource.class);
@@ -114,4 +119,13 @@ public class UtilisateursResource {
             return Uni.createFrom().failure(new UserAccessForbiddenException("Propriétaire introuvable"));
         }
     }
+
+
+    @ServerRequestFilter(preMatching = true)
+    public void preMatchingFilter(ContainerRequestContext requestContext) {
+        super.preMatchingFilter(requestContext);
+    }
+    @ServerResponseFilter
+    public void postMatchingFilter(ContainerResponseContext responseContext) { super.postMatchingFilter(responseContext); }
+
 }
