@@ -1,5 +1,7 @@
 package io.github.vzwingma.finances.budget.services.operations.api;
 
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BadParametersException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
@@ -10,6 +12,7 @@ import io.github.vzwingma.finances.budget.services.operations.business.model.ope
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
+import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -67,10 +70,14 @@ public class OperationsResource {
             @RestQuery("idCompte") String idCompte,
             @RestQuery("mois") Integer mois,
             @RestQuery("annee") Integer annee) {
-        LOG.trace("[idCompte={}] getBudget {}/{}", idCompte, mois, annee);
+
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        LOG.trace("getBudget {}/{}", mois, annee);
 
         if(mois != null && annee != null){
             try{
+                String idBudget = BudgetDataUtils.getBudgetId(idCompte, Month.of(mois), annee);
+                BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
                 return budgetService.getBudgetMensuel(idCompte, Month.of(mois), annee);
             }
             catch(NumberFormatException e){
@@ -100,7 +107,8 @@ public class OperationsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> getBudget(@RestPath("idBudget") String idBudget) {
 
-        LOG.trace("[idBudget={}] chargeBudget", idBudget);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        LOG.trace("chargeBudget");
         if(idBudget != null){
             return budgetService.getBudgetMensuel(idBudget);
         }
@@ -128,7 +136,9 @@ public class OperationsResource {
     @Path(value=OperationsApiUrlEnum.BUDGET_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> reinitializeBudget(@RestPath("idBudget") String idBudget){
-        LOG.trace("[idBudget={}] reinitialisation", idBudget);
+
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        LOG.trace("Réinitialisation du budget");
         if(idBudget != null){
             return budgetService.reinitialiserBudgetMensuel(idBudget);
         }
@@ -157,7 +167,8 @@ public class OperationsResource {
             @RestPath("idBudget") String idBudget,
             @RestQuery(value = "actif") Boolean actif) {
 
-        LOG.debug("[idBudget={}] actif ? : {}", idBudget, actif);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        LOG.trace("actif ? : {}", actif);
 
         if(Boolean.TRUE.equals(actif)){
             return budgetService.isBudgetMensuelActif(idBudget);
@@ -186,7 +197,8 @@ public class OperationsResource {
     public Uni<Boolean> isBudgetUptoDate(
             @RestPath("idBudget") String idBudget, @RestQuery(value="uptodateto") Long uptodateto) {
 
-        LOG.trace("[idBudget={}] uptodateto ? {}", idBudget, uptodateto );
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        LOG.trace("Budget uptodate à {} ? ", uptodateto );
 
         if(uptodateto != null){
             return budgetService.isBudgetIHMUpToDate(idBudget, uptodateto)
@@ -218,7 +230,8 @@ public class OperationsResource {
             @RestPath("idBudget") String idBudget,
             @RestQuery(value="actif") Boolean actif) {
 
-        LOG.info("[idBudget={}] set Actif : {}", idBudget, actif );
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        LOG.trace("[idBudget={}] set Actif : {}", idBudget, actif );
         return budgetService.setBudgetActif(idBudget, actif);
     }
 
@@ -248,7 +261,9 @@ public class OperationsResource {
             @RestPath("idBudget") String idBudget,
             @RestPath("idOperation") String idOperation)  {
 
-        LOG.info("[idBudget={}][idOperation={}] setAsDerniereOperation", idBudget, idOperation);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+        LOG.trace("setAsDerniereOperation");
         return operationsService.setLigneAsDerniereOperation(idBudget, idOperation);
     }
 
@@ -278,7 +293,9 @@ public class OperationsResource {
             @RestPath("idOperation") String idOperation,
             LigneOperation operation) {
 
-        LOG.info("[idBudget={}][idOperation={}] createOrUpdateOperation", idBudget, idOperation);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+        LOG.trace("createOrUpdateOperation");
         if(operation != null && idBudget != null){
             operation.setId(idOperation);
             return budgetService.addOperationInBudget(idBudget, operation);
@@ -317,7 +334,9 @@ public class OperationsResource {
             @RestPath("idCompte") String idCompte,
             LigneOperation operation) {
 
-        LOG.info("[idBudget={}][idOperation={}] createOperation InterCompte [{}]", idBudget, idOperation, idCompte);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+        LOG.info("createOperation InterCompte [->{}]", idCompte);
         if(operation != null && idBudget != null){
             operation.setId(idOperation);
             return budgetService.createOperationsIntercomptes(idBudget, operation, idCompte);
@@ -351,9 +370,10 @@ public class OperationsResource {
     public Uni<BudgetMensuel> deleteOperation(
             @RestPath("idBudget") String idBudget,
             @RestPath("idOperation") String idOperation) {
-
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
         if(idOperation != null && idBudget != null){
-            LOG.info("[idBudget={}][idOperation={}] deleteOperation", idBudget, idOperation);
+            LOG.trace("deleteOperation");
             return budgetService.deleteOperationInBudget(idBudget, idOperation);
         }
         else{
@@ -379,11 +399,14 @@ public class OperationsResource {
     @Path(value=OperationsApiUrlEnum.BUDGET_COMPTE_INTERVALLES)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@RestPath("idCompte") String idCompte) {
-        LOG.info("[idCompte={}] getIntervallesBudgetsCompte", idCompte);
+        BusinessTraceContext.remove(BusinessTraceContextKeyEnum.BUDGET);
         if(idCompte == null){
-                return Uni.createFrom().failure(new BadParametersException("Le paramètre idCompte est obligatoire"));
+            return Uni.createFrom().failure(new BadParametersException("Le paramètre idCompte est obligatoire"));
         }
-            return this.budgetService.getIntervallesBudgets(idCompte)
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        LOG.trace("getIntervallesBudgetsCompte");
+
+        return this.budgetService.getIntervallesBudgets(idCompte)
                     .onItem()
                         .transform(intervalles -> {
                             if(intervalles != null && intervalles.length >= 2){
@@ -397,7 +420,9 @@ public class OperationsResource {
                             }
                         })
                     .onItem()
-                        .ifNull().failWith(new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte));
+                        .ifNull().failWith(new DataNotFoundException("Impossible de trouver l'intervalle de budget pour le compte " + idCompte))
+                .invoke(i -> BusinessTraceContext.remove(BusinessTraceContextKeyEnum.COMPTE));
+
     }
 
 
@@ -420,7 +445,10 @@ public class OperationsResource {
     @Path(value=OperationsApiUrlEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES)
     @Produces(MediaType.APPLICATION_JSON)
     public  Uni<LibellesOperationsAPIObject> getLibellesOperations(@RestPath("idCompte") String idCompte, @RestQuery("annee") Integer annee) {
-        LOG.info("[idCompte={}] get Libellés Opérations de l'année {}", idCompte, annee);
+
+        BusinessTraceContext.put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        BusinessTraceContext.remove(BusinessTraceContextKeyEnum.OPERATION);
+        LOG.trace("Libellés Opérations de l'année {}", annee);
         return this.operationsService.getLibellesOperations(idCompte, annee)
                     .collect().asList()
                     .map(libelles -> {
@@ -435,7 +463,9 @@ public class OperationsResource {
                         }
                     })
                     .onItem()
-                        .ifNull().failWith(new DataNotFoundException("Impossible de trouver les libellés des opérations pour le compte " + idCompte));
+                        .ifNull().failWith(new DataNotFoundException("Impossible de trouver les libellés des opérations pour le compte " + idCompte))
+                .invoke(i -> BusinessTraceContext.remove(BusinessTraceContextKeyEnum.COMPTE));
+
     }
 
 }

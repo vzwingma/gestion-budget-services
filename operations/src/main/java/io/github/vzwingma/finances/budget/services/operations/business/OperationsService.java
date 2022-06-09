@@ -2,6 +2,8 @@ package io.github.vzwingma.finances.budget.services.operations.business;
 
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
+import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
@@ -179,7 +181,7 @@ public class OperationsService implements IOperationsAppProvider {
 
 	@Override
 	public Uni<Boolean> setLigneAsDerniereOperation(String idBudget, String ligneId) {
-		LOGGER.info("[idBudget={}][idOperation={}] Tag de la ligne comme dernière opération", idBudget, ligneId);
+		LOGGER.info("Tag de la ligne comme dernière opération");
 		final AtomicBoolean operationUpdate = new AtomicBoolean(false);
 		return this.budgetService.getBudgetMensuel(idBudget)
 				.onItem()
@@ -209,6 +211,7 @@ public class OperationsService implements IOperationsAppProvider {
 
 	@Override
 	public List<LigneOperation> addOperation(List<LigneOperation> operations, LigneOperation ligneOperation)  {
+		BusinessTraceContext.put(BusinessTraceContextKeyEnum.OPERATION, ligneOperation.getId());
 		// Si mise à jour d'une opération, on l'enlève
 		int rangMaj = operations.indexOf(ligneOperation);
 		operations.removeIf(op -> op.getId().equals(ligneOperation.getId()));

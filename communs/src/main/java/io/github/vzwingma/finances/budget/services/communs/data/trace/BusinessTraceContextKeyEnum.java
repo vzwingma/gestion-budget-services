@@ -7,7 +7,8 @@ import lombok.Getter;
 public enum BusinessTraceContextKeyEnum {
     USER("idUser"),
     COMPTE("idCompte"),
-    BUDGET("idBudget");
+    BUDGET("idBudget"),
+    OPERATION("idOperation");
 
     private final String Libelle;
 
