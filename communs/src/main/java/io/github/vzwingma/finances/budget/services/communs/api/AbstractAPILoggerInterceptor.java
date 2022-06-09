@@ -20,7 +20,9 @@ public abstract class AbstractAPILoggerInterceptor {
      * @param requestContext context de la requête
      */
     public void preMatchingFilter(ContainerRequestContext requestContext) {
-        LOG.debug("[HTTP][uri:{} {}]", requestContext.getMethod(), requestContext.getUriInfo().getPath());
+        // Replace pattern-breaking characters
+        String path = requestContext.getUriInfo().getPath().replaceAll("[\n\r\t]", "_");
+        LOG.debug("[HTTP][uri:{} {}]", requestContext.getMethod(), path);
     }
 
     /**
