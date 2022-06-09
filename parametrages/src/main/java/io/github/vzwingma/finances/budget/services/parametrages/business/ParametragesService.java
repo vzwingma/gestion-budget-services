@@ -2,6 +2,7 @@ package io.github.vzwingma.finances.budget.services.parametrages.business;
 
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametragesRepository;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.smallrye.mutiny.Uni;
@@ -11,9 +12,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Service fournissant les paramètres
@@ -43,14 +46,15 @@ public class ParametragesService implements IParametrageAppProvider {
 	 * Liste des catégories en cache
 	 * (A usage interne uniquement !!! Pour réponse : Clonage obligatoire)
 	 */
-	private Uni<List<CategorieOperations>> listeCategories;
+	private final List<CategorieOperations> listeCategories = new ArrayList<>();
 
 	/**
 	 * @return liste des catégories
 	 */
 	public Uni<List<CategorieOperations>> getCategories(){
 
-		return dataParams.chargeCategories()
+		if(listeCategories.isEmpty()){
+			return dataParams.chargeCategories()
 					.filter(c -> c.getListeSSCategories() != null && !c.getListeSSCategories().isEmpty())
 					//async call for log
 					.invoke(c -> {
@@ -59,9 +63,38 @@ public class ParametragesService implements IParametrageAppProvider {
 					})
 					.filter(CategorieOperations::isActif)
 					.map(this::cloneCategorie)
+					.invoke(listeCategories::add)
 					.collect().asList();
+		}
+		else{
+			return Uni.createFrom().item(listeCategories);
+		}
 	}
 
+	@Override
+	public Uni<CategorieOperations> getCategorieById(String idCategorie) {
+
+		return getCategories()
+				.flatMap(categories -> {
+					final AtomicReference<CategorieOperations> categorie = new AtomicReference<>();
+					categories.forEach(c -> {
+						if(c.getId().equals(idCategorie)){
+							categorie.set(c);
+						}
+						c.getListeSSCategories().forEach(s -> {
+							if(s.getId().equals(idCategorie)){
+								categorie.set(s);
+							}
+						});
+					});
+					if(categorie.get() == null){
+						return Uni.createFrom().failure(new DataNotFoundException("[idCategorie="+idCategorie+"] Categorie non trouvée"));
+					}
+					else{
+						return Uni.createFrom().item(categorie.get());
+					}
+				});
+	}
 
 
 	/* (non-Javadoc)

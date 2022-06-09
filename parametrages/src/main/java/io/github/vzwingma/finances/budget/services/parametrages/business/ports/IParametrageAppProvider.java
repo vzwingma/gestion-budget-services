@@ -15,4 +15,10 @@ public interface IParametrageAppProvider {
      * @return liste des catégories depuis le service (hexagone business)
      */
     Uni<List<CategorieOperations>> getCategories();
+
+    /**
+     * @param idCategorie identifiant de la catégorie
+     * @return catégorie par son id depuis le service (hexagone business)
+     */
+    Uni<CategorieOperations> getCategorieById(String idCategorie);
 }

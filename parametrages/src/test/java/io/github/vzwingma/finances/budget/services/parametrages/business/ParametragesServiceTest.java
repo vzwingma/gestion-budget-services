@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.concurrent.CompletionException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 class ParametragesServiceTest {
@@ -39,5 +39,45 @@ class ParametragesServiceTest {
         // 1 seul appel à la BDD
         Mockito.verify(parametrageServiceProvider, Mockito.times(1)).chargeCategories();
         assertEquals(1, listeCat.get(0).getListeSSCategories().size());
+    }
+
+
+    @Test
+    void testGetCategorieById(){
+        // Lancement du test
+        CategorieOperations cat = parametrageAppProvider.getCategorieById("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a").await().indefinitely();
+        // Vérification
+        assertNotNull(cat);
+        assertEquals("Alimentation", cat.getLibelle());
+        assertTrue(cat.isCategorie());
+        // 1 seul appel à la BDD
+        Mockito.verify(parametrageServiceProvider, Mockito.times(1)).chargeCategories();
+        assertEquals(1, cat.getListeSSCategories().size());
+    }
+
+
+    @Test
+    void testGetSsCategorieById(){
+        // Lancement du test
+        CategorieOperations cat = parametrageAppProvider.getCategorieById("467496e4-9059-4b9b-8773-21f230c8c5c6").await().indefinitely();
+        // Vérification
+        assertNotNull(cat);
+        assertEquals("Courses", cat.getLibelle());
+        assertFalse(cat.isCategorie());
+        // 1 seul appel à la BDD
+        Mockito.verify(parametrageServiceProvider, Mockito.times(1)).chargeCategories();
+    }
+
+
+    @Test
+    void testGetNoCategorieById(){
+        // Lancement du test
+        CompletionException exception = assertThrows(CompletionException.class,
+                () -> parametrageAppProvider.getCategorieById("unknown-id").await().indefinitely());
+        // Vérification
+        assertNotNull(exception);
+        assertEquals("io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException", exception.getMessage());
+        // 1 seul appel à la BDD
+        Mockito.verify(parametrageServiceProvider, Mockito.times(1)).chargeCategories();
     }
 }

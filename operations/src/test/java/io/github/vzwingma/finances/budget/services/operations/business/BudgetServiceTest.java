@@ -355,10 +355,16 @@ class BudgetServiceTest {
         // Test
         LigneOperation ligneOperation = MockDataOperations.getOperationIntercompte();
         BudgetMensuel budgetMensuelAJour = budgetAppProvider.createOperationsIntercomptes("C1_2022_01", ligneOperation, "C2" ).await().indefinitely();
+
+        assertEquals("[vers Libelle2] TestIntercompte", budgetMensuelAJour.getListeOperations().get(1).getLibelle());
+
         assertEquals(2, budgetMensuelAJour.getListeOperations().size());
 
         Mockito.verify(budgetAppProvider, Mockito.times(2)).recalculSoldes(any(BudgetMensuel.class));
         Mockito.verify(mockOperationDataProvider, Mockito.times(2)).sauvegardeBudgetMensuel(any(BudgetMensuel.class));
+
+        Mockito.verify(budgetAppProvider, Mockito.times(1)).recalculSoldes(budgetMensuelAJour);
+        Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(budgetMensuelAJour);
 
     }
 
