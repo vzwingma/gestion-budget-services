@@ -9,6 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.jboss.resteasy.reactive.RestPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,5 +54,29 @@ public class ParametragesResource {
 
         return paramsServices.getCategories()
                 .invoke(listeCategories -> LOG.info("Chargement des {} Categories", listeCategories != null ? listeCategories.size() : "-1"));
+    }
+
+
+
+
+    /**
+     * @return catégorie d'opérations correspondant à l'id
+     **/
+    @Operation(description = "Catégorie d'opérations par son id", summary = "Catégories d'opérations par son id")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = "Opération réussie",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = CategorieOperations.class)) }),
+            @APIResponse(responseCode = "401", description = "L'action n'est pas authentifiée"),
+            @APIResponse(responseCode = "403", description = "L'opération n'est pas autorisée"),
+            @APIResponse(responseCode = "404", description = "Session introuvable")
+    })
+    @GET
+    @Path(ParametragesApiUrlEnum.PARAMS_CATEGORIES + ParametragesApiUrlEnum.PARAMS_CATEGORIE_ID)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<CategorieOperations> getCategorieById(@RestPath String idCategorie) {
+
+        return paramsServices.getCategorieById(idCategorie)
+                .invoke(categorie -> LOG.info("[idCategorie={}] Chargement de la {}catégorie : {}", idCategorie, categorie != null && categorie.isCategorie() ? "" : "sous-", categorie));
     }
 }

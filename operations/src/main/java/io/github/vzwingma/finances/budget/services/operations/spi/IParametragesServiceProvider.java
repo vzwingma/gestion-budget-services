@@ -18,12 +18,12 @@ public interface IParametragesServiceProvider {
 
     /**
      * Recherche d'une catégorie
-     * @param id de la catégorie
+     * @param idCategorie de la catégorie
      * @return catégorie correspondante. Null sinon
      */
    @GET
-   @Path("")
-   Uni<CategorieOperations> getCategorieParId(String id);
+   @Path(ParametragesApiUrlEnum.PARAMS_CATEGORIES + ParametragesApiUrlEnum.PARAMS_CATEGORIE_ID)
+   Uni<CategorieOperations> getCategorieParId(String idCategorie);
 
     /**
      * Liste des catégories

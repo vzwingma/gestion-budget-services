@@ -163,8 +163,11 @@ public class BudgetService implements IBudgetAppProvider {
 			/*
 			 * Opération sur Compte source
 			 */
-			Uni<BudgetMensuel> budgetCourant = getBudgetAndCompteActif(idBudget)
-				.invoke(tuple -> tuple.mapItem2(compteSource -> this.comptesService.getCompteById(idCompteDestination)))
+			Uni<BudgetMensuel> budgetCourant =
+				Uni.combine().all().unis(
+					getBudgetAndCompteActif(idBudget).map(Tuple2::getItem1),
+					this.comptesService.getCompteById(idCompteDestination))
+				.asTuple()
 				.invoke(tuple -> {
 					ligneOperation.setLibelle("[vers "+tuple.getItem2().getLibelle()+"] " + libelleOperation);
 					this.operationsAppProvider.addOperation(tuple.getItem1().getListeOperations(), ligneOperation);
@@ -179,8 +182,11 @@ public class BudgetService implements IBudgetAppProvider {
 			 * Opération sur Compte cible
 			 */
 
-			Uni<BudgetMensuel> budgetCible = getBudgetAndCompteActif(idBudgetDestination)
-				.invoke(tuple -> tuple.mapItem2(compteSource -> this.comptesService.getCompteById(idCompteSource)))
+			Uni<BudgetMensuel> budgetCible =
+				Uni.combine().all().unis(
+					getBudgetAndCompteActif(idBudgetDestination).map(Tuple2::getItem1),
+					this.comptesService.getCompteById(idCompteSource))
+				.asTuple()
 				.invoke(tuple -> {
 					String libelleOperationCible = "[vers "+tuple.getItem2().getLibelle()+"] " + libelleOperation;
 					this.operationsAppProvider.addOperationIntercompte(tuple.getItem1().getListeOperations(), ligneOperation, libelleOperationCible);
