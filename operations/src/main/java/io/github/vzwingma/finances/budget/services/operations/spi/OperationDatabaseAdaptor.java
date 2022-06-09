@@ -48,7 +48,7 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 				.onItem().transform(Optional::orElseThrow)
 				.onFailure()
 					.transform(e -> new BudgetNotFoundException("Erreur lors du chargement du budget pour le compte " + compte.getId() + " du mois " + mois + " de l'année " + annee))
-				.invoke(budget -> LOGGER.debug("\t> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size()));
+				.invoke(budget -> LOGGER.debug("-> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size()));
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 				.onItem().transform(Optional::orElseThrow)
 					.onFailure()
 					.transform(e -> new BudgetNotFoundException("Erreur lors du chargement du budget " + idBudget))
-				.invoke(budget -> LOGGER.debug("\t> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size()));
+				.invoke(budget -> LOGGER.debug("-> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size()));
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 	public Uni<BudgetMensuel> sauvegardeBudgetMensuel(BudgetMensuel budget) {
 		LOGGER.info("Sauvegarde du budget du compte {} du {}/{}", budget.getIdCompteBancaire(), budget.getMois(), budget.getAnnee());
 		return persistOrUpdate(budget)
-				.invoke(budgetSauvegarde -> LOGGER.debug("\t> Budget {} sauvegardé", budgetSauvegarde.getId()));
+				.invoke(budgetSauvegarde -> LOGGER.debug("-> Budget {} sauvegardé", budgetSauvegarde.getId()));
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 						return Uni.createFrom().failure(new DataNotFoundException("Erreur lors du chargement des intervalles de budgets de " + idCompte));
 					}
 				})
-				.invoke(budget -> LOGGER.info("\t> Réception de l'intervalle de budgets -> {} / {}", budget[0].getId(), budget[1].getId()));
+				.invoke(budget -> LOGGER.info("-> Réception de l'intervalle de budgets -> {} / {}", budget[0].getId(), budget[1].getId()));
 	}
 
 	@Override
