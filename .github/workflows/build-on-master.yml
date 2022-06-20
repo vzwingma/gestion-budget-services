@@ -237,7 +237,7 @@ jobs:
           platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:parametrages-quarkus-snapshot
+          tags: vzwingmabudget/gestion_budget_services:parametrages-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -285,7 +285,7 @@ jobs:
           platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:utilisateurs-quarkus-snapshot
+          tags: vzwingmabudget/gestion_budget_services:utilisateurs-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -333,7 +333,7 @@ jobs:
           platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:comptes-quarkus-snapshot
+          tags: vzwingmabudget/gestion_budget_services:comptes-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -381,7 +381,7 @@ jobs:
           platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:operations-quarkus-snapshot
+          tags: vzwingmabudget/gestion_budget_services:operations-snapshot
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

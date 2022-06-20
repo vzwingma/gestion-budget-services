@@ -205,9 +205,7 @@ public class BudgetService implements IBudgetAppProvider {
 			return Uni.combine().all().unis(budgetCourant, budgetCible)
 					.asTuple()
 					.onItem()
-						.invoke(tuple -> {
-							BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.COMPTE, idCompteSource);
-						})
+						.invoke(tuple -> BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.COMPTE, idCompteSource))
 					.onItem()
 						.ifNotNull().transform(Tuple2::getItem1);
 

@@ -32,7 +32,7 @@ class OperationsResourceTest {
           .when().get("/_info")
           .then()
              .statusCode(200)
-                .body(containsString("API Budget - operations"));
+                .body(containsString("operations"));
     }
 
     @Inject

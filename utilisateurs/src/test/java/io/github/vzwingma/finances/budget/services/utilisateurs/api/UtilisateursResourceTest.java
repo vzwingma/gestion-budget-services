@@ -28,7 +28,7 @@ class UtilisateursResourceTest {
           .when().get("/_info")
           .then()
              .statusCode(200)
-                .body(containsString("API Budget - utilisateurs"));
+                .body(containsString("utilisateurs"));
     }
 
 

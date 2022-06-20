@@ -1,5 +1,6 @@
 package io.github.vzwingma.finances.budget.services.operations.api;
 
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPILoggerInterceptor;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
@@ -21,11 +22,15 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
+import org.jboss.resteasy.reactive.server.ServerRequestFilter;
+import org.jboss.resteasy.reactive.server.ServerResponseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.core.MediaType;
 import java.time.Month;
 import java.util.Set;
@@ -37,7 +42,7 @@ import java.util.Set;
  *
  */
 @Path(OperationsApiUrlEnum.BUDGET_BASE)
-public class OperationsResource {
+public class OperationsResource extends AbstractAPILoggerInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(OperationsResource.class);
 
@@ -455,5 +460,13 @@ public class OperationsResource {
                     });
 
     }
+
+    @ServerRequestFilter(preMatching = true)
+    public void preMatchingFilter(ContainerRequestContext requestContext) {
+        super.preMatchingFilter(requestContext);
+    }
+    @ServerResponseFilter
+    public void postMatchingFilter(ContainerResponseContext responseContext) { super.postMatchingFilter(responseContext); }
+
 
 }

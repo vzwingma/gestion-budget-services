@@ -23,7 +23,7 @@ class ComptesResourceTest {
           .when().get("/_info")
           .then()
              .statusCode(200)
-                .body(containsString("API Budget - comptes"));
+                .body(containsString("comptes"));
     }
 
     @Inject

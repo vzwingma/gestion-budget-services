@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BusinessTraceContext {
 
 
-    private final static BusinessTraceContext INSTANCE = new BusinessTraceContext();
+    private static final BusinessTraceContext INSTANCE = new BusinessTraceContext();
 
 
     /**
@@ -37,7 +37,7 @@ public class BusinessTraceContext {
      */
     public BusinessTraceContext clear() {
         Arrays.stream(BusinessTraceContextKeyEnum.values())
-                .forEach(key -> MDC.remove(key.getLibelle()));
+                .forEach(key -> MDC.remove(key.getKeyId()));
         calculateBudgetContext();
         return INSTANCE;
     }
@@ -47,7 +47,7 @@ public class BusinessTraceContext {
      * @param value value métier de la clé
      */
     public BusinessTraceContext put(BusinessTraceContextKeyEnum key, String value) {
-        MDC.put(key.getLibelle(), value);
+        MDC.put(key.getKeyId(), value);
         calculateBudgetContext();
         return INSTANCE;
     }
@@ -57,7 +57,7 @@ public class BusinessTraceContext {
      * @param key clé métier
      */
     public BusinessTraceContext remove(BusinessTraceContextKeyEnum key) {
-        MDC.remove(key.getLibelle());
+        MDC.remove(key.getKeyId());
         calculateBudgetContext();
         return INSTANCE;
     }
@@ -66,7 +66,7 @@ public class BusinessTraceContext {
         AtomicReference<String> budgetContextValue = new AtomicReference<>("");
         MDC.getCopyOfContextMap().forEach((key1, value) -> {
             if (Arrays.stream(BusinessTraceContextKeyEnum.values())
-                    .map(BusinessTraceContextKeyEnum::getLibelle).anyMatch(key -> key.equals(key1))
+                    .map(BusinessTraceContextKeyEnum::getKeyId).anyMatch(key -> key.equals(key1))
                     && !value.isEmpty()) {
                 budgetContextValue.set(budgetContextValue.get() + "[" + key1 + ":" + value + "]");
             }

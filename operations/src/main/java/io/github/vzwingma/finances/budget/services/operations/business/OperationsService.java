@@ -59,8 +59,11 @@ public class OperationsService implements IOperationsAppProvider {
 	 * Réinjection des catégories dans les opérations du budget
 	 * @param operation opération
 	 * @param categories liste des catégories
+	 * @deprecated
+	 * @since 17.0.0
 	 */
 	// TODO : A supprimer ?
+	@Deprecated
 	private void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
 		try {
 			CategorieOperations catFound = BudgetDataUtils.getCategorieById(operation.getSsCategorie().getId(), categories);
@@ -191,7 +194,7 @@ public class OperationsService implements IOperationsAppProvider {
 							.forEach(op -> {
 								op.setTagDerniereOperation(ligneId.equals(op.getId()));
 								if(ligneId.equals(op.getId())) {
-									LOGGER.debug("L'opération "+ligneId+" a été trouvée dans le budget "+idBudget);
+									LOGGER.debug("L'opération a été trouvée dans le budget ");
 									operationUpdate.set(true);
 								}
 							});

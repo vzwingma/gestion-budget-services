@@ -26,7 +26,7 @@ class ParametragesResourceTest {
           .when().get("/_info")
           .then()
              .statusCode(200)
-             .body(containsString("API Budget - parametrages"));
+             .body(containsString("parametrages"));
     }
 
     @Inject
