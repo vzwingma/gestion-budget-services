@@ -241,6 +241,9 @@ public class OperationsService implements IOperationsAppProvider {
 	 * @return ligneOperation màj
 	 */
 	private LigneOperation updateOperation(LigneOperation ligneOperation) {
+		if(ligneOperation.getAutresInfos() == null){
+			ligneOperation.setAutresInfos(new LigneOperation.AddInfos());
+		}
 		ligneOperation.getAutresInfos().setDateMaj(LocalDateTime.now());
 		// TODO : nomProprietaire à ajouter
 		ligneOperation.getAutresInfos().setAuteur("vzwingmann");
