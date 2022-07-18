@@ -39,7 +39,8 @@ public class OperationsApiUrlEnum {
 	/**
 	 * Operations
 	 */
-	public static final String BUDGET_OPERATION = BUDGET_ID + "/operations/"+PARAM_ID_OPERATION ;
-	public static final String BUDGET_OPERATION_DERNIERE = BUDGET_OPERATION + "/derniereOperation";
-	public static final String BUDGET_OPERATION_INTERCOMPTE = BUDGET_OPERATION + "/versCompte/"+PARAM_ID_COMPTE ;
+	public static final String BUDGET_OPERATION = BUDGET_ID + "/operations" ;
+	public static final String BUDGET_OPERATION_BY_ID = BUDGET_OPERATION + "/"+PARAM_ID_OPERATION ;
+	public static final String BUDGET_OPERATION_DERNIERE = BUDGET_OPERATION_BY_ID + "/derniereOperation";
+	public static final String BUDGET_OPERATION_INTERCOMPTE = BUDGET_OPERATION_BY_ID + "/versCompte/"+PARAM_ID_COMPTE ;
 }

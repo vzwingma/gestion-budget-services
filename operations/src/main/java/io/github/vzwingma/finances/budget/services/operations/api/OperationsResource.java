@@ -34,6 +34,7 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.core.MediaType;
 import java.time.Month;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Controleur REST -
@@ -273,6 +274,40 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
 
 
     /**
+     * Création d'une opération
+     * @param idBudget id du budget
+     * @param operation opération à mettre à jour
+     * @return budget mis à jour
+     */
+    @Operation(description="Création d'une opération")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = "Opération mise à jour",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BudgetMensuel.class))}),
+            @APIResponse(responseCode = "400", description = "Paramètres incorrects"),
+            @APIResponse(responseCode = "401", description = "Utilisateur non authentifié"),
+            @APIResponse(responseCode = "403", description = "Opération non autorisée"),
+            @APIResponse(responseCode = "404", description = "Données introuvables"),
+            @APIResponse(responseCode = "423", description = "Compte clos")
+    })
+    @POST
+    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<BudgetMensuel> createOperation( @RestPath("idBudget") String idBudget, LigneOperation operation) {
+
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        LOG.trace("createOperation");
+        if(operation != null && idBudget != null){
+            operation.setId(UUID.randomUUID().toString());
+            return budgetService.addOperationInBudget(idBudget, operation);
+        }
+        else {
+            return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget et operation sont obligatoires"));
+        }
+    }
+
+
+    /**
      * Mise à jour d'une opération
      * @param idBudget id du budget
      * @param operation opération à mettre à jour
@@ -289,16 +324,16 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "423", description = "Compte clos")
     })
     @POST
-    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION)
+    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION_BY_ID)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<BudgetMensuel> createOrUpdateOperation(
+    public Uni<BudgetMensuel> updateOperation(
             @RestPath("idBudget") String idBudget,
             @RestPath("idOperation") String idOperation,
             LigneOperation operation) {
 
         BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
-        LOG.trace("createOrUpdateOperation");
+        LOG.trace("UpdateOperation");
         if(operation != null && idBudget != null){
             operation.setId(idOperation);
             return budgetService.addOperationInBudget(idBudget, operation);
@@ -366,7 +401,7 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "405", description = "Compte clos")
     })
     @DELETE
-    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION)
+    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION_BY_ID)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> deleteOperation(
