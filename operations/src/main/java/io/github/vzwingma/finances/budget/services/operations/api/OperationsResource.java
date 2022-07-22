@@ -348,7 +348,6 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
     /**
      * Création d'une opération inter comptes
      * @param idBudget id du budget
-     * @param idOperation opération à mettre à jour
      * @param idCompte id du compte à mettre à jour
      * @return budget mis à jour
      */
@@ -368,14 +367,14 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> createOperationIntercomptes(
             @RestPath("idBudget") String idBudget,
-            @RestPath("idOperation") String idOperation,
             @RestPath("idCompte") String idCompte,
             LigneOperation operation) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+        String uuidOperation = UUID.randomUUID().toString();
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, uuidOperation);
         LOG.info("createOperation InterCompte [->{}]", idCompte);
         if(operation != null && idBudget != null){
-            operation.setId(idOperation);
+            operation.setId(uuidOperation);
             return budgetService.createOperationsIntercomptes(idBudget, operation, idCompte);
         }
         else{
