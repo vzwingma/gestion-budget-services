@@ -193,7 +193,7 @@ public class BudgetService implements IBudgetAppProvider {
 				.asTuple()
 				.invoke(tuple -> {
 					BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudgetDestination).put(BusinessTraceContextKeyEnum.COMPTE, idCompteSource);
-					String libelleOperationCible = "[vers "+tuple.getItem2().getLibelle()+"] " + libelleOperation;
+					String libelleOperationCible = "[depuis "+tuple.getItem2().getLibelle()+"] " + libelleOperation;
 					this.operationsAppProvider.addOperationIntercompte(tuple.getItem1().getListeOperations(), ligneOperation, libelleOperationCible);
 				})
 				.map(Tuple2::getItem1)
