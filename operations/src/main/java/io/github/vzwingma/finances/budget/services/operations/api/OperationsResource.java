@@ -372,7 +372,7 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
 
         String uuidOperation = UUID.randomUUID().toString();
         BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, uuidOperation);
-        LOG.info("createOperation InterCompte [->{}]", idCompte);
+        LOG.info("Create Operation InterCompte [->{}]", idCompte);
         if(operation != null && idBudget != null){
             operation.setId(uuidOperation);
             return budgetService.createOperationsIntercomptes(idBudget, operation, idCompte);
@@ -408,7 +408,7 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @RestPath("idOperation") String idOperation) {
         BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
         if(idOperation != null && idBudget != null){
-            LOG.trace("deleteOperation");
+            LOG.trace("Delete Operation");
             return budgetService.deleteOperationInBudget(idBudget, idOperation);
         }
         else{

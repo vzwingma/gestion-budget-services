@@ -1,6 +1,7 @@
 package io.github.vzwingma.finances.budget.services.parametrages.spi;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
+import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametragesRepository;
 import io.smallrye.mutiny.Multi;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class ParametragesDatabaseAdaptor implements IParametragesRepository {
 					.invoke(cat -> LOGGER.debug("Chargement de la catégorie [{}] en BDD terminé", cat));
 		} catch (Exception e) {
 			LOGGER.error("Erreur lors de la connexion à la BDD", e);
-			return Multi.createFrom().failure(new Exception("Erreur lors de la connexion à la BDD"));
+			return Multi.createFrom().failure(new DataNotFoundException("Erreur lors de la connexion à la BDD"));
 		}
 	}
 }
