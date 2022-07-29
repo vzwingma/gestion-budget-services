@@ -61,6 +61,10 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	@Schema(description = "Opération périodique ?")
 	private boolean periodique; 
 	// tag comme dernière opération
+
+	@Schema(description = "Mensualité pour les opérations périodiques. Si non renseigné, la valeur est 0 pour non périodique et 1 pour périodique")
+	private int mensualite;
+
 	@Schema(description = "Dernier opération ?")
 	private boolean tagDerniereOperation;
 
@@ -121,7 +125,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 * @param etat état
 	 * @param periodique périodicité de l'opération
 	 */
-	public LigneOperation(CategorieOperations ssCategorie, String libelle, TypeOperationEnum typeDepense, Double absValeur, EtatOperationEnum etat, boolean periodique){
+	public LigneOperation(CategorieOperations ssCategorie, String libelle, TypeOperationEnum typeDepense, Double absValeur, EtatOperationEnum etat, boolean periodique, int mensualite){
 		Categorie c = null;
 		Categorie ssc = null;
 		if(ssCategorie != null && ssCategorie.getCategorieParente() != null) {
@@ -136,7 +140,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 			ssc.setLibelle(ssCategorie.getLibelle());
 			setSsCategorie(ssc);
 		}
-		buidLigneOperation(c, ssc, libelle, typeDepense, absValeur, etat, periodique);
+		buidLigneOperation(c, ssc, libelle, typeDepense, absValeur, etat, periodique, mensualite);
 	}
 	
 	
@@ -151,8 +155,8 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 * @param etat état
 	 * @param periodique périodicité de l'opération
 	 */
-	public LigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, TypeOperationEnum typeDepense, Double absValeur, EtatOperationEnum etat, boolean periodique){
-		buidLigneOperation(categorie, ssCategorie, libelle, typeDepense, absValeur, etat, periodique);
+	public LigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, TypeOperationEnum typeDepense, Double absValeur, EtatOperationEnum etat, boolean periodique, int mensualite){
+		buidLigneOperation(categorie, ssCategorie, libelle, typeDepense, absValeur, etat, periodique, mensualite);
 	}
 	
 	/**
@@ -165,11 +169,18 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 * @param etat état
 	 * @param periodique périodicité de l'opération
 	 */
-	private void buidLigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, TypeOperationEnum typeDepense, Double absValeur, EtatOperationEnum etat, boolean periodique){
+	private void buidLigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, TypeOperationEnum typeDepense, Double absValeur, EtatOperationEnum etat, boolean periodique, int mensualite){
 		this.id = UUID.randomUUID().toString();
 		this.libelle = libelle;
 		this.typeOperation = typeDepense;
 		this.periodique = periodique;
+		if(!periodique){
+			this.mensualite = 0;
+		}
+		else{
+			this.mensualite = mensualite;
+		}
+
 		putValeurFromSaisie(absValeur);
 		this.etat = etat;
 		this.tagDerniereOperation = false;
