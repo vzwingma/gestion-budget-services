@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.List;
 
 /**
  * Service fournissant les budgets
@@ -377,12 +378,22 @@ public class BudgetService implements IBudgetAppProvider {
 			budgetInitVide.setDateMiseAJour(LocalDateTime.now());
 			if(budgetPrecedent.getListeOperations() != null){
 
-				// Recopie de toutes les opérations périodiques, et reportées
+				// Recopie de toutes les opérations et reportées
 				budgetInitVide.getListeOperations().addAll(
 						budgetPrecedent.getListeOperations()
 								.stream()
-								.filter(op -> op.isPeriodique() || EtatOperationEnum.REPORTEE.equals(op.getEtat()))
-								.map(BudgetDataUtils::cloneDepenseToMoisSuivant)
+								.filter(op -> EtatOperationEnum.REPORTEE.equals(op.getEtat()))
+								.map(BudgetDataUtils::cloneOperationToMoisSuivant)
+								.toList());
+
+				// Recopie de toutes les opérations périodiques
+				budgetInitVide.getListeOperations().addAll(
+						budgetPrecedent.getListeOperations()
+								.stream()
+								.filter(op -> op.getMensualite() != null)
+								// Les opérations périodiques peuvent créer de nouvelles opérations (période suivante)
+								.map(op -> BudgetDataUtils.cloneOperationPeriodiqueToMoisSuivant(op, BudgetDateTimeUtils.localDateFirstDayOfMonth(budgetPrecedent.getMois(), budgetPrecedent.getAnnee())))
+								.flatMap(List::stream)
 								.toList());
 			}
 		}
