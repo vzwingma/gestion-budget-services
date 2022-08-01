@@ -6,6 +6,7 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.Budg
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationPeriodiciteEnum;
+import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataCategories;
 import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataOperations;
 import org.junit.jupiter.api.Test;
 
@@ -108,10 +109,10 @@ class BudgetDataUtilsTest {
 		categoriesFromDB.add(catAlimentation);
 
 
-		CategorieOperations cat = BudgetDataUtils.getCategorieById("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", categoriesFromDB);
+		CategorieOperations cat = MockDataCategories.getCategorieById("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", categoriesFromDB);
 		assertNotNull(cat);
 
-		CategorieOperations ssCat = BudgetDataUtils.getCategorieById("467496e4-9059-4b9b-8773-21f230c8c5c6", categoriesFromDB);
+		CategorieOperations ssCat = MockDataCategories.getCategorieById("467496e4-9059-4b9b-8773-21f230c8c5c6", categoriesFromDB);
 		assertNotNull(ssCat);
 		assertNotNull(ssCat.getCategorieParente());
 		assertEquals("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", ssCat.getCategorieParente().getId());
@@ -156,10 +157,10 @@ class BudgetDataUtilsTest {
 			categoriesFromDB.add(cat);
 		}
 
-		CategorieOperations cat = BudgetDataUtils.getCategorieById("ID8", categoriesFromDB);
+		CategorieOperations cat = MockDataCategories.getCategorieById("ID8", categoriesFromDB);
 		assertNotNull(cat);
 
-		CategorieOperations ssCat = BudgetDataUtils.getCategorieById("ID88", categoriesFromDB);
+		CategorieOperations ssCat = MockDataCategories.getCategorieById("ID88", categoriesFromDB);
 		assertNotNull(ssCat);
 		assertNotNull(ssCat.getCategorieParente());
 		assertEquals("ID8", ssCat.getCategorieParente().getId());
@@ -237,4 +238,7 @@ class BudgetDataUtilsTest {
 		assertNotNull(clone.getAutresInfos());
 		assertNotNull(clone.getMensualite());
 	}
+
+
+
 }

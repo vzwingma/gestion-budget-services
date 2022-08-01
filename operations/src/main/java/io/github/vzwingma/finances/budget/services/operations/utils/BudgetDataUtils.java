@@ -183,7 +183,7 @@ public class BudgetDataUtils {
 				LigneOperation ligneOperationEcheanceReportee = cloneOperationToMoisSuivant(ligneOperation);
 				ligneOperationEcheanceReportee.setLibelle("[En Retard] " + ligneOperation.getLibelle());
 				LigneOperation.Mensualite echeanceReportee = new LigneOperation.Mensualite();
-				echeanceReportee.setPeriode(ligneOperation.getMensualite().getPeriode());
+				echeanceReportee.setPeriode(OperationPeriodiciteEnum.PONCTUELLE);
 				echeanceReportee.setProchaineEcheance(-1);
 				ligneOperationEcheanceReportee.setMensualite(echeanceReportee);
 				lignesOperationClonees.add(ligneOperationEcheanceReportee);
@@ -200,7 +200,7 @@ public class BudgetDataUtils {
 			}
 			// Si l'échéance est dans le futur, on laisse la mensualité de base et reportée
 			else{
-				ligneOperationClonee.setEtat(OperationEtatEnum.REPORTEE);
+				ligneOperationClonee.setEtat(OperationEtatEnum.PLANIFIEE);
 				mensualiteClonee.setProchaineEcheance(prochaineMensualite);
 			}
 			ligneOperationClonee.setMensualite(mensualiteClonee);
@@ -276,39 +276,4 @@ public class BudgetDataUtils {
 		return null;
 	}
 
-
-	/**
-	 * @param id id de la catégorie
-	 * @param listeCategories liste des catégories
-	 * @return catégorie correspondante
-	 * @deprecated : En doublon avec le service de Paramétrage
-	 * @since 17.0.0
-	 */
-	@Deprecated
-	public static CategorieOperations getCategorieById(String id, List<CategorieOperations> listeCategories){
-		CategorieOperations categorie = null;
-		if(id != null && listeCategories != null && !listeCategories.isEmpty()){
-			// Recherche parmi les catégories
-			Optional<CategorieOperations> cat = listeCategories.parallelStream()
-					.filter(c -> id.equals(c.getId()))
-					.findFirst();
-			if(cat.isPresent()){
-				categorie = cat.get();
-			}
-			// Sinon les sous catégories
-			else{
-				Optional<CategorieOperations> ssCats = listeCategories.parallelStream()
-						.flatMap(c -> c.getListeSSCategories().stream())
-						.filter(ss -> id.equals(ss.getId()))
-						.findFirst();
-				if(ssCats.isPresent()){
-					categorie = ssCats.get();
-				}
-			}
-		}
-		if(categorie == null) {
-			LOGGER.warn("Impossible de trouver une catégorie correspondant à l'id [{}] parmi les catégories", id);
-		}
-		return categorie;
-	}
 }
