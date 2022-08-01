@@ -55,32 +55,6 @@ public class OperationsService implements IOperationsAppProvider {
 	@Inject
 	IParametragesServiceProvider parametragesService;
 
-	/**
-	 * Réinjection des catégories dans les opérations du budget
-	 * @param operation opération
-	 * @param categories liste des catégories
-	 * @deprecated
-	 * @since 17.0.0
-	 */
-	// TODO : A supprimer ?
-	@Deprecated
-	private void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
-		try {
-			CategorieOperations catFound = BudgetDataUtils.getCategorieById(operation.getSsCategorie().getId(), categories);
-			if(catFound != null) {
-				operation.getSsCategorie().setId(catFound.getId());
-				operation.getSsCategorie().setLibelle(catFound.getLibelle());
-				operation.getCategorie().setId(catFound.getCategorieParente().getId());
-				operation.getCategorie().setLibelle(catFound.getCategorieParente().getLibelle());
-				return;
-			}
-		}
-		catch (Exception e) {
-			LOGGER.warn("Impossible de retrouver la sous catégorie : {}", operation.getSsCategorie(), e);
-		}
-		LOGGER.warn("Impossible de retrouver la sous catégorie : {} parmi la liste ci dessous. Le fonctionnement peut être incorrect. \n {}", operation.getSsCategorie(), categories);
-
-	}
 
 	@Override
 	public Multi<String> getLibellesOperations(String idCompte, int annee) {
@@ -220,12 +194,12 @@ public class OperationsService implements IOperationsAppProvider {
 		operations.removeIf(op -> op.getId().equals(ligneOperation.getId()));
 
 		if (ligneOperation.getEtat() != null) {
-			LigneOperation ligneUpdatedOperation = updateOperation(ligneOperation);
+			LigneOperation ligneUpdatedOperation = completeOperationAttributes(ligneOperation);
 			if (rangMaj >= 0) {
-				LOGGER.debug("Mise à jour de l'opération : {}", ligneUpdatedOperation);
+				LOGGER.info("Mise à jour de l'opération : {}", ligneUpdatedOperation);
 				operations.add(rangMaj, ligneUpdatedOperation);
 			} else {
-				LOGGER.debug("Ajout de l'opération : {}", ligneUpdatedOperation);
+				LOGGER.info("Ajout de l'opération : {}", ligneUpdatedOperation);
 				operations.add(ligneUpdatedOperation);
 			}
 		} else {
@@ -240,13 +214,16 @@ public class OperationsService implements IOperationsAppProvider {
 	 * @param ligneOperation opération
 	 * @return ligneOperation màj
 	 */
-	private LigneOperation updateOperation(LigneOperation ligneOperation) {
+	private LigneOperation completeOperationAttributes(LigneOperation ligneOperation) {
+		// Autres infos
 		if(ligneOperation.getAutresInfos() == null){
 			ligneOperation.setAutresInfos(new LigneOperation.AddInfos());
 		}
 		ligneOperation.getAutresInfos().setDateMaj(LocalDateTime.now());
 		// TODO : nomProprietaire à ajouter
 		ligneOperation.getAutresInfos().setAuteur("vzwingmann");
+
+		// Date opération suivant Etat
 		if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
 			if(ligneOperation.getAutresInfos().getDateOperation() == null){
 				ligneOperation.getAutresInfos().setDateOperation(LocalDateTime.now());
@@ -254,6 +231,16 @@ public class OperationsService implements IOperationsAppProvider {
 		}
 		else {
 			ligneOperation.getAutresInfos().setDateOperation(null);
+		}
+
+		// TODO : Calcul des mensualités
+		if(ligneOperation.getPeriodeMensualite() > 0) {
+			ligneOperation.setPeriodique(true);
+			ligneOperation.setProchaineMensualite(" Mois + " + ligneOperation.getPeriodeMensualite());
+		}
+		else {
+			ligneOperation.setPeriodique(false);
+			ligneOperation.setProchaineMensualite(null);
 		}
 		return ligneOperation;
 	}
@@ -294,17 +281,14 @@ public class OperationsService implements IOperationsAppProvider {
 
 	private LigneOperation createOperationRemboursement(LigneOperation ligneOperation, CategorieOperations categorieRemboursement) {
 		if(categorieRemboursement != null) {
-			LigneOperation ligneRemboursement = new LigneOperation(
+			return completeOperationAttributes(new LigneOperation(
 					categorieRemboursement,
 					"[Remboursement] " + ligneOperation.getLibelle(),
 					TypeOperationEnum.CREDIT,
 					Math.abs(ligneOperation.getValeur()),
 					EtatOperationEnum.REPORTEE,
-					ligneOperation.isPeriodique());
-			// TODO : nomProprietaire à ajouter
-			ligneRemboursement.getAutresInfos().setAuteur("vzwingmann");
-			ligneRemboursement.getAutresInfos().setDateMaj(LocalDateTime.now());
-			return ligneRemboursement;
+					ligneOperation.isPeriodique(),
+					ligneOperation.getPeriodeMensualite()));
 		}
 		else{
 			return null;
@@ -325,15 +309,17 @@ public class OperationsService implements IOperationsAppProvider {
 			default -> etatDepenseTransfert = EtatOperationEnum.PREVUE;
 		}
 
-		LigneOperation ligneTransfert = new LigneOperation(
+		LigneOperation ligneTransfert = completeOperationAttributes(new LigneOperation(
 				ligneOperationSource.getCategorie(),
 				ligneOperationSource.getSsCategorie(),
 				libelleOperationCible,
 				TypeOperationEnum.CREDIT,
 				Math.abs(ligneOperationSource.getValeur()),
 				etatDepenseTransfert,
-				ligneOperationSource.isPeriodique());
+				ligneOperationSource.isPeriodique(),
+				ligneOperationSource.getPeriodeMensualite()));
 		LOGGER.debug("Ajout de l'opération [{}] dans le budget", ligneTransfert);
+
 		operations.add(ligneTransfert);
 		return operations;
 	}
