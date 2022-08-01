@@ -10,11 +10,13 @@ package io.github.vzwingma.finances.budget.services.operations.business.model.op
  */
 public enum OperationEtatEnum {
 
-	// Ligne prévue
+	// Ligne prévue pour ce mois ci
 	PREVUE("prevue", "Prévue"),
 	// Ligne passée
-	REALISEE("realisee", "Réalisée"), 
-	// Ligne reportée
+	REALISEE("realisee", "Réalisée"),
+	// Ligne planifiée pour une échéance dans le futur
+	PLANIFIEE("planifiee" , "Planifiée"),
+	// Ligne reportée pour le mois suivant
 	REPORTEE("reportee" , "Reportée"), 
 	// Ligne annulée
 	ANNULEE("annulee", "Annulée");
