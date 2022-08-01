@@ -44,7 +44,7 @@ public class MockDataOperations {
         CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.getId());
         CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.getId());
         dep.setCategorieParente(cat);
-        LigneOperation test1 = new LigneOperation(dep, "TestIntercompte", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
+        LigneOperation test1 = new LigneOperation(dep, "TestIntercompte", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false, 0);
         test1.setId("TestIntercompte");
         return test1;
     }
@@ -52,7 +52,7 @@ public class MockDataOperations {
         CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
         CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
         dep.setCategorieParente(cat);
-        LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
+        LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false, 0);
         test1.setId("TEST1");
         return test1;
     }
@@ -61,7 +61,7 @@ public class MockDataOperations {
         CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
         CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
         dep.setCategorieParente(cat);
-        LigneOperation remboursement = new LigneOperation(dep, "TestRemboursement", TypeOperationEnum.DEPENSE, 123D, EtatOperationEnum.REALISEE, false);
+        LigneOperation remboursement = new LigneOperation(dep, "TestRemboursement", TypeOperationEnum.DEPENSE, 123D, EtatOperationEnum.REALISEE, false, 0);
         remboursement.setId("TestRemboursement");
         return remboursement;
     }
