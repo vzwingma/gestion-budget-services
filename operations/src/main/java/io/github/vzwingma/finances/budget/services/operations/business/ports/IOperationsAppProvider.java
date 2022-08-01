@@ -61,7 +61,7 @@ public interface IOperationsAppProvider {
      * @param operations     liste des opérations à mettre à jour budget
      * @param ligneOperation ligne de dépense
      */
-    List<LigneOperation> addOperation(List<LigneOperation> operations, LigneOperation ligneOperation);
+    List<LigneOperation> addOrReplaceOperation(List<LigneOperation> operations, LigneOperation ligneOperation);
 
     /**
      * Ajout d'une opération de remboursement

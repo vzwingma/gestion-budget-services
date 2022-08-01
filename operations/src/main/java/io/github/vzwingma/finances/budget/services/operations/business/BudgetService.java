@@ -134,9 +134,9 @@ public class BudgetService implements IBudgetAppProvider {
 			.asTuple()
 			// Ajout des opérations standard et remboursement (si non nulle)
 			.invoke(tuple -> {
-				this.operationsAppProvider.addOperation(tuple.getItem1().getListeOperations(), tuple.getItem2());
+				this.operationsAppProvider.addOrReplaceOperation(tuple.getItem1().getListeOperations(), tuple.getItem2());
 				if(tuple.getItem3() != null){
-					this.operationsAppProvider.addOperation(tuple.getItem1().getListeOperations(), tuple.getItem3());
+					this.operationsAppProvider.addOrReplaceOperation(tuple.getItem1().getListeOperations(), tuple.getItem3());
 				}
 			})
 			.onItem().transform(Tuple3::getItem1)
@@ -175,7 +175,7 @@ public class BudgetService implements IBudgetAppProvider {
 				.invoke(tuple -> {
 					BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.COMPTE, idCompteDestination);
 					ligneOperation.setLibelle("[vers "+tuple.getItem2().getLibelle()+"] " + libelleOperation);
-					this.operationsAppProvider.addOperation(tuple.getItem1().getListeOperations(), ligneOperation);
+					this.operationsAppProvider.addOrReplaceOperation(tuple.getItem1().getListeOperations(), ligneOperation);
 				})
 				.map(Tuple2::getItem1)
 				.onItem().ifNotNull()

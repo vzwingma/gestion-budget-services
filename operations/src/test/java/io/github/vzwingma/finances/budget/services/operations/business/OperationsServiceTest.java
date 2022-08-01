@@ -78,7 +78,7 @@ class OperationsServiceTest {
         LigneOperation operation = MockDataOperations.getOperationPrelevement();
         operation.setEtat(EtatOperationEnum.REALISEE);
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
         assertEquals(1, operationsAJour.size());
         assertEquals(EtatOperationEnum.REALISEE, operationsAJour.get(0).getEtat());
         assertNotNull(operationsAJour.get(0).getAutresInfos().getDateOperation());
@@ -96,7 +96,7 @@ class OperationsServiceTest {
         LigneOperation operation = MockDataOperations.getOperationMensuelleRealisee();
         operation.setEtat(EtatOperationEnum.REALISEE);
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
         assertEquals(1, operationsAJour.size());
         assertEquals(EtatOperationEnum.REALISEE, operationsAJour.get(0).getEtat());
         assertEquals(1, operationsAJour.get(0).getMensualite().getPeriode());
@@ -105,11 +105,11 @@ class OperationsServiceTest {
 
         // Changement de période
         operation.getMensualite().setPeriode(0);
-        operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
+        operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
         assertEquals(0, operationsAJour.get(0).getMensualite().getPeriode());
         assertEquals(-1, operationsAJour.get(0).getMensualite().getProchaineEcheance());
         operation.getMensualite().setPeriode(3);
-        operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
+        operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
         assertEquals(3, operationsAJour.get(0).getMensualite().getPeriode());
         assertEquals(3, operationsAJour.get(0).getMensualite().getProchaineEcheance());
     }
@@ -126,7 +126,7 @@ class OperationsServiceTest {
         operation.setId("Test2");
         operation.setEtat(EtatOperationEnum.REALISEE);
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
         assertEquals(2, operationsAJour.size());
     }
 

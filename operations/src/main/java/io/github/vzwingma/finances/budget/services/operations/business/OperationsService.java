@@ -187,7 +187,7 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	@Override
-	public List<LigneOperation> addOperation(List<LigneOperation> operations, LigneOperation ligneOperation)  {
+	public List<LigneOperation> addOrReplaceOperation(List<LigneOperation> operations, LigneOperation ligneOperation)  {
 		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.OPERATION, ligneOperation.getId());
 		// Si mise à jour d'une opération, on l'enlève
 		LigneOperation ligneOperationToUpdate = operations.stream().filter(op -> op.getId().equals(ligneOperation.getId())).findFirst().orElse(null);
@@ -242,6 +242,7 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	/**
+	 * Calcul de la périodidité d'une opération
 	 * @param ligneOperation opération à compléter (ou à mettre à jour)
 	 * @param oldOperationToUpdate ancienne version de l'opération si elle existe
 	 * @return ligneOperation màj
