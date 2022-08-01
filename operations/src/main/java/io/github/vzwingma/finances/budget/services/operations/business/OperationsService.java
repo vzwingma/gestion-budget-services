@@ -203,7 +203,7 @@ public class OperationsService implements IOperationsAppProvider {
 				operations.add(ligneUpdatedOperation);
 			}
 		} else {
-			LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
+			LOGGER.info("Suppression d'une opération : {}", ligneOperation);
 		}
 		return operations;
 	}
@@ -233,15 +233,13 @@ public class OperationsService implements IOperationsAppProvider {
 			ligneOperation.getAutresInfos().setDateOperation(null);
 		}
 
-		// TODO : Calcul des mensualités
-		if(ligneOperation.getPeriodeMensualite() > 0) {
-			ligneOperation.setPeriodique(true);
-			ligneOperation.setProchaineMensualite(" Mois + " + ligneOperation.getPeriodeMensualite());
+		// Périodicité
+		if(ligneOperation.getMensualite() != null){
+			if(ligneOperation.getMensualite().getProchaineEcheance() == -1  && ligneOperation.getMensualite().getPeriode() > 0){
+				ligneOperation.getMensualite().setProchaineEcheance(ligneOperation.getMensualite().getPeriode());
+			}
 		}
-		else {
-			ligneOperation.setPeriodique(false);
-			ligneOperation.setProchaineMensualite(null);
-		}
+
 		return ligneOperation;
 	}
 
@@ -254,7 +252,7 @@ public class OperationsService implements IOperationsAppProvider {
 	@Override
 	public Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource){
 
-		// Si l'opération est une remboursement, on ajoute la catégorie de remboursement
+		// Si l'opération est une opération de remboursement, on ajoute la catégorie de remboursement
 		if (operationSource.getSsCategorie() != null
 				&& operationSource.getCategorie() != null
 				&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(operationSource.getCategorie().getId())) {
@@ -286,9 +284,7 @@ public class OperationsService implements IOperationsAppProvider {
 					"[Remboursement] " + ligneOperation.getLibelle(),
 					TypeOperationEnum.CREDIT,
 					Math.abs(ligneOperation.getValeur()),
-					EtatOperationEnum.REPORTEE,
-					ligneOperation.isPeriodique(),
-					ligneOperation.getPeriodeMensualite()));
+					EtatOperationEnum.REPORTEE));
 		}
 		else{
 			return null;
@@ -315,9 +311,7 @@ public class OperationsService implements IOperationsAppProvider {
 				libelleOperationCible,
 				TypeOperationEnum.CREDIT,
 				Math.abs(ligneOperationSource.getValeur()),
-				etatDepenseTransfert,
-				ligneOperationSource.isPeriodique(),
-				ligneOperationSource.getPeriodeMensualite()));
+				etatDepenseTransfert));
 		LOGGER.debug("Ajout de l'opération [{}] dans le budget", ligneTransfert);
 
 		operations.add(ligneTransfert);
