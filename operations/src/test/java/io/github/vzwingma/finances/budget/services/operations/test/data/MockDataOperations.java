@@ -70,10 +70,10 @@ public class MockDataOperations {
 
 
     public static LigneOperation getOperationMensuelleRealisee(){
-
         LigneOperation lo = new LigneOperation();
         lo.setId("C1_B2_L4");
         lo.setEtat(OperationEtatEnum.REALISEE);
+        lo.setValeur(200D);
         lo.setLibelle("Opération 4");
         lo.setMensualite(new LigneOperation.Mensualite());
         lo.getMensualite().setPeriode(OperationPeriodiciteEnum.MENSUELLE);
