@@ -9,7 +9,7 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.Budg
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
@@ -378,11 +378,11 @@ public class BudgetService implements IBudgetAppProvider {
 			budgetInitVide.setDateMiseAJour(LocalDateTime.now());
 			if(budgetPrecedent.getListeOperations() != null){
 
-				// Recopie de toutes les opérations et reportées
+				// Recopie de toutes les opérations reportées
 				budgetInitVide.getListeOperations().addAll(
 						budgetPrecedent.getListeOperations()
 								.stream()
-								.filter(op -> EtatOperationEnum.REPORTEE.equals(op.getEtat()))
+								.filter(op -> OperationEtatEnum.REPORTEE.equals(op.getEtat()))
 								.map(BudgetDataUtils::cloneOperationToMoisSuivant)
 								.toList());
 
@@ -488,8 +488,8 @@ public class BudgetService implements IBudgetAppProvider {
 						if(!budgetActif){
 							budgetMensuel.getListeOperations()
 									.stream()
-									.filter(op -> EtatOperationEnum.PREVUE.equals(op.getEtat()))
-									.forEach(op -> op.setEtat(EtatOperationEnum.REPORTEE));
+									.filter(op -> OperationEtatEnum.PREVUE.equals(op.getEtat()))
+									.forEach(op -> op.setEtat(OperationEtatEnum.REPORTEE));
 						}
 						return budgetMensuel;
 					})

@@ -3,8 +3,9 @@ package io.github.vzwingma.finances.budget.services.operations.business;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationPeriodiciteEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
 import io.github.vzwingma.finances.budget.services.operations.spi.IParametragesServiceProvider;
@@ -76,11 +77,11 @@ class OperationsServiceTest {
         listeOperations.add(MockDataOperations.getOperationPrelevement());
         // Opération à ajouter
         LigneOperation operation = MockDataOperations.getOperationPrelevement();
-        operation.setEtat(EtatOperationEnum.REALISEE);
+        operation.setEtat(OperationEtatEnum.REALISEE);
         // Test
         List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
         assertEquals(1, operationsAJour.size());
-        assertEquals(EtatOperationEnum.REALISEE, operationsAJour.get(0).getEtat());
+        assertEquals(OperationEtatEnum.REALISEE, operationsAJour.get(0).getEtat());
         assertNotNull(operationsAJour.get(0).getAutresInfos().getDateOperation());
     }
 
@@ -94,23 +95,23 @@ class OperationsServiceTest {
         listeOperations.add(MockDataOperations.getOperationMensuelleRealisee());
         // Opération à ajouter
         LigneOperation operation = MockDataOperations.getOperationMensuelleRealisee();
-        operation.setEtat(EtatOperationEnum.REALISEE);
+        operation.setEtat(OperationEtatEnum.REALISEE);
         // Test
         List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
         assertEquals(1, operationsAJour.size());
-        assertEquals(EtatOperationEnum.REALISEE, operationsAJour.get(0).getEtat());
-        assertEquals(1, operationsAJour.get(0).getMensualite().getPeriode());
+        assertEquals(OperationEtatEnum.REALISEE, operationsAJour.get(0).getEtat());
+        assertEquals(OperationPeriodiciteEnum.MENSUELLE, operationsAJour.get(0).getMensualite().getPeriode());
         assertEquals(1, operationsAJour.get(0).getMensualite().getProchaineEcheance());
 
 
         // Changement de période
-        operation.getMensualite().setPeriode(0);
+        operation.getMensualite().setPeriode(OperationPeriodiciteEnum.PONCTUELLE);
         operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
-        assertEquals(0, operationsAJour.get(0).getMensualite().getPeriode());
+        assertEquals(OperationPeriodiciteEnum.PONCTUELLE, operationsAJour.get(0).getMensualite().getPeriode());
         assertEquals(-1, operationsAJour.get(0).getMensualite().getProchaineEcheance());
-        operation.getMensualite().setPeriode(3);
+        operation.getMensualite().setPeriode(OperationPeriodiciteEnum.TRIMESTRIELLE);
         operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
-        assertEquals(3, operationsAJour.get(0).getMensualite().getPeriode());
+        assertEquals(OperationPeriodiciteEnum.TRIMESTRIELLE, operationsAJour.get(0).getMensualite().getPeriode());
         assertEquals(3, operationsAJour.get(0).getMensualite().getProchaineEcheance());
     }
 
@@ -124,7 +125,7 @@ class OperationsServiceTest {
         // Opération à ajouter
         LigneOperation operation = MockDataOperations.getOperationPrelevement();
         operation.setId("Test2");
-        operation.setEtat(EtatOperationEnum.REALISEE);
+        operation.setEtat(OperationEtatEnum.REALISEE);
         // Test
         List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
         assertEquals(2, operationsAJour.size());
@@ -139,11 +140,11 @@ class OperationsServiceTest {
         listeOperations.add(MockDataOperations.getOperationPrelevement());
         // Opération à ajouter
         LigneOperation operation = MockDataOperations.getOperationIntercompte();
-        operation.setEtat(EtatOperationEnum.REALISEE);
+        operation.setEtat(OperationEtatEnum.REALISEE);
         // Test
         List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle());
         assertEquals(2, operationsAJour.size());
-        assertEquals(EtatOperationEnum.PREVUE, operationsAJour.get(1).getEtat());
+        assertEquals(OperationEtatEnum.PREVUE, operationsAJour.get(1).getEtat());
     }
 
 
@@ -155,11 +156,11 @@ class OperationsServiceTest {
         listeOperations.add(MockDataOperations.getOperationPrelevement());
         // Opération à ajouter
         LigneOperation operation = MockDataOperations.getOperationIntercompte();
-        operation.setEtat(EtatOperationEnum.REPORTEE);
+        operation.setEtat(OperationEtatEnum.REPORTEE);
         // Test
         List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle());
         assertEquals(2, operationsAJour.size());
-        assertEquals(EtatOperationEnum.REPORTEE, operationsAJour.get(1).getEtat());
+        assertEquals(OperationEtatEnum.REPORTEE, operationsAJour.get(1).getEtat());
     }
 
     @Test

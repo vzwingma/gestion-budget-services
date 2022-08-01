@@ -2,7 +2,7 @@ package io.github.vzwingma.finances.budget.services.operations.business.model.bu
 
 import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.TypeOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationTypeEnum;
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import org.junit.jupiter.api.Test;
 
@@ -21,12 +21,12 @@ class TestBudgetMensuel {
 		o.setSsCategorie(new LigneOperation.Categorie());
 		o.getSsCategorie().setId(IdsCategoriesEnum.SALAIRE.getId());
 		o.setValeur(123D);
-		o.setTypeOperation(TypeOperationEnum.CREDIT);
+		o.setTypeOperation(OperationTypeEnum.CREDIT);
 		b.getListeOperations().add(o);
 
 		LigneOperation o2 = new LigneOperation();
 		o2.setValeur(123D);
-		o2.setTypeOperation(TypeOperationEnum.CREDIT);
+		o2.setTypeOperation(OperationTypeEnum.CREDIT);
 		b.getListeOperations().add(o2);
 
 		assertEquals(100D, b.getSoldes().getSoldeAtFinMoisCourant());
