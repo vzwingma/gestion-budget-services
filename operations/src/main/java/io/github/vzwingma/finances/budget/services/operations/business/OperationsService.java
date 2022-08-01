@@ -190,11 +190,13 @@ public class OperationsService implements IOperationsAppProvider {
 	public List<LigneOperation> addOperation(List<LigneOperation> operations, LigneOperation ligneOperation)  {
 		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.OPERATION, ligneOperation.getId());
 		// Si mise à jour d'une opération, on l'enlève
+		LigneOperation ligneOperationToUpdate = operations.stream().filter(op -> op.getId().equals(ligneOperation.getId())).findFirst().orElse(null);
 		int rangMaj = operations.indexOf(ligneOperation);
 		operations.removeIf(op -> op.getId().equals(ligneOperation.getId()));
 
 		if (ligneOperation.getEtat() != null) {
 			LigneOperation ligneUpdatedOperation = completeOperationAttributes(ligneOperation);
+			ligneUpdatedOperation = completePeriodiciteOperation(ligneUpdatedOperation, ligneOperationToUpdate);
 			if (rangMaj >= 0) {
 				LOGGER.info("Mise à jour de l'opération : {}", ligneUpdatedOperation);
 				operations.add(rangMaj, ligneUpdatedOperation);
@@ -211,7 +213,7 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	/**
-	 * @param ligneOperation opération
+	 * @param ligneOperation opération à compléter (ou à mettre à jour)
 	 * @return ligneOperation màj
 	 */
 	private LigneOperation completeOperationAttributes(LigneOperation ligneOperation) {
@@ -233,15 +235,43 @@ public class OperationsService implements IOperationsAppProvider {
 			ligneOperation.getAutresInfos().setDateOperation(null);
 		}
 
+		return ligneOperation;
+	}
+
+
+
+
+	/**
+	 * @param ligneOperation opération à compléter (ou à mettre à jour)
+	 * @param oldOperationToUpdate ancienne version de l'opération si elle existe
+	 * @return ligneOperation màj
+	 */
+	private LigneOperation completePeriodiciteOperation(LigneOperation ligneOperation, LigneOperation oldOperationToUpdate) {
+
 		// Périodicité
 		if(ligneOperation.getMensualite() != null){
-			if(ligneOperation.getMensualite().getProchaineEcheance() == -1  && ligneOperation.getMensualite().getPeriode() > 0){
-				ligneOperation.getMensualite().setProchaineEcheance(ligneOperation.getMensualite().getPeriode());
+			LigneOperation.Mensualite mensualite = ligneOperation.getMensualite();
+
+			// Changement de périodicité, on reporte la prochaine échéance
+			if(oldOperationToUpdate != null
+					&& oldOperationToUpdate.getMensualite() != null
+					&& oldOperationToUpdate.getMensualite().getPeriode() != mensualite.getPeriode()){
+				LOGGER.debug("L'opération change de périodicité : {} -> {}", oldOperationToUpdate.getMensualite().getPeriode(), mensualite.getPeriode());
+				mensualite.setProchaineEcheance(-1);
+			}
+			// Init de la prochaine échéance
+			if(mensualite.getProchaineEcheance() == -1  && mensualite.getPeriode() > 0){
+				mensualite.setProchaineEcheance(mensualite.getPeriode());
+			}
+			// Raz de la prochaine échéance
+			else if(mensualite.getPeriode() == 0){
+				mensualite.setProchaineEcheance(-1);
 			}
 		}
 
 		return ligneOperation;
 	}
+
 
 	/**
 	 * Si frais remboursable : ajout du remboursement en prévision

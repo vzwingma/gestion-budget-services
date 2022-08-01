@@ -87,6 +87,35 @@ class OperationsServiceTest {
 
 
     @Test
+    void testUpdateOperationPeriodique(){
+
+        // When
+        List<LigneOperation> listeOperations = new ArrayList<>();
+        listeOperations.add(MockDataOperations.getOperationMensuelleRealisee());
+        // Opération à ajouter
+        LigneOperation operation = MockDataOperations.getOperationMensuelleRealisee();
+        operation.setEtat(EtatOperationEnum.REALISEE);
+        // Test
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
+        assertEquals(1, operationsAJour.size());
+        assertEquals(EtatOperationEnum.REALISEE, operationsAJour.get(0).getEtat());
+        assertEquals(1, operationsAJour.get(0).getMensualite().getPeriode());
+        assertEquals(1, operationsAJour.get(0).getMensualite().getProchaineEcheance());
+
+
+        // Changement de période
+        operation.getMensualite().setPeriode(0);
+        operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
+        assertEquals(0, operationsAJour.get(0).getMensualite().getPeriode());
+        assertEquals(-1, operationsAJour.get(0).getMensualite().getProchaineEcheance());
+        operation.getMensualite().setPeriode(3);
+        operationsAJour = operationsAppProvider.addOperation(listeOperations, operation);
+        assertEquals(3, operationsAJour.get(0).getMensualite().getPeriode());
+        assertEquals(3, operationsAJour.get(0).getMensualite().getProchaineEcheance());
+    }
+
+
+    @Test
     void testAddOperation(){
 
         // When
