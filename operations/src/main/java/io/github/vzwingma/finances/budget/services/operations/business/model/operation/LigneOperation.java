@@ -128,7 +128,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 
 		@Override
 		public String toString() {
-			return "Mensualite = { période=" + periode +" mois , prochaine échéance dans = " + prochaineEcheance + " mois }";
+			return "Mensualite = { période=" + periode +" , prochaine échéance dans = " + prochaineEcheance + " mois }";
 		}
 	}
 

@@ -11,6 +11,7 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.Data
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationPeriodiciteEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
@@ -378,11 +379,13 @@ public class BudgetService implements IBudgetAppProvider {
 			budgetInitVide.setDateMiseAJour(LocalDateTime.now());
 			if(budgetPrecedent.getListeOperations() != null){
 
-				// Recopie de toutes les opérations reportées
+				// Recopie de toutes les opérations reportées, non périodique
 				budgetInitVide.getListeOperations().addAll(
 						budgetPrecedent.getListeOperations()
 								.stream()
-								.filter(op -> OperationEtatEnum.REPORTEE.equals(op.getEtat()))
+								.filter(op -> OperationEtatEnum.REPORTEE.equals(op.getEtat())
+										&& (op.getMensualite() == null || OperationPeriodiciteEnum.PONCTUELLE.equals(op.getMensualite().getPeriode())))
+								.peek(op -> LOGGER.info("Opération reportée copiée : {}", op))
 								.map(BudgetDataUtils::cloneOperationToMoisSuivant)
 								.toList());
 
@@ -390,9 +393,10 @@ public class BudgetService implements IBudgetAppProvider {
 				budgetInitVide.getListeOperations().addAll(
 						budgetPrecedent.getListeOperations()
 								.stream()
-								.filter(op -> op.getMensualite() != null)
+								.filter(op -> op.getMensualite() != null && !OperationPeriodiciteEnum.PONCTUELLE.equals(op.getMensualite().getPeriode()))
+								.peek(op -> LOGGER.info("Opération périodique reportée copiée : {}", op))
 								// Les opérations périodiques peuvent créer de nouvelles opérations (période suivante)
-								.map(op -> BudgetDataUtils.cloneOperationPeriodiqueToMoisSuivant(op, BudgetDateTimeUtils.localDateFirstDayOfMonth(budgetPrecedent.getMois(), budgetPrecedent.getAnnee())))
+								.map(BudgetDataUtils::cloneOperationPeriodiqueToMoisSuivant)
 								.flatMap(List::stream)
 								.toList());
 			}
