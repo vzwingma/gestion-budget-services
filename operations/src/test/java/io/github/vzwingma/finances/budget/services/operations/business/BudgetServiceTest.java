@@ -5,7 +5,7 @@ import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDate
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.CompteClosedException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
@@ -277,7 +277,7 @@ class BudgetServiceTest {
         BudgetMensuel budgetDesactive = budgetAppProvider.setBudgetActif(budgetADesactiver.getId(), false).await().indefinitely();
 
         assertFalse(budgetDesactive.isActif());
-        assertEquals(EtatOperationEnum.REPORTEE, budgetDesactive.getListeOperations().get(0).getEtat());
+        assertEquals(OperationEtatEnum.REPORTEE, budgetDesactive.getListeOperations().get(0).getEtat());
 
         Mockito.verify(mockOperationDataProvider, Mockito.times(1)).sauvegardeBudgetMensuel(budgetDesactive);
     }

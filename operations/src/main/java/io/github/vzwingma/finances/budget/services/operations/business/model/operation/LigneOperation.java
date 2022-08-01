@@ -49,15 +49,15 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	
 	// Type de dépense
 	@Schema(description = "Type de dépense")
-	private TypeOperationEnum typeOperation;
+	private OperationTypeEnum typeOperation;
 	// Etat de la ligne
 	@Schema(description = "Etat de l'opération")
-	private EtatOperationEnum etat;
+	private OperationEtatEnum etat;
 	// Valeur
 	@Schema(description = "Valeur")
 	private Double valeur;
 
-	// Périodique
+	// Périodicité
 	@Schema(description = "Opération périodique ?")
 	private LigneOperation.Mensualite mensualite;
 
@@ -121,7 +121,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 		private static final long serialVersionUID = -3703948740885489277L;
 
 		@Schema(description = "Mensualité pour les opérations périodiques. de 1 (mensuelle) à 12 (annuelle)")
-		private int periode = 0;
+		private OperationPeriodiciteEnum periode = OperationPeriodiciteEnum.PONCTUELLE;
 
 		@Schema(description = "nb mois avant la prochaine échéance")
 		private int prochaineEcheance = -1;
@@ -143,7 +143,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 * @param absValeur valeur montant en valeur absolue
 	 * @param etat état
 	 */
-	public LigneOperation(CategorieOperations ssCategorie, String libelle, TypeOperationEnum typeDepense, Double absValeur, EtatOperationEnum etat){
+	public LigneOperation(CategorieOperations ssCategorie, String libelle, OperationTypeEnum typeDepense, Double absValeur, OperationEtatEnum etat){
 		Categorie c = null;
 		Categorie ssc = null;
 		if(ssCategorie != null && ssCategorie.getCategorieParente() != null) {
@@ -172,7 +172,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 * @param absValeur valeur montant en valeur absolue
 	 * @param etat état
 	 */
-	public LigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, TypeOperationEnum typeDepense, Double absValeur, EtatOperationEnum etat){
+	public LigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, OperationTypeEnum typeDepense, Double absValeur, OperationEtatEnum etat){
 		buildLigneOperation(categorie, ssCategorie, libelle, typeDepense, absValeur, etat);
 	}
 	
@@ -185,7 +185,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 * @param absValeur valeur montant en valeur absolue
 	 * @param etat état
 	 */
-	private void buildLigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, TypeOperationEnum typeDepense, Double absValeur, EtatOperationEnum etat){
+	private void buildLigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, OperationTypeEnum typeDepense, Double absValeur, OperationEtatEnum etat){
 		this.id = UUID.randomUUID().toString();
 		this.libelle = libelle;
 		this.typeOperation = typeDepense;
@@ -213,7 +213,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	// Pour ne pas avoir de pb avec Panache, les méthodes "techniques" n'utilisent pas les mots clés "get" et "set"
 	public void putValeurFromSaisie(Double valeurD){
 		if(valeurD != null){
-			this.valeur = Math.abs(valeurD) * (TypeOperationEnum.DEPENSE.equals(this.getTypeOperation()) ? -1 : 1);
+			this.valeur = Math.abs(valeurD) * (OperationTypeEnum.DEPENSE.equals(this.getTypeOperation()) ? -1 : 1);
 		}
 	}
 	

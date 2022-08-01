@@ -8,9 +8,9 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.Data
 import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.TotauxCategorie;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.TypeOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationTypeEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
@@ -83,11 +83,11 @@ public class OperationsService implements IOperationsAppProvider {
 			// Calcul par sous catégorie
 			calculBudgetTotalSsCategories(totauxSsCategoriesMap, operation);
 			// Calcul des totaux
-			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+			if(operation.getEtat().equals(OperationEtatEnum.REALISEE)){
 				BudgetDataUtils.ajouteASoldeNow(soldes, valeurOperation);
 				BudgetDataUtils.ajouteASoldeFin(soldes, valeurOperation);
 			}
-			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+			else if(operation.getEtat().equals(OperationEtatEnum.PREVUE)){
 				BudgetDataUtils.ajouteASoldeFin(soldes, valeurOperation);
 			}
 		}
@@ -110,11 +110,11 @@ public class OperationsService implements IOperationsAppProvider {
 				valeursCat = totauxCategorieMap.get(operation.getCategorie().getId());
 			}
 			valeursCat.setLibelleCategorie(operation.getCategorie().getLibelle());
-			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+			if(operation.getEtat().equals(OperationEtatEnum.REALISEE)){
 				valeursCat.ajouterATotalAtMaintenant(valeurOperation);
 				valeursCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
-			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+			else if(operation.getEtat().equals(OperationEtatEnum.PREVUE)){
 				valeursCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
 			LOGGER.trace("Total par catégorie [idCat={} : {}]", operation.getCategorie().getId(), valeursCat);
@@ -139,11 +139,11 @@ public class OperationsService implements IOperationsAppProvider {
 				valeursSsCat = totauxSsCategoriesMap.get(operation.getSsCategorie().getId());
 			}
 			valeursSsCat.setLibelleCategorie(operation.getSsCategorie().getLibelle());
-			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+			if(operation.getEtat().equals(OperationEtatEnum.REALISEE)){
 				valeursSsCat.ajouterATotalAtMaintenant(valeurOperation);
 				valeursSsCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
-			if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+			if(operation.getEtat().equals(OperationEtatEnum.PREVUE)){
 				valeursSsCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
 			LOGGER.trace("Total par ss catégorie [idSsCat={} : {}]", operation.getSsCategorie().getId(), valeursSsCat);
@@ -226,7 +226,7 @@ public class OperationsService implements IOperationsAppProvider {
 		ligneOperation.getAutresInfos().setAuteur("vzwingmann");
 
 		// Date opération suivant Etat
-		if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
+		if(OperationEtatEnum.REALISEE.equals(ligneOperation.getEtat())) {
 			if(ligneOperation.getAutresInfos().getDateOperation() == null){
 				ligneOperation.getAutresInfos().setDateOperation(LocalDateTime.now());
 			}
@@ -261,11 +261,11 @@ public class OperationsService implements IOperationsAppProvider {
 				mensualite.setProchaineEcheance(-1);
 			}
 			// Init de la prochaine échéance
-			if(mensualite.getProchaineEcheance() == -1  && mensualite.getPeriode() > 0){
-				mensualite.setProchaineEcheance(mensualite.getPeriode());
+			if(mensualite.getProchaineEcheance() == -1  && mensualite.getPeriode().getNbMois() > 0){
+				mensualite.setProchaineEcheance(mensualite.getPeriode().getNbMois());
 			}
 			// Raz de la prochaine échéance
-			else if(mensualite.getPeriode() == 0){
+			else if(mensualite.getPeriode().getNbMois() == 0){
 				mensualite.setProchaineEcheance(-1);
 			}
 		}
@@ -313,9 +313,9 @@ public class OperationsService implements IOperationsAppProvider {
 			return completeOperationAttributes(new LigneOperation(
 					categorieRemboursement,
 					"[Remboursement] " + ligneOperation.getLibelle(),
-					TypeOperationEnum.CREDIT,
+					OperationTypeEnum.CREDIT,
 					Math.abs(ligneOperation.getValeur()),
-					EtatOperationEnum.REPORTEE));
+					OperationEtatEnum.REPORTEE));
 		}
 		else{
 			return null;
@@ -328,19 +328,19 @@ public class OperationsService implements IOperationsAppProvider {
 	public List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible){
 
 		// #59 : Cohérence des états
-		EtatOperationEnum etatDepenseTransfert;
+		OperationEtatEnum etatDepenseTransfert;
 		switch (ligneOperationSource.getEtat()) {
-			case ANNULEE -> etatDepenseTransfert = EtatOperationEnum.ANNULEE;
-			case REPORTEE -> etatDepenseTransfert = EtatOperationEnum.REPORTEE;
+			case ANNULEE -> etatDepenseTransfert = OperationEtatEnum.ANNULEE;
+			case REPORTEE -> etatDepenseTransfert = OperationEtatEnum.REPORTEE;
 			// pour tous les autres cas, on prend l'état de l'opération source
-			default -> etatDepenseTransfert = EtatOperationEnum.PREVUE;
+			default -> etatDepenseTransfert = OperationEtatEnum.PREVUE;
 		}
 
 		LigneOperation ligneTransfert = completeOperationAttributes(new LigneOperation(
 				ligneOperationSource.getCategorie(),
 				ligneOperationSource.getSsCategorie(),
 				libelleOperationCible,
-				TypeOperationEnum.CREDIT,
+				OperationTypeEnum.CREDIT,
 				Math.abs(ligneOperationSource.getValeur()),
 				etatDepenseTransfert));
 		LOGGER.debug("Ajout de l'opération [{}] dans le budget", ligneTransfert);

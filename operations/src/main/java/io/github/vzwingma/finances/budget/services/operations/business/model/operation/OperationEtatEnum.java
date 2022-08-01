@@ -1,3 +1,6 @@
+/*
+
+ */
 package io.github.vzwingma.finances.budget.services.operations.business.model.operation;
 
 /**
@@ -5,31 +8,31 @@ package io.github.vzwingma.finances.budget.services.operations.business.model.op
  * @author vzwingma
  *
  */
-public enum TypeOperationEnum {
+public enum OperationEtatEnum {
 
-	// Crédit
-	CREDIT("CREDIT", "+"),
-	// Dépense
-	DEPENSE("DEPENSE", "-");
+	// Ligne prévue
+	PREVUE("prevue", "Prévue"),
+	// Ligne passée
+	REALISEE("realisee", "Réalisée"), 
+	// Ligne reportée
+	REPORTEE("reportee" , "Reportée"), 
+	// Ligne annulée
+	ANNULEE("annulee", "Annulée");
 	
 	
-
 	private final String id;
 	private final String libelle;
 	
 	/**
 	 * Constructeur
-	 * @param id : id de l'énum
+	 * @param id : id de l'enum
 	 * @param libelle : libellé de l'enum
 	 */
-    TypeOperationEnum(String id, String libelle){
+	OperationEtatEnum(String id, String libelle){
 		this.id = id;
 		this.libelle = libelle;
 	}
 
-	
-	
-	
 	/**
 	 * @return the id
 	 */
@@ -37,14 +40,21 @@ public enum TypeOperationEnum {
 		return id;
 	}
 
-
-
-
 	/**
 	 * @return the libelle
 	 */
 	public String getLibelle() {
 		return libelle;
+	}
+	
+	
+	public static OperationEtatEnum getEnum(String idEnum){
+		for (OperationEtatEnum enums : values()) {
+			if(enums.getId().equals(idEnum)){
+				return enums;
+			}
+		}
+		return null;
 	}
 	
 	/* (non-Javadoc)
