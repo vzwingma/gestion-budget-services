@@ -343,21 +343,6 @@ public class BudgetService implements IBudgetAppProvider {
 
 		budgetInitVide.setDateMiseAJour(LocalDateTime.now());
 
-		/*
-		// TODO : Normalement, on ne devrait pas avoir de budget sans précédent
-		// Init si dans le futur par rapport au démarrage
-		LocalDate datePremierBudget;
-		try{
-			datePremierBudget = getIntervallesBudgets(compteBancaire.getId())[0].with(ChronoField.DAY_OF_MONTH, 1);
-		}
-		catch(DataNotFoundException e){
-			datePremierBudget = null;
-		}
-
-		LocalDate dateCourante = BudgetDateTimeUtils.localDateFirstDayOfMonth(mois, annee);
-
-		if(datePremierBudget != null && dateCourante.isAfter(datePremierBudget)){
-		*/
 		// MAJ Calculs à partir du mois précédent
 		// Recherche du budget précédent
 		// Si impossible : on retourne le budget initialisé
