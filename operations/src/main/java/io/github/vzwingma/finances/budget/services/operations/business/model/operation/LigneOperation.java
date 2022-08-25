@@ -3,7 +3,9 @@ package io.github.vzwingma.finances.budget.services.operations.business.model.op
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.github.vzwingma.finances.budget.services.communs.data.abstrait.AbstractAPIObjectModel;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
@@ -15,6 +17,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -98,10 +101,10 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 		@Schema(description = "Date de création")
 		private LocalDateTime dateCreate;		
 		// Date validation de l'operation
-		@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-		@JsonSerialize(using = LocalDateTimeSerializer.class)
+		@JsonDeserialize(using = LocalDateDeserializer.class)
+		@JsonSerialize(using = LocalDateSerializer.class)
 		@Schema(description = "Date de validation")
-		private LocalDateTime dateOperation;
+		private LocalDate dateOperation;
 		// Date mise à jour
 		@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 		@JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -199,7 +202,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 
 		AddInfos addInfos = new AddInfos();
 		addInfos.setDateMaj(LocalDateTime.now());
-		addInfos.setDateOperation(LocalDateTime.now());
+		addInfos.setDateOperation(LocalDate.now());
 		addInfos.setDateCreate(LocalDateTime.now());
         // Autres infos
 		this.autresInfos = addInfos;
@@ -238,7 +241,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	@JsonIgnore
 	@BsonIgnore
 	// Pour ne pas avoir de pb avec Panache, les méthodes "techniques" n'utilisent pas les mots clés "get" et "set"
-	public LocalDateTime retrieveDateOperation() {
+	public LocalDate retrieveDateOperation() {
 		return getAutresInfos() != null ? getAutresInfos().getDateOperation() : null;
 	}
 	
