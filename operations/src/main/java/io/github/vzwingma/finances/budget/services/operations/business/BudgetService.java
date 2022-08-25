@@ -332,8 +332,7 @@ public class BudgetService implements IBudgetAppProvider {
 		} else if (Boolean.FALSE.equals(compteBancaire.isActif())) {
 			return Uni.createFrom().failure(new CompteClosedException("Compte bancaire inactif"));
 		}
-		LOGGER.warn("Budget introuvable ou non initialisé");
-		LOGGER.info("Initialisation du budget de {}/{}", mois, annee);
+		LOGGER.info("(Ré)initialisation du budget de {}/{}", mois, annee);
 		BudgetMensuel budgetInitVide = new BudgetMensuel();
 		budgetInitVide.setActif(true);
 		budgetInitVide.setAnnee(annee);
@@ -353,13 +352,13 @@ public class BudgetService implements IBudgetAppProvider {
 		LOGGER.debug("Chargement du budget précédent pour initialisation");
 		return getBudgetMensuel(idBudgetPrecedent)
 				.onItem()
-				.call(budgetPrecedent -> {
-					LOGGER.debug("Budget précédent trouvé : {}", budgetPrecedent);
-					// #115 : Cloture automatique du mois précédent
-					return setBudgetActif(budgetPrecedent.getId(), false);
+				.transformToUni(budgetPrecedent -> {
+					LOGGER.debug("Budget précédent trouvé : {}. Actif ? : {}", budgetPrecedent, budgetPrecedent.isActif());
+						// #115 : Cloture automatique du mois précédent
+						return budgetPrecedent.isActif() ? setBudgetActif(budgetPrecedent.getId(), false) : Uni.createFrom().item(budgetPrecedent);
 				})
 				.map(budgetPrecedent -> initBudgetFromBudgetPrecedent(budgetInitVide, budgetPrecedent));
-				// La sauvegarde du budget initialisé est faite dans le flux suivant
+				// La sauvegarde du budget initialisé est réalisée dans le flux suivant
 	}
 
 	/**
@@ -385,7 +384,7 @@ public class BudgetService implements IBudgetAppProvider {
 								.stream()
 								.filter(op -> OperationEtatEnum.REPORTEE.equals(op.getEtat())
 										&& (op.getMensualite() == null || OperationPeriodiciteEnum.PONCTUELLE.equals(op.getMensualite().getPeriode())))
-								.peek(op -> LOGGER.info("Opération reportée copiée : {}", op))
+								.peek(op -> LOGGER.info("Opération reportée à copier : {}", op))
 								.map(BudgetDataUtils::cloneOperationToMoisSuivant)
 								.toList());
 
@@ -394,7 +393,7 @@ public class BudgetService implements IBudgetAppProvider {
 						budgetPrecedent.getListeOperations()
 								.stream()
 								.filter(op -> op.getMensualite() != null && !OperationPeriodiciteEnum.PONCTUELLE.equals(op.getMensualite().getPeriode()))
-								.peek(op -> LOGGER.info("Opération périodique reportée copiée : {}", op))
+								.peek(op -> LOGGER.info("Opération périodique reportée à copier : {}", op))
 								// Les opérations périodiques peuvent créer de nouvelles opérations (période suivante)
 								.map(BudgetDataUtils::cloneOperationPeriodiqueToMoisSuivant)
 								.flatMap(List::stream)
@@ -490,9 +489,11 @@ public class BudgetService implements IBudgetAppProvider {
 						budgetMensuel.setDateMiseAJour(LocalDateTime.now());
 						//  #119 #141 : Toutes les opérations en attente sont reportées
 						if(!budgetActif){
+							LOGGER.info("Toutes les opérations prévues sont reportées :");
 							budgetMensuel.getListeOperations()
 									.stream()
 									.filter(op -> OperationEtatEnum.PREVUE.equals(op.getEtat()))
+									.peek(op -> LOGGER.info("[idOperation:{}] {} -> REPORTEE", op.getId(), op.getLibelle()))
 									.forEach(op -> op.setEtat(OperationEtatEnum.REPORTEE));
 						}
 						return budgetMensuel;
