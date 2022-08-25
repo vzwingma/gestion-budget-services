@@ -4,6 +4,10 @@ import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieO
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationPeriodiciteEnum;
+import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataCategories;
+import io.github.vzwingma.finances.budget.services.operations.test.data.MockDataOperations;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -105,10 +109,10 @@ class BudgetDataUtilsTest {
 		categoriesFromDB.add(catAlimentation);
 
 
-		CategorieOperations cat = BudgetDataUtils.getCategorieById("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", categoriesFromDB);
+		CategorieOperations cat = MockDataCategories.getCategorieById("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", categoriesFromDB);
 		assertNotNull(cat);
 
-		CategorieOperations ssCat = BudgetDataUtils.getCategorieById("467496e4-9059-4b9b-8773-21f230c8c5c6", categoriesFromDB);
+		CategorieOperations ssCat = MockDataCategories.getCategorieById("467496e4-9059-4b9b-8773-21f230c8c5c6", categoriesFromDB);
 		assertNotNull(ssCat);
 		assertNotNull(ssCat.getCategorieParente());
 		assertEquals("8f1614c9-503c-4e7d-8cb5-0c9a9218b84a", ssCat.getCategorieParente().getId());
@@ -153,12 +157,88 @@ class BudgetDataUtilsTest {
 			categoriesFromDB.add(cat);
 		}
 
-		CategorieOperations cat = BudgetDataUtils.getCategorieById("ID8", categoriesFromDB);
+		CategorieOperations cat = MockDataCategories.getCategorieById("ID8", categoriesFromDB);
 		assertNotNull(cat);
 
-		CategorieOperations ssCat = BudgetDataUtils.getCategorieById("ID88", categoriesFromDB);
+		CategorieOperations ssCat = MockDataCategories.getCategorieById("ID88", categoriesFromDB);
 		assertNotNull(ssCat);
 		assertNotNull(ssCat.getCategorieParente());
 		assertEquals("ID8", ssCat.getCategorieParente().getId());
 	}
+
+
+
+	@Test
+	void testCloneLigneOperation(){
+		LigneOperation clone = BudgetDataUtils.cloneOperationToMoisSuivant(MockDataOperations.getOperationPrelevement());
+		assertNotNull(clone);
+		assertNotEquals(MockDataOperations.getOperationPrelevement().getId(), clone.getId());
+		assertNotNull(clone.getAutresInfos());
+		assertNull(clone.getMensualite());
+	}
+
+
+	@Test
+	void testClonePeriodiqueLigneOperationNonPeriodique(){
+		List<LigneOperation> clones = BudgetDataUtils.cloneOperationPeriodiqueToMoisSuivant(MockDataOperations.getOperationPrelevement());
+		assertNotNull(clones);
+		assertEquals(1, clones.size());
+
+		LigneOperation clone = clones.get(0);
+		assertNotNull(clone);
+		assertNotNull(clone.getAutresInfos());
+		assertNull(clone.getMensualite());
+	}
+
+
+
+
+	@Test
+	void testClonePeriodiqueLigneOperationPeriodiqueReportee(){
+
+		LigneOperation operationMensuelle = MockDataOperations.getOperationMensuelleRealisee();
+		operationMensuelle.getMensualite().setProchaineEcheance(1);
+		operationMensuelle.setEtat(OperationEtatEnum.REPORTEE);
+
+		List<LigneOperation> clones = BudgetDataUtils.cloneOperationPeriodiqueToMoisSuivant(operationMensuelle);
+		assertNotNull(clones);
+		assertEquals(2, clones.size());
+
+		LigneOperation opPrec = clones.get(0);
+		assertNotNull(opPrec);
+		assertEquals(OperationEtatEnum.PREVUE, opPrec.getEtat());
+		assertNotNull(opPrec.getAutresInfos());
+		assertEquals(OperationPeriodiciteEnum.PONCTUELLE, opPrec.getMensualite().getPeriode());
+		assertEquals(-1, opPrec.getMensualite().getProchaineEcheance());
+
+
+		LigneOperation clone = clones.get(1);
+		assertNotNull(clone);
+		assertEquals(OperationEtatEnum.PREVUE, clone.getEtat());
+		assertNotNull(clone.getAutresInfos());
+		assertNotNull(clone.getMensualite());
+	}
+
+
+
+	@Test
+	void testClonePeriodiqueLigneOperationPeriodiqueRealisee(){
+
+		LigneOperation operationMensuelle = MockDataOperations.getOperationMensuelleRealisee();
+		operationMensuelle.getMensualite().setProchaineEcheance(0);
+		operationMensuelle.setEtat(OperationEtatEnum.REALISEE);
+
+		List<LigneOperation> clones = BudgetDataUtils.cloneOperationPeriodiqueToMoisSuivant(operationMensuelle);
+		assertNotNull(clones);
+		assertEquals(1, clones.size());
+
+		LigneOperation clone = clones.get(0);
+		assertNotNull(clone);
+		assertEquals(OperationEtatEnum.PREVUE, clone.getEtat());
+		assertNotNull(clone.getAutresInfos());
+		assertNotNull(clone.getMensualite());
+	}
+
+
+
 }

@@ -8,9 +8,9 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.Data
 import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.TotauxCategorie;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.TypeOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationTypeEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsRepository;
@@ -55,32 +55,6 @@ public class OperationsService implements IOperationsAppProvider {
 	@Inject
 	IParametragesServiceProvider parametragesService;
 
-	/**
-	 * Réinjection des catégories dans les opérations du budget
-	 * @param operation opération
-	 * @param categories liste des catégories
-	 * @deprecated
-	 * @since 17.0.0
-	 */
-	// TODO : A supprimer ?
-	@Deprecated
-	private void completeCategoriesOnOperation(LigneOperation operation, List<CategorieOperations> categories) {
-		try {
-			CategorieOperations catFound = BudgetDataUtils.getCategorieById(operation.getSsCategorie().getId(), categories);
-			if(catFound != null) {
-				operation.getSsCategorie().setId(catFound.getId());
-				operation.getSsCategorie().setLibelle(catFound.getLibelle());
-				operation.getCategorie().setId(catFound.getCategorieParente().getId());
-				operation.getCategorie().setLibelle(catFound.getCategorieParente().getLibelle());
-				return;
-			}
-		}
-		catch (Exception e) {
-			LOGGER.warn("Impossible de retrouver la sous catégorie : {}", operation.getSsCategorie(), e);
-		}
-		LOGGER.warn("Impossible de retrouver la sous catégorie : {} parmi la liste ci dessous. Le fonctionnement peut être incorrect. \n {}", operation.getSsCategorie(), categories);
-
-	}
 
 	@Override
 	public Multi<String> getLibellesOperations(String idCompte, int annee) {
@@ -109,11 +83,11 @@ public class OperationsService implements IOperationsAppProvider {
 			// Calcul par sous catégorie
 			calculBudgetTotalSsCategories(totauxSsCategoriesMap, operation);
 			// Calcul des totaux
-			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+			if(operation.getEtat().equals(OperationEtatEnum.REALISEE)){
 				BudgetDataUtils.ajouteASoldeNow(soldes, valeurOperation);
 				BudgetDataUtils.ajouteASoldeFin(soldes, valeurOperation);
 			}
-			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+			else if(operation.getEtat().equals(OperationEtatEnum.PREVUE)){
 				BudgetDataUtils.ajouteASoldeFin(soldes, valeurOperation);
 			}
 		}
@@ -136,11 +110,11 @@ public class OperationsService implements IOperationsAppProvider {
 				valeursCat = totauxCategorieMap.get(operation.getCategorie().getId());
 			}
 			valeursCat.setLibelleCategorie(operation.getCategorie().getLibelle());
-			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+			if(operation.getEtat().equals(OperationEtatEnum.REALISEE)){
 				valeursCat.ajouterATotalAtMaintenant(valeurOperation);
 				valeursCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
-			else if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+			else if(operation.getEtat().equals(OperationEtatEnum.PREVUE)){
 				valeursCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
 			LOGGER.trace("Total par catégorie [idCat={} : {}]", operation.getCategorie().getId(), valeursCat);
@@ -165,11 +139,11 @@ public class OperationsService implements IOperationsAppProvider {
 				valeursSsCat = totauxSsCategoriesMap.get(operation.getSsCategorie().getId());
 			}
 			valeursSsCat.setLibelleCategorie(operation.getSsCategorie().getLibelle());
-			if(operation.getEtat().equals(EtatOperationEnum.REALISEE)){
+			if(operation.getEtat().equals(OperationEtatEnum.REALISEE)){
 				valeursSsCat.ajouterATotalAtMaintenant(valeurOperation);
 				valeursSsCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
-			if(operation.getEtat().equals(EtatOperationEnum.PREVUE)){
+			if(operation.getEtat().equals(OperationEtatEnum.PREVUE)){
 				valeursSsCat.ajouterATotalAtFinMoisCourant(valeurOperation);
 			}
 			LOGGER.trace("Total par ss catégorie [idSsCat={} : {}]", operation.getSsCategorie().getId(), valeursSsCat);
@@ -213,23 +187,25 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	@Override
-	public List<LigneOperation> addOperation(List<LigneOperation> operations, LigneOperation ligneOperation)  {
+	public List<LigneOperation> addOrReplaceOperation(List<LigneOperation> operations, LigneOperation ligneOperation)  {
 		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.OPERATION, ligneOperation.getId());
 		// Si mise à jour d'une opération, on l'enlève
+		LigneOperation ligneOperationToUpdate = operations.stream().filter(op -> op.getId().equals(ligneOperation.getId())).findFirst().orElse(null);
 		int rangMaj = operations.indexOf(ligneOperation);
 		operations.removeIf(op -> op.getId().equals(ligneOperation.getId()));
 
 		if (ligneOperation.getEtat() != null) {
-			LigneOperation ligneUpdatedOperation = updateOperation(ligneOperation);
+			LigneOperation ligneUpdatedOperation = completeOperationAttributes(ligneOperation);
+			ligneUpdatedOperation = completePeriodiciteOperation(ligneUpdatedOperation, ligneOperationToUpdate);
 			if (rangMaj >= 0) {
-				LOGGER.debug("Mise à jour de l'opération : {}", ligneUpdatedOperation);
+				LOGGER.info("Mise à jour de l'opération : {}", ligneUpdatedOperation);
 				operations.add(rangMaj, ligneUpdatedOperation);
 			} else {
-				LOGGER.debug("Ajout de l'opération : {}", ligneUpdatedOperation);
+				LOGGER.info("Ajout de l'opération : {}", ligneUpdatedOperation);
 				operations.add(ligneUpdatedOperation);
 			}
 		} else {
-			LOGGER.info("Suppression d'une Opération : {}", ligneOperation);
+			LOGGER.info("Suppression d'une opération : {}", ligneOperation);
 		}
 		return operations;
 	}
@@ -237,17 +213,20 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	/**
-	 * @param ligneOperation opération
+	 * @param ligneOperation opération à compléter (ou à mettre à jour)
 	 * @return ligneOperation màj
 	 */
-	private LigneOperation updateOperation(LigneOperation ligneOperation) {
+	private LigneOperation completeOperationAttributes(LigneOperation ligneOperation) {
+		// Autres infos
 		if(ligneOperation.getAutresInfos() == null){
 			ligneOperation.setAutresInfos(new LigneOperation.AddInfos());
 		}
 		ligneOperation.getAutresInfos().setDateMaj(LocalDateTime.now());
 		// TODO : nomProprietaire à ajouter
 		ligneOperation.getAutresInfos().setAuteur("vzwingmann");
-		if(EtatOperationEnum.REALISEE.equals(ligneOperation.getEtat())) {
+
+		// Date opération suivant Etat
+		if(OperationEtatEnum.REALISEE.equals(ligneOperation.getEtat())) {
 			if(ligneOperation.getAutresInfos().getDateOperation() == null){
 				ligneOperation.getAutresInfos().setDateOperation(LocalDateTime.now());
 			}
@@ -255,8 +234,45 @@ public class OperationsService implements IOperationsAppProvider {
 		else {
 			ligneOperation.getAutresInfos().setDateOperation(null);
 		}
+
 		return ligneOperation;
 	}
+
+
+
+
+	/**
+	 * Calcul de la périodidité d'une opération
+	 * @param ligneOperation opération à compléter (ou à mettre à jour)
+	 * @param oldOperationToUpdate ancienne version de l'opération si elle existe
+	 * @return ligneOperation màj
+	 */
+	private LigneOperation completePeriodiciteOperation(LigneOperation ligneOperation, LigneOperation oldOperationToUpdate) {
+
+		// Périodicité
+		if(ligneOperation.getMensualite() != null){
+			LigneOperation.Mensualite mensualite = ligneOperation.getMensualite();
+
+			// Changement de périodicité, on reporte la prochaine échéance
+			if(oldOperationToUpdate != null
+					&& oldOperationToUpdate.getMensualite() != null
+					&& oldOperationToUpdate.getMensualite().getPeriode() != mensualite.getPeriode()){
+				LOGGER.debug("L'opération change de périodicité : {} -> {}", oldOperationToUpdate.getMensualite().getPeriode(), mensualite.getPeriode());
+				mensualite.setProchaineEcheance(-1);
+			}
+			// Init de la prochaine échéance
+			if(mensualite.getProchaineEcheance() == -1  && mensualite.getPeriode().getNbMois() > 0){
+				mensualite.setProchaineEcheance(mensualite.getPeriode().getNbMois());
+			}
+			// Raz de la prochaine échéance
+			else if(mensualite.getPeriode().getNbMois() == 0){
+				mensualite.setProchaineEcheance(-1);
+			}
+		}
+
+		return ligneOperation;
+	}
+
 
 	/**
 	 * Si frais remboursable : ajout du remboursement en prévision
@@ -267,7 +283,7 @@ public class OperationsService implements IOperationsAppProvider {
 	@Override
 	public Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource){
 
-		// Si l'opération est une remboursement, on ajoute la catégorie de remboursement
+		// Si l'opération est une opération de remboursement, on ajoute la catégorie de remboursement
 		if (operationSource.getSsCategorie() != null
 				&& operationSource.getCategorie() != null
 				&& IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId().equals(operationSource.getCategorie().getId())) {
@@ -294,17 +310,12 @@ public class OperationsService implements IOperationsAppProvider {
 
 	private LigneOperation createOperationRemboursement(LigneOperation ligneOperation, CategorieOperations categorieRemboursement) {
 		if(categorieRemboursement != null) {
-			LigneOperation ligneRemboursement = new LigneOperation(
+			return completeOperationAttributes(new LigneOperation(
 					categorieRemboursement,
 					"[Remboursement] " + ligneOperation.getLibelle(),
-					TypeOperationEnum.CREDIT,
+					OperationTypeEnum.CREDIT,
 					Math.abs(ligneOperation.getValeur()),
-					EtatOperationEnum.REPORTEE,
-					ligneOperation.isPeriodique());
-			// TODO : nomProprietaire à ajouter
-			ligneRemboursement.getAutresInfos().setAuteur("vzwingmann");
-			ligneRemboursement.getAutresInfos().setDateMaj(LocalDateTime.now());
-			return ligneRemboursement;
+					OperationEtatEnum.REPORTEE));
 		}
 		else{
 			return null;
@@ -317,23 +328,23 @@ public class OperationsService implements IOperationsAppProvider {
 	public List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible){
 
 		// #59 : Cohérence des états
-		EtatOperationEnum etatDepenseTransfert;
+		OperationEtatEnum etatDepenseTransfert;
 		switch (ligneOperationSource.getEtat()) {
-			case ANNULEE -> etatDepenseTransfert = EtatOperationEnum.ANNULEE;
-			case REPORTEE -> etatDepenseTransfert = EtatOperationEnum.REPORTEE;
+			case ANNULEE -> etatDepenseTransfert = OperationEtatEnum.ANNULEE;
+			case REPORTEE -> etatDepenseTransfert = OperationEtatEnum.REPORTEE;
 			// pour tous les autres cas, on prend l'état de l'opération source
-			default -> etatDepenseTransfert = EtatOperationEnum.PREVUE;
+			default -> etatDepenseTransfert = OperationEtatEnum.PREVUE;
 		}
 
-		LigneOperation ligneTransfert = new LigneOperation(
+		LigneOperation ligneTransfert = completeOperationAttributes(new LigneOperation(
 				ligneOperationSource.getCategorie(),
 				ligneOperationSource.getSsCategorie(),
 				libelleOperationCible,
-				TypeOperationEnum.CREDIT,
+				OperationTypeEnum.CREDIT,
 				Math.abs(ligneOperationSource.getValeur()),
-				etatDepenseTransfert,
-				ligneOperationSource.isPeriodique());
+				etatDepenseTransfert));
 		LOGGER.debug("Ajout de l'opération [{}] dans le budget", ligneTransfert);
+
 		operations.add(ligneTransfert);
 		return operations;
 	}

@@ -3,9 +3,10 @@ package io.github.vzwingma.finances.budget.services.operations.test.data;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.operations.business.model.IdsCategoriesEnum;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.TypeOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationPeriodiciteEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationTypeEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class MockDataOperations {
 
         LigneOperation lo = new LigneOperation();
         lo.setId(compte.getId()+"B2_L"+numero);
-        lo.setEtat(EtatOperationEnum.REALISEE);
+        lo.setEtat(OperationEtatEnum.REALISEE);
         lo.setLibelle("Opération "+numero);
         return lo;
 
@@ -44,7 +45,7 @@ public class MockDataOperations {
         CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.getId());
         CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.TRANSFERT_INTERCOMPTE.getId());
         dep.setCategorieParente(cat);
-        LigneOperation test1 = new LigneOperation(dep, "TestIntercompte", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
+        LigneOperation test1 = new LigneOperation(dep, "TestIntercompte", OperationTypeEnum.CREDIT, 123D, OperationEtatEnum.PREVUE);
         test1.setId("TestIntercompte");
         return test1;
     }
@@ -52,7 +53,7 @@ public class MockDataOperations {
         CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
         CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.PRELEVEMENTS_MENSUELS.getId());
         dep.setCategorieParente(cat);
-        LigneOperation test1 = new LigneOperation(dep, "TEST1", TypeOperationEnum.CREDIT, 123D, EtatOperationEnum.PREVUE, false);
+        LigneOperation test1 = new LigneOperation(dep, "TEST1", OperationTypeEnum.CREDIT, 123D, OperationEtatEnum.PREVUE);
         test1.setId("TEST1");
         return test1;
     }
@@ -61,8 +62,23 @@ public class MockDataOperations {
         CategorieOperations dep = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
         CategorieOperations cat = new CategorieOperations(IdsCategoriesEnum.FRAIS_REMBOURSABLES.getId());
         dep.setCategorieParente(cat);
-        LigneOperation remboursement = new LigneOperation(dep, "TestRemboursement", TypeOperationEnum.DEPENSE, 123D, EtatOperationEnum.REALISEE, false);
+        LigneOperation remboursement = new LigneOperation(dep, "TestRemboursement", OperationTypeEnum.DEPENSE, 123D, OperationEtatEnum.REALISEE);
         remboursement.setId("TestRemboursement");
         return remboursement;
+    }
+
+
+
+    public static LigneOperation getOperationMensuelleRealisee(){
+        LigneOperation lo = new LigneOperation();
+        lo.setId("C1_B2_L4");
+        lo.setEtat(OperationEtatEnum.REALISEE);
+        lo.setValeur(200D);
+        lo.setLibelle("Opération 4");
+        lo.setMensualite(new LigneOperation.Mensualite());
+        lo.getMensualite().setPeriode(OperationPeriodiciteEnum.MENSUELLE);
+        lo.getMensualite().setProchaineEcheance(-1);
+        return lo;
+
     }
 }

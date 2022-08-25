@@ -5,7 +5,7 @@ package io.github.vzwingma.finances.budget.services.operations.business.model.op
  * @author vzwingma
  *
  */
-public enum TypeOperationEnum {
+public enum OperationTypeEnum {
 
 	// Crédit
 	CREDIT("CREDIT", "+"),
@@ -22,7 +22,7 @@ public enum TypeOperationEnum {
 	 * @param id : id de l'énum
 	 * @param libelle : libellé de l'enum
 	 */
-    TypeOperationEnum(String id, String libelle){
+    OperationTypeEnum(String id, String libelle){
 		this.id = id;
 		this.libelle = libelle;
 	}

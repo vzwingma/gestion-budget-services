@@ -47,7 +47,10 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 				.singleResultOptional()
 				.onItem().transform(Optional::orElseThrow)
 				.onFailure()
-					.transform(e -> new BudgetNotFoundException("Erreur lors du chargement du budget pour le compte " + compte.getId() + " du mois " + mois + " de l'année " + annee))
+					.transform(e -> {
+						LOGGER.error("Erreur lors du chargement du budget", e);
+						return new BudgetNotFoundException("Erreur lors du chargement du budget pour le compte " + compte.getId() + " du mois " + mois + " de l'année " + annee);
+					})
 				.invoke(budget -> LOGGER.debug("-> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size()));
 	}
 
@@ -70,12 +73,15 @@ public class OperationDatabaseAdaptor implements IOperationsRepository {
 	@Override
 	public Uni<BudgetMensuel> chargeBudgetMensuel(String idBudget) {
 
-		LOGGER.info("Chargement du budget");
+		LOGGER.info("Chargement du budget ");
 		return find(ATTRIBUT_BUDGET_ID + "=?1", idBudget)
 				.singleResultOptional()
 				.onItem().transform(Optional::orElseThrow)
 					.onFailure()
-					.transform(e -> new BudgetNotFoundException("Erreur lors du chargement du budget " + idBudget))
+					.transform(e -> {
+						LOGGER.error("Erreur lors du chargement du budget {}", idBudget, e);
+						return new BudgetNotFoundException("Erreur lors du chargement du budget " + idBudget);
+					})
 				.invoke(budget -> LOGGER.debug("-> Réception du budget {}. {} opérations", budget.getId(), budget.getListeOperations().size()));
 	}
 

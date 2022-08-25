@@ -8,13 +8,15 @@ package io.github.vzwingma.finances.budget.services.operations.business.model.op
  * @author vzwingma
  *
  */
-public enum EtatOperationEnum {
+public enum OperationEtatEnum {
 
-	// Ligne prévue
+	// Ligne prévue pour ce mois ci
 	PREVUE("prevue", "Prévue"),
 	// Ligne passée
-	REALISEE("realisee", "Réalisée"), 
-	// Ligne reportée
+	REALISEE("realisee", "Réalisée"),
+	// Ligne planifiée pour une échéance dans le futur
+	PLANIFIEE("planifiee" , "Planifiée"),
+	// Ligne reportée pour le mois suivant
 	REPORTEE("reportee" , "Reportée"), 
 	// Ligne annulée
 	ANNULEE("annulee", "Annulée");
@@ -28,7 +30,7 @@ public enum EtatOperationEnum {
 	 * @param id : id de l'enum
 	 * @param libelle : libellé de l'enum
 	 */
-	EtatOperationEnum(String id, String libelle){
+	OperationEtatEnum(String id, String libelle){
 		this.id = id;
 		this.libelle = libelle;
 	}
@@ -48,8 +50,8 @@ public enum EtatOperationEnum {
 	}
 	
 	
-	public static EtatOperationEnum getEnum(String idEnum){
-		for (EtatOperationEnum enums : values()) {
+	public static OperationEtatEnum getEnum(String idEnum){
+		for (OperationEtatEnum enums : values()) {
 			if(enums.getId().equals(idEnum)){
 				return enums;
 			}

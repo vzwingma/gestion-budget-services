@@ -4,18 +4,16 @@ import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieO
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.EtatOperationEnum;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationPeriodiciteEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Utilitaire de data
@@ -134,7 +132,7 @@ public class BudgetDataUtils {
 	 * @return Ligne dépense clonée
 	 * @param ligneOperation : ligneOpérations à cloner
 	 */
-	public static LigneOperation cloneDepenseToMoisSuivant(LigneOperation ligneOperation) {
+	public static LigneOperation cloneOperationToMoisSuivant(LigneOperation ligneOperation) {
 		LigneOperation ligneOperationClonee = new LigneOperation();
 		ligneOperationClonee.setId(UUID.randomUUID().toString());
 		ligneOperationClonee.setLibelle(ligneOperation.getLibelle());
@@ -153,16 +151,68 @@ public class BudgetDataUtils {
 		ligneOperationClonee.setAutresInfos(new LigneOperation.AddInfos());
 		ligneOperationClonee.getAutresInfos().setDateMaj(LocalDateTime.now());
 		ligneOperationClonee.getAutresInfos().setDateOperation(null);
-		ligneOperationClonee.setEtat(EtatOperationEnum.PREVUE);
-		ligneOperationClonee.setPeriodique(ligneOperation.isPeriodique());
+		ligneOperationClonee.setEtat(OperationEtatEnum.PREVUE);
 		ligneOperationClonee.setTypeOperation(ligneOperation.getTypeOperation());
 		ligneOperationClonee.putValeurFromSaisie(Math.abs(ligneOperation.getValeur()));
 		ligneOperationClonee.setTagDerniereOperation(false);
 		return ligneOperationClonee;
 	}
-	
-	
-	
+
+
+	/**
+	 * Clone d'une ligne opération
+	 * @return Ligne dépense clonée
+	 */
+	// TODO : TU a faire
+	public static List<LigneOperation> cloneOperationPeriodiqueToMoisSuivant(final LigneOperation ligneOperation) {
+		List<LigneOperation> lignesOperationClonees = new ArrayList<>();
+
+		LigneOperation ligneOperationClonee = cloneOperationToMoisSuivant(ligneOperation);
+
+		// Recalcul des mensualités
+		if(ligneOperation.getMensualite() != null){
+			LigneOperation.Mensualite mensualiteClonee = new LigneOperation.Mensualite();
+			mensualiteClonee.setPeriode(ligneOperation.getMensualite().getPeriode());
+
+			int prochaineMensualite = ligneOperation.getMensualite().getProchaineEcheance() -1 ;
+
+
+			// Si une opération était à échéance, mais a été reportée - on la réinjecte, en retard
+			if(ligneOperation.getMensualite().getProchaineEcheance() == ligneOperation.getMensualite().getPeriode().getNbMois()
+			&& OperationEtatEnum.REPORTEE.equals(ligneOperation.getEtat())){
+				LOGGER.warn("L'opération périodique est reportée : en retard", ligneOperation.getMensualite().getPeriode().name());
+				LigneOperation ligneOperationEcheanceReportee = cloneOperationToMoisSuivant(ligneOperation);
+				ligneOperationEcheanceReportee.setLibelle("[En Retard] " + ligneOperation.getLibelle());
+				LigneOperation.Mensualite echeanceReportee = new LigneOperation.Mensualite();
+				echeanceReportee.setPeriode(OperationPeriodiciteEnum.PONCTUELLE);
+				echeanceReportee.setProchaineEcheance(-1);
+				ligneOperationEcheanceReportee.setMensualite(echeanceReportee);
+				lignesOperationClonees.add(ligneOperationEcheanceReportee);
+			}
+			// Si la mensualité arrive à échéance, elle est prévue, et la prochaine échéance est réinitalisée
+			if(prochaineMensualite == 0){
+				ligneOperationClonee.setEtat(OperationEtatEnum.PREVUE);
+				mensualiteClonee.setProchaineEcheance(mensualiteClonee.getPeriode().getNbMois());
+			}
+			// Si l'échéance est dans le passé, on laisse la mensualité de base et prévue - tagguée en retard
+			else if(prochaineMensualite < 0){
+				ligneOperationClonee.setEtat(OperationEtatEnum.PREVUE);
+				mensualiteClonee.setProchaineEcheance(prochaineMensualite);
+			}
+			// Si l'échéance est dans le futur, on laisse la mensualité de base et reportée
+			else{
+				ligneOperationClonee.setEtat(OperationEtatEnum.PLANIFIEE);
+				mensualiteClonee.setProchaineEcheance(prochaineMensualite);
+			}
+			ligneOperationClonee.setMensualite(mensualiteClonee);
+		}
+
+		lignesOperationClonees.add(ligneOperationClonee);
+		return lignesOperationClonees;
+	}
+
+
+
 	/**
 	 * @param listeOperations liste des opérations
 	 * @return date max d'une liste de dépenses
@@ -227,39 +277,4 @@ public class BudgetDataUtils {
 		return null;
 	}
 
-
-	/**
-	 * @param id id de la catégorie
-	 * @param listeCategories liste des catégories
-	 * @return catégorie correspondante
-	 * @deprecated : En doublon avec le service de Paramétrage
-	 * @since 17.0.0
-	 */
-	@Deprecated
-	public static CategorieOperations getCategorieById(String id, List<CategorieOperations> listeCategories){
-		CategorieOperations categorie = null;
-		if(id != null && listeCategories != null && !listeCategories.isEmpty()){
-			// Recherche parmi les catégories
-			Optional<CategorieOperations> cat = listeCategories.parallelStream()
-					.filter(c -> id.equals(c.getId()))
-					.findFirst();
-			if(cat.isPresent()){
-				categorie = cat.get();
-			}
-			// Sinon les sous catégories
-			else{
-				Optional<CategorieOperations> ssCats = listeCategories.parallelStream()
-						.flatMap(c -> c.getListeSSCategories().stream())
-						.filter(ss -> id.equals(ss.getId()))
-						.findFirst();
-				if(ssCats.isPresent()){
-					categorie = ssCats.get();
-				}
-			}
-		}
-		if(categorie == null) {
-			LOGGER.warn("Impossible de trouver une catégorie correspondant à l'id [{}] parmi les catégories", id);
-		}
-		return categorie;
-	}
 }
