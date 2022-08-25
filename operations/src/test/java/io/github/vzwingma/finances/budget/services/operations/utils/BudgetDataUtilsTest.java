@@ -208,7 +208,7 @@ class BudgetDataUtilsTest {
 		assertNotNull(opPrec);
 		assertEquals(OperationEtatEnum.PREVUE, opPrec.getEtat());
 		assertNotNull(opPrec.getAutresInfos());
-		assertEquals(OperationPeriodiciteEnum.MENSUELLE, opPrec.getMensualite().getPeriode());
+		assertEquals(OperationPeriodiciteEnum.PONCTUELLE, opPrec.getMensualite().getPeriode());
 		assertEquals(-1, opPrec.getMensualite().getProchaineEcheance());
 
 
