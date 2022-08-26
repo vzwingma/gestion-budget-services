@@ -230,9 +230,6 @@ public class OperationsService implements IOperationsAppProvider {
 		if(OperationEtatEnum.REALISEE.equals(ligneOperation.getEtat())
 				&& ligneOperation.getAutresInfos().getDateOperation() == null){
 			ligneOperation.getAutresInfos().setDateOperation(LocalDate.now());
-		} else if (!OperationEtatEnum.REALISEE.equals(ligneOperation.getEtat()) &&
-				LocalDate.now().equals(ligneOperation.getAutresInfos().getDateOperation())) {
-			ligneOperation.getAutresInfos().setDateOperation(null);
 		}
 		return ligneOperation;
 	}
