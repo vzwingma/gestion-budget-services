@@ -36,7 +36,7 @@ class BudgetDataUtilsTest {
 	@Test
 	void testMaxDateOperations(){
 		
-		LocalDateTime c = LocalDateTime.now();
+		LocalDate c = LocalDate.now();
 		LigneOperation depense1 = new LigneOperation();
 		depense1.setId("Op1");
 		depense1.setAutresInfos(new LigneOperation.AddInfos());
@@ -50,7 +50,7 @@ class BudgetDataUtilsTest {
 		
 		LigneOperation depense3 = new LigneOperation();
 		depense3.setId("Op3");
-		LocalDateTime c3 = LocalDateTime.now().withDayOfMonth(12).withMonth(10).withYear(2050);
+		LocalDate c3 = LocalDate.now().withDayOfMonth(12).withMonth(10).withYear(2050);
 		depense3.setAutresInfos(new LigneOperation.AddInfos());
 		depense3.getAutresInfos().setDateOperation(c3);
 

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -196,13 +197,13 @@ public class OperationsService implements IOperationsAppProvider {
 
 		if (ligneOperation.getEtat() != null) {
 			LigneOperation ligneUpdatedOperation = completeOperationAttributes(ligneOperation);
-			ligneUpdatedOperation = completePeriodiciteOperation(ligneUpdatedOperation, ligneOperationToUpdate);
+			LigneOperation ligneUpdatedPeriodicOperation = completePeriodiciteOperation(ligneUpdatedOperation, ligneOperationToUpdate);
 			if (rangMaj >= 0) {
-				LOGGER.info("Mise à jour de l'opération : {}", ligneUpdatedOperation);
-				operations.add(rangMaj, ligneUpdatedOperation);
+				LOGGER.info("Mise à jour de l'opération : {}", ligneUpdatedPeriodicOperation);
+				operations.add(rangMaj, ligneUpdatedPeriodicOperation);
 			} else {
-				LOGGER.info("Ajout de l'opération : {}", ligneUpdatedOperation);
-				operations.add(ligneUpdatedOperation);
+				LOGGER.info("Ajout de l'opération : {}", ligneUpdatedPeriodicOperation);
+				operations.add(ligneUpdatedPeriodicOperation);
 			}
 		} else {
 			LOGGER.info("Suppression d'une opération : {}", ligneOperation);
@@ -226,15 +227,13 @@ public class OperationsService implements IOperationsAppProvider {
 		ligneOperation.getAutresInfos().setAuteur("vzwingmann");
 
 		// Date opération suivant Etat
-		if(OperationEtatEnum.REALISEE.equals(ligneOperation.getEtat())) {
-			if(ligneOperation.getAutresInfos().getDateOperation() == null){
-				ligneOperation.getAutresInfos().setDateOperation(LocalDateTime.now());
-			}
-		}
-		else {
+		if(OperationEtatEnum.REALISEE.equals(ligneOperation.getEtat())
+				&& ligneOperation.getAutresInfos().getDateOperation() == null){
+			ligneOperation.getAutresInfos().setDateOperation(LocalDate.now());
+		} else if (!OperationEtatEnum.REALISEE.equals(ligneOperation.getEtat()) &&
+				LocalDate.now().equals(ligneOperation.getAutresInfos().getDateOperation())) {
 			ligneOperation.getAutresInfos().setDateOperation(null);
 		}
-
 		return ligneOperation;
 	}
 

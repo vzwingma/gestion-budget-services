@@ -180,7 +180,7 @@ public class BudgetDataUtils {
 			// Si une opération était à échéance, mais a été reportée - on la réinjecte, en retard
 			if(ligneOperation.getMensualite().getProchaineEcheance() == ligneOperation.getMensualite().getPeriode().getNbMois()
 			&& OperationEtatEnum.REPORTEE.equals(ligneOperation.getEtat())){
-				LOGGER.warn("L'opération périodique est reportée : en retard", ligneOperation.getMensualite().getPeriode().name());
+				LOGGER.warn("L'opération périodique {} est reportée : en retard", ligneOperation.getMensualite().getPeriode().name());
 				LigneOperation ligneOperationEcheanceReportee = cloneOperationToMoisSuivant(ligneOperation);
 				ligneOperationEcheanceReportee.setLibelle("[En Retard] " + ligneOperation.getLibelle());
 				LigneOperation.Mensualite echeanceReportee = new LigneOperation.Mensualite();
@@ -238,7 +238,7 @@ public class BudgetDataUtils {
 			});
 			Optional<LigneOperation> maxDate = listeOperations.stream().max(comparator);
 			if(maxDate.isPresent() && maxDate.get().retrieveDateOperation() != null){
-				localDateDerniereOperation = maxDate.get().retrieveDateOperation().toLocalDate();
+				localDateDerniereOperation = maxDate.get().retrieveDateOperation();
 			}
 		}
 		return localDateDerniereOperation;
