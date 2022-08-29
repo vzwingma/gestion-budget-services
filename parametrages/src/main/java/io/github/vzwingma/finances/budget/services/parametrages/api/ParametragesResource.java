@@ -83,7 +83,6 @@ public class ParametragesResource extends AbstractAPILoggerInterceptor {
     @Path(ParametragesApiUrlEnum.PARAMS_CATEGORIES + ParametragesApiUrlEnum.PARAMS_CATEGORIE_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<CategorieOperations> getCategorieById(@RestPath String idCategorie) {
-
         BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.USER, "User");
 
         return paramsServices.getCategorieById(idCategorie)
