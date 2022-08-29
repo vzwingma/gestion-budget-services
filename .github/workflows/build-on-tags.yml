@@ -261,7 +261,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64/v8
           file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:parametrages-latest, vzwingmabudget/gestion_budget_services:parametrages-${{ steps.get_version.outputs.VERSION }}
