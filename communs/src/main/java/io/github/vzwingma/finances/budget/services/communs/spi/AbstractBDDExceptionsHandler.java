@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
 
 /**
  * Handler for exceptions pour les API REST
@@ -24,15 +23,15 @@ public abstract class AbstractBDDExceptionsHandler implements ExceptionMapper<Mo
     @Override
     public Response toResponse(MongoClientException e) {
         if(e instanceof MongoConfigurationException) {
-            LOGGER.error("Statut HTTP : [500] Database access error : {}", e.getMessage());
+            LOGGER.error("Statut HTTP : [500] Database Client access error : {}", e.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Configuration incorrecte").build();
         }
         else if(e instanceof MongoTimeoutException) {
-            LOGGER.error("Statut HTTP : [500] Database access error : {}", e.getMessage());
+            LOGGER.error("Statut HTTP : [500] Database Timeout access error : {}", e.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Timeout lors de la connexion").build();
         }
         else if(e instanceof MongoServerUnavailableException) {
-            LOGGER.error("Statut HTTP : [500] Database access error : {}", e.getMessage());
+            LOGGER.error("Statut HTTP : [500] Database unavailable access error : {}", e.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Base de données indisponible").build();
         }
         LOGGER.error("Statut HTTP : [500] Database access error : {}", e.getMessage());

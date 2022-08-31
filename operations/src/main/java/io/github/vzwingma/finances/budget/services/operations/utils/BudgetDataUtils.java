@@ -163,14 +163,13 @@ public class BudgetDataUtils {
 	 * Clone d'une ligne opération
 	 * @return Ligne dépense clonée
 	 */
-	// TODO : TU a faire
 	public static List<LigneOperation> cloneOperationPeriodiqueToMoisSuivant(final LigneOperation ligneOperation) {
 		List<LigneOperation> lignesOperationClonees = new ArrayList<>();
 
 		LigneOperation ligneOperationClonee = cloneOperationToMoisSuivant(ligneOperation);
 
 		// Recalcul des mensualités
-		if(ligneOperation.getMensualite() != null){
+		if(ligneOperation.getMensualite() != null && ligneOperation.getMensualite().getPeriode() != null){
 			LigneOperation.Mensualite mensualiteClonee = new LigneOperation.Mensualite();
 			mensualiteClonee.setPeriode(ligneOperation.getMensualite().getPeriode());
 
