@@ -90,10 +90,12 @@ public class ParametragesResource extends AbstractAPILoggerInterceptor {
                 .invoke(l -> BusinessTraceContext.get().remove(BusinessTraceContextKeyEnum.USER));
     }
 
+    @Override
     @ServerRequestFilter(preMatching = true)
     public void preMatchingFilter(ContainerRequestContext requestContext) {
         super.preMatchingFilter(requestContext);
     }
+    @Override
     @ServerResponseFilter
     public void postMatchingFilter(ContainerResponseContext responseContext) { super.postMatchingFilter(responseContext); }
 

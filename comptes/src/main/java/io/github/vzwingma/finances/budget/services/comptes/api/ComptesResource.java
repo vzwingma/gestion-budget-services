@@ -93,10 +93,12 @@ public class ComptesResource extends AbstractAPILoggerInterceptor {
                 .invoke(compte -> LOG.info("Compte chargé : [{}]", compte != null ? compte.getLibelle() : "-1"));
     }
 
+    @Override
     @ServerRequestFilter(preMatching = true)
     public void preMatchingFilter(ContainerRequestContext requestContext) {
         super.preMatchingFilter(requestContext);
     }
+    @Override
     @ServerResponseFilter
     public void postMatchingFilter(ContainerResponseContext responseContext) { super.postMatchingFilter(responseContext); }
 }
