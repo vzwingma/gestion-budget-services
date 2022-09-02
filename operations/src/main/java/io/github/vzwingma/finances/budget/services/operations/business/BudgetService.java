@@ -105,7 +105,8 @@ public class BudgetService implements IBudgetAppProvider {
 						.recoverWithUni(() -> initNewBudget(compteBancaire, mois, annee))
 					.invoke(budgetMensuel -> LOGGER.debug("Budget mensuel chargé : {}", budgetMensuel))
 					// rechargement du solde mois précédent (s'il a changé)
-					.onItem().transformToUni(budgetMensuel -> recalculSoldeAFinMoisPrecedent(budgetMensuel, compteBancaire) )
+					.onItem()
+						.transformToUni(budgetMensuel -> recalculSoldeAFinMoisPrecedent(budgetMensuel, compteBancaire) )
 					// recalcul de tous les soldes du budget courant
 					.onItem().ifNotNull()
 						.invoke(this::recalculSoldes)
@@ -351,9 +352,11 @@ public class BudgetService implements IBudgetAppProvider {
 		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudgetPrecedent);
 		LOGGER.debug("Chargement du budget précédent pour initialisation");
 		return getBudgetMensuel(idBudgetPrecedent)
+				.onFailure()
+					.recoverWithUni(() -> chargerBudgetMensuelSurCompteActif(compteBancaire, mois.minus(1), Month.DECEMBER.equals(mois.minus(1)) ? annee -1 : annee))
 				.onItem()
-				.transformToUni(budgetPrecedent -> {
-					LOGGER.debug("Budget précédent trouvé : {}. Actif ? : {}", budgetPrecedent, budgetPrecedent.isActif());
+					.transformToUni(budgetPrecedent -> {
+						LOGGER.debug("Budget précédent trouvé : {}. Actif ? : {}", budgetPrecedent, budgetPrecedent.isActif());
 						// #115 : Cloture automatique du mois précédent
 						return budgetPrecedent.isActif() ? setBudgetActif(budgetPrecedent.getId(), false) : Uni.createFrom().item(budgetPrecedent);
 				})

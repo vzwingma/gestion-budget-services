@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
 
 @QuarkusTest
 class UtilisateursResourceTest {
@@ -28,7 +29,7 @@ class UtilisateursResourceTest {
           .when().get("/_info")
           .then()
              .statusCode(200)
-                .body(containsString("utilisateurs"));
+                .body(containsStringIgnoringCase("utilisateurs"));
     }
 
 

@@ -20,6 +20,7 @@ import java.time.Month;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.*;
 
@@ -32,7 +33,7 @@ class OperationsResourceTest {
           .when().get("/_info")
           .then()
              .statusCode(200)
-                .body(containsString("operations"));
+                .body(containsStringIgnoringCase("rations"));
     }
 
     @Inject
