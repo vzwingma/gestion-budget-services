@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
 
 @QuarkusTest
 class ParametragesResourceTest {
@@ -26,7 +27,7 @@ class ParametragesResourceTest {
           .when().get("/_info")
           .then()
              .statusCode(200)
-             .body(containsString("parametrages"));
+             .body(containsStringIgnoringCase("param"));
     }
 
     @Inject
