@@ -33,7 +33,7 @@ class OperationsResourceTest {
           .when().get("/_info")
           .then()
              .statusCode(200)
-                .body(containsStringIgnoringCase("operations"));
+                .body(containsStringIgnoringCase("rations"));
     }
 
     @Inject
