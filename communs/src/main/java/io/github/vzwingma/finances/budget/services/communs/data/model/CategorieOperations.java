@@ -51,8 +51,8 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	/**
 	 * Catégorie
 	 */
-	@JsonIgnore
-	private CategorieOperations categorieParente;
+	@Schema(description = "Catégorie parente")
+	private CategorieParente categorieParente;
 
 	/**
 	 * Est ce une catégorie ?
@@ -60,6 +60,20 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	@Schema(description = "Est ce une catégorie")
 	private boolean categorie = true;
 
+
+	@Getter @Setter
+	public static class CategorieParente{
+
+		public CategorieParente(String id, String libelle){
+			this.id = id;
+			this.libelle = libelle;
+		}
+		@Schema(description = "id Catégorie parente")
+		private String id;
+
+		@Schema(description = "Libelle Catégorie parente")
+		private String libelle;
+	}
 
 	/**
 	 * Constructeur pour Spring Data MongSB

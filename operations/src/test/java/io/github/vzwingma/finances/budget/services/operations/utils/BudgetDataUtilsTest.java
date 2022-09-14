@@ -103,7 +103,7 @@ class BudgetDataUtilsTest {
 		ssCatCourse.setCategorie(false);
 		ssCatCourse.setId("467496e4-9059-4b9b-8773-21f230c8c5c6");
 		ssCatCourse.setLibelle("Courses");
-		ssCatCourse.setCategorieParente(catAlimentation);
+		ssCatCourse.setCategorieParente(new CategorieOperations.CategorieParente(catAlimentation.getId(), catAlimentation.getLibelle()));
 		catAlimentation.setListeSSCategories(new HashSet<>());
 		catAlimentation.getListeSSCategories().add(ssCatCourse);
 		categoriesFromDB.add(catAlimentation);
@@ -148,7 +148,7 @@ class BudgetDataUtilsTest {
 				ssCat.setCategorie(false);
 				ssCat.setId("ID" + i + j);
 				ssCat.setLibelle("SSCAT" + j);
-				ssCat.setCategorieParente(cat);
+				ssCat.setCategorieParente(new CategorieOperations.CategorieParente(cat.getId(), cat.getLibelle()));
 				cat.setListeSSCategories(new HashSet<>());
 				cat.getListeSSCategories().add(ssCat);
 				
