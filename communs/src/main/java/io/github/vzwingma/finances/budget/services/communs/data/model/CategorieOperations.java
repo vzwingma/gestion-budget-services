@@ -6,9 +6,12 @@ import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.beans.Transient;
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -51,8 +54,9 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	/**
 	 * Catégorie
 	 */
-	@JsonIgnore
-	private CategorieOperations categorieParente;
+	@BsonIgnore
+	@Schema(description = "Catégorie parente")
+	private CategorieParente categorieParente;
 
 	/**
 	 * Est ce une catégorie ?
@@ -60,6 +64,23 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	@Schema(description = "Est ce une catégorie")
 	private boolean categorie = true;
 
+
+	@Getter @Setter
+	public static class CategorieParente implements Serializable {
+
+		@Serial
+		private static final long serialVersionUID = 1L;
+
+		public CategorieParente(String id, String libelle){
+			this.id = id;
+			this.libelle = libelle;
+		}
+		@Schema(description = "id Catégorie parente")
+		private String id;
+
+		@Schema(description = "Libelle Catégorie parente")
+		private String libelle;
+	}
 
 	/**
 	 * Constructeur pour Spring Data MongSB

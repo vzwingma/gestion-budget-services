@@ -83,6 +83,8 @@ public class ParametragesService implements IParametrageAppProvider {
 						}
 						c.getListeSSCategories().forEach(s -> {
 							if(s.getId().equals(idCategorie)){
+								s.setCategorieParente(new CategorieOperations.CategorieParente(c.getId(), c.getLibelle()));
+								LOGGER.info("Sous Catégorie trouvée : {}/{}" , c, s);
 								categorie.set(s);
 							}
 						});
@@ -118,7 +120,7 @@ public class ParametragesService implements IParametrageAppProvider {
 						.forEach(ssC -> {
 							CategorieOperations ssCClone = cloneCategorie(ssC);
 							// Réinjection de la catégorie parente
-							ssCClone.setCategorieParente(clone);
+							ssCClone.setCategorieParente(new CategorieOperations.CategorieParente(clone.getId(), clone.getLibelle()));
 							setSSCatsClones.add(ssCClone);
 						});
 				clone.setListeSSCategories(setSSCatsClones);
