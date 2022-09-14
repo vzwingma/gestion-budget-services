@@ -6,9 +6,12 @@ import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.beans.Transient;
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -51,6 +54,7 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	/**
 	 * Catégorie
 	 */
+	@BsonIgnore
 	@Schema(description = "Catégorie parente")
 	private CategorieParente categorieParente;
 
@@ -62,7 +66,10 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 
 
 	@Getter @Setter
-	public static class CategorieParente{
+	public static class CategorieParente implements Serializable {
+
+		@Serial
+		private static final long serialVersionUID = 1L;
 
 		public CategorieParente(String id, String libelle){
 			this.id = id;
