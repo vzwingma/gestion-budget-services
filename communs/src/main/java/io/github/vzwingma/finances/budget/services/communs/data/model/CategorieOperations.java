@@ -67,7 +67,8 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	private boolean categorie = true;
 
 
-	@Getter @Setter @NoArgsConstructor @RegisterForReflection
+	@Getter @Setter @NoArgsConstructor
+	@Schema(description = "Catégorie parente de la sous catégorie")
 	public static class CategorieParente implements Serializable {
 
 		@Serial
