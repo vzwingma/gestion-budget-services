@@ -48,7 +48,7 @@ public class ParametragesService implements IParametrageAppProvider {
 	 */
 	private final List<CategorieOperations> listeCategories = new ArrayList<>();
 
-	/**
+	/**'
 	 * @return liste des catégories
 	 */
 	public Uni<List<CategorieOperations>> getCategories(){
@@ -71,6 +71,11 @@ public class ParametragesService implements IParametrageAppProvider {
 		}
 	}
 
+	/**
+	 *
+	 * @param idCategorie identifiant de la catégorie
+	 * @return  la catégorie correspondante à l'id
+	 */
 	@Override
 	public Uni<CategorieOperations> getCategorieById(String idCategorie) {
 
