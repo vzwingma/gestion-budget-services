@@ -5,6 +5,7 @@ import io.github.vzwingma.finances.budget.services.communs.data.abstrait.Abstrac
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -65,7 +66,7 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	private boolean categorie = true;
 
 
-	@Getter @Setter
+	@Getter @Setter @NoArgsConstructor
 	public static class CategorieParente implements Serializable {
 
 		@Serial
