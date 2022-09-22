@@ -3,8 +3,10 @@ package io.github.vzwingma.finances.budget.services.communs.data.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.vzwingma.finances.budget.services.communs.data.abstrait.AbstractAPIObjectModel;
 import io.quarkus.mongodb.panache.common.MongoEntity;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -56,7 +58,7 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	 */
 	@BsonIgnore
 	@Schema(description = "Catégorie parente")
-	private CategorieParente categorieParente;
+	private CategorieOperations.CategorieParente categorieParente;
 
 	/**
 	 * Est ce une catégorie ?
@@ -65,11 +67,12 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 	private boolean categorie = true;
 
 
-	@Getter @Setter
+	@Getter @Setter @NoArgsConstructor
+	@Schema(description = "Catégorie parente de la sous catégorie")
 	public static class CategorieParente implements Serializable {
 
 		@Serial
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 3069367940675936890L;
 
 		public CategorieParente(String id, String libelle){
 			this.id = id;
@@ -80,6 +83,10 @@ public class CategorieOperations extends AbstractAPIObjectModel implements Compa
 
 		@Schema(description = "Libelle Catégorie parente")
 		private String libelle;
+		@Override
+		public String toString() {
+			return libelle;
+		}
 	}
 
 	/**
