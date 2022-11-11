@@ -51,7 +51,7 @@ public class BudgetDataUtils {
 			}
 			catch (Exception e) {
 				// Erreur dans l'id
-				throw new BudgetNotFoundException("Erreur dans l'id du budget " + budgetId + ". Données incohérentes");
+				throw new BudgetNotFoundException("Erreur de mois dans l'id du budget " + budgetId + ". Données (mois) incohérentes");
 			}
 		}
 		return null;
@@ -68,7 +68,7 @@ public class BudgetDataUtils {
 			}
 			catch (Exception e) {
 				// Erreur dans l'id
-				throw new BudgetNotFoundException("Erreur dans l'id du budget " + budgetId + ". Données incohérentes");
+				throw new BudgetNotFoundException("Erreur de compte dans l'id du budget " + budgetId + ". Données (compte) incohérentes");
 			}
 		}
 		return null;
@@ -87,7 +87,7 @@ public class BudgetDataUtils {
 			}
 			catch (Exception e) {
 				// Erreur dans l'id
-				throw new BudgetNotFoundException("Erreur dans l'id du budget " + budgetId + ". Données incohérentes");
+				throw new BudgetNotFoundException("Erreur d'année dans l'id du budget " + budgetId + ". Données (année) incohérentes");
 			}
 		}
 		return null;
