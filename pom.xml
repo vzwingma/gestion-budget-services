@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.vzwingma.finances.budget</groupId>
   <artifactId>services</artifactId>
-  <version>17.2.5-SNAPSHOT</version>
+  <version>17.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Services</name>
 
@@ -28,9 +28,9 @@
 
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>2.11.2.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.14.0.Final</quarkus.platform.version>
     <lombok.version>1.18.24</lombok.version>
-    <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
     <jacoco.version>0.8.8</jacoco.version>
   </properties>
 

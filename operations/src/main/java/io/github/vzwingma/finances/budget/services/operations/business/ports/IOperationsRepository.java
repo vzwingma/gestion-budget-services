@@ -38,14 +38,6 @@ public interface IOperationsRepository extends ReactivePanacheMongoRepository<Bu
      */
     Uni<BudgetMensuel> chargeBudgetMensuel(String idBudget) ;
 
-
-    /*
-     *
-     * @param idBudget id du budget
-     * @return liste des dépenses du budget
-     */
-    // Multi<LigneOperation> chargerLignesOperations(String idBudget) ;
-
     /**
      * Sauvegarde du budget mensuel
      * @param budget budget à sauvegarder
