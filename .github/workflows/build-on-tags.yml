@@ -30,7 +30,7 @@ jobs:
         id: get_version
         run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
+        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
         run: mvn versions:commit
 
@@ -69,7 +69,7 @@ jobs:
         id: get_version
         run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
+        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
         run: mvn versions:commit
       # Runs a single command using the runners shell
@@ -108,7 +108,7 @@ jobs:
         id: get_version
         run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
+        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
         run: mvn versions:commit
       # Runs a single command using the runners shell
@@ -147,7 +147,7 @@ jobs:
         id: get_version
         run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
+        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
         run: mvn versions:commit
       # Runs a single command using the runners shell
@@ -188,7 +188,7 @@ jobs:
         id: get_version
         run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
+        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
         run: mvn versions:commit
       # Runs a single command using the runners shell
@@ -257,7 +257,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v8
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:parametrages-latest, vzwingmabudget/gestion_budget_services:parametrages-$GITHUB_OUTPUT.VERSION
+          tags: vzwingmabudget/gestion_budget_services:parametrages-latest, vzwingmabudget/gestion_budget_services:parametrages-${{ steps.get_version.outputs.VERSION }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -311,7 +311,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v8
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:utilisateurs-latest, vzwingmabudget/gestion_budget_services:utilisateurs-$GITHUB_OUTPUT.VERSION
+          tags: vzwingmabudget/gestion_budget_services:utilisateurs-latest, vzwingmabudget/gestion_budget_services:utilisateurs-${{ steps.get_version.outputs.VERSION }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -365,7 +365,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v8
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:comptes-latest, vzwingmabudget/gestion_budget_services:comptes-$GITHUB_OUTPUT.VERSION
+          tags: vzwingmabudget/gestion_budget_services:comptes-latest, vzwingmabudget/gestion_budget_services:comptes-${{ steps.get_version.outputs.VERSION }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -419,7 +419,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v8
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:operations-latest, vzwingmabudget/gestion_budget_services:operations-$GITHUB_OUTPUT.VERSION
+          tags: vzwingmabudget/gestion_budget_services:operations-latest, vzwingmabudget/gestion_budget_services:operations-${{ steps.get_version.outputs.VERSION }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
