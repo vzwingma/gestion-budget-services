@@ -43,6 +43,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Upload DockerFile
+      - uses: actions/upload-artifact@v2
+        name: Upload DockerFile
+        with:
+          name: Dockerfile.native-micro
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native-micro
+
   # BUILD
   build-parametrages:
     # The type of runner that the job will run on
