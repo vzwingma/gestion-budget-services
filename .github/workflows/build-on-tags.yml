@@ -28,9 +28,9 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
+        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
       - name: Commit version
         run: mvn versions:commit
 
@@ -42,13 +42,6 @@ jobs:
         run: mvn --batch-mode deploy -DskipTests=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Upload DockerFile
-      - uses: actions/upload-artifact@v2
-        name: Upload DockerFile
-        with:
-          name: Dockerfile.native-micro
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native-micro
 
   # BUILD
   build-parametrages:
@@ -74,9 +67,9 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
+        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
       - name: Commit version
         run: mvn versions:commit
       # Runs a single command using the runners shell
@@ -85,7 +78,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Paramétrages
         with:
           name: parametrages-runner
@@ -113,9 +106,9 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
+        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
       - name: Commit version
         run: mvn versions:commit
       # Runs a single command using the runners shell
@@ -124,7 +117,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Utilisateurs
         with:
           name: utilisateurs-runner
@@ -152,9 +145,9 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
+        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
       - name: Commit version
         run: mvn versions:commit
       # Runs a single command using the runners shell
@@ -164,7 +157,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload Releases
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Comptes
         with:
           name: comptes-runner
@@ -193,9 +186,9 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
-        run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
+        run: mvn versions:set -DnewVersion=$GITHUB_OUTPUT.VERSION
       - name: Commit version
         run: mvn versions:commit
       # Runs a single command using the runners shell
@@ -205,7 +198,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload Releases
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Operations
         with:
           name: operations-runner
@@ -243,7 +236,7 @@ jobs:
       -
         name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2-)
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       # Build
       - uses: actions/download-artifact@v3
         id: downloadService
@@ -264,7 +257,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v8
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:parametrages-latest, vzwingmabudget/gestion_budget_services:parametrages-${{ steps.get_version.outputs.VERSION }}
+          tags: vzwingmabudget/gestion_budget_services:parametrages-latest, vzwingmabudget/gestion_budget_services:parametrages-$GITHUB_OUTPUT.VERSION
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -297,7 +290,7 @@ jobs:
       -
         name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2-)
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       # Build
       - uses: actions/download-artifact@v3
         id: downloadService
@@ -318,7 +311,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v8
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:utilisateurs-latest, vzwingmabudget/gestion_budget_services:utilisateurs-${{ steps.get_version.outputs.VERSION }}
+          tags: vzwingmabudget/gestion_budget_services:utilisateurs-latest, vzwingmabudget/gestion_budget_services:utilisateurs-$GITHUB_OUTPUT.VERSION
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -351,7 +344,7 @@ jobs:
       -
         name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2-)
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       # Build
       - uses: actions/download-artifact@v3
         id: downloadService
@@ -372,7 +365,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v8
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:comptes-latest, vzwingmabudget/gestion_budget_services:comptes-${{ steps.get_version.outputs.VERSION }}
+          tags: vzwingmabudget/gestion_budget_services:comptes-latest, vzwingmabudget/gestion_budget_services:comptes-$GITHUB_OUTPUT.VERSION
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -405,7 +398,7 @@ jobs:
       -
         name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2-)
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       # Build
       - uses: actions/download-artifact@v3
         id: downloadService
@@ -426,7 +419,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v8
           file: Dockerfile.native-micro
           push: true
-          tags: vzwingmabudget/gestion_budget_services:operations-latest, vzwingmabudget/gestion_budget_services:operations-${{ steps.get_version.outputs.VERSION }}
+          tags: vzwingmabudget/gestion_budget_services:operations-latest, vzwingmabudget/gestion_budget_services:operations-$GITHUB_OUTPUT.VERSION
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
