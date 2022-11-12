@@ -28,7 +28,7 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
         run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
@@ -42,13 +42,6 @@ jobs:
         run: mvn --batch-mode deploy -DskipTests=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Upload DockerFile
-      - uses: actions/upload-artifact@v2
-        name: Upload DockerFile
-        with:
-          name: Dockerfile.native-micro
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native-micro
 
   # BUILD
   build-parametrages:
@@ -74,7 +67,7 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
         run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
@@ -85,7 +78,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Paramétrages
         with:
           name: parametrages-runner
@@ -113,7 +106,7 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
         run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
@@ -124,7 +117,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Utilisateurs
         with:
           name: utilisateurs-runner
@@ -152,7 +145,7 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
         run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
@@ -164,7 +157,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload Releases
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Comptes
         with:
           name: comptes-runner
@@ -193,7 +186,7 @@ jobs:
       # Update version
       - name: Get tag Version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- )
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       - name: Apply version
         run: mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Commit version
@@ -205,7 +198,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload Releases
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Operations
         with:
           name: operations-runner
@@ -243,7 +236,7 @@ jobs:
       -
         name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2-)
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       # Build
       - uses: actions/download-artifact@v3
         id: downloadService
@@ -297,7 +290,7 @@ jobs:
       -
         name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2-)
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       # Build
       - uses: actions/download-artifact@v3
         id: downloadService
@@ -351,7 +344,7 @@ jobs:
       -
         name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2-)
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       # Build
       - uses: actions/download-artifact@v3
         id: downloadService
@@ -405,7 +398,7 @@ jobs:
       -
         name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2-)
+        run: echo VERSION=$(echo $GITHUB_REF | cut -d / -f 3 | cut -b 2- ) >> $GITHUB_OUTPUT
       # Build
       - uses: actions/download-artifact@v3
         id: downloadService
