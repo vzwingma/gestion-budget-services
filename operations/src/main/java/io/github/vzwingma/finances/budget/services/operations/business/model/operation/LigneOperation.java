@@ -155,7 +155,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 			c.setLibelle(ssCategorie.getCategorieParente().getLibelle());
 			setCategorie(c);
 		}
-		else if(ssCategorie != null) {
+		if(ssCategorie != null) {
 			ssc = new Categorie();
 			ssc.setId(ssCategorie.getId());
 			ssc.setLibelle(ssCategorie.getLibelle());

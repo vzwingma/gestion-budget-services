@@ -308,7 +308,7 @@ public class OperationsService implements IOperationsAppProvider {
 		if(ssCategorieRemboursement != null) {
 			return completeOperationAttributes(new LigneOperation(
 					ssCategorieRemboursement,
-					"[Remboursement] " + ligneOperation.getLibelle(),
+					ligneOperation.getLibelle(),
 					OperationTypeEnum.CREDIT,
 					Math.abs(ligneOperation.getValeur()),
 					OperationEtatEnum.REPORTEE));
