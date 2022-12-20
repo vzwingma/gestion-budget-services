@@ -12,6 +12,7 @@
     <groupId>io.github.vzwingma.finances.budget.services</groupId>
     <artifactId>operations</artifactId>
     <name>Budgets et Opérations</name>
+    <version>17.4.1-SNAPSHOT</version>
     <build>
         <finalName>${project.artifactId}</finalName>
     </build>
@@ -33,7 +34,6 @@
                         <excludes>
                             <exclude>*.*</exclude>
                         </excludes>
-
                     </resource>
                 </resources>
             </build>

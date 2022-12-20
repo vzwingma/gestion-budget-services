@@ -304,10 +304,10 @@ public class OperationsService implements IOperationsAppProvider {
 	 * @return ligne de remboursement
 	 */
 
-	private LigneOperation createOperationRemboursement(LigneOperation ligneOperation, CategorieOperations categorieRemboursement) {
-		if(categorieRemboursement != null) {
+	private LigneOperation createOperationRemboursement(LigneOperation ligneOperation, CategorieOperations ssCategorieRemboursement) {
+		if(ssCategorieRemboursement != null) {
 			return completeOperationAttributes(new LigneOperation(
-					categorieRemboursement,
+					ssCategorieRemboursement,
 					"[Remboursement] " + ligneOperation.getLibelle(),
 					OperationTypeEnum.CREDIT,
 					Math.abs(ligneOperation.getValeur()),
