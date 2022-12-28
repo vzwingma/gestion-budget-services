@@ -202,6 +202,7 @@ class OperationsServiceTest {
         LigneOperation operationRemb = operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement()).await().indefinitely();
 
         assertNotNull(operationRemb);
-        assertEquals("[Remboursement] TestRemboursement", operationRemb.getLibelle());
+        // Anomalie #208
+        assertEquals("TestRemboursement", operationRemb.getLibelle());
     }
 }

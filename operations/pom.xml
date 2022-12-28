@@ -33,7 +33,6 @@
                         <excludes>
                             <exclude>*.*</exclude>
                         </excludes>
-
                     </resource>
                 </resources>
             </build>
