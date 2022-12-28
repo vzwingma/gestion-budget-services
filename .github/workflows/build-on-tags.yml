@@ -261,7 +261,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm/v8
+          platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:parametrages-latest, vzwingmabudget/gestion_budget_services:parametrages-${{ steps.get_version.outputs.VERSION }}
@@ -315,7 +315,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm/v8
+          platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:utilisateurs-latest, vzwingmabudget/gestion_budget_services:utilisateurs-${{ steps.get_version.outputs.VERSION }}
@@ -369,7 +369,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm/v8
+          platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:comptes-latest, vzwingmabudget/gestion_budget_services:comptes-${{ steps.get_version.outputs.VERSION }}
@@ -423,7 +423,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm/v8
+          platforms: linux/amd64
           file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:operations-latest, vzwingmabudget/gestion_budget_services:operations-${{ steps.get_version.outputs.VERSION }}
