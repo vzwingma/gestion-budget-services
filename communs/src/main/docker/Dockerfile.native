@@ -2,7 +2,7 @@
 # This Dockerfile is used in order to build a container that runs the Quarkus application in native (no JVM) mode.
 #
 ###
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
