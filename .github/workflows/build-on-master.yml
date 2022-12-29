@@ -39,8 +39,8 @@ jobs:
       - uses: actions/upload-artifact@v2
         name: Upload DockerFile
         with:
-          name: Dockerfile.native
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native
+          name: Dockerfile.native-micro
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native-micro
     # SONAR
   sonar-scan:
       # The type of runner that the job will run on
@@ -77,12 +77,7 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'maven'
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       # Runs a single command using the runners shell
       - name: Build Parametrage Native App with Maven
         run: mvn install -B -P native -Dnative -Dquarkus.native.container-build=true -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 --file parametrages/pom.xml -s settings.xml
@@ -108,11 +103,6 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'maven'
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
 
       # Runs a single command using the runners shell
       - name: Build Utilisateurs Native App with Maven
@@ -139,11 +129,6 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'maven'
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
 
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
@@ -171,12 +156,6 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'maven'
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Runs a single command using the runners shell
       - name: Build Comptes Native App with Maven
@@ -227,14 +206,14 @@ jobs:
         id: downloadDocker
         name: Download DockerFile
         with:
-          name: Dockerfile.native
+          name: Dockerfile.native-micro
       -
         name: Build and push Service Paramétrages
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile.native
+          file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:parametrages-snapshot
       -
@@ -274,14 +253,14 @@ jobs:
         id: downloadDocker
         name: Download DockerFile
         with:
-          name: Dockerfile.native
+          name: Dockerfile.native-micro
       -
         name: Build and push Service Utilisateurs
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile.native
+          file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:utilisateurs-snapshot
       -
@@ -321,14 +300,14 @@ jobs:
         id: downloadDocker
         name: Download DockerFile
         with:
-          name: Dockerfile.native
+          name: Dockerfile.native-micro
       -
         name: Build and push Service Comptes
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile.native
+          file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:comptes-snapshot
       -
@@ -368,14 +347,14 @@ jobs:
         id: downloadDocker
         name: Download DockerFile
         with:
-          name: Dockerfile.native
+          name: Dockerfile.native-micro
       -
         name: Build and push Service Opérations
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile.native
+          file: Dockerfile.native-micro
           push: true
           tags: vzwingmabudget/gestion_budget_services:operations-snapshot
       -
