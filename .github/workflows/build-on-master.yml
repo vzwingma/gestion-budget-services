@@ -39,8 +39,8 @@ jobs:
       - uses: actions/upload-artifact@v2
         name: Upload DockerFile
         with:
-          name: Dockerfile.native-micro
-          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native-micro
+          name: Dockerfile.native
+          path: /home/runner/work/gestion-budget-services/gestion-budget-services/communs/src/main/docker/Dockerfile.native
     # SONAR
   sonar-scan:
       # The type of runner that the job will run on
@@ -227,14 +227,14 @@ jobs:
         id: downloadDocker
         name: Download DockerFile
         with:
-          name: Dockerfile.native-micro
+          name: Dockerfile.native
       -
         name: Build and push Service Paramétrages
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile.native-micro
+          file: Dockerfile.native
           push: true
           tags: vzwingmabudget/gestion_budget_services:parametrages-snapshot
       -
@@ -274,14 +274,14 @@ jobs:
         id: downloadDocker
         name: Download DockerFile
         with:
-          name: Dockerfile.native-micro
+          name: Dockerfile.native
       -
         name: Build and push Service Utilisateurs
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile.native-micro
+          file: Dockerfile.native
           push: true
           tags: vzwingmabudget/gestion_budget_services:utilisateurs-snapshot
       -
@@ -321,14 +321,14 @@ jobs:
         id: downloadDocker
         name: Download DockerFile
         with:
-          name: Dockerfile.native-micro
+          name: Dockerfile.native
       -
         name: Build and push Service Comptes
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile.native-micro
+          file: Dockerfile.native
           push: true
           tags: vzwingmabudget/gestion_budget_services:comptes-snapshot
       -
@@ -368,14 +368,14 @@ jobs:
         id: downloadDocker
         name: Download DockerFile
         with:
-          name: Dockerfile.native-micro
+          name: Dockerfile.native
       -
         name: Build and push Service Opérations
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile.native-micro
+          file: Dockerfile.native
           push: true
           tags: vzwingmabudget/gestion_budget_services:operations-snapshot
       -
