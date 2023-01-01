@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
-import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPILoggerInterceptor;
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIInterceptors;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
@@ -37,7 +37,7 @@ import java.util.Map;
  *
  */
 @Path(UtilisateursApiUrlEnum.USERS_BASE)
-public class UtilisateursResource extends AbstractAPILoggerInterceptor {
+public class UtilisateursResource extends AbstractAPIInterceptors {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(UtilisateursResource.class);

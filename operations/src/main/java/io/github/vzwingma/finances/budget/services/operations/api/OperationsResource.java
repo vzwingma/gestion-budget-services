@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.operations.api;
 
-import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPILoggerInterceptor;
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIInterceptors;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
@@ -31,7 +31,9 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.time.Month;
 import java.util.Set;
 import java.util.UUID;
@@ -43,7 +45,7 @@ import java.util.UUID;
  *
  */
 @Path(OperationsApiUrlEnum.BUDGET_BASE)
-public class OperationsResource extends AbstractAPILoggerInterceptor {
+public class OperationsResource extends AbstractAPIInterceptors {
 
     private static final Logger LOG = LoggerFactory.getLogger(OperationsResource.class);
 
@@ -53,6 +55,7 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
 
     @Inject
     IOperationsAppProvider operationsService;
+
 
     /**
      * Retour le budget d'un utilisateur
@@ -200,6 +203,7 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
     @GET
     @Path(value=OperationsApiUrlEnum.BUDGET_UP_TO_DATE)
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated
     public Uni<Boolean> isBudgetUptoDate(
             @RestPath("idBudget") String idBudget, @RestQuery(value="uptodateto") Long uptodateto) {
 

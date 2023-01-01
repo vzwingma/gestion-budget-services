@@ -81,6 +81,7 @@ public interface IBudgetAppProvider {
      * @param dateSurIHM Date affichée
      * @return si le budget doit être mis à jour
      */
+    @Deprecated
     Uni<Boolean> isBudgetIHMUpToDate(String idBudget, Long dateSurIHM);
 
     /**

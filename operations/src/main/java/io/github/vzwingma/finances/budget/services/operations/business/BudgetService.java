@@ -516,6 +516,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 * @return budget up to date ?
 	 */
 	@Override
+	@Deprecated
 	public Uni<Boolean> isBudgetIHMUpToDate(String idBudget, Long dateSurIHM) {
 		return this.dataOperationsProvider.chargeBudgetMensuel(idBudget)
 				.onItem().transform(budgetMensuel -> {

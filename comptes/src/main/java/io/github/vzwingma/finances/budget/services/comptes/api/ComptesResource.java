@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.comptes.api;
 
-import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPILoggerInterceptor;
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIInterceptors;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
@@ -34,7 +34,7 @@ import java.util.List;
  *
  */
 @Path(ComptesApiUrlEnum.COMPTES_BASE)
-public class ComptesResource extends AbstractAPILoggerInterceptor {
+public class ComptesResource extends AbstractAPIInterceptors {
 
     private static final Logger LOG = LoggerFactory.getLogger(ComptesResource.class);
 
