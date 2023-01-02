@@ -84,7 +84,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
             @RestQuery("mois") Integer mois,
             @RestQuery("annee") Integer annee) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("getBudget {}/{}", mois, annee);
 
         if(mois != null && annee != null){
@@ -121,7 +121,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> getBudget(@RestPath("idBudget") String idBudget) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("chargeBudget");
         if(idBudget != null){
             return budgetService.getBudgetMensuel(idBudget);
@@ -152,7 +152,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> reinitializeBudget(@RestPath("idBudget") String idBudget){
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("Réinitialisation du budget");
         if(idBudget != null){
             return budgetService.reinitialiserBudgetMensuel(idBudget);
@@ -183,7 +183,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
             @RestPath("idBudget") String idBudget,
             @RestQuery(value = "actif") Boolean actif) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("actif ? : {}", actif);
 
         if(Boolean.TRUE.equals(actif)){
@@ -215,7 +215,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
             @RestPath("idBudget") String idBudget,
             @RestQuery(value="actif") Boolean actif) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("[idBudget={}] set Actif : {}", idBudget, actif );
         return budgetService.setBudgetActif(idBudget, actif);
     }
@@ -247,7 +247,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
             @RestPath("idBudget") String idBudget,
             @RestPath("idOperation") String idOperation)  {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("setAsDerniereOperation");
         return operationsService.setLigneAsDerniereOperation(idBudget, idOperation);
     }
@@ -276,7 +276,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> createOperation( @RestPath("idBudget") String idBudget, LigneOperation operation) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("createOperation");
         if(operation != null && idBudget != null){
             operation.setId(UUID.randomUUID().toString());
@@ -315,7 +315,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
             LigneOperation operation) {
 
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.info("UpdateOperation");
         LOG.info("{}", securityContext.getUserPrincipal().getName());
 
@@ -357,7 +357,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
             LigneOperation operation) {
 
         String uuidOperation = UUID.randomUUID().toString();
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, uuidOperation);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, uuidOperation).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.info("Create Operation InterCompte [->{}]", idCompte);
         if(operation != null && idBudget != null){
             operation.setId(uuidOperation);
@@ -393,7 +393,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
     public Uni<BudgetMensuel> deleteOperation(
             @RestPath("idBudget") String idBudget,
             @RestPath("idOperation") String idOperation) {
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         if(idOperation != null && idBudget != null){
             LOG.trace("Delete Operation");
             return budgetService.deleteOperationInBudget(idBudget, idOperation);
@@ -425,7 +425,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
         if(idCompte == null){
             return Uni.createFrom().failure(new BadParametersException("Le paramètre idCompte est obligatoire"));
         }
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("getIntervallesBudgetsCompte");
 
         return this.budgetService.getIntervallesBudgets(idCompte)
@@ -464,7 +464,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
     @Produces(MediaType.APPLICATION_JSON)
     public  Uni<LibellesOperationsAPIObject> getLibellesOperations(@RestPath("idCompte") String idCompte, @RestQuery("annee") Integer annee) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
 
         LOG.trace("Libellés Opérations de l'année {}", annee);
         return this.operationsService.getLibellesOperations(idCompte, annee)

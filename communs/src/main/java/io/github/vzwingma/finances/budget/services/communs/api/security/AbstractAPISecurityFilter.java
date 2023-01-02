@@ -1,5 +1,6 @@
 package io.github.vzwingma.finances.budget.services.communs.api.security;
 
+import com.sun.security.auth.UserPrincipal;
 import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
 import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
@@ -11,8 +12,10 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -41,7 +44,7 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
             requestContext.setSecurityContext(new SecurityOverrideContext(requestContext, idToken));
         }
         else{
-            throw new UserAccessForbiddenException("Le token JWT est manquant");
+            requestContext.setSecurityContext(new AnonymousSecurityContext());
         }
     }
 

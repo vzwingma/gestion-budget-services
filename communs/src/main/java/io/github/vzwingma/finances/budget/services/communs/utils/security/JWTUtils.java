@@ -24,10 +24,16 @@ public class JWTUtils {
     public static JWTIdToken decodeJWT(String base64JWT) throws DecodeException {
         LOG.trace("Décodage du Token JWT : {}", base64JWT);
         Base64.Decoder decoder = Base64.getUrlDecoder();
-        String[] chunks = base64JWT.split("\\.");
-        String header = new String(decoder.decode(chunks[0]));
-        String payload = new String(decoder.decode(chunks[1]));
+        try {
+            String[] chunks = base64JWT.split("\\.");
+            String header = new String(decoder.decode(chunks[0]));
+            String payload = new String(decoder.decode(chunks[1]));
 
-        return new JWTIdToken(Json.decodeValue(header, JWTIdToken.JWTHeader.class), Json.decodeValue(payload, JWTIdToken.JWTPayload.class));
+            return new JWTIdToken(Json.decodeValue(header, JWTIdToken.JWTHeader.class), Json.decodeValue(payload, JWTIdToken.JWTPayload.class));
+        }
+        catch (Exception e){
+            LOG.error("Erreur lors du décodage du token [{}]", base64JWT);
+            throw new DecodeException("Erreur lors du décodage du token");
+        }
     }
 }

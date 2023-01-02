@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.utilisateurs.api;
+package io.github.vzwingma.finances.budget.services.utilisateurs.api.override;
 
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIResource;
 import io.github.vzwingma.finances.budget.services.communs.data.model.Info;
