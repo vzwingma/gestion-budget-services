@@ -32,8 +32,12 @@ public class SecurityOverrideContext implements SecurityContext {
     @Override
     public Principal getUserPrincipal() {
         if(idToken != null){
-            String login = this.idToken.getPayload().getGiven_name().substring(0, 1).toLowerCase() + this.idToken.getPayload().getFamily_name().substring(0, 7).toLowerCase();
-            return new UserPrincipal(login);
+            JWTIdToken.JWTPayload p = this.idToken.getPayload();
+            if(p != null){
+                String g = p.getGiven_name() != null && p.getGiven_name().length() > 0 ? p.getGiven_name().substring(0, 1).toLowerCase() : "";
+                String f = p.getFamily_name() != null && p.getFamily_name().length() > 0 ? p.getFamily_name().substring(0, Math.min(p.getFamily_name().length(), 7)).toLowerCase() : "";
+                return new UserPrincipal(g + f);
+            }
         }
         return null;
     }

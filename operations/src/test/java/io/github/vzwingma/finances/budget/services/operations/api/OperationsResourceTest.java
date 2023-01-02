@@ -1,5 +1,8 @@
 package io.github.vzwingma.finances.budget.services.operations.api;
 
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
+import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
+import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
 import io.github.vzwingma.finances.budget.services.operations.api.enums.OperationsAPIEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.BudgetService;
 import io.github.vzwingma.finances.budget.services.operations.business.OperationsService;
@@ -15,7 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.HttpHeaders;
 
+import java.time.LocalDateTime;
 import java.time.Month;
 
 import static io.restassured.RestAssured.given;
@@ -59,10 +64,12 @@ class OperationsResourceTest {
                 + OperationsAPIEnum.BUDGET_ETAT.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1")
                 +"?actif=true";
 
-        given() .when().post(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("true"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when().post(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("true"));
     }
 
     /**
@@ -78,10 +85,13 @@ class OperationsResourceTest {
                 + OperationsAPIEnum.BUDGET_ETAT.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1")
                 +"?actif=true";
 
-        given() .when().get(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("true"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when()
+            .get(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("true"));
     }
 
     @Test
@@ -94,10 +104,13 @@ class OperationsResourceTest {
                 + OperationsAPIEnum.BUDGET_ETAT.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1")
                 +"?actif=true";
 
-        given() .when().get(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("false"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when()
+            .get(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("false"));
     }
 
     @Test
@@ -109,10 +122,13 @@ class OperationsResourceTest {
         String url = OperationsAPIEnum.BUDGET_BASE
                 + OperationsAPIEnum.BUDGET_ID.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1");
 
-        given() .when().get(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("TEST1"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when()
+            .get(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("TEST1"));
     }
 
 
@@ -126,10 +142,12 @@ class OperationsResourceTest {
         String url = OperationsAPIEnum.BUDGET_BASE
                 + OperationsAPIEnum.BUDGET_QUERY + "?idCompte=1&mois=1&annee=2020";
 
-        given() .when().get(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("TEST1"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when().get(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("TEST1"));
     }
 
 
@@ -139,9 +157,11 @@ class OperationsResourceTest {
         // Test
         String url = OperationsAPIEnum.BUDGET_BASE + OperationsAPIEnum.BUDGET_QUERY;
 
-        given() .when().get(url)
-                .then()
-                .statusCode(500);
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when().get(url)
+        .then()
+            .statusCode(500);
     }
 
 
@@ -154,9 +174,23 @@ class OperationsResourceTest {
         String url = OperationsAPIEnum.BUDGET_BASE
                 + OperationsAPIEnum.BUDGET_ID.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1");
 
-        given() .when().delete(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("TEST1"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when().delete(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("TEST1"));
+    }
+
+
+    private String getTestJWTAuthHeader(){
+        JWTIdToken.JWTHeader h = new JWTIdToken.JWTHeader();
+        JWTIdToken.JWTPayload p = new JWTIdToken.JWTPayload();
+        p.setName("Test");
+        p.setFamily_name("Test");
+        p.setGiven_name("Test");
+        p.setIat(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now()));
+        p.setExp(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now().plusHours(1)));
+        return "Bearer " + JWTUtils.encodeJWT(new JWTIdToken(h, p));
     }
 }

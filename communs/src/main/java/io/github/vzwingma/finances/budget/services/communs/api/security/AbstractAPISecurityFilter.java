@@ -43,8 +43,8 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
      * @throws DecodeException erreur de décodage
      */
     public void filter(ContainerRequestContext requestContext, Cache cacheKey) throws DecodeException {
-        String auth = getAuthBearer(requestContext.getHeaders().get(HttpHeaders.AUTHORIZATION.toLowerCase(Locale.ROOT)));
 
+        String auth = getAuthBearer(requestContext.getHeaders().get(HttpHeaders.AUTHORIZATION.toLowerCase(Locale.ROOT)));
         if(auth != null){
             JWTIdToken idToken = JWTUtils.decodeJWT(auth);
             requestContext.setSecurityContext(new SecurityOverrideContext(requestContext, idToken, auth));
