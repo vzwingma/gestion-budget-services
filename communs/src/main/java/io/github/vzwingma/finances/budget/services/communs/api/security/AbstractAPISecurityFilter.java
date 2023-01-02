@@ -1,24 +1,21 @@
 package io.github.vzwingma.finances.budget.services.communs.api.security;
 
-import com.sun.security.auth.UserPrincipal;
 import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
-import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
 import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
-import io.quarkus.security.identity.request.AnonymousAuthenticationRequest;
+import io.quarkus.cache.Cache;
+import io.quarkus.cache.CaffeineCache;
+import io.vertx.core.json.DecodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.ext.Provider;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -30,6 +27,7 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
     private final Logger LOG = LoggerFactory.getLogger(AbstractAPISecurityFilter.class);
 
 
+
     /**
      * Filtre de sécurité sur JWT
      * @param requestContext requête
@@ -37,11 +35,23 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
      */
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        filter(requestContext, null);
+    }
+    /**
+     * Filtre de sécurité sur JWT
+     * @param requestContext requête
+     * @throws DecodeException erreur de décodage
+     */
+    public void filter(ContainerRequestContext requestContext, Cache cacheKey) throws DecodeException {
         String auth = getAuthBearer(requestContext.getHeaders().get(HttpHeaders.AUTHORIZATION.toLowerCase(Locale.ROOT)));
 
         if(auth != null){
             JWTIdToken idToken = JWTUtils.decodeJWT(auth);
-            requestContext.setSecurityContext(new SecurityOverrideContext(requestContext, idToken));
+            requestContext.setSecurityContext(new SecurityOverrideContext(requestContext, idToken, auth));
+            if(cacheKey != null){
+                LOG.debug("Mise en cache du token de {}", idToken.getPayload().getName());
+                cacheKey.as(CaffeineCache.class).put(requestContext.getSecurityContext().getUserPrincipal().getName(), CompletableFuture.completedFuture(auth));
+            }
         }
         else{
             requestContext.setSecurityContext(new AnonymousSecurityContext());
