@@ -2,6 +2,7 @@ package io.github.vzwingma.finances.budget.services.communs.api.security;
 
 import com.sun.security.auth.UserPrincipal;
 import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,12 +16,17 @@ import java.security.Principal;
 public class SecurityOverrideContext implements SecurityContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityOverrideContext.class);
-    String authorizationValue;
-    JWTIdToken idToken;
+    private final String authorizationValue;
+    private final JWTIdToken idToken;
 
-    public SecurityOverrideContext(ContainerRequestContext requestContext, JWTIdToken idToken){
+    @Getter
+    private final String rawBase64Token;
+
+
+    public SecurityOverrideContext(ContainerRequestContext requestContext, JWTIdToken idToken, String rawBase64Token){
         this.authorizationValue = requestContext.getHeaderString("Authorization");
         this.idToken = idToken;
+        this.rawBase64Token = rawBase64Token;
     }
 
     @Override
