@@ -20,7 +20,7 @@ import java.util.Optional;
 public abstract class AbstractAPIInterceptors {
 
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private final Logger LOG = LoggerFactory.getLogger(AbstractAPIInterceptors.class);
 
     /**
      * Logger requête
@@ -29,11 +29,6 @@ public abstract class AbstractAPIInterceptors {
     public void preMatchingFilter(ContainerRequestContext requestContext) {
         // Replace pattern-breaking characters
         String path = requestContext.getUriInfo().getPath().replaceAll("[\n\r\t]", "_");
-
-        requestContext.getHeaders().forEach((h, v) -> {
-        //    LOG.info("{}:{}", h, v);
-        });
-        getAuthBearer(requestContext.getHeaders().get(HttpHeaders.AUTHORIZATION.toLowerCase(Locale.ROOT)));
         LOG.debug("[HTTP][uri:{} {}]", requestContext.getMethod(), path);
     }
 
@@ -42,22 +37,8 @@ public abstract class AbstractAPIInterceptors {
      * @param responseContext context de la réponse
      */
     public void postMatchingFilter(ContainerResponseContext responseContext) {
+
         BusinessTraceContext.getclear();
         LOG.debug("[HTTP][{}] {}", responseContext.getStatus(), responseContext.getStatusInfo().getReasonPhrase());
-    }
-
-
-    private String getAuthBearer(List<String> authBearer){
-        if(authBearer != null && authBearer.size() > 0) {
-            Optional<String> accessToken = authBearer.stream()
-                                                    .filter(a -> a.startsWith("Bearer "))
-                                                    .map(a -> a.replaceAll("Bearer ", ""))
-                                                    .findFirst();
-            return accessToken.orElse(null);
-        }
-        else{
-            LOG.warn("Auth is null");
-            return null;
-        }
     }
 }

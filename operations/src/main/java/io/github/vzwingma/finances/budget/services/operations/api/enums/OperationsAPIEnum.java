@@ -5,10 +5,10 @@ package io.github.vzwingma.finances.budget.services.operations.api.enums;
  * @author vzwingma
  *
  */
-public class OperationsApiUrlEnum {
+public class OperationsAPIEnum {
 
 
-	private OperationsApiUrlEnum(){
+	private OperationsAPIEnum(){
 		// Constructeur privé pour une classe enum
 	}
 	
@@ -30,9 +30,6 @@ public class OperationsApiUrlEnum {
 	// Avec en paramètres : 
 	// - actif
 	public static final String BUDGET_ETAT = "/"+PARAM_ID_BUDGET+"/etat";
-	/// ou
-	// - uptodateto (long timestamp)
-	public static final String BUDGET_UP_TO_DATE = "/"+PARAM_ID_BUDGET+"/upToDate";
 	public static final String BUDGET_COMPTE_INTERVALLES = "/"+PARAM_ID_COMPTE+"/intervalles";
 	public static final String BUDGET_COMPTE_OPERATIONS_LIBELLES = "/"+PARAM_ID_COMPTE+"/operations/libelles";
 
@@ -43,4 +40,9 @@ public class OperationsApiUrlEnum {
 	public static final String BUDGET_OPERATION_BY_ID = BUDGET_OPERATION + "/"+PARAM_ID_OPERATION ;
 	public static final String BUDGET_OPERATION_DERNIERE = BUDGET_OPERATION_BY_ID + "/derniereOperation";
 	public static final String BUDGET_OPERATION_INTERCOMPTE = BUDGET_OPERATION + "/versCompte/"+PARAM_ID_COMPTE ;
+
+	/**
+	 * Roles
+	 */
+	public static final String OPERATIONS_ROLE = "USER_OPERATIONS";
 }
