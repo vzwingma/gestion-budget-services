@@ -47,7 +47,7 @@ public class RequestJWTHeaderFactory implements ClientHeadersFactory {
      * Recherche d'un token valide dans le cache
      * @param cacheKey cache
      */
-    private String getValidJWTToken(Cache cacheKey, String userKey){
+    private String getValidJWTToken(Cache cacheKey, String userKey) {
 
         try {
             String rawAuthJWT = cacheKey.as(CaffeineCache.class).getIfPresent(userKey).get().toString();
@@ -63,7 +63,7 @@ public class RequestJWTHeaderFactory implements ClientHeadersFactory {
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
-            return null;
+            LOGGER.error("Erreur InterruptedException");
         }
         return null;
     }
