@@ -3,6 +3,7 @@ package io.github.vzwingma.finances.budget.services.communs.api.security;
 import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.UserAccessForbiddenException;
 import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
+import io.quarkus.security.identity.request.AnonymousAuthenticationRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,12 +38,7 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
 
         if(auth != null){
             JWTIdToken idToken = JWTUtils.decodeJWT(auth);
-            if(!idToken.isExpired()){
-                requestContext.setSecurityContext(new SecurityOverrideContext(requestContext, idToken));
-            }
-            else{
-                throw new UserAccessForbiddenException("Le token est expiré");
-            }
+            requestContext.setSecurityContext(new SecurityOverrideContext(requestContext, idToken));
         }
         else{
             throw new UserAccessForbiddenException("Le token JWT est manquant");

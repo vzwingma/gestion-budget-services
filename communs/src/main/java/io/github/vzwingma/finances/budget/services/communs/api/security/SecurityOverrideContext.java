@@ -14,6 +14,7 @@ import java.security.Principal;
  */
 public class SecurityOverrideContext implements SecurityContext {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityOverrideContext.class);
     String authorizationValue;
     JWTIdToken idToken;
 
@@ -33,7 +34,11 @@ public class SecurityOverrideContext implements SecurityContext {
 
     @Override
     public boolean isUserInRole(String role) {
-        return idToken.getPayload().isEmail_verified();
+        if(idToken.isExpired()){
+            LOG.warn("L'utilisateur [{}] n'a pas de token JWT valide", getUserPrincipal().getName());
+            return false;
+        }
+        return true;
     }
 
     @Override
