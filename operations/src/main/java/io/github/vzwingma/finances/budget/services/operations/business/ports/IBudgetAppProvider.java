@@ -75,14 +75,7 @@ public interface IBudgetAppProvider {
      * @param budgetActif etat du budget
      */
     Uni<BudgetMensuel> setBudgetActif(String idBudgetMensuel, boolean budgetActif);
-    /**
-     * Indique si l'IHM est out of date
-     * @param idBudget identifiant du budget
-     * @param dateSurIHM Date affichée
-     * @return si le budget doit être mis à jour
-     */
-    @Deprecated
-    Uni<Boolean> isBudgetIHMUpToDate(String idBudget, Long dateSurIHM);
+
 
     /**
      * Calcul du résumé

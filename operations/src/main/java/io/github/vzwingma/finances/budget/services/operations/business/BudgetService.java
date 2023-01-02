@@ -509,26 +509,6 @@ public class BudgetService implements IBudgetAppProvider {
 
 	}
 
-	/**
-	 *
-	 * @param idBudget identifiant du budget
-	 * @param dateSurIHM Date affichée
-	 * @return budget up to date ?
-	 */
-	@Override
-	@Deprecated
-	public Uni<Boolean> isBudgetIHMUpToDate(String idBudget, Long dateSurIHM) {
-		return this.dataOperationsProvider.chargeBudgetMensuel(idBudget)
-				.onItem().transform(budgetMensuel -> {
-					LOGGER.debug("Budget : Date mise à jour : {} / Date IHM : {}",
-							BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(budgetMensuel.getDateMiseAJour()), dateSurIHM);
-					return dateSurIHM >= BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(budgetMensuel.getDateMiseAJour());
-				})
-				.onFailure().recoverWithItem(Boolean.FALSE);
-	}
-
-
-
 
 
 	/**

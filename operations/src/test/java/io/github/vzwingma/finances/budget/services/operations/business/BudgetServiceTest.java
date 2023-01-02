@@ -283,26 +283,6 @@ class BudgetServiceTest {
     }
 
 
-
-
-    @Test
-    void testIsBudgetUptoDate(){
-        // When
-        BudgetMensuel budgetADesactiver = MockDataBudgets.getBudgetActifCompteC1et1operationPrevue();
-        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel(budgetADesactiver.getId()))
-                .thenReturn(Uni.createFrom().item(budgetADesactiver));
-
-        Mockito.when(mockOperationDataProvider.chargeBudgetMensuel("notFound"))
-                .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Budget introuvable")));
-
-
-        // Test
-        assertTrue(budgetAppProvider.isBudgetIHMUpToDate(budgetADesactiver.getId(), BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(LocalDateTime.now())).await().indefinitely());
-
-        assertFalse(budgetAppProvider.isBudgetIHMUpToDate("notFound", BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(LocalDateTime.now())).await().indefinitely());
-    }
-
-
     @Test
     void testUpdateBudgetCompteClos(){
         // When
