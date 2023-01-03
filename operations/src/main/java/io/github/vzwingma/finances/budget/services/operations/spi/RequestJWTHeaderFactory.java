@@ -64,6 +64,8 @@ public class RequestJWTHeaderFactory implements ClientHeadersFactory {
             }
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.error("Erreur InterruptedException");
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
         }
         return null;
     }
