@@ -48,7 +48,7 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
         if(auth != null){
             JWTIdToken idToken = JWTUtils.decodeJWT(auth);
             requestContext.setSecurityContext(new SecurityOverrideContext(requestContext, idToken, auth));
-            if(cacheKey != null){
+            if(cacheKey != null && !idToken.isExpired()){
                 LOG.trace("Mise en cache du token de {}", idToken.getPayload().getName());
                 cacheKey.as(CaffeineCache.class).put(requestContext.getSecurityContext().getUserPrincipal().getName(), CompletableFuture.completedFuture(auth));
             }
@@ -68,7 +68,7 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
             return accessToken.orElse(null);
         }
         else{
-            LOG.warn("Auth is null");
+            LOG.trace("Auth is null");
             return null;
         }
     }
