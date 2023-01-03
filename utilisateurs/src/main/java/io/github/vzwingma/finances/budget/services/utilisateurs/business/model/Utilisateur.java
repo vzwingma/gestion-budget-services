@@ -34,8 +34,6 @@ public class Utilisateur implements Serializable {
 	
 	private LocalDateTime dernierAcces;
 	
-	// Libellé
-	private String libelle;
 	/**
 	 * Préférences
 	 */
@@ -66,7 +64,7 @@ public class Utilisateur implements Serializable {
 	}
 	
 	public String toFullString(){
-		return String.format("Utilisateur [id=%s, dateDernerAcces=%s, libelle=%s]", this.login, dernierAcces != null ? BudgetDateTimeUtils.getLibelleDate(dernierAcces) : "nulle", this.libelle);
+		return String.format("Utilisateur [id=%s, dateDernerAcces=%s]", this.login, dernierAcces != null ? BudgetDateTimeUtils.getLibelleDate(dernierAcces) : "nulle");
 	}
 
 }

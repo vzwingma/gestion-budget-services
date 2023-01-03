@@ -31,8 +31,8 @@ public class UtilisateurDatabaseAdaptor implements IUtilisateursRepository {
 			LOGGER.info("Recherche de l'utilisateur [{}]", login);
 			return find("login", login)
 					.singleResultOptional()
-					.map(utilisateur -> utilisateur.orElse(null))
-					.onItem().ifNull().failWith(new DataNotFoundException("Utilisateur non trouvé"));
+					.map(utilisateur -> utilisateur.orElse(null));
+					//.onItem();.ifNull().failWith(new DataNotFoundException("Utilisateur non trouvé"));
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors de la connexion à la BDD", e);
@@ -47,7 +47,7 @@ public class UtilisateurDatabaseAdaptor implements IUtilisateursRepository {
 	public void majUtilisateur(Utilisateur utilisateur){
 		try{
 			LOGGER.info("Mise à jour de l'utilisateur [{}]", utilisateur.getLogin());
-			persist(utilisateur)
+			update(utilisateur)
 					.subscribe().with(item -> LOGGER.info("Utilisateur [{}] mis à jour", utilisateur.getLogin()));
 		}
 		catch(Exception e){

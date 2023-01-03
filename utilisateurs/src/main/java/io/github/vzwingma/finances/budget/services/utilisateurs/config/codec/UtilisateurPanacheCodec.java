@@ -6,6 +6,8 @@ import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDate
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurDroitsEnum;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsEnum;
+import io.github.vzwingma.finances.budget.services.utilisateurs.spi.UtilisateurDatabaseAdaptor;
+import io.vertx.core.json.Json;
 import org.bson.*;
 import org.bson.codecs.Codec;
 import org.bson.codecs.CollectibleCodec;
@@ -16,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Date;
 
 /**
  * Panache Codec pour la classe Utilisateur
@@ -23,6 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class UtilisateurPanacheCodec implements CollectibleCodec<Utilisateur> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateurPanacheCodec.class);
     private final Codec<Document> documentCodec;
 
     public UtilisateurPanacheCodec() {
@@ -63,7 +67,6 @@ public class UtilisateurPanacheCodec implements CollectibleCodec<Utilisateur> {
         Utilisateur utilisateur = new Utilisateur();
         Document document = documentCodec.decode(bsonReader, decoderContext);
         utilisateur.setId(document.getObjectId("_id"));
-        utilisateur.setLibelle(document.getString("libelle"));
         utilisateur.setLogin(document.getString("login"));
         utilisateur.setDernierAcces(BudgetDateTimeUtils.getLocalDateTimeFromMillisecond(document.getDate("dernierAcces").getTime()));
         document.get("prefsUtilisateur", Document.class)
@@ -76,7 +79,20 @@ public class UtilisateurPanacheCodec implements CollectibleCodec<Utilisateur> {
 
     @Override
     public void encode(BsonWriter bsonWriter, Utilisateur utilisateur, EncoderContext encoderContext) {
-        LOG.warn("Encoding is not implemented");
+        Document docUtilisateur = new Document();
+        docUtilisateur.put("_id", utilisateur.getId());
+        docUtilisateur.put("login", utilisateur.getLogin());
+        docUtilisateur.put("dernierAcces", new Date(BudgetDateTimeUtils.getMillisecondsFromLocalDateTime(utilisateur.getDernierAcces())));
+
+        Document docPrefs = new Document();
+        utilisateur.getPrefsUtilisateur().forEach((k, v) -> docPrefs.put(k.toString(), v));
+        docUtilisateur.put("prefsUtilisateur", docPrefs);
+
+        Document docDroits = new Document();
+        utilisateur.getDroits().forEach((k, v) -> docDroits.put(k.toString(), v));
+        docUtilisateur.put("droits", docDroits);
+
+        documentCodec.encode(bsonWriter, docUtilisateur, encoderContext);
     }
 
     @Override
