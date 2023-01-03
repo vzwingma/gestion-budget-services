@@ -1,18 +1,11 @@
 package io.github.vzwingma.finances.budget.services.communs.api;
 
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
-import io.netty.handler.codec.HeadersUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.SecurityContext;
-import java.security.Principal;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 /**
  * Interceptor for logging et sécurité des requests et des responses

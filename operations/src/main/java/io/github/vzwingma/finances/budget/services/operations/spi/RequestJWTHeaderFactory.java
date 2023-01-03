@@ -26,18 +26,13 @@ public class RequestJWTHeaderFactory implements ClientHeadersFactory {
     @Context
     SecurityContext securityContext;
 
-    @Inject
-    @CacheName("jwtCache")
-    Cache cacheRawTokens;
-
     @Override
     public MultivaluedMap<String, String> update(MultivaluedMap<String, String> incomingHeaders, MultivaluedMap<String, String> clientOutgoingHeaders) {
         MultivaluedMap<String, String> result = new MultivaluedHashMap<>();
-        if(cacheRawTokens != null){
-            String rawAuthJWT = getValidJWTToken(cacheRawTokens, securityContext.getUserPrincipal().getName());
-            if(rawAuthJWT != null){
-                result.add(HttpHeaders.AUTHORIZATION, "Bearer " + rawAuthJWT);
-            }
+
+        String rawAuthJWT = getValidJWTToken(securityContext.getAuthenticationScheme());
+        if(rawAuthJWT != null){
+            result.add(HttpHeaders.AUTHORIZATION, "Bearer " + rawAuthJWT);
         }
         return result;
     }
@@ -45,27 +40,16 @@ public class RequestJWTHeaderFactory implements ClientHeadersFactory {
 
     /**
      * Recherche d'un token valide dans le cache
-     * @param cacheKey cache
+     * @param rawAuthJWT rawtJwt
      */
-    private String getValidJWTToken(Cache cacheKey, String userKey) {
+    private String getValidJWTToken(String rawAuthJWT) {
 
-        try {
-            String rawAuthJWT = cacheKey.as(CaffeineCache.class).getIfPresent(userKey).get().toString();
-
-            // Revalidation de la validité du token
-            if(rawAuthJWT != null){
-                JWTIdToken idToken = JWTUtils.decodeJWT(rawAuthJWT);
-                if(!idToken.isExpired()){
-                    return rawAuthJWT;
-                }
-                else{
-                    cacheKey.as(CaffeineCache.class).invalidate(userKey);
-                }
+        // Revalidation de la validité du token
+        if(rawAuthJWT != null){
+            JWTIdToken idToken = JWTUtils.decodeJWT(rawAuthJWT);
+            if(!idToken.isExpired()){
+                return rawAuthJWT;
             }
-        } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Erreur InterruptedException");
-            // Restore interrupted state...
-            Thread.currentThread().interrupt();
         }
         return null;
     }

@@ -1,6 +1,7 @@
 package io.github.vzwingma.finances.budget.services.comptes.api.override;
 
 import io.github.vzwingma.finances.budget.services.communs.api.security.AbstractAPISecurityFilter;
+import io.vertx.core.json.DecodeException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;

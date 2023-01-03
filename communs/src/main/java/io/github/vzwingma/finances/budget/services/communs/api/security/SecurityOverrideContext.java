@@ -16,15 +16,13 @@ import java.security.Principal;
 public class SecurityOverrideContext implements SecurityContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityOverrideContext.class);
-    private final String authorizationValue;
+
     private final JWTIdToken idToken;
 
-    @Getter
     private final String rawBase64Token;
 
 
-    public SecurityOverrideContext(ContainerRequestContext requestContext, JWTIdToken idToken, String rawBase64Token){
-        this.authorizationValue = requestContext.getHeaderString("Authorization");
+    public SecurityOverrideContext(JWTIdToken idToken, String rawBase64Token){
         this.idToken = idToken;
         this.rawBase64Token = rawBase64Token;
     }
@@ -58,6 +56,6 @@ public class SecurityOverrideContext implements SecurityContext {
 
     @Override
     public String getAuthenticationScheme() {
-        return authorizationValue == null ? null : authorizationValue.split(" ")[0].trim();
+        return this.rawBase64Token;
     }
 }
