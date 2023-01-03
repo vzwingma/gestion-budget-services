@@ -49,7 +49,7 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
             JWTIdToken idToken = JWTUtils.decodeJWT(auth);
             requestContext.setSecurityContext(new SecurityOverrideContext(requestContext, idToken, auth));
             if(cacheKey != null){
-                LOG.debug("Mise en cache du token de {}", idToken.getPayload().getName());
+                LOG.trace("Mise en cache du token de {}", idToken.getPayload().getName());
                 cacheKey.as(CaffeineCache.class).put(requestContext.getSecurityContext().getUserPrincipal().getName(), CompletableFuture.completedFuture(auth));
             }
         }
