@@ -33,7 +33,7 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
         String auth = getAuthBearerFromHeaders(requestContext.getHeaders().get(HttpHeaders.AUTHORIZATION.toLowerCase(Locale.ROOT)));
-        if (auth != null) {
+        if (auth != null && !"null".equals(auth)) {
             try {
                 JWTIdToken idToken = JWTUtils.decodeJWT(auth);
                 requestContext.setSecurityContext(new SecurityOverrideContext(idToken, auth));
