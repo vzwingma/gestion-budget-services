@@ -18,6 +18,4 @@ public class ComptesApiUrlEnum {
 	 */
 	public static final String COMPTES_BASE = "/comptes/v1";
 	public static final String COMPTES_ID = "/{"+PARAM_ID_COMPTE + "}";
-
-
 }

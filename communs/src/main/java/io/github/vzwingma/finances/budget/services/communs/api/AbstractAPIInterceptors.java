@@ -8,12 +8,12 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 
 /**
- * Interceptor for logging des requests et des responses
+ * Interceptor for logging et sécurité des requests et des responses
  */
-public abstract class AbstractAPILoggerInterceptor {
+public abstract class AbstractAPIInterceptors {
 
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private final Logger LOG = LoggerFactory.getLogger(AbstractAPIInterceptors.class);
 
     /**
      * Logger requête
@@ -30,8 +30,8 @@ public abstract class AbstractAPILoggerInterceptor {
      * @param responseContext context de la réponse
      */
     public void postMatchingFilter(ContainerResponseContext responseContext) {
+
         BusinessTraceContext.getclear();
         LOG.debug("[HTTP][{}] {}", responseContext.getStatus(), responseContext.getStatusInfo().getReasonPhrase());
     }
-
 }

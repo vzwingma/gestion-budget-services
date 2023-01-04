@@ -6,10 +6,10 @@ package io.github.vzwingma.finances.budget.services.utilisateurs.api.enums;
  *
  */
 
-public class UtilisateursApiUrlEnum {
+public class UtilisateursAPIEnum {
 
 
-	private UtilisateursApiUrlEnum(){
+	private UtilisateursAPIEnum(){
 		// Constructeur privé pour une classe enum
 	}
 
@@ -20,4 +20,8 @@ public class UtilisateursApiUrlEnum {
 	public static final String USERS_ACCESS_DATE = "/lastaccessdate";
 	public static final String USERS_PREFS = "/preferences";
 
+	/**
+	 * Roles
+	 */
+	public static final String UTILISATEURS_ROLE = "USER_UTILISATEURS";
 }

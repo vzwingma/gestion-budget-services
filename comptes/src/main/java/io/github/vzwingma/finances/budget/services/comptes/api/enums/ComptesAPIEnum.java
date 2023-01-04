@@ -5,10 +5,10 @@ package io.github.vzwingma.finances.budget.services.comptes.api.enums;
  * @author vzwingma
  *
  */
-public class ComptesApiUrlEnum {
+public class ComptesAPIEnum {
 
 
-	private ComptesApiUrlEnum(){
+	private ComptesAPIEnum(){
 		// Constructeur privé pour une classe enum
 	}
 	public static final String PARAM_ID_COMPTE = "{idCompte}";
@@ -20,5 +20,10 @@ public class ComptesApiUrlEnum {
 	public static final String COMPTES_LIST = "";
 	public static final String COMPTES_ID = "/"+PARAM_ID_COMPTE ;
 
+
+	/**
+	 * Roles
+	 */
+	public static final String COMPTES_ROLE = "USER_COMPTES";
 
 }

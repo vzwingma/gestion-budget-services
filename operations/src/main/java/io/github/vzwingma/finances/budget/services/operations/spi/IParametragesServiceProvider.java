@@ -3,6 +3,7 @@ package io.github.vzwingma.finances.budget.services.operations.spi;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.operations.api.enums.ParametragesApiUrlEnum;
 import io.smallrye.mutiny.Uni;
+import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.ws.rs.GET;

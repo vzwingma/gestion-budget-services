@@ -1,4 +1,4 @@
-package io.github.vzwingma.finances.budget.services.comptes.api;
+package io.github.vzwingma.finances.budget.services.comptes.api.override;
 
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIExceptionsHandler;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.AbstractBusinessException;

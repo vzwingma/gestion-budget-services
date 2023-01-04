@@ -5,10 +5,10 @@ package io.github.vzwingma.finances.budget.services.parametrages.api.enums;
  * @author vzwingma
  *
  */
-public class ParametragesApiUrlEnum {
+public class ParametragesAPIEnum {
 
 
-	private ParametragesApiUrlEnum(){
+	private ParametragesAPIEnum(){
 		// Constructeur privé pour une classe enum
 	}
 	public static final String PARAM_ID_CATEGORIE = "idCategorie";

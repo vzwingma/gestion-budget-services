@@ -1,6 +1,9 @@
 package io.github.vzwingma.finances.budget.services.operations.api;
 
-import io.github.vzwingma.finances.budget.services.operations.api.enums.OperationsApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
+import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
+import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
+import io.github.vzwingma.finances.budget.services.operations.api.enums.OperationsAPIEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.BudgetService;
 import io.github.vzwingma.finances.budget.services.operations.business.OperationsService;
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IBudgetAppProvider;
@@ -15,11 +18,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.HttpHeaders;
 
+import java.time.LocalDateTime;
 import java.time.Month;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.*;
@@ -56,14 +60,16 @@ class OperationsResourceTest {
         Mockito.when(budgetService.setBudgetActif(anyString(), anyBoolean()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
         // Test
-        String url = OperationsApiUrlEnum.BUDGET_BASE
-                + OperationsApiUrlEnum.BUDGET_ETAT.replace(OperationsApiUrlEnum.PARAM_ID_BUDGET, "1")
+        String url = OperationsAPIEnum.BUDGET_BASE
+                + OperationsAPIEnum.BUDGET_ETAT.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1")
                 +"?actif=true";
 
-        given() .when().post(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("true"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when().post(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("true"));
     }
 
     /**
@@ -75,14 +81,17 @@ class OperationsResourceTest {
         Mockito.when(budgetService.isBudgetMensuelActif(anyString()))
                 .thenReturn(Uni.createFrom().item(Boolean.TRUE));
         // Test
-        String url = OperationsApiUrlEnum.BUDGET_BASE
-                + OperationsApiUrlEnum.BUDGET_ETAT.replace(OperationsApiUrlEnum.PARAM_ID_BUDGET, "1")
+        String url = OperationsAPIEnum.BUDGET_BASE
+                + OperationsAPIEnum.BUDGET_ETAT.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1")
                 +"?actif=true";
 
-        given() .when().get(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("true"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when()
+            .get(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("true"));
     }
 
     @Test
@@ -91,14 +100,17 @@ class OperationsResourceTest {
         Mockito.when(budgetService.isBudgetMensuelActif(anyString()))
                 .thenReturn(Uni.createFrom().item(Boolean.FALSE));
         // Test
-        String url = OperationsApiUrlEnum.BUDGET_BASE
-                + OperationsApiUrlEnum.BUDGET_ETAT.replace(OperationsApiUrlEnum.PARAM_ID_BUDGET, "1")
+        String url = OperationsAPIEnum.BUDGET_BASE
+                + OperationsAPIEnum.BUDGET_ETAT.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1")
                 +"?actif=true";
 
-        given() .when().get(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("false"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when()
+            .get(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("false"));
     }
 
     @Test
@@ -107,13 +119,16 @@ class OperationsResourceTest {
         Mockito.when(budgetService.getBudgetMensuel(anyString()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
         // Test
-        String url = OperationsApiUrlEnum.BUDGET_BASE
-                + OperationsApiUrlEnum.BUDGET_ID.replace(OperationsApiUrlEnum.PARAM_ID_BUDGET, "1");
+        String url = OperationsAPIEnum.BUDGET_BASE
+                + OperationsAPIEnum.BUDGET_ID.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1");
 
-        given() .when().get(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("TEST1"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when()
+            .get(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("TEST1"));
     }
 
 
@@ -124,13 +139,15 @@ class OperationsResourceTest {
         Mockito.when(budgetService.getBudgetMensuel(anyString(), any(Month.class), anyInt()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
         // Test
-        String url = OperationsApiUrlEnum.BUDGET_BASE
-                + OperationsApiUrlEnum.BUDGET_QUERY + "?idCompte=1&mois=1&annee=2020";
+        String url = OperationsAPIEnum.BUDGET_BASE
+                + OperationsAPIEnum.BUDGET_QUERY + "?idCompte=1&mois=1&annee=2020";
 
-        given() .when().get(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("TEST1"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when().get(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("TEST1"));
     }
 
 
@@ -138,11 +155,13 @@ class OperationsResourceTest {
     @Test
     void testGetBudgetByParamsKO() {
         // Test
-        String url = OperationsApiUrlEnum.BUDGET_BASE + OperationsApiUrlEnum.BUDGET_QUERY;
+        String url = OperationsAPIEnum.BUDGET_BASE + OperationsAPIEnum.BUDGET_QUERY;
 
-        given() .when().get(url)
-                .then()
-                .statusCode(500);
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when().get(url)
+        .then()
+            .statusCode(500);
     }
 
 
@@ -152,12 +171,26 @@ class OperationsResourceTest {
         Mockito.when(budgetService.reinitialiserBudgetMensuel(anyString()))
                 .thenReturn(Uni.createFrom().item(MockDataBudgets.getBudgetActifCompteC1et1operationPrevue()));
         // Test
-        String url = OperationsApiUrlEnum.BUDGET_BASE
-                + OperationsApiUrlEnum.BUDGET_ID.replace(OperationsApiUrlEnum.PARAM_ID_BUDGET, "1");
+        String url = OperationsAPIEnum.BUDGET_BASE
+                + OperationsAPIEnum.BUDGET_ID.replace(OperationsAPIEnum.PARAM_ID_BUDGET, "1");
 
-        given() .when().delete(url)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("TEST1"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when().delete(url)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("TEST1"));
+    }
+
+
+    private String getTestJWTAuthHeader(){
+        JWTIdToken.JWTHeader h = new JWTIdToken.JWTHeader();
+        JWTIdToken.JWTPayload p = new JWTIdToken.JWTPayload();
+        p.setName("Test");
+        p.setFamily_name("Test");
+        p.setGiven_name("Test");
+        p.setIat(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now()));
+        p.setExp(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now().plusHours(1)));
+        return "Bearer " + JWTUtils.encodeJWT(new JWTIdToken(h, p));
     }
 }

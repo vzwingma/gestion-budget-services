@@ -1,12 +1,12 @@
 package io.github.vzwingma.finances.budget.services.operations.api;
 
-import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPILoggerInterceptor;
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIInterceptors;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BadParametersException;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
-import io.github.vzwingma.finances.budget.services.operations.api.enums.OperationsApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.operations.api.enums.OperationsAPIEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.IntervallesCompteAPIObject;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LibellesOperationsAPIObject;
@@ -27,11 +27,14 @@ import org.jboss.resteasy.reactive.server.ServerResponseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.time.Month;
 import java.util.Set;
 import java.util.UUID;
@@ -42,8 +45,8 @@ import java.util.UUID;
  * @author vzwingma
  *
  */
-@Path(OperationsApiUrlEnum.BUDGET_BASE)
-public class OperationsResource extends AbstractAPILoggerInterceptor {
+@Path(OperationsAPIEnum.BUDGET_BASE)
+public class OperationsResource extends AbstractAPIInterceptors {
 
     private static final Logger LOG = LoggerFactory.getLogger(OperationsResource.class);
 
@@ -53,6 +56,9 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
 
     @Inject
     IOperationsAppProvider operationsService;
+
+    @Context
+    SecurityContext securityContext;
 
     /**
      * Retour le budget d'un utilisateur
@@ -70,14 +76,15 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=OperationsApiUrlEnum.BUDGET_QUERY)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_QUERY)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> getBudget(
             @RestQuery("idCompte") String idCompte,
             @RestQuery("mois") Integer mois,
             @RestQuery("annee") Integer annee) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("getBudget {}/{}", mois, annee);
 
         if(mois != null && annee != null){
@@ -109,11 +116,12 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=OperationsApiUrlEnum.BUDGET_ID)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> getBudget(@RestPath("idBudget") String idBudget) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("chargeBudget");
         if(idBudget != null){
             return budgetService.getBudgetMensuel(idBudget);
@@ -139,11 +147,12 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "405", description = "Compte clos. Impossible de réinitialiser le budget")
     })
     @DELETE
-    @Path(value=OperationsApiUrlEnum.BUDGET_ID)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> reinitializeBudget(@RestPath("idBudget") String idBudget){
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("Réinitialisation du budget");
         if(idBudget != null){
             return budgetService.reinitialiserBudgetMensuel(idBudget);
@@ -167,13 +176,14 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=OperationsApiUrlEnum.BUDGET_ETAT)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_ETAT)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Boolean> isBudgetActif(
             @RestPath("idBudget") String idBudget,
             @RestQuery(value = "actif") Boolean actif) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("actif ? : {}", actif);
 
         if(Boolean.TRUE.equals(actif)){
@@ -182,38 +192,6 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
         return Uni.createFrom().failure(new BadParametersException("Les paramètres {idBudget}=" +idBudget + " et {actif}=" + actif + " ne sont pas valides"));
     }
 
-
-    /**
-     * Retourne le statut du budget
-     * @param idBudget id du compte
-     * @return statut du budget
-     */
-    @Operation(description="Retourne l'état de mise à jour d'un budget mensuel : {uptodate} : {uptodate} indique si le budget a été mis à jour en BDD par rapport à la date passée en paramètre")
-    @APIResponses(value = {
-            @APIResponse(responseCode = "200", description = "Budget à jour"),
-            @APIResponse(responseCode = "400", description = "Paramètres incorrects"),
-            @APIResponse(responseCode = "401", description = "Utilisateur non authentifié"),
-            @APIResponse(responseCode = "403", description = "Opération non autorisée"),
-            @APIResponse(responseCode = "404", description = "Données introuvables"),
-            @APIResponse(responseCode = "426", description = "Le Budget a été mis à jour par rapport à la date renvoyée")
-    })
-    @GET
-    @Path(value=OperationsApiUrlEnum.BUDGET_UP_TO_DATE)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Boolean> isBudgetUptoDate(
-            @RestPath("idBudget") String idBudget, @RestQuery(value="uptodateto") Long uptodateto) {
-
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
-        LOG.trace("Budget uptodate à {} ? ", uptodateto );
-
-        if(uptodateto != null){
-            return budgetService.isBudgetIHMUpToDate(idBudget, uptodateto)
-                    .onItem()
-                    .invoke(isUpToDate -> LOG.info("[idBudget={}] isIHM Up To Date {} ? : {}", idBudget, BudgetDateTimeUtils.getLibelleDateFromMillis(uptodateto), isUpToDate))
-                    .onItem().ifNull().failWith(new DataNotFoundException("Le budget mensuel n'a pas été trouvé"));
-        }
-        return Uni.createFrom().failure(new BadParametersException("Les paramètres {idBudget}=" +idBudget + " et {uptodateto}=" + uptodateto + " ne sont pas valides"));
-    }
 
     /**
      * Met à jour le statut du budget
@@ -230,13 +208,14 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "500", description = "Opération en échec")
     })
     @POST
-    @Path(value=OperationsApiUrlEnum.BUDGET_ETAT)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_ETAT)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> setBudgetActif(
             @RestPath("idBudget") String idBudget,
             @RestQuery(value="actif") Boolean actif) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("[idBudget={}] set Actif : {}", idBudget, actif );
         return budgetService.setBudgetActif(idBudget, actif);
     }
@@ -260,14 +239,15 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @POST
-    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION_DERNIERE)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_OPERATION_DERNIERE)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Boolean> setAsDerniereOperation(
             @RestPath("idBudget") String idBudget,
             @RestPath("idOperation") String idOperation)  {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("setAsDerniereOperation");
         return operationsService.setLigneAsDerniereOperation(idBudget, idOperation);
     }
@@ -290,12 +270,13 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "423", description = "Compte clos")
     })
     @POST
-    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_OPERATION)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> createOperation( @RestPath("idBudget") String idBudget, LigneOperation operation) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("createOperation");
         if(operation != null && idBudget != null){
             operation.setId(UUID.randomUUID().toString());
@@ -324,7 +305,8 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "423", description = "Compte clos")
     })
     @POST
-    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION_BY_ID)
+    @Path(value= OperationsAPIEnum.BUDGET_OPERATION_BY_ID)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> updateOperation(
@@ -332,8 +314,11 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @RestPath("idOperation") String idOperation,
             LigneOperation operation) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
-        LOG.trace("UpdateOperation");
+
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
+        LOG.info("UpdateOperation");
+        LOG.info("{}", securityContext.getUserPrincipal().getName());
+
         if(operation != null && idBudget != null){
             operation.setId(idOperation);
             return budgetService.addOperationInBudget(idBudget, operation);
@@ -362,7 +347,8 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "423", description = "Compte clos")
     })
     @POST
-    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION_INTERCOMPTE)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_OPERATION_INTERCOMPTE)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> createOperationIntercomptes(
@@ -371,7 +357,7 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             LigneOperation operation) {
 
         String uuidOperation = UUID.randomUUID().toString();
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, uuidOperation);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, uuidOperation).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.info("Create Operation InterCompte [->{}]", idCompte);
         if(operation != null && idBudget != null){
             operation.setId(uuidOperation);
@@ -400,13 +386,14 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "405", description = "Compte clos")
     })
     @DELETE
-    @Path(value=OperationsApiUrlEnum.BUDGET_OPERATION_BY_ID)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_OPERATION_BY_ID)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<BudgetMensuel> deleteOperation(
             @RestPath("idBudget") String idBudget,
             @RestPath("idOperation") String idOperation) {
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.OPERATION, idOperation).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         if(idOperation != null && idBudget != null){
             LOG.trace("Delete Operation");
             return budgetService.deleteOperationInBudget(idBudget, idOperation);
@@ -431,13 +418,14 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=OperationsApiUrlEnum.BUDGET_COMPTE_INTERVALLES)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_COMPTE_INTERVALLES)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<IntervallesCompteAPIObject> getIntervallesBudgetsCompte(@RestPath("idCompte") String idCompte) {
         if(idCompte == null){
             return Uni.createFrom().failure(new BadParametersException("Le paramètre idCompte est obligatoire"));
         }
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
         LOG.trace("getIntervallesBudgetsCompte");
 
         return this.budgetService.getIntervallesBudgets(idCompte)
@@ -471,11 +459,12 @@ public class OperationsResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(value=OperationsApiUrlEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES)
+    @RolesAllowed({ OperationsAPIEnum.OPERATIONS_ROLE })
+    @Path(value= OperationsAPIEnum.BUDGET_COMPTE_OPERATIONS_LIBELLES)
     @Produces(MediaType.APPLICATION_JSON)
     public  Uni<LibellesOperationsAPIObject> getLibellesOperations(@RestPath("idCompte") String idCompte, @RestQuery("annee") Integer annee) {
 
-        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
+        BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.COMPTE, idCompte).put(BusinessTraceContextKeyEnum.USER, securityContext.getUserPrincipal().getName());
 
         LOG.trace("Libellés Opérations de l'année {}", annee);
         return this.operationsService.getLibellesOperations(idCompte, annee)

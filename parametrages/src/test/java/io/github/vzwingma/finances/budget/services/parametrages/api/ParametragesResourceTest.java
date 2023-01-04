@@ -1,6 +1,9 @@
 package io.github.vzwingma.finances.budget.services.parametrages.api;
 
-import io.github.vzwingma.finances.budget.services.parametrages.api.enums.ParametragesApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
+import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
+import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
+import io.github.vzwingma.finances.budget.services.parametrages.api.enums.ParametragesAPIEnum;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ParametragesService;
 import io.github.vzwingma.finances.budget.services.parametrages.business.ports.IParametrageAppProvider;
 import io.github.vzwingma.finances.budget.services.parametrages.test.data.MockDataCategoriesOperations;
@@ -13,9 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.HttpHeaders;
+
+import java.time.LocalDateTime;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
 
 @QuarkusTest
@@ -43,9 +48,24 @@ class ParametragesResourceTest {
         // Init des données
         Mockito.when(parametragesService.getCategories()).thenReturn(Uni.createFrom().item(MockDataCategoriesOperations.getListeTestCategories()));
         // Test
-        given() .when().get(ParametragesApiUrlEnum.PARAMS_BASE + ParametragesApiUrlEnum.PARAMS_CATEGORIES)
-                .then()
-                    .statusCode(200)
-                    .body(Matchers.containsString(MockDataCategoriesOperations.getListeTestCategories().get(0).getLibelle()));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when().get(ParametragesAPIEnum.PARAMS_BASE + ParametragesAPIEnum.PARAMS_CATEGORIES)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString(MockDataCategoriesOperations.getListeTestCategories().get(0).getLibelle()));
+    }
+
+
+
+    private String getTestJWTAuthHeader(){
+        JWTIdToken.JWTHeader h = new JWTIdToken.JWTHeader();
+        JWTIdToken.JWTPayload p = new JWTIdToken.JWTPayload();
+        p.setName("Test");
+        p.setFamily_name("Test");
+        p.setGiven_name("Test");
+        p.setIat(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now()));
+        p.setExp(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now().plusHours(1)));
+        return "Bearer " + JWTUtils.encodeJWT(new JWTIdToken(h, p));
     }
 }

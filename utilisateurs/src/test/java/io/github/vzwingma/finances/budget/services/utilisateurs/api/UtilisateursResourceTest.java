@@ -1,7 +1,10 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
+import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
-import io.github.vzwingma.finances.budget.services.utilisateurs.api.enums.UtilisateursApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
+import io.github.vzwingma.finances.budget.services.utilisateurs.api.enums.UtilisateursAPIEnum;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.UtilisateursService;
 import io.github.vzwingma.finances.budget.services.utilisateurs.test.data.MockDataUtilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
@@ -15,9 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.HttpHeaders;
+
+import java.time.LocalDateTime;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
 
 @QuarkusTest
@@ -47,10 +52,13 @@ class UtilisateursResourceTest {
         Mockito.when(utilisateurService.getUtilisateur(Mockito.anyString()))
                 .thenReturn(Uni.createFrom().item(utilisateurExpected));
         // Test
-        given() .when().get(UtilisateursApiUrlEnum.USERS_BASE + UtilisateursApiUrlEnum.USERS_ACCESS_DATE)
-                .then()
-                    .statusCode(200)
-                    .body(Matchers.containsString("lastAccessTime"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when()
+            .get(UtilisateursAPIEnum.USERS_BASE + UtilisateursAPIEnum.USERS_ACCESS_DATE)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("lastAccessTime"));
     }
 
 
@@ -61,7 +69,10 @@ class UtilisateursResourceTest {
         Mockito.when(utilisateurService.getUtilisateur(Mockito.anyString()))
                 .thenReturn(Uni.createFrom().item(utilisateurExpected));
         // Test
-        given() .when().get(UtilisateursApiUrlEnum.USERS_BASE + UtilisateursApiUrlEnum.USERS_PREFS)
+        given()
+                .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+                .when()
+                .get(UtilisateursAPIEnum.USERS_BASE + UtilisateursAPIEnum.USERS_PREFS)
                 .then()
                 .statusCode(200)
                 .body(Matchers.containsString("\"preferences\":{\"PREFS_STATUT_NLLE_DEPENSE\":\"Nouvelle\"}"));
@@ -75,10 +86,24 @@ class UtilisateursResourceTest {
         Mockito.when(utilisateurService.getUtilisateur(Mockito.anyString()))
                 .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Utilisateur introuvable")));
         // Test
-        given() .when().get(UtilisateursApiUrlEnum.USERS_BASE + UtilisateursApiUrlEnum.USERS_ACCESS_DATE)
-                .then()
-                .statusCode(200)
-                .body(Matchers.containsString("\"lastAccessTime\":null"));
+        given()
+            .header(HttpHeaders.AUTHORIZATION, getTestJWTAuthHeader())
+        .when()
+            .get(UtilisateursAPIEnum.USERS_BASE + UtilisateursAPIEnum.USERS_ACCESS_DATE)
+        .then()
+            .statusCode(200)
+            .body(Matchers.containsString("\"lastAccessTime\":null"));
     }
 
+
+    private String getTestJWTAuthHeader(){
+        JWTIdToken.JWTHeader h = new JWTIdToken.JWTHeader();
+        JWTIdToken.JWTPayload p = new JWTIdToken.JWTPayload();
+        p.setName("Test");
+        p.setFamily_name("Test");
+        p.setGiven_name("Test");
+        p.setIat(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now()));
+        p.setExp(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now().plusHours(1)));
+        return "Bearer " + JWTUtils.encodeJWT(new JWTIdToken(h, p));
+    }
 }

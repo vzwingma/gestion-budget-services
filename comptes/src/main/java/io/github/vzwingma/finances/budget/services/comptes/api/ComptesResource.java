@@ -1,10 +1,10 @@
 package io.github.vzwingma.finances.budget.services.comptes.api;
 
-import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPILoggerInterceptor;
+import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIInterceptors;
 import io.github.vzwingma.finances.budget.services.communs.data.model.CompteBancaire;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContext;
 import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTraceContextKeyEnum;
-import io.github.vzwingma.finances.budget.services.comptes.api.enums.ComptesApiUrlEnum;
+import io.github.vzwingma.finances.budget.services.comptes.api.enums.ComptesAPIEnum;
 import io.github.vzwingma.finances.budget.services.comptes.business.ports.IComptesAppProvider;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -18,13 +18,16 @@ import org.jboss.resteasy.reactive.server.ServerResponseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -33,8 +36,8 @@ import java.util.List;
  * @author vzwingma
  *
  */
-@Path(ComptesApiUrlEnum.COMPTES_BASE)
-public class ComptesResource extends AbstractAPILoggerInterceptor {
+@Path(ComptesAPIEnum.COMPTES_BASE)
+public class ComptesResource extends AbstractAPIInterceptors {
 
     private static final Logger LOG = LoggerFactory.getLogger(ComptesResource.class);
 
@@ -42,7 +45,8 @@ public class ComptesResource extends AbstractAPILoggerInterceptor {
     @Inject
     IComptesAppProvider services;
 
-
+    @Context
+    SecurityContext securityContext;
     /**
      * Retour la liste des comptes
      * @return liste des comptes de l'utilisateur
@@ -56,11 +60,12 @@ public class ComptesResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "404", description = "Session introuvable")
     })
     @GET
-    @Path(ComptesApiUrlEnum.COMPTES_LIST)
+    @RolesAllowed({ ComptesAPIEnum.COMPTES_ROLE })
+    @Path(ComptesAPIEnum.COMPTES_LIST)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<List<CompteBancaire>> getComptesUtilisateur() {
 
-        String proprietaire = "vzwingma";
+        String proprietaire = securityContext.getUserPrincipal().getName();
         BusinessTraceContext.getclear().remove(BusinessTraceContextKeyEnum.COMPTE).put(BusinessTraceContextKeyEnum.USER, proprietaire);
         LOG.info("getComptes");
         return this.services.getComptesUtilisateur(proprietaire)
@@ -81,11 +86,12 @@ public class ComptesResource extends AbstractAPILoggerInterceptor {
             @APIResponse(responseCode = "404", description = "Données introuvables")
     })
     @GET
-    @Path(ComptesApiUrlEnum.COMPTES_ID)
+    @Path(ComptesAPIEnum.COMPTES_ID)
+    @RolesAllowed({ ComptesAPIEnum.COMPTES_ROLE })
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<CompteBancaire> getCompteUtilisateur(@RestPath String idCompte) {
 
-        String proprietaire = "vzwingma";
+        String proprietaire = securityContext.getUserPrincipal().getName();
         BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.USER, proprietaire).put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
 
         LOG.info("getCompte");
