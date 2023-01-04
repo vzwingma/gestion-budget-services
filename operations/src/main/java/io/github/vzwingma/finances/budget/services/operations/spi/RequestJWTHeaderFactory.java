@@ -2,16 +2,11 @@ package io.github.vzwingma.finances.budget.services.operations.spi;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
 import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
-import io.quarkus.cache.Cache;
-import io.quarkus.cache.CacheName;
-import io.quarkus.cache.CaffeineCache;
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.*;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Factory pour injecter le token JWT correspondant à l'utilisateur connecté. S'il existe, s'il n'est pas expiré
