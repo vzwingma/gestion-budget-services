@@ -37,11 +37,12 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
             try {
                 JWTIdToken idToken = JWTUtils.decodeJWT(auth);
                 requestContext.setSecurityContext(new SecurityOverrideContext(idToken, auth));
+                return;
             } catch (DecodeException e) {
                 LOG.error("Erreur lors du décodage du token JWT : {}", auth);
             }
-            requestContext.setSecurityContext(new AnonymousSecurityContext());
         }
+        requestContext.setSecurityContext(new AnonymousSecurityContext());
     }
 
 
