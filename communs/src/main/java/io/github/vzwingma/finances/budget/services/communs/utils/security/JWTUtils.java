@@ -32,7 +32,7 @@ public class JWTUtils {
             return new JWTIdToken(Json.decodeValue(header, JWTIdToken.JWTHeader.class), Json.decodeValue(payload, JWTIdToken.JWTPayload.class));
         }
         catch (Exception e){
-            LOG.error("Erreur lors du décodage du token [{}]", base64JWT);
+            LOG.error("Erreur lors du décodage du token [{}]", base64JWT, e);
             throw new DecodeException("Erreur lors du décodage du token");
         }
     }
