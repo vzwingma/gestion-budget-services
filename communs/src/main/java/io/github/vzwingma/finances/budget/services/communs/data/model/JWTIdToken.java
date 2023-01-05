@@ -3,6 +3,7 @@ package io.github.vzwingma.finances.budget.services.communs.data.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 
+@RegisterForReflection
 @JsonDeserialize @JsonSerialize
 @Getter @Setter
 public class JWTIdToken {
@@ -30,6 +32,7 @@ public class JWTIdToken {
     /**
      * Header d'un token JWT
      */
+    @RegisterForReflection
     @JsonDeserialize @JsonSerialize
     @Setter @Getter @NoArgsConstructor
     public static class JWTHeader {
@@ -38,6 +41,7 @@ public class JWTIdToken {
         private String typ;
     }
 
+    @RegisterForReflection
     @JsonDeserialize @JsonSerialize
     @Setter @Getter @NoArgsConstructor
     public static class JWTPayload {
