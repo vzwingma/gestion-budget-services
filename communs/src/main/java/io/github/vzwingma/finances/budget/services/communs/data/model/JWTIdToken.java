@@ -1,6 +1,8 @@
 package io.github.vzwingma.finances.budget.services.communs.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+
+@JsonDeserialize @JsonSerialize
 @Getter @Setter
 public class JWTIdToken {
 
@@ -26,6 +30,7 @@ public class JWTIdToken {
     /**
      * Header d'un token JWT
      */
+    @JsonDeserialize @JsonSerialize
     @Setter @Getter @NoArgsConstructor
     public static class JWTHeader {
         private String alg;
@@ -33,6 +38,7 @@ public class JWTIdToken {
         private String typ;
     }
 
+    @JsonDeserialize @JsonSerialize
     @Setter @Getter @NoArgsConstructor
     public static class JWTPayload {
         private String iss;

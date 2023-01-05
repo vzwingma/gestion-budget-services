@@ -24,6 +24,7 @@ public class JWTUtils {
      */
     public static JWTIdToken decodeJWT(String base64JWT) throws DecodeException {
         LOG.trace("Décodage du Token JWT : {}", base64JWT);
+
         Base64.Decoder decoder = Base64.getUrlDecoder();
         try {
             String[] chunks = base64JWT.split("\\.");
