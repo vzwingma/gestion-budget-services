@@ -1,12 +1,11 @@
 package io.github.vzwingma.finances.budget.services.communs.api.security;
 
 import com.sun.security.auth.UserPrincipal;
-import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
-import lombok.Getter;
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthPayload;
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
@@ -17,12 +16,12 @@ public class SecurityOverrideContext implements SecurityContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityOverrideContext.class);
 
-    private final JWTIdToken idToken;
+    private final JWTAuthToken idToken;
 
     private final String rawBase64Token;
 
 
-    public SecurityOverrideContext(JWTIdToken idToken, String rawBase64Token){
+    public SecurityOverrideContext(JWTAuthToken idToken, String rawBase64Token){
         this.idToken = idToken;
         this.rawBase64Token = rawBase64Token;
     }
@@ -30,7 +29,7 @@ public class SecurityOverrideContext implements SecurityContext {
     @Override
     public Principal getUserPrincipal() {
         if(idToken != null){
-            JWTIdToken.JWTPayload p = this.idToken.getPayload();
+            JWTAuthPayload p = this.idToken.getPayload();
             if(p != null){
                 String g = p.getGiven_name() != null && p.getGiven_name().length() > 0 ? p.getGiven_name().substring(0, 1).toLowerCase() : "";
                 String f = p.getFamily_name() != null && p.getFamily_name().length() > 0 ? p.getFamily_name().substring(0, Math.min(p.getFamily_name().length(), 7)).toLowerCase() : "";
