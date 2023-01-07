@@ -1,11 +1,12 @@
 package io.github.vzwingma.finances.budget.services.communs.data.model;
 
 import io.micronaut.core.annotation.Introspected;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Introspected
+@RegisterForReflection
 @Setter
 @Getter
 @NoArgsConstructor

@@ -75,13 +75,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/io.micronaut/micronaut-core -->
-    <dependency>
-      <groupId>io.micronaut</groupId>
-      <artifactId>micronaut-core</artifactId>
-      <version>3.8.0</version>
-    </dependency>
-
     <!-- Security -->
     <dependency>
       <groupId>io.quarkus</groupId>
