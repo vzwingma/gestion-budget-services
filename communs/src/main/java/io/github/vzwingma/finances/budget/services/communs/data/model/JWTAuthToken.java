@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,69 +16,29 @@ import java.time.ZoneId;
 @RegisterForReflection
 @JsonDeserialize @JsonSerialize
 @Getter @Setter
-public class JWTIdToken {
+public class JWTAuthToken {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JWTIdToken.class);
-    private JWTHeader header;
+    private static final Logger LOG = LoggerFactory.getLogger(JWTAuthToken.class);
+    private JwtAuthHeader header;
 
-    private JWTPayload payload;
+    private JWTAuthPayload payload;
 
-    public JWTIdToken(JWTHeader header, JWTPayload payload){
+    public JWTAuthToken(JwtAuthHeader header, JWTAuthPayload payload){
         this.header = header;
         this.payload = payload;
     }
 
-    /**
-     * Header d'un token JWT
-     */
-    @RegisterForReflection
-    @JsonDeserialize @JsonSerialize
-    @Setter @Getter @NoArgsConstructor
-    public static class JWTHeader {
-        private String alg;
-        private String kid;
-        private String typ;
-    }
-
-    @RegisterForReflection
-    @JsonDeserialize @JsonSerialize
-    @Setter @Getter @NoArgsConstructor
-    public static class JWTPayload {
-        private String iss;
-        private String azp;
-        private String aud;
-        private String sub;
-        private String email;
-        private boolean email_verified;
-        private String at_hash;
-        private String name;
-        private String picture;
-        private String given_name;
-        private String family_name;
-        private String locale;
-        private long iat;
-        private long exp;
-
-        @Override
-        public String toString() {
-            return "JWTPayload{" +
-                    "name='" + name + '\'' +
-                    ", iat=" + iat +
-                    ", exp=" + exp +
-                    '}';
-        }
-    }
 
     @JsonIgnore
     public LocalDateTime issuedAt(){
-        if(this.payload != null && this.payload.iat != 0){
+        if(this.payload != null && this.payload.getIat() != 0){
             return LocalDateTime.ofEpochSecond(this.getPayload().getIat(), 0, ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()));
         }
         return null;
     }
     @JsonIgnore
     public LocalDateTime expiredAt(){
-        if(this.payload != null && this.payload.exp != 0){
+        if(this.payload != null && this.payload.getExp() != 0){
             return LocalDateTime.ofEpochSecond(this.getPayload().getExp(),0, ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()));
         }
         return null;

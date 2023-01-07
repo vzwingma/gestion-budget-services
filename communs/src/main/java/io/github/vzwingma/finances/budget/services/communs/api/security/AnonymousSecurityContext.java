@@ -1,11 +1,7 @@
 package io.github.vzwingma.finances.budget.services.communs.api.security;
 
 import com.sun.security.auth.UserPrincipal;
-import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 

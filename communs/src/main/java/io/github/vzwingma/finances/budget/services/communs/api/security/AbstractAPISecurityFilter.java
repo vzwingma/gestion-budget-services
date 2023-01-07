@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.communs.api.security;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthToken;
 import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
 import io.vertx.core.json.DecodeException;
 import org.slf4j.Logger;
@@ -35,7 +35,8 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
         String auth = getAuthBearerFromHeaders(requestContext.getHeaders().get(HttpHeaders.AUTHORIZATION.toLowerCase(Locale.ROOT)));
         if (auth != null && !"null".equals(auth)) {
             try {
-                JWTIdToken idToken = JWTUtils.decodeJWT(auth);
+
+                JWTAuthToken idToken = JWTUtils.decodeJWT(auth);
                 requestContext.setSecurityContext(new SecurityOverrideContext(idToken, auth));
                 return;
             } catch (DecodeException e) {

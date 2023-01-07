@@ -1,6 +1,6 @@
 package io.github.vzwingma.finances.budget.services.communs.utils;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthToken;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +25,7 @@ public class TestJWTUtils {
     @Test
     public void testDecode(){
 
-        JWTIdToken token = JWTUtils.decodeJWT(ID_TOKEN);
+        JWTAuthToken token = JWTUtils.decodeJWT(ID_TOKEN);
         assertNotNull(token);
         assertNotNull(token.getHeader());
         assertEquals("RS256", token.getHeader().getAlg());
@@ -48,7 +48,7 @@ public class TestJWTUtils {
     @Test
     public void testDecode2() {
 
-        JWTIdToken token = JWTUtils.decodeJWT(ID_TOKEN_2);
+        JWTAuthToken token = JWTUtils.decodeJWT(ID_TOKEN_2);
         assertNotNull(token);
         assertNotNull(token.getHeader());
         assertEquals("RS256", token.getHeader().getAlg());
@@ -65,7 +65,7 @@ public class TestJWTUtils {
 
     @Test
     public void testEncode(){
-        JWTIdToken token = JWTUtils.decodeJWT(ID_TOKEN);
+        JWTAuthToken token = JWTUtils.decodeJWT(ID_TOKEN);
         String encode = JWTUtils.encodeJWT(token);
         assertNotNull(encode);
         assertEquals("eyJhbGciOiJSUzI1NiIsImtpZCI6IjhlMGFjZjg5MWUwOTAwOTFlZjFhNWU3ZTY0YmFiMjgwZmQxNDQ3ZmEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NTA0MzE5MjgxMzgtZWRlc3RqMjhyazVhMGVtazU0NnA3aWkyOGRsNWJvYzUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NTA0MzE5MjgxMzgtZWRlc3RqMjhyazVhMGVtazU0NnA3aWkyOGRsNWJvYzUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDAxMDI1MjcyMjA5NTAwNzY2ODgiLCJlbWFpbCI6InZpbmNlbnQuendpbmdtYW5uQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiSzZBNjRfUlJyMm5KbVk1YWNBanVjdyIsIm5hbWUiOiJWaW5jZW50IFp3aW5nbWFubiIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BRWRGVHA0VjVITGx1dktDNWdJYW9GRFU4a1Q0emJmSk94dE5lRmNYTjM4NnA1bz1zOTYtYyIsImdpdmVuX25hbWUiOiJWaW5jZW50IiwiZmFtaWx5X25hbWUiOiJad2luZ21hbm4iLCJsb2NhbGUiOiJmciIsImlhdCI6MTY3MjY2MDAwMiwiZXhwIjoxNjcyNjYzNjAyfQ", encode);
@@ -75,12 +75,12 @@ public class TestJWTUtils {
     public void testValidToken(){
         String rawToken = generateValidToken();
         assertNotNull(rawToken);
-        JWTIdToken token = JWTUtils.decodeJWT(rawToken);
+        JWTAuthToken token = JWTUtils.decodeJWT(rawToken);
         assertFalse(token.isExpired());
     }
 
     public static String generateValidToken(){
-        JWTIdToken token = JWTUtils.decodeJWT(ID_TOKEN);
+        JWTAuthToken token = JWTUtils.decodeJWT(ID_TOKEN);
 
         token.getPayload().setIat(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now()));
         token.getPayload().setExp(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now().plusHours(1)));

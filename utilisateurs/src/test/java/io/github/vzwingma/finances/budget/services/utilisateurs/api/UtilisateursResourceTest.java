@@ -1,6 +1,8 @@
 package io.github.vzwingma.finances.budget.services.utilisateurs.api;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.JWTIdToken;
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthPayload;
+import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthToken;
+import io.github.vzwingma.finances.budget.services.communs.data.model.JwtAuthHeader;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException;
 import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
@@ -97,13 +99,13 @@ class UtilisateursResourceTest {
 
 
     private String getTestJWTAuthHeader(){
-        JWTIdToken.JWTHeader h = new JWTIdToken.JWTHeader();
-        JWTIdToken.JWTPayload p = new JWTIdToken.JWTPayload();
+        JwtAuthHeader h = new JwtAuthHeader();
+        JWTAuthPayload p = new JWTAuthPayload();
         p.setName("Test");
         p.setFamily_name("Test");
         p.setGiven_name("Test");
         p.setIat(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now()));
         p.setExp(BudgetDateTimeUtils.getSecondsFromLocalDateTime(LocalDateTime.now().plusHours(1)));
-        return "Bearer " + JWTUtils.encodeJWT(new JWTIdToken(h, p));
+        return "Bearer " + JWTUtils.encodeJWT(new JWTAuthToken(h, p));
     }
 }
