@@ -1,8 +1,6 @@
 package io.github.vzwingma.finances.budget.services.communs.data.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.micronaut.core.annotation.Introspected;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,9 +9,7 @@ import lombok.Setter;
 /**
  * Header d'un token JWT
  */
-@RegisterForReflection
-@JsonDeserialize
-@JsonSerialize
+@Introspected
 @Setter
 @Getter
 @NoArgsConstructor
