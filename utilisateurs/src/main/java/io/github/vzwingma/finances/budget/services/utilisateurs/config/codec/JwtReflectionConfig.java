@@ -5,6 +5,9 @@ import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthTok
 import io.github.vzwingma.finances.budget.services.communs.data.model.JwtAuthHeader;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
+/**
+ * Configuration de la Reflection des classes {@link JWTAuthToken}, {@link JwtAuthHeader} et {@link JWTAuthPayload} pour le décodage JSON
+ */
 @RegisterForReflection(targets = { JWTAuthToken.class, JWTAuthPayload.class, JwtAuthHeader.class })
-public class JwtReflectionConfiguration   {
+public class JwtReflectionConfig {
 }
