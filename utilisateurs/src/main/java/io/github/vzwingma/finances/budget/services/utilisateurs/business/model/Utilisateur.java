@@ -69,16 +69,13 @@ public class Utilisateur implements Serializable {
 
 
 	/**
-	 * @return clone d'utilisateur
+	 * clone d'utilisateur
 	 */
-	@Override
-	public Utilisateur clone(){
-		Utilisateur clone = new Utilisateur();
-		clone.setId(this.getId());
-		clone.setDernierAcces(LocalDateTime.now());
-		clone.setLogin(this.getLogin());
-		clone.setDroits(this.getDroits());
-		clone.setPrefsUtilisateur(this.getPrefsUtilisateur());
-		return clone;
+	public Utilisateur(Utilisateur source){
+		setId(source.getId());
+		setDernierAcces(LocalDateTime.now());
+		setLogin(source.getLogin());
+		setDroits(source.getDroits());
+		setPrefsUtilisateur(source.getPrefsUtilisateur());
 	}
 }

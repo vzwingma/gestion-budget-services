@@ -68,7 +68,7 @@ public class UtilisateursService implements IUtilisateursAppProvider {
 	 * @param utilisateurUni utilisateur connecté
 	 */
 	private void updateUtilisateurLastConnection(Utilisateur utilisateurUni) {
-		Utilisateur clone = utilisateurUni.clone();
+		Utilisateur clone = new Utilisateur(utilisateurUni);
 		clone.setDernierAcces(LocalDateTime.now());
 		dataDBUsers.majUtilisateur(clone);
 	}
