@@ -48,7 +48,7 @@ public class UtilisateurDatabaseAdaptor implements IUtilisateursRepository {
 		try{
 			LOGGER.info("Mise à jour de l'utilisateur [{}]", utilisateur.getLogin());
 			update(utilisateur)
-					.subscribe().with(item -> LOGGER.info("Utilisateur [{}] mis à jour", utilisateur.getLogin()));
+					.subscribe().with(item -> LOGGER.info("Utilisateur [{}] mis à jour", utilisateur.toFullString()));
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors de la sauvegarde de l'utilisateur", e);

@@ -44,13 +44,23 @@ public class UtilisateursService implements IUtilisateursAppProvider {
 	 * @return date de dernier accès
 	 */
 	public Uni<Utilisateur> getUtilisateur(String loginUtilisateur)  {
+		return dataDBUsers.chargeUtilisateur(loginUtilisateur);
+	}
+
+	/**
+	 * Date de dernier accès
+	 * @param login login de l'utilisateur
+	 * @return date de dernier accès
+	 */
+	public Uni<LocalDateTime> getLastAccessDate(String login) {
 		// Enregistrement de la date du dernier accès à maintenant, en async
-		return dataDBUsers.chargeUtilisateur(loginUtilisateur)
-				//async call for logging
-				.invoke(user -> {
-					LOGGER.info("{} accède à l'application", user.getLogin());
+		return getUtilisateur(login)
+				.onItem().transform(user -> {
+					LOGGER.info("{} accède à l'application", user.toFullString());
 					updateUtilisateurLastConnection(user);
-				});
+					return user;
+				})
+				.map(Utilisateur::getDernierAcces);
 	}
 
 	/**
@@ -58,17 +68,9 @@ public class UtilisateursService implements IUtilisateursAppProvider {
 	 * @param utilisateurUni utilisateur connecté
 	 */
 	private void updateUtilisateurLastConnection(Utilisateur utilisateurUni) {
+		Utilisateur clone = utilisateurUni.clone();
+		clone.setDernierAcces(LocalDateTime.now());
+		dataDBUsers.majUtilisateur(clone);
+	}
 
-		utilisateurUni.setDernierAcces(LocalDateTime.now());
-		dataDBUsers.majUtilisateur(utilisateurUni);
-	}
-	/**
-	 * Date de dernier accès
-	 * @param login login de l'utilisateur
-	 * @return date de dernier accès
-	 */
-	public Uni<LocalDateTime> getLastAccessDate(String login) {
-		return getUtilisateur(login)
-				.map(Utilisateur::getDernierAcces);
-	}
 }
