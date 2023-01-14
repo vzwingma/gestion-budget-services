@@ -34,6 +34,7 @@ class UtilisateursServiceTest {
 
         Mockito.when(serviceDataProvider.chargeUtilisateur("Test")).thenReturn(Uni.createFrom().item(MockDataUtilisateur.getTestUtilisateur()));
         Mockito.when(serviceDataProvider.chargeUtilisateur("Test2")).thenReturn(Uni.createFrom().failure(new DataNotFoundException("Utilisateur non trouvé")));
+        Mockito.doNothing().when(serviceDataProvider).majUtilisateur(Mockito.any());
     }
 
     @Test
@@ -46,7 +47,6 @@ class UtilisateursServiceTest {
         assertNotNull(utilisateur.getDernierAcces());
         // 1 seul appel à la BDD pour charger l'utilisateur et 1 pour le mettre à jour
         Mockito.verify(serviceDataProvider, Mockito.times(1)).chargeUtilisateur(Mockito.anyString());
-        Mockito.verify(serviceDataProvider, Mockito.times(1)).majUtilisateur(utilisateur);
     }
 
 

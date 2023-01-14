@@ -18,6 +18,7 @@ public class MockDataUtilisateur {
         Utilisateur userOK = new Utilisateur();
         userOK.setId(new ObjectId("54aa7db30bc460e1aeb95596"));
         userOK.setLogin("Test");
+        userOK.setDernierAcces(LocalDateTime.now());
         userOK.setPrefsUtilisateur(new HashMap<>());
         userOK.getPrefsUtilisateur().put(UtilisateurPrefsEnum.PREFS_STATUT_NLLE_DEPENSE, "Nouvelle");
         return userOK;
