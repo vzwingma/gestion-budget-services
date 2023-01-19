@@ -67,4 +67,15 @@ public class Utilisateur implements Serializable {
 		return String.format("Utilisateur [id=%s, dateDernerAcces=%s]", this.login, dernierAcces != null ? BudgetDateTimeUtils.getLibelleDate(dernierAcces) : "nulle");
 	}
 
+
+	/**
+	 * clone d'utilisateur
+	 */
+	public Utilisateur(Utilisateur source){
+		setId(source.getId());
+		setDernierAcces(LocalDateTime.now());
+		setLogin(source.getLogin());
+		setDroits(source.getDroits());
+		setPrefsUtilisateur(source.getPrefsUtilisateur());
+	}
 }
