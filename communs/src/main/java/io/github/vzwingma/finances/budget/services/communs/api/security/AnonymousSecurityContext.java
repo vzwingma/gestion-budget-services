@@ -2,7 +2,7 @@ package io.github.vzwingma.finances.budget.services.communs.api.security;
 
 import com.sun.security.auth.UserPrincipal;
 
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
 /**
