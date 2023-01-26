@@ -3,6 +3,7 @@ package io.github.vzwingma.finances.budget.services.communs.data.trace;
 import org.slf4j.MDC;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -38,7 +39,7 @@ public class BusinessTraceContext {
     public BusinessTraceContext clear() {
         Arrays.stream(BusinessTraceContextKeyEnum.values())
                 .forEach(key -> MDC.remove(key.getKeyId()));
-        calculateBusinessContext();
+        calculateBusinessContext(MDC.getCopyOfContextMap());
         return INSTANCE;
     }
     /**
@@ -48,7 +49,7 @@ public class BusinessTraceContext {
      */
     public BusinessTraceContext put(BusinessTraceContextKeyEnum key, String value) {
         MDC.put(key.getKeyId(), value);
-        calculateBusinessContext();
+        calculateBusinessContext(MDC.getCopyOfContextMap());
         return INSTANCE;
     }
 
@@ -58,18 +59,18 @@ public class BusinessTraceContext {
      */
     public BusinessTraceContext remove(BusinessTraceContextKeyEnum key) {
         MDC.remove(key.getKeyId());
-        calculateBusinessContext();
+        MDC.put("budgetContext", calculateBusinessContext(MDC.getCopyOfContextMap()));
         return INSTANCE;
     }
 
     /**
      * Calcul du context business
      */
-    private static void calculateBusinessContext() {
+    protected static String calculateBusinessContext(Map<String, String> contextMap) {
         AtomicReference<String> budgetContextValue = new AtomicReference<>("");
 
-        if(!MDC.getCopyOfContextMap().isEmpty()){
-            MDC.getCopyOfContextMap().forEach((key1, value) -> {
+        if(contextMap != null && !contextMap.isEmpty()){
+            contextMap.forEach((key1, value) -> {
                 if (Arrays.stream(BusinessTraceContextKeyEnum.values())
                         .map(BusinessTraceContextKeyEnum::getKeyId).anyMatch(key -> key.equals(key1))
                         && !value.isEmpty()) {
@@ -77,9 +78,11 @@ public class BusinessTraceContext {
                     budgetContextValue.set(budgetContextValue.get() + separator + key1 + ":" + value);
                 }
             });
-            MDC.put("budgetContext", "[" + budgetContextValue.get() + "]");
+            if(!budgetContextValue.get().isEmpty()){
+                return "[" + budgetContextValue.get() + "]";
+            }
         }
-
+        return null;
     }
 
 }
