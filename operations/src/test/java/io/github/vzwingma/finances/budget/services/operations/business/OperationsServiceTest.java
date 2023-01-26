@@ -79,7 +79,7 @@ class OperationsServiceTest {
         LigneOperation operation = MockDataOperations.getOperationPrelevement();
         operation.setEtat(OperationEtatEnum.REALISEE);
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation, "userTest");
         assertEquals(1, operationsAJour.size());
         assertEquals(OperationEtatEnum.REALISEE, operationsAJour.get(0).getEtat());
         assertNotNull(operationsAJour.get(0).getAutresInfos().getDateOperation());
@@ -97,7 +97,7 @@ class OperationsServiceTest {
         LigneOperation operation = MockDataOperations.getOperationMensuelleRealisee();
         operation.setEtat(OperationEtatEnum.REALISEE);
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation, "userTest");
         assertEquals(1, operationsAJour.size());
         assertEquals(OperationEtatEnum.REALISEE, operationsAJour.get(0).getEtat());
         assertEquals(OperationPeriodiciteEnum.MENSUELLE, operationsAJour.get(0).getMensualite().getPeriode());
@@ -106,11 +106,11 @@ class OperationsServiceTest {
 
         // Changement de période
         operation.getMensualite().setPeriode(OperationPeriodiciteEnum.PONCTUELLE);
-        operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
+        operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation, "userTest");
         assertEquals(OperationPeriodiciteEnum.PONCTUELLE, operationsAJour.get(0).getMensualite().getPeriode());
         assertEquals(-1, operationsAJour.get(0).getMensualite().getProchaineEcheance());
         operation.getMensualite().setPeriode(OperationPeriodiciteEnum.TRIMESTRIELLE);
-        operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
+        operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation, "userTest");
         assertEquals(OperationPeriodiciteEnum.TRIMESTRIELLE, operationsAJour.get(0).getMensualite().getPeriode());
         assertEquals(3, operationsAJour.get(0).getMensualite().getProchaineEcheance());
     }
@@ -127,7 +127,7 @@ class OperationsServiceTest {
         operation.setId("Test2");
         operation.setEtat(OperationEtatEnum.REALISEE);
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation);
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOrReplaceOperation(listeOperations, operation, "userTest");
         assertEquals(2, operationsAJour.size());
     }
 
@@ -142,7 +142,7 @@ class OperationsServiceTest {
         LigneOperation operation = MockDataOperations.getOperationIntercompte();
         operation.setEtat(OperationEtatEnum.REALISEE);
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle());
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle(), "userTest");
         assertEquals(2, operationsAJour.size());
         assertEquals(OperationEtatEnum.PREVUE, operationsAJour.get(1).getEtat());
     }
@@ -158,7 +158,7 @@ class OperationsServiceTest {
         LigneOperation operation = MockDataOperations.getOperationIntercompte();
         operation.setEtat(OperationEtatEnum.REPORTEE);
         // Test
-        List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle());
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle(), "userTest");
         assertEquals(2, operationsAJour.size());
         assertEquals(OperationEtatEnum.REPORTEE, operationsAJour.get(1).getEtat());
     }
@@ -171,7 +171,7 @@ class OperationsServiceTest {
                 .thenReturn(Uni.createFrom().failure(new DataNotFoundException("Impossible de trouver la catégorie")));
 
         // Test
-        CompletionException thrown = Assertions.assertThrows(CompletionException.class, () -> operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement()).await().indefinitely());
+        CompletionException thrown = Assertions.assertThrows(CompletionException.class, () -> operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement(), "userTest").await().indefinitely());
         assertEquals("io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException", thrown.getMessage());
         Mockito.verify(mockOperationDataProvider, Mockito.never()).sauvegardeBudgetMensuel(Mockito.any());
 
@@ -184,7 +184,7 @@ class OperationsServiceTest {
         Mockito.when(parametragesServiceProvider.getCategorieParId(Mockito.anyString())).thenReturn(Uni.createFrom().nullItem());
 
         // Test
-        CompletionException thrown = Assertions.assertThrows(CompletionException.class, () -> operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement()).await().indefinitely());
+        CompletionException thrown = Assertions.assertThrows(CompletionException.class, () -> operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement(), "userTest").await().indefinitely());
         assertEquals("io.github.vzwingma.finances.budget.services.communs.utils.exceptions.DataNotFoundException", thrown.getMessage());
         Mockito.verify(mockOperationDataProvider, Mockito.never()).sauvegardeBudgetMensuel(Mockito.any());
 
@@ -199,7 +199,7 @@ class OperationsServiceTest {
         dep.setCategorieParente(cat);
         Mockito.when(parametragesServiceProvider.getCategorieParId(Mockito.anyString())).thenReturn(Uni.createFrom().item(dep));
         // Test
-        LigneOperation operationRemb = operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement()).await().indefinitely();
+        LigneOperation operationRemb = operationsAppProvider.createOperationRemboursement(MockDataOperations.getOperationRemboursement(), "userTest").await().indefinitely();
 
         assertNotNull(operationRemb);
         // Anomalie #208

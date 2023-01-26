@@ -122,7 +122,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 * @return budget mensuel mis à jour
 	 */
 	@Override
-	public Uni<BudgetMensuel> addOperationInBudget(String idBudget, LigneOperation ligneOperation) {
+	public Uni<BudgetMensuel> addOperationInBudget(String idBudget, LigneOperation ligneOperation, String auteur) {
 
 		Uni<BudgetMensuel> budgetSurCompteActif = getBudgetAndCompteActif(idBudget)
 				// Si pas d'erreur, update de l'opération
@@ -132,13 +132,13 @@ public class BudgetService implements IBudgetAppProvider {
 		return Uni.combine().all().unis(
 				budgetSurCompteActif,
 				Uni.createFrom().item(ligneOperation),
-				this.operationsAppProvider.createOperationRemboursement(ligneOperation))
+				this.operationsAppProvider.createOperationRemboursement(ligneOperation, auteur))
 			.asTuple()
 			// Ajout des opérations standard et remboursement (si non nulle)
 			.invoke(tuple -> {
-				this.operationsAppProvider.addOrReplaceOperation(tuple.getItem1().getListeOperations(), tuple.getItem2());
+				this.operationsAppProvider.addOrReplaceOperation(tuple.getItem1().getListeOperations(), tuple.getItem2(), auteur);
 				if(tuple.getItem3() != null){
-					this.operationsAppProvider.addOrReplaceOperation(tuple.getItem1().getListeOperations(), tuple.getItem3());
+					this.operationsAppProvider.addOrReplaceOperation(tuple.getItem1().getListeOperations(), tuple.getItem3(), auteur);
 				}
 			})
 			.onItem().transform(Tuple3::getItem1)
@@ -157,7 +157,7 @@ public class BudgetService implements IBudgetAppProvider {
 	 * @return budget mensuel mis à jour
 	 */
 	@Override
-	public Uni<BudgetMensuel> createOperationsIntercomptes(String idBudget, final LigneOperation ligneOperation, String idCompteDestination) {
+	public Uni<BudgetMensuel> createOperationsIntercomptes(String idBudget, final LigneOperation ligneOperation, String idCompteDestination, String auteur) {
 
 		try {
 			final String libelleOperation = ligneOperation.getLibelle();
@@ -177,7 +177,7 @@ public class BudgetService implements IBudgetAppProvider {
 				.invoke(tuple -> {
 					BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudget).put(BusinessTraceContextKeyEnum.COMPTE, idCompteDestination);
 					ligneOperation.setLibelle("[vers "+tuple.getItem2().getLibelle()+"] " + libelleOperation);
-					this.operationsAppProvider.addOrReplaceOperation(tuple.getItem1().getListeOperations(), ligneOperation);
+					this.operationsAppProvider.addOrReplaceOperation(tuple.getItem1().getListeOperations(), ligneOperation, auteur);
 				})
 				.map(Tuple2::getItem1)
 				.onItem().ifNotNull()
@@ -197,7 +197,7 @@ public class BudgetService implements IBudgetAppProvider {
 				.invoke(tuple -> {
 					BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.BUDGET, idBudgetDestination).put(BusinessTraceContextKeyEnum.COMPTE, idCompteSource);
 					String libelleOperationCible = "[depuis "+tuple.getItem2().getLibelle()+"] " + libelleOperation;
-					this.operationsAppProvider.addOperationIntercompte(tuple.getItem1().getListeOperations(), ligneOperation, libelleOperationCible);
+					this.operationsAppProvider.addOperationIntercompte(tuple.getItem1().getListeOperations(), ligneOperation, libelleOperationCible, auteur);
 				})
 				.map(Tuple2::getItem1)
 				.onItem().ifNotNull()

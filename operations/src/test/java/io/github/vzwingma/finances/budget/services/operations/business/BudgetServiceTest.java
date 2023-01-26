@@ -294,7 +294,7 @@ class BudgetServiceTest {
 
         // Test
         CompletionException exception = Assertions.assertThrows(CompletionException.class,
-                () -> budgetAppProvider.addOperationInBudget("idBudget", MockDataOperations.getOperationPrelevement()).await().indefinitely());
+                () -> budgetAppProvider.addOperationInBudget("idBudget", MockDataOperations.getOperationPrelevement(), "userTest").await().indefinitely());
         assertEquals(CompteClosedException.class, exception.getCause().getClass());
 
     }
@@ -309,7 +309,7 @@ class BudgetServiceTest {
 
         // Test
         LigneOperation ligneOperation = MockDataOperations.getOperationPrelevement();
-        BudgetMensuel budgetMensuelAJour = budgetAppProvider.addOperationInBudget("C1_2022_01", ligneOperation).await().indefinitely();
+        BudgetMensuel budgetMensuelAJour = budgetAppProvider.addOperationInBudget("C1_2022_01", ligneOperation, "userTest").await().indefinitely();
         assertEquals(1, budgetMensuelAJour.getListeOperations().size());
 
         Mockito.verify(budgetAppProvider, Mockito.times(1)).recalculSoldes(any(BudgetMensuel.class));
@@ -334,7 +334,7 @@ class BudgetServiceTest {
 
         // Test
         LigneOperation ligneOperation = MockDataOperations.getOperationIntercompte();
-        BudgetMensuel budgetMensuelAJour = budgetAppProvider.createOperationsIntercomptes("C1_2022_01", ligneOperation, "C2" ).await().indefinitely();
+        BudgetMensuel budgetMensuelAJour = budgetAppProvider.createOperationsIntercomptes("C1_2022_01", ligneOperation, "C2" , "userTest").await().indefinitely();
 
         assertEquals("[vers Libelle2] TestIntercompte", budgetMensuelAJour.getListeOperations().get(1).getLibelle());
 

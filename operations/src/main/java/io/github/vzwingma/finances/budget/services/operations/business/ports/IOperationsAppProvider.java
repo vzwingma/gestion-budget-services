@@ -37,9 +37,10 @@ public interface IOperationsAppProvider {
      * @param operations            liste des opérations à mettre à jour budget
      * @param ligneOperationSource  ligne de dépense, source, pour créer une nouvelle opération
      * @param libelleOperationCible libelle de la nouvelle opération
+     * @param auteur                auteur de l'action
      * @return liste des opérations à mettre à jour dans le budget, avec l'intercompte
      */
-    List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible);
+    List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible, String auteur);
     /**
      * Mise à jour de la ligne comme dernière opération
      *
@@ -59,14 +60,16 @@ public interface IOperationsAppProvider {
      * Mise à jour d'une ligne de dépense dans la liste d'un budget
      *
      * @param operations     liste des opérations à mettre à jour budget
+     * @param auteur         auteur de l'action
      * @param ligneOperation ligne de dépense
      */
-    List<LigneOperation> addOrReplaceOperation(List<LigneOperation> operations, LigneOperation ligneOperation);
+    List<LigneOperation> addOrReplaceOperation(List<LigneOperation> operations, LigneOperation ligneOperation, String auteur);
 
     /**
      * Ajout d'une opération de remboursement
      *
      * @param operationSource     opération source du remboursement
+     * @param auteur         auteur de l'action
      */
-    Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource);
+    Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource, String auteur);
 }

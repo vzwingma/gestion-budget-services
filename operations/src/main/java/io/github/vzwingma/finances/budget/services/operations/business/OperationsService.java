@@ -188,7 +188,7 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	@Override
-	public List<LigneOperation> addOrReplaceOperation(List<LigneOperation> operations, LigneOperation ligneOperation)  {
+	public List<LigneOperation> addOrReplaceOperation(List<LigneOperation> operations, LigneOperation ligneOperation, String auteur)  {
 		BusinessTraceContext.get().put(BusinessTraceContextKeyEnum.OPERATION, ligneOperation.getId());
 		// Si mise à jour d'une opération, on l'enlève
 		LigneOperation ligneOperationToUpdate = operations.stream().filter(op -> op.getId().equals(ligneOperation.getId())).findFirst().orElse(null);
@@ -196,7 +196,7 @@ public class OperationsService implements IOperationsAppProvider {
 		operations.removeIf(op -> op.getId().equals(ligneOperation.getId()));
 
 		if (ligneOperation.getEtat() != null) {
-			LigneOperation ligneUpdatedOperation = completeOperationAttributes(ligneOperation);
+			LigneOperation ligneUpdatedOperation = completeOperationAttributes(ligneOperation, auteur);
 			LigneOperation ligneUpdatedPeriodicOperation = completePeriodiciteOperation(ligneUpdatedOperation, ligneOperationToUpdate);
 			if (rangMaj >= 0) {
 				LOGGER.info("Mise à jour de l'opération : {}", ligneUpdatedPeriodicOperation);
@@ -217,14 +217,13 @@ public class OperationsService implements IOperationsAppProvider {
 	 * @param ligneOperation opération à compléter (ou à mettre à jour)
 	 * @return ligneOperation màj
 	 */
-	private LigneOperation completeOperationAttributes(LigneOperation ligneOperation) {
+	private LigneOperation completeOperationAttributes(LigneOperation ligneOperation, String auteur) {
 		// Autres infos
 		if(ligneOperation.getAutresInfos() == null){
 			ligneOperation.setAutresInfos(new LigneOperation.AddInfos());
 		}
 		ligneOperation.getAutresInfos().setDateMaj(LocalDateTime.now());
-		// TODO : nomProprietaire à ajouter
-		ligneOperation.getAutresInfos().setAuteur("vzwingmann");
+		ligneOperation.getAutresInfos().setAuteur(auteur);
 
 		// Date opération suivant Etat
 		if(OperationEtatEnum.REALISEE.equals(ligneOperation.getEtat())
@@ -277,7 +276,7 @@ public class OperationsService implements IOperationsAppProvider {
 	 * @return ligne de remboursement
 	 */
 	@Override
-	public Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource){
+	public Uni<LigneOperation> createOperationRemboursement(LigneOperation operationSource, String auteur){
 
 		// Si l'opération est une opération de remboursement, on ajoute la catégorie de remboursement
 		if (operationSource.getSsCategorie() != null
@@ -288,7 +287,7 @@ public class OperationsService implements IOperationsAppProvider {
 							Uni.createFrom().item(operationSource),
 							this.parametragesService.getCategorieParId(IdsCategoriesEnum.REMBOURSEMENT.getId()))
 					.asTuple()
-					.map(tuple -> createOperationRemboursement(tuple.getItem1(), tuple.getItem2()))
+					.map(tuple -> createOperationRemboursement(tuple.getItem1(), tuple.getItem2(), auteur))
 					.onItem()
 						.ifNull().failWith(new DataNotFoundException("Impossible de créer le remboursement car la catégorie de remboursement n'a pas été trouvée"));
 		}
@@ -304,14 +303,15 @@ public class OperationsService implements IOperationsAppProvider {
 	 * @return ligne de remboursement
 	 */
 
-	private LigneOperation createOperationRemboursement(LigneOperation ligneOperation, CategorieOperations ssCategorieRemboursement) {
+	private LigneOperation createOperationRemboursement(LigneOperation ligneOperation, CategorieOperations ssCategorieRemboursement, String auteur) {
 		if(ssCategorieRemboursement != null) {
 			return completeOperationAttributes(new LigneOperation(
 					ssCategorieRemboursement,
 					ligneOperation.getLibelle(),
 					OperationTypeEnum.CREDIT,
 					Math.abs(ligneOperation.getValeur()),
-					OperationEtatEnum.REPORTEE));
+					OperationEtatEnum.REPORTEE),
+					auteur);
 		}
 		else{
 			return null;
@@ -321,7 +321,7 @@ public class OperationsService implements IOperationsAppProvider {
 
 
 	@Override
-	public List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible){
+	public List<LigneOperation> addOperationIntercompte(List<LigneOperation> operations, LigneOperation ligneOperationSource, String libelleOperationCible, String auteur){
 
 		// #59 : Cohérence des états
 		OperationEtatEnum etatDepenseTransfert;
@@ -338,7 +338,8 @@ public class OperationsService implements IOperationsAppProvider {
 				libelleOperationCible,
 				OperationTypeEnum.CREDIT,
 				Math.abs(ligneOperationSource.getValeur()),
-				etatDepenseTransfert));
+				etatDepenseTransfert),
+				auteur);
 		LOGGER.debug("Ajout de l'opération [{}] dans le budget", ligneTransfert);
 
 		operations.add(ligneTransfert);

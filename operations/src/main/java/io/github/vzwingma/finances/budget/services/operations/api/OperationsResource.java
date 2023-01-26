@@ -280,7 +280,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
         LOG.trace("createOperation");
         if(operation != null && idBudget != null){
             operation.setId(UUID.randomUUID().toString());
-            return budgetService.addOperationInBudget(idBudget, operation);
+            return budgetService.addOperationInBudget(idBudget, operation, securityContext.getUserPrincipal().getName());
         }
         else {
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget et operation sont obligatoires"));
@@ -321,7 +321,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
 
         if(operation != null && idBudget != null){
             operation.setId(idOperation);
-            return budgetService.addOperationInBudget(idBudget, operation);
+            return budgetService.addOperationInBudget(idBudget, operation, securityContext.getUserPrincipal().getName());
         }
         else {
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget et idOperation sont obligatoires"));
@@ -361,7 +361,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
         LOG.info("Create Operation InterCompte [->{}]", idCompte);
         if(operation != null && idBudget != null){
             operation.setId(uuidOperation);
-            return budgetService.createOperationsIntercomptes(idBudget, operation, idCompte);
+            return budgetService.createOperationsIntercomptes(idBudget, operation, idCompte, securityContext.getUserPrincipal().getName());
         }
         else{
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget, idOperation et idCompte sont obligatoires"));
