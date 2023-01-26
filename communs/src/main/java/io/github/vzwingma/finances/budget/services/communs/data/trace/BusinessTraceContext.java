@@ -39,7 +39,7 @@ public class BusinessTraceContext {
     public BusinessTraceContext clear() {
         Arrays.stream(BusinessTraceContextKeyEnum.values())
                 .forEach(key -> MDC.remove(key.getKeyId()));
-        calculateBusinessContext(MDC.getCopyOfContextMap());
+        updateBusinessContext();
         return INSTANCE;
     }
     /**
@@ -49,7 +49,7 @@ public class BusinessTraceContext {
      */
     public BusinessTraceContext put(BusinessTraceContextKeyEnum key, String value) {
         MDC.put(key.getKeyId(), value);
-        calculateBusinessContext(MDC.getCopyOfContextMap());
+        updateBusinessContext();
         return INSTANCE;
     }
 
@@ -59,11 +59,15 @@ public class BusinessTraceContext {
      */
     public BusinessTraceContext remove(BusinessTraceContextKeyEnum key) {
         MDC.remove(key.getKeyId());
+        updateBusinessContext();
+        return INSTANCE;
+    }
+
+    private void updateBusinessContext(){
         String budgetContext = calculateBusinessContext(MDC.getCopyOfContextMap());
         if(budgetContext != null) {
             MDC.put("budgetContext", budgetContext);
         }
-        return INSTANCE;
     }
 
     /**
