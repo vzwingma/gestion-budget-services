@@ -59,7 +59,10 @@ public class BusinessTraceContext {
      */
     public BusinessTraceContext remove(BusinessTraceContextKeyEnum key) {
         MDC.remove(key.getKeyId());
-        MDC.put("budgetContext", calculateBusinessContext(MDC.getCopyOfContextMap()));
+        String budgetContext = calculateBusinessContext(MDC.getCopyOfContextMap());
+        if(budgetContext != null) {
+            MDC.put("budgetContext", budgetContext);
+        }
         return INSTANCE;
     }
 
