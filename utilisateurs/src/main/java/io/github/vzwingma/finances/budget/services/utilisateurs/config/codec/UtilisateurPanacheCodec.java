@@ -6,8 +6,6 @@ import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDate
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurDroitsEnum;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsEnum;
-import io.github.vzwingma.finances.budget.services.utilisateurs.spi.UtilisateurDatabaseAdaptor;
-import io.vertx.core.json.Json;
 import org.bson.*;
 import org.bson.codecs.Codec;
 import org.bson.codecs.CollectibleCodec;

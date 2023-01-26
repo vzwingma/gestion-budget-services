@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestBusinessTraceContext {
+class TestBusinessTraceContext {
 
 
 
     @Test
-    public void testTraceContext(){
+    void testTraceContext(){
 
         Map<String, String> contextMap = null;
         Assertions.assertNull(BusinessTraceContext.calculateBusinessContext(contextMap));
