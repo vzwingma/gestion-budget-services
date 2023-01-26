@@ -1,7 +1,6 @@
 package io.github.vzwingma.finances.budget.services.comptes.api.override;
 
 import io.github.vzwingma.finances.budget.services.communs.api.security.AbstractAPISecurityFilter;
-import io.vertx.core.json.DecodeException;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -13,7 +12,7 @@ import java.io.IOException;
 @PreMatching
 public class SecurityOverrideFilter extends AbstractAPISecurityFilter implements ContainerRequestFilter {
 
-
+    @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         super.filter(requestContext);
     }

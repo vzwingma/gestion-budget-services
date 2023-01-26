@@ -20,6 +20,11 @@ public class JWTUtils {
     private static final Logger LOG = LoggerFactory.getLogger(JWTUtils.class);
 
     /**
+     * Constructeur privé
+     */
+    private JWTUtils(){ }
+
+    /**
      * Décodage d'un token JWT
      * @param base64JWT token en Base64
      * @throws DecodeException de décodage si le token n'est pas bien formé
@@ -48,8 +53,8 @@ public class JWTUtils {
         try {
             String headerJson = Json.encode(jwt.getHeader());
             String payloadJson = Json.encode(jwt.getPayload());
-            String chunks0 = encoder.encodeToString(headerJson.getBytes()).replaceAll("==", "");
-            String chunks1 = encoder.encodeToString(payloadJson.getBytes()).replaceAll("==", "");
+            String chunks0 = encoder.encodeToString(headerJson.getBytes()).replace("==", "");
+            String chunks1 = encoder.encodeToString(payloadJson.getBytes()).replace("==", "");
             return chunks0+"."+chunks1;
         }
         catch (Exception e){

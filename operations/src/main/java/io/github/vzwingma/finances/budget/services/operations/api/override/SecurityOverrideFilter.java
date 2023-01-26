@@ -11,6 +11,7 @@ import java.io.IOException;
 @PreMatching
 public class SecurityOverrideFilter extends AbstractAPISecurityFilter implements ContainerRequestFilter {
 
+    @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         super.filter(requestContext);
     }

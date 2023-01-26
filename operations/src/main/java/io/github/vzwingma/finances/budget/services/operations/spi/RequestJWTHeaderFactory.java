@@ -3,8 +3,6 @@ package io.github.vzwingma.finances.budget.services.operations.spi;
 import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthToken;
 import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import jakarta.ws.rs.core.*;
 
@@ -13,10 +11,6 @@ import jakarta.ws.rs.core.*;
  */
 public class RequestJWTHeaderFactory implements ClientHeadersFactory {
 
-    /**
-     * Logger
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RequestJWTHeaderFactory.class);
 
     @Context
     SecurityContext securityContext;

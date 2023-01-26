@@ -12,8 +12,6 @@ import org.bson.codecs.CollectibleCodec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Date;
@@ -24,14 +22,12 @@ import java.util.Date;
 @ApplicationScoped
 public class UtilisateurPanacheCodec implements CollectibleCodec<Utilisateur> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateurPanacheCodec.class);
     private final Codec<Document> documentCodec;
 
     public UtilisateurPanacheCodec() {
         this.documentCodec = MongoClientSettings.getDefaultCodecRegistry().get(Document.class);
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(UtilisateurPanacheCodec.class);
     @Override
     public Utilisateur generateIdIfAbsentFromDocument(Utilisateur utilisateur) {
         utilisateur.setId(ObjectId.get());

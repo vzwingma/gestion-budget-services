@@ -56,7 +56,7 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
         if(authBearer != null && authBearer.size() > 0) {
             Optional<String> accessToken = authBearer.stream()
                     .filter(a -> a.startsWith("Bearer "))
-                    .map(a -> a.replaceAll("Bearer ", ""))
+                    .map(a -> a.replace("Bearer ", ""))
                     .findFirst();
             return accessToken.orElse(null);
         }
