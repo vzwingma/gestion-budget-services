@@ -2,9 +2,8 @@ package io.github.vzwingma.finances.budget.services.communs.api;
 
 import io.github.vzwingma.finances.budget.services.communs.data.model.Info;
 import io.smallrye.mutiny.Uni;
+import jakarta.annotation.security.PermitAll;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-import javax.annotation.security.PermitAll;
 
 /**
  * Resource de base pour les API REST de l'application

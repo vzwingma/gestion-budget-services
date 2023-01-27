@@ -4,8 +4,8 @@ import io.github.vzwingma.finances.budget.services.communs.data.trace.BusinessTr
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
 
 /**
  * Interceptor for logging et sécurité des requests et des responses

@@ -6,9 +6,9 @@ import io.vertx.core.json.DecodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.HttpHeaders;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -56,7 +56,7 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
         if(authBearer != null && authBearer.size() > 0) {
             Optional<String> accessToken = authBearer.stream()
                     .filter(a -> a.startsWith("Bearer "))
-                    .map(a -> a.replaceAll("Bearer ", ""))
+                    .map(a -> a.replace("Bearer ", ""))
                     .findFirst();
             return accessToken.orElse(null);
         }

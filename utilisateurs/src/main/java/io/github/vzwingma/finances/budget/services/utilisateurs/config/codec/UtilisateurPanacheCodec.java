@@ -6,18 +6,14 @@ import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDate
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurDroitsEnum;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.UtilisateurPrefsEnum;
-import io.github.vzwingma.finances.budget.services.utilisateurs.spi.UtilisateurDatabaseAdaptor;
-import io.vertx.core.json.Json;
 import org.bson.*;
 import org.bson.codecs.Codec;
 import org.bson.codecs.CollectibleCodec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Date;
 
 /**
@@ -26,14 +22,12 @@ import java.util.Date;
 @ApplicationScoped
 public class UtilisateurPanacheCodec implements CollectibleCodec<Utilisateur> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UtilisateurPanacheCodec.class);
     private final Codec<Document> documentCodec;
 
     public UtilisateurPanacheCodec() {
         this.documentCodec = MongoClientSettings.getDefaultCodecRegistry().get(Document.class);
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(UtilisateurPanacheCodec.class);
     @Override
     public Utilisateur generateIdIfAbsentFromDocument(Utilisateur utilisateur) {
         utilisateur.setId(ObjectId.get());

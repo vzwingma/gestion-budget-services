@@ -7,7 +7,7 @@ import io.smallrye.mutiny.Multi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Service de données en MongoDB fournissant les paramètres

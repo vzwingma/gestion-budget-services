@@ -3,8 +3,8 @@ package io.github.vzwingma.finances.budget.services.comptes.api.override;
 import io.github.vzwingma.finances.budget.services.communs.api.AbstractAPIExceptionsHandler;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.AbstractBusinessException;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 
 /**
  * Handler for exceptions pour les API REST

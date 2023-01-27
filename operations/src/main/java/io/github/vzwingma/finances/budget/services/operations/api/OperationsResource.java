@@ -15,6 +15,7 @@ import io.github.vzwingma.finances.budget.services.operations.business.ports.IBu
 import io.github.vzwingma.finances.budget.services.operations.business.ports.IOperationsAppProvider;
 import io.github.vzwingma.finances.budget.services.operations.utils.BudgetDataUtils;
 import io.smallrye.mutiny.Uni;
+import jakarta.annotation.security.RolesAllowed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -27,14 +28,13 @@ import org.jboss.resteasy.reactive.server.ServerResponseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.security.RolesAllowed;
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.SecurityContext;
 import java.time.Month;
 import java.util.Set;
 import java.util.UUID;
@@ -280,7 +280,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
         LOG.trace("createOperation");
         if(operation != null && idBudget != null){
             operation.setId(UUID.randomUUID().toString());
-            return budgetService.addOperationInBudget(idBudget, operation);
+            return budgetService.addOperationInBudget(idBudget, operation, securityContext.getUserPrincipal().getName());
         }
         else {
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget et operation sont obligatoires"));
@@ -321,7 +321,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
 
         if(operation != null && idBudget != null){
             operation.setId(idOperation);
-            return budgetService.addOperationInBudget(idBudget, operation);
+            return budgetService.addOperationInBudget(idBudget, operation, securityContext.getUserPrincipal().getName());
         }
         else {
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget et idOperation sont obligatoires"));
@@ -361,7 +361,7 @@ public class OperationsResource extends AbstractAPIInterceptors {
         LOG.info("Create Operation InterCompte [->{}]", idCompte);
         if(operation != null && idBudget != null){
             operation.setId(uuidOperation);
-            return budgetService.createOperationsIntercomptes(idBudget, operation, idCompte);
+            return budgetService.createOperationsIntercomptes(idBudget, operation, idCompte, securityContext.getUserPrincipal().getName());
         }
         else{
             return Uni.createFrom().failure(new BadParametersException("Les paramètres idBudget, idOperation et idCompte sont obligatoires"));

@@ -6,7 +6,7 @@ import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthTok
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
 /**
