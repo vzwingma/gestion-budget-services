@@ -332,14 +332,22 @@ public class OperationsService implements IOperationsAppProvider {
 			default -> etatDepenseTransfert = OperationEtatEnum.PREVUE;
 		}
 
-		LigneOperation ligneTransfert = completeOperationAttributes(new LigneOperation(
-				ligneOperationSource.getCategorie(),
-				ligneOperationSource.getSsCategorie(),
-				libelleOperationCible,
-				OperationTypeEnum.CREDIT,
-				Math.abs(ligneOperationSource.getValeur()),
-				etatDepenseTransfert),
-				auteur);
+		LigneOperation.Mensualite mensualiteTransfert = null;
+		if(ligneOperationSource.getMensualite() != null ){
+			mensualiteTransfert= new LigneOperation.Mensualite();
+			mensualiteTransfert.setPeriode(ligneOperationSource.getMensualite().getPeriode());
+			mensualiteTransfert.setProchaineEcheance(ligneOperationSource.getMensualite().getProchaineEcheance());
+		}
+
+		LigneOperation ligneTransfert = completeOperationAttributes(
+				new LigneOperation(
+					ligneOperationSource.getCategorie(),
+					ligneOperationSource.getSsCategorie(),
+					libelleOperationCible,
+					OperationTypeEnum.CREDIT,
+					Math.abs(ligneOperationSource.getValeur()),
+					etatDepenseTransfert, mensualiteTransfert),
+					auteur);
 		LOGGER.debug("Ajout de l'opération [{}] dans le budget", ligneTransfert);
 
 		operations.add(ligneTransfert);

@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * 
+ *
  * Ligne de dépense dans un budget mensuel
  * @author vzwingma
  *
@@ -32,7 +32,7 @@ import java.util.UUID;
 public class LigneOperation extends AbstractAPIObjectModel implements Comparable<LigneOperation> {
 
 	/**
-	 * 
+	 *
 	 */
 	@Serial
 	private static final long serialVersionUID = -2932267709864103657L;
@@ -49,7 +49,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	private Categorie categorie;
 	@Schema(description = "Sous catégorie")
 	private Categorie ssCategorie;
-	
+
 	// Type de dépense
 	@Schema(description = "Type de dépense")
 	private OperationTypeEnum typeOperation;
@@ -88,8 +88,8 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 			return libelle;
 		}
 	}
-	
-	
+
+
 	@Getter @Setter @NoArgsConstructor
 	@Schema(description = "Données additionnelles")
 	public static class AddInfos implements Serializable{
@@ -99,7 +99,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 		@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 		@JsonSerialize(using = LocalDateTimeSerializer.class)
 		@Schema(description = "Date de création")
-		private LocalDateTime dateCreate;		
+		private LocalDateTime dateCreate;
 		// Date validation de l'operation
 		@JsonDeserialize(using = LocalDateDeserializer.class)
 		@JsonSerialize(using = LocalDateSerializer.class)
@@ -161,10 +161,10 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 			ssc.setLibelle(ssCategorie.getLibelle());
 			setSsCategorie(ssc);
 		}
-		buildLigneOperation(c, ssc, libelle, typeDepense, absValeur, etat);
+		buildLigneOperation(c, ssc, libelle, typeDepense, absValeur, etat, null);
 	}
-	
-	
+
+
 
 	/**
 	 * Constructeur
@@ -175,10 +175,10 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 * @param absValeur valeur montant en valeur absolue
 	 * @param etat état
 	 */
-	public LigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, OperationTypeEnum typeDepense, Double absValeur, OperationEtatEnum etat){
-		buildLigneOperation(categorie, ssCategorie, libelle, typeDepense, absValeur, etat);
+	public LigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, OperationTypeEnum typeDepense, Double absValeur, OperationEtatEnum etat, Mensualite mensualite){
+		buildLigneOperation(categorie, ssCategorie, libelle, typeDepense, absValeur, etat, mensualite);
 	}
-	
+
 	/**
 	 * Constructeur
 	 * @param categorie Catégorie
@@ -188,7 +188,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	 * @param absValeur valeur montant en valeur absolue
 	 * @param etat état
 	 */
-	private void buildLigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, OperationTypeEnum typeDepense, Double absValeur, OperationEtatEnum etat){
+	private void buildLigneOperation(Categorie categorie, Categorie ssCategorie, String libelle, OperationTypeEnum typeDepense, Double absValeur, OperationEtatEnum etat, Mensualite mensualite){
 		this.id = UUID.randomUUID().toString();
 		this.libelle = libelle;
 		this.typeOperation = typeDepense;
@@ -200,6 +200,8 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 		setCategorie(categorie);
 		setSsCategorie(ssCategorie);
 
+		this.mensualite = mensualite;
+
 		AddInfos addInfos = new AddInfos();
 		addInfos.setDateMaj(LocalDateTime.now());
 		addInfos.setDateOperation(LocalDate.now());
@@ -207,7 +209,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
         // Autres infos
 		this.autresInfos = addInfos;
     }
-	
+
 	/**
 	 * @param valeurD : Valeur depuis la saisie (en décimal)
 	 */
@@ -219,7 +221,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 			this.valeur = Math.abs(valeurD) * (OperationTypeEnum.DEPENSE.equals(this.getTypeOperation()) ? -1 : 1);
 		}
 	}
-	
+
 	@JsonIgnore
 	@BsonIgnore
 	// Pour ne pas avoir de pb avec Panache, les méthodes "techniques" n'utilisent pas les mots clés "get" et "set"
@@ -244,7 +246,7 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	public LocalDate retrieveDateOperation() {
 		return getAutresInfos() != null ? getAutresInfos().getDateOperation() : null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -257,9 +259,9 @@ public class LigneOperation extends AbstractAPIObjectModel implements Comparable
 	@Override
 	public int compareTo(LigneOperation o) {
 		if(o != null){
-			LocalDateTime dateC = this.getAutresInfos() != null && this.getAutresInfos().getDateCreate() != null ? 
+			LocalDateTime dateC = this.getAutresInfos() != null && this.getAutresInfos().getDateCreate() != null ?
 										this.getAutresInfos().getDateCreate() : LocalDateTime.MIN;
-			LocalDateTime dateCo = o.getAutresInfos() != null && o.getAutresInfos().getDateCreate() != null ? 
+			LocalDateTime dateCo = o.getAutresInfos() != null && o.getAutresInfos().getDateCreate() != null ?
 										o.getAutresInfos().getDateCreate() : LocalDateTime.MIN;
 			return dateC.compareTo(dateCo);
 		}
