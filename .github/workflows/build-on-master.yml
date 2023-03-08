@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
       # Runs the Build with Maven
       - name: Build Communs with Maven
@@ -54,7 +54,7 @@ jobs:
           uses: actions/setup-java@v3
           with:
             java-version: 17
-            distribution: 'adopt'
+            distribution: 'temurin'
             cache: 'maven'
         # Runs a single command using the runners shell
         - name: Build with Maven
@@ -75,7 +75,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
 
       # Runs a single command using the runners shell
@@ -101,7 +101,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
 
       # Runs a single command using the runners shell
@@ -127,7 +127,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
 
       # Runs a single command using the runners shell
@@ -154,7 +154,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
 
       # Runs a single command using the runners shell
