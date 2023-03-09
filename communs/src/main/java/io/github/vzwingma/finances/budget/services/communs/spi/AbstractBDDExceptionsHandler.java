@@ -16,7 +16,7 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 public abstract class AbstractBDDExceptionsHandler implements ExceptionMapper<MongoClientException> {
 
 
-    /**
+    /*
      * Logger
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBDDExceptionsHandler.class);

@@ -1,6 +1,6 @@
 name: CI - native snapshot apps
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -19,12 +19,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
       # Runs the Build with Maven
       - name: Build Communs with Maven
@@ -36,7 +36,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload DockerFile
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload DockerFile
         with:
           name: Dockerfile.native-micro
@@ -54,7 +54,7 @@ jobs:
           uses: actions/setup-java@v3
           with:
             java-version: 17
-            distribution: 'adopt'
+            distribution: 'temurin'
             cache: 'maven'
         # Runs a single command using the runners shell
         - name: Build with Maven
@@ -75,7 +75,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
 
       # Runs a single command using the runners shell
@@ -84,7 +84,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases Snapshot
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Paramétrages
         with:
           name: parametrages-runner
@@ -101,7 +101,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
 
       # Runs a single command using the runners shell
@@ -110,7 +110,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Upload Releases Snapshot
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Utilisateurs
         with:
           name: utilisateurs-runner
@@ -127,7 +127,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
 
       # Runs a single command using the runners shell
@@ -137,7 +137,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload Releases Snapshot
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Comptes
         with:
           name: comptes-runner
@@ -154,7 +154,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
 
       # Runs a single command using the runners shell
@@ -164,7 +164,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload Releases Snapshot
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Service Operations
         with:
           name: operations-runner

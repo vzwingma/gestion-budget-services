@@ -1,6 +1,6 @@
 name: CI - native release apps
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for tags
   push:
@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
       # Update version
       - name: Get tag Version
@@ -44,7 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload DockerFile
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload DockerFile
         with:
           name: Dockerfile.native-micro
@@ -62,7 +62,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
         with:
@@ -102,7 +102,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
         with:
@@ -141,7 +141,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
         with:
@@ -181,7 +181,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
         with:
