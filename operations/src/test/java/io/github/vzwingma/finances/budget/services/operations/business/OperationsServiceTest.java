@@ -145,8 +145,29 @@ class OperationsServiceTest {
         List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle(), "userTest");
         assertEquals(2, operationsAJour.size());
         assertEquals(OperationEtatEnum.PREVUE, operationsAJour.get(1).getEtat());
+        assertNull(operationsAJour.get(1).getMensualite());
     }
 
+
+    @Test
+    void testAddOperationIntercompteMensuel(){
+
+        // When
+        List<LigneOperation> listeOperations = new ArrayList<>();
+        listeOperations.add(MockDataOperations.getOperationPrelevement());
+        // Opération à ajouter
+        LigneOperation operation = MockDataOperations.getOperationIntercompte();
+        operation.setEtat(OperationEtatEnum.REALISEE);
+        operation.setMensualite(new LigneOperation.Mensualite());
+        operation.getMensualite().setPeriode(OperationPeriodiciteEnum.MENSUELLE);
+        operation.getMensualite().setProchaineEcheance(1);
+        // Test
+        List<LigneOperation> operationsAJour = operationsAppProvider.addOperationIntercompte(listeOperations, operation, "vers " + operation.getLibelle(), "userTest");
+        assertEquals(2, operationsAJour.size());
+        assertEquals(OperationEtatEnum.PREVUE, operationsAJour.get(1).getEtat());
+        assertEquals(OperationPeriodiciteEnum.MENSUELLE, operationsAJour.get(1).getMensualite().getPeriode());
+        assertEquals(1, operationsAJour.get(1).getMensualite().getProchaineEcheance());
+    }
 
     @Test
     void testAddOperationIntercompteReportee(){
