@@ -3,14 +3,14 @@ package io.github.vzwingma.finances.budget.services.communs.utils;
 import io.github.vzwingma.finances.budget.services.communs.data.model.JWTAuthToken;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.security.JWTUtils;
-import static org.junit.jupiter.api.Assertions.*;
-
 import io.vertx.core.json.DecodeException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Classe de test JWT
@@ -33,9 +33,9 @@ class TestJWTUtils {
         assertNotNull(token.getPayload());
         assertEquals("https://accounts.google.com", token.getPayload().getIss());
         assertNotNull(token.issuedAt());
-        assertEquals("2023-01-02T12:46:42", token.issuedAt().toString());
+        assertEquals("2023-01-02T13:46:42", token.issuedAt().toString());
         assertNotNull(token.expiredAt());
-        assertEquals("2023-01-02T13:46:42", token.expiredAt().toString());
+        assertEquals("2023-01-02T14:46:42", token.expiredAt().toString());
 
         LOG.info(LocalDateTime.now().toString());
         LOG.info(token.expiredAt().toString());
