@@ -17,7 +17,7 @@
   </modules>
 
   <properties>
-    <compiler-plugin.version>3.10.1</compiler-plugin.version>
+    <compiler-plugin.version>3.11.0</compiler-plugin.version>
     <failsafe.useModulePath>false</failsafe.useModulePath>
     <maven.compiler.release>17</maven.compiler.release>
     <maven.compiler.source>17</maven.compiler.source>
@@ -28,10 +28,10 @@
 
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>3.0.2.Final</quarkus.platform.version>
-    <lombok.version>1.18.26</lombok.version>
-    <surefire-plugin.version>3.0.0-M8</surefire-plugin.version>
-    <jacoco.version>0.8.8</jacoco.version>
+    <quarkus.platform.version>3.1.0.Final</quarkus.platform.version>
+    <lombok.version>1.18.28</lombok.version>
+    <surefire-plugin.version>3.1.0</surefire-plugin.version>
+    <jacoco.version>0.8.10</jacoco.version>
   </properties>
 
 
