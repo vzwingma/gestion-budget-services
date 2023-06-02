@@ -48,12 +48,12 @@ public class AbstractAPISecurityFilter implements ContainerRequestFilter {
 
 
     /**
-     * Récupération de l'Auth Bearer à partir des entête
+     * Récupération de l'Auth Bearer à partir des entêtes
      * @param authBearer liste des entêtes
      * @return l'auth Bearer si elle existe
      */
     protected String getAuthBearerFromHeaders(List<String> authBearer){
-        if(authBearer != null && authBearer.size() > 0) {
+        if(authBearer != null && !authBearer.isEmpty()) {
             Optional<String> accessToken = authBearer.stream()
                     .filter(a -> a.startsWith("Bearer "))
                     .map(a -> a.replace("Bearer ", ""))
