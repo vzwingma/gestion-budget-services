@@ -1,11 +1,10 @@
 package io.github.vzwingma.finances.budget.services.operations.utils;
 
-import io.github.vzwingma.finances.budget.services.communs.data.model.CategorieOperations;
 import io.github.vzwingma.finances.budget.services.communs.utils.data.BudgetDateTimeUtils;
 import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.BudgetNotFoundException;
 import io.github.vzwingma.finances.budget.services.operations.business.model.budget.BudgetMensuel;
-import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.LigneOperation;
+import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationEtatEnum;
 import io.github.vzwingma.finances.budget.services.operations.business.model.operation.OperationPeriodiciteEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,7 @@ public class BudgetDataUtils {
 		// constructeur privé
 	}
 
-	
+
 	/**
 	 * @param idCompte id compte bancaire
 	 * @param mois mois
@@ -92,8 +91,8 @@ public class BudgetDataUtils {
 		}
 		return null;
 	}
-	
-	
+
+
 
 	/**
 	 * Raz calculs
@@ -105,7 +104,7 @@ public class BudgetDataUtils {
 		budget.getSoldes().setSoldeAtMaintenant(budget.getSoldes().getSoldeAtFinMoisPrecedent());
 		budget.getSoldes().setSoldeAtFinMoisCourant(budget.getSoldes().getSoldeAtFinMoisPrecedent());
 	}
-	
+
 
 	/**
 	 * Ajout du solde à fin du mois courant
@@ -125,8 +124,8 @@ public class BudgetDataUtils {
 		soldes.setSoldeAtFinMoisCourant(soldes.getSoldeAtFinMoisCourant() + soldeAAjouter);
 	}
 
-	
-	
+
+
 	/**
 	 * Clone d'une ligne opération
 	 * @return Ligne dépense clonée
@@ -179,7 +178,9 @@ public class BudgetDataUtils {
 			// Si une opération était à échéance, mais a été reportée - on la réinjecte, en retard
 			if(ligneOperation.getMensualite().getProchaineEcheance() == ligneOperation.getMensualite().getPeriode().getNbMois()
 			&& OperationEtatEnum.REPORTEE.equals(ligneOperation.getEtat())){
-				LOGGER.warn("L'opération périodique {} est reportée : en retard", ligneOperation.getMensualite().getPeriode().name());
+				if(LOGGER.isWarnEnabled() && ligneOperation.getMensualite() != null && ligneOperation.getMensualite().getPeriode() != null){
+					LOGGER.warn("L'opération périodique {} est reportée : en retard", ligneOperation.getMensualite().getPeriode().name());
+				}
 				LigneOperation ligneOperationEcheanceReportee = cloneOperationToMoisSuivant(ligneOperation);
 				ligneOperationEcheanceReportee.setLibelle("[En Retard] " + ligneOperation.getLibelle());
 				LigneOperation.Mensualite echeanceReportee = new LigneOperation.Mensualite();
@@ -222,7 +223,7 @@ public class BudgetDataUtils {
 
 		if(listeOperations != null && !listeOperations.isEmpty()){
 			// Comparaison de date
-			
+
 			Comparator <LigneOperation> comparator = Comparator.comparing(LigneOperation::retrieveDateOperation, (date1, date2) -> {
 				if(date1 == null){
 					return 1;
