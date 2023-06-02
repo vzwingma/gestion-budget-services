@@ -4,10 +4,9 @@ import io.github.vzwingma.finances.budget.services.communs.utils.exceptions.Data
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.model.Utilisateur;
 import io.github.vzwingma.finances.budget.services.utilisateurs.business.ports.IUtilisateursRepository;
 import io.smallrye.mutiny.Uni;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Service Provider  données en MongoDB fournissant les infos des utilisateurs et comptes
@@ -32,7 +31,6 @@ public class UtilisateurDatabaseAdaptor implements IUtilisateursRepository {
 			return find("login", login)
 					.singleResultOptional()
 					.map(utilisateur -> utilisateur.orElse(null));
-					//.onItem();.ifNull().failWith(new DataNotFoundException("Utilisateur non trouvé"));
 		}
 		catch(Exception e){
 			LOGGER.error("Erreur lors de la connexion à la BDD", e);
