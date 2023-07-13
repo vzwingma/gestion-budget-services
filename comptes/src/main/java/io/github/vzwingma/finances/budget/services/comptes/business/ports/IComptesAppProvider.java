@@ -12,6 +12,7 @@ public interface IComptesAppProvider {
 
 
     /**
+     * Retourne l'etat d'un compte
      * @param idCompte id du compte
      * @return etat du compte
      */

@@ -31,7 +31,7 @@ import jakarta.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
- * Controleur REST -
+ * Controleur REST - comptes
  * Adapteur du port {@link IComptesAppProvider}
  * @author vzwingma
  *
@@ -67,7 +67,7 @@ public class ComptesResource extends AbstractAPIInterceptors {
 
         String proprietaire = securityContext.getUserPrincipal().getName();
         BusinessTraceContext.getclear().remove(BusinessTraceContextKeyEnum.COMPTE).put(BusinessTraceContextKeyEnum.USER, proprietaire);
-        LOG.info("getComptes");
+        LOG.trace("getComptesUtilisateur");
         return this.services.getComptesUtilisateur(proprietaire)
                 .invoke(listeComptes -> LOG.info("{} comptes chargés", listeComptes != null ? listeComptes.size() : "-1"));
     }
@@ -94,7 +94,7 @@ public class ComptesResource extends AbstractAPIInterceptors {
         String proprietaire = securityContext.getUserPrincipal().getName();
         BusinessTraceContext.getclear().put(BusinessTraceContextKeyEnum.USER, proprietaire).put(BusinessTraceContextKeyEnum.COMPTE, idCompte);
 
-        LOG.info("getCompte");
+        LOG.trace("getCompteUtilisateur");
         return this.services.getCompteById(idCompte, proprietaire)
                 .invoke(compte -> LOG.info("Compte chargé : [{}]", compte != null ? compte.getLibelle() : "-1"));
     }
